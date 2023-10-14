@@ -8,19 +8,7 @@
                     <li class="flex items-center">
                         <a class="flex h-10 items-center gap-1.5 bg-gray-200 px-4 transition hover:text-gray-900"
                            routerLink="/apis">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                class="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
-                                />
-                            </svg>
+                            <i class="bi bi-house-door"></i>
                             <span class="ms-1.5 text-xs font-medium"> APIs </span>
                         </a>
                     </li>
@@ -91,7 +79,6 @@
 
             </div>
 
-
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
                 <div>
                     <h3 class="mb-2">Body</h3>
@@ -110,12 +97,12 @@
                     <div class="mb-6">
 
                         <div class="flex mb-4">
-                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-eye-fill"></i>
-                        </span>
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-eye-fill"></i>
+                            </span>
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-trash-fill"></i>
+                            </span>
                             <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Field Name">
                             <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value">
                         </div>
@@ -126,29 +113,39 @@
 
                     <h3 class="mb-2">Headers</h3>
 
-                    <div>
+                    <div class="mb-6">
 
                         <div class="flex mb-4">
-                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-eye-fill"></i>
-                        </span>
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-eye-fill"></i>
+                            </span>
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-trash-fill"></i>
+                            </span>
                             <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Header" value="Content-Type">
                             <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value" value="application/json">
                         </div>
 
                         <div class="flex mb-4">
-                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-eye-fill"></i>
-                        </span>
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
-                            <i class="bi bi-trash-fill"></i>
-                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-eye-fill"></i>
+                            </span>
+                                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                                <i class="bi bi-trash-fill"></i>
+                            </span>
                             <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Header" value="Accept">
                             <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value" value="application/json">
                         </div>
+
+                    </div>
+
+                    <div>
+
+                        <label class="relative inline-flex items-center mb-4 cursor-pointer">
+                            <input type="checkbox" value="" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Basic Authentication</span>
+                        </label>
 
                     </div>
 
