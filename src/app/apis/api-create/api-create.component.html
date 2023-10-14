@@ -1,0 +1,166 @@
+<header class="bg-white shadow">
+    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+
+        <div class="flex justify-between">
+
+            <nav aria-label="Breadcrumb" class="flex">
+                <ol class="flex overflow-hidden rounded-lg border border-gray-300 text-gray-600">
+                    <li class="flex items-center">
+                        <a class="flex h-10 items-center gap-1.5 bg-gray-200 px-4 transition hover:text-gray-900"
+                           routerLink="/apis">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                />
+                            </svg>
+                            <span class="ms-1.5 text-xs font-medium"> APIs </span>
+                        </a>
+                    </li>
+
+                    <li class="relative flex items-center">
+                        <span class="absolute inset-y-0 -start-px h-10 w-4 bg-gray-200 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
+                        <span class="flex h-10 items-center bg-white pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
+                            Create
+                        </span>
+                    </li>
+                </ol>
+            </nav>
+
+            <div>
+
+                <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline">
+                    <i class="bi bi-check"></i>
+                    Save
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+</header>
+
+<main>
+    <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+
+        <h2 class="text-xl font-bold mb-4">Create API</h2>
+
+        <div>
+
+            <div class="mb-4">
+                <label class="block mb-2" for="fieldName">API name</label>
+                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldName" placeholder="API Name">
+            </div>
+
+            <div class="flex gap-3 mb-4">
+
+                <div class="dropdown inline-block relative">
+                    <button class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
+                        <span class="mr-1">GET</span>
+                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                    </button>
+                    <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
+                        <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">POST</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">GET</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PUT</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">HEAD</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">DELETE</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PATCH</a></li>
+                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PURGE</a></li>
+                        <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">OPTIONS</a></li>
+                    </ul>
+                </div>
+
+                <div class="grow">
+                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="API URL" value="http://httpbin.org/get">
+                </div>
+
+                <div>
+                    <button type="button" class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline">
+                        Test
+                    </button>
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <div>
+                    <h3 class="mb-2">Body</h3>
+
+                    <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700 mb-4">
+                        <ul class="flex flex-wrap -mb-px">
+                            <li class="mr-2">
+                                <a href="#" class="inline-block p-3 text-blue-600 border-b-2 border-blue-600 rounded-t-lg active dark:text-blue-500 dark:border-blue-500" aria-current="page">Fields</a>
+                            </li>
+                            <li class="mr-2">
+                                <a href="#" class="inline-block p-3 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Raw</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-6">
+
+                        <div class="flex mb-4">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-eye-fill"></i>
+                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-trash-fill"></i>
+                        </span>
+                            <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Field Name">
+                            <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value">
+                        </div>
+
+                    </div>
+
+                    <hr class="mb-4">
+
+                    <h3 class="mb-2">Headers</h3>
+
+                    <div>
+
+                        <div class="flex mb-4">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-eye-fill"></i>
+                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-trash-fill"></i>
+                        </span>
+                            <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Header" value="Content-Type">
+                            <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value" value="application/json">
+                        </div>
+
+                        <div class="flex mb-4">
+                        <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-eye-fill"></i>
+                        </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
+                            <i class="bi bi-trash-fill"></i>
+                        </span>
+                            <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Header" value="Accept">
+                            <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Value" value="application/json">
+                        </div>
+
+                    </div>
+
+                </div>
+                <div>
+                    <h3 class="mb-2">Preview</h3>
+
+                    <textarea class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" rows="8" cols="40" placeholder="Response Data"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</main>

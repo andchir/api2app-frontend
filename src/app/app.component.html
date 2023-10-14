@@ -10,18 +10,18 @@
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
                             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-                            <a class="bg-gray-900 text-white rounded-md px-3 py-2 text-sm font-medium"
-                               aria-current="page"
+                            <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink="/dashboard"
-                               routerLinkActive="active">Dashboard</a>
-                            <a href="#"
-                               class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                               routerLinkActive="active bg-gray-900 hover:bg-gray-900"
+                               ariaCurrentWhenActive="page">Dashboard</a>
+                            <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink="/apps"
-                               routerLinkActive="active">Applications</a>
-                            <a href="#"
-                               class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                               routerLinkActive="active bg-gray-900 hover:bg-gray-900"
+                               ariaCurrentWhenActive="page">Applications</a>
+                            <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink="/apis"
-                               routerLinkActive="active">APIs</a>
+                               routerLinkActive="active bg-gray-900 hover:bg-gray-900"
+                               ariaCurrentWhenActive="page">APIs</a>
                             <a href="#"
                                class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Reports</a>
                         </div>
@@ -41,7 +41,7 @@
                         </button>
 
                         <!-- Profile dropdown -->
-                        <div class="relative ml-3">
+                        <div class="dropdown relative ml-3">
                             <div>
                                 <button type="button"
                                         class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -65,7 +65,7 @@
                                 To: "transform opacity-0 scale-95"
                             -->
                             <div
-                                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                class="dropdown-menu absolute hidden right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
                                 tabindex="-1">
                                 <!-- Active: "bg-gray-100", Not Active: "" -->
@@ -154,22 +154,10 @@
         </div>
     </nav>
 
-    <header class="bg-white shadow">
-        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
-        </div>
-    </header>
-
-    <main>
-        <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-
-            <router-outlet></router-outlet>
-
-        </div>
-    </main>
+    <router-outlet></router-outlet>
 
     <footer class="bg-white">
-        <div class="mx-auto max-w-screen-xl px-4 pb-6 pt-16 sm:px-6 lg:px-8 lg:pt-24">
+        <div class="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8">
             <div class="mt-12 border-t border-gray-100 pt-6">
                 <div class="text-center sm:flex sm:justify-between sm:text-left">
                     <p class="text-sm text-gray-500">

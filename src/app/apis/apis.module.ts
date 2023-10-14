@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 
 import { ApisRoutingModule } from './apis-routing.module';
 import { ListComponent } from './list/list.component';
+import { ApiCreateComponent } from './api-create/api-create.component';
 
 @NgModule({
   declarations: [
-    ListComponent
+    ListComponent,
+    ApiCreateComponent
   ],
   imports: [
     CommonModule,
