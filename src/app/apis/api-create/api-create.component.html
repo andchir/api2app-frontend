@@ -24,7 +24,8 @@
 
             <div>
 
-                <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline">
+                <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
+                    (click)="saveData()">
                     <i class="bi bi-check"></i>
                     Save
                 </button>
@@ -45,34 +46,39 @@
 
             <div class="mb-4">
                 <label class="block mb-2" for="fieldName">API name</label>
-                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldName" placeholder="API Name">
+                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                       id="fieldName"
+                       placeholder="API Name"
+                       [(ngModel)]="data.name">
             </div>
 
             <div class="flex gap-3 mb-4">
 
                 <div class="dropdown inline-block relative">
                     <button class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
-                        <span class="mr-1">GET</span>
+                        <span class="mr-1 uppercase">{{ data.requestMethod }}</span>
                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
                     </button>
                     <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li class=""><a class="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">POST</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">GET</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PUT</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">HEAD</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">DELETE</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PATCH</a></li>
-                        <li class=""><a class="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">PURGE</a></li>
-                        <li class=""><a class="rounded-b bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap" href="#">OPTIONS</a></li>
+                        <li class="" *ngFor="let method of requestMethods; index as index">
+                            <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+                                [ngClass]="{'rounded-b': index === requestMethods.length - 1, 'rounded-t': index === 0}"
+                                (click)="requestMethodUpdate(method)">
+                                {{ method }}
+                            </button>
+                        </li>
                     </ul>
                 </div>
 
                 <div class="grow">
-                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" placeholder="API URL" value="http://httpbin.org/get">
+                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                           placeholder="API URL"
+                           [(ngModel)]="data.requestUrl">
                 </div>
 
                 <div>
-                    <button type="button" class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline">
+                    <button type="button" class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline"
+                        (click)="apiSendRequest()">
                         Test
                     </button>
                 </div>
@@ -142,10 +148,29 @@
                     <div>
 
                         <label class="relative inline-flex items-center mb-4 cursor-pointer">
-                            <input type="checkbox" value="" class="sr-only peer">
+                            <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="data.basicAuth">
                             <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                             <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Basic Authentication</span>
                         </label>
+
+                        <div *ngIf="data.basicAuth">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-4">
+                                <div>
+                                    <label for="fieldBasicAuthLogin">Login:</label>
+                                </div>
+                                <div>
+                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthLogin" placeholder="Login">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                                <div>
+                                    <label for="fieldBasicAuthPassword">Password:</label>
+                                </div>
+                                <div>
+                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthPassword" placeholder="Password">
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
 
