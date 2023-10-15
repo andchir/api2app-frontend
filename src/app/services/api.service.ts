@@ -26,7 +26,7 @@ export class ApiService {
             }
         });
         const headers = new HttpHeaders(headersData);
-        const responseType = 'text';
+        const responseType = 'blob';
 
         // Get request body
         let body: any = data.bodyDataSource === 'raw' ? (data.bodyJson || '') : {};

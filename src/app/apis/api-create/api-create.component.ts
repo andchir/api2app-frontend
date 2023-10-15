@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
+import { Buffer } from 'buffer/';
 
 import { ApiItem } from '../models/api-item.interface';
 import { ApiService } from '../../services/api.service';
@@ -18,8 +19,9 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         requestMethod: 'GET',
         requestUrl: 'http://httpbin.org/json',
         basicAuth: false,
-        responseJson: '',
+        responseBody: '',
         responseHeaders: [],
+        responseContentType: 'json',
         bodyDataSource: 'fields',
         bodyFields: [
             {name: '', value: ''}
@@ -27,6 +29,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         headers: [
             {name: 'Content-Type', value: 'application/json'},
             {name: 'Accept', value: 'application/json'},
+            {name: 'Access-Control-Allow-Origin', value: '*'},
             {name: '', value: ''}
         ],
         bodyJson: ''
@@ -35,9 +38,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         'GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'PATCH', 'PURGE', 'OPTIONS'
     ];
     responseContentTypes = [
-        'json', 'xml', 'html', 'text'
+        'json', 'xml', 'html', 'text', 'image'
     ];
-    responseContentType: string = 'json';
     previewSate: 'data'|'headers' = 'data';
     isResponseError = false;
     timer: any;
@@ -110,14 +112,22 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                         });
                     });
                     this.isResponseError = false;
-                    this.data.responseJson = res.body.trim();
+                    const fileReader = new FileReader();
+                    fileReader.onload = (fileLoadedEvent) => {
+                        this.data.responseBody = fileLoadedEvent.target?.result as string;
+                    }
+                    if (this.data.responseContentType === 'image') {
+                        fileReader.readAsDataURL(res.body);
+                    } else {
+                        fileReader.readAsText(res.body);
+                    }
                     this.loading = false;
                     this.submitted = false;
                 },
                 error: (err) => {
                     const errorMessage = err.error?.error?.message;
                     this.isResponseError = true;
-                    this.data.responseJson = '{"error": "' + (err?.message || '') + (errorMessage ? ` - ${errorMessage}` : '') + '"}';
+                    this.data.responseBody = '{"error": "' + (err?.message || '') + (errorMessage ? ` - ${errorMessage}` : '') + '"}';
                     this.loading = false;
                     this.submitted = false;
                 }

@@ -6,8 +6,9 @@ export interface ApiItem {
     requestMethod: string;
     requestUrl: string;
     basicAuth: boolean;
-    responseJson: string;
+    responseBody: string;
     responseHeaders: NameValueStringObject[];
+    responseContentType: string;
     bodyDataSource: 'fields'|'raw';
     bodyFields: RequestDataField[];
     headers: RequestDataField[];
