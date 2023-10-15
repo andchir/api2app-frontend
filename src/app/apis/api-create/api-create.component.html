@@ -117,9 +117,15 @@
                         <div class="flex mb-4" *ngFor="let item of data.bodyFields; index as index"
                              [ngClass]="{'opacity-50': item.hidden}">
                             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
+                                  title="Hide"
                                   (click)="item.hidden = !item.hidden">
                                 <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
                                 <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
+                            </span>
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
+                                  title="Value As File"
+                                  *ngIf="['POST', 'PUT', 'PATCH'].includes(data.requestMethod)">
+                                <i class="bi bi-file-earmark-fill"></i>
                             </span>
                             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
                                   title="Delete field"
@@ -161,7 +167,8 @@
                         <div class="flex mb-4" *ngFor="let item of data.headers; index as index"
                             [ngClass]="{'opacity-50': item.hidden}">
                             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
-                                (click)="item.hidden = !item.hidden">
+                                  title="Hide"
+                                  (click)="item.hidden = !item.hidden">
                                 <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
                                 <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
                             </span>
