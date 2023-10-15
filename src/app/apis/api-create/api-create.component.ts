@@ -201,4 +201,10 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
             this.data.responseBody = '';
         }
     }
+
+    onFileChanged(event: Event, optionName: 'headers'|'bodyFields', index: number): void {
+        const inputEl = event.target as HTMLInputElement;
+        const files = inputEl.files || [];
+        this.data[optionName][index].file = files.length > 0 ? files[0] : undefined;
+    }
 }

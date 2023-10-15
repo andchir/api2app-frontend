@@ -50,10 +50,14 @@ export class ApiService {
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
-                if (item.name && item.value && !item.hidden) {
-                    body[item.name] = item.value;
+                if (item.name && (item.value || item.file) && !item.hidden) {
+                    body[item.name] = item.value || '';
                     if (data.sendAsFormData) {
-                        formData.append(item.name, item.value);
+                        if (item.isFile) {
+                            formData.append(item.name, item.file || '');
+                        } else {
+                            formData.append(item.name, item.value || '');
+                        }
                     }
                 }
             });

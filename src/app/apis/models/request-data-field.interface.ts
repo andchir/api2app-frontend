@@ -3,4 +3,6 @@ export interface RequestDataField {
     value: string;
     hidden?: boolean;
     private?: boolean;
+    isFile?: boolean;
+    file?: File;
 }
