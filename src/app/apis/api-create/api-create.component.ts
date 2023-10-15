@@ -79,7 +79,7 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
 
         this.aceEditor.on('change', () => {
             this.data.responseBody = this.aceEditor.getValue();
-            console.log(this.data.responseBody);
+            // console.log(this.data.responseBody);
         });
     }
 
