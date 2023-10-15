@@ -9,6 +9,7 @@ export interface ApiItem {
     bodyDataSource: 'fields'|'raw';
     authLogin: string;
     authPassword: string;
+    sendAsFormData: boolean;
 
     bodyFields: RequestDataField[];
     bodyJson: string;

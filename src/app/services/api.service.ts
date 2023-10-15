@@ -40,30 +40,39 @@ export class ApiService {
             const authToken = btoa(`${data.authLogin}:${data.authPassword}`);
             headersData['Authorization'] = `Basic ${authToken}`;
         }
-        const headers = new HttpHeaders(headersData);
-        const responseType = 'blob';
+        if (data.sendAsFormData && !headersData['enctype']) {
+            headersData['enctype'] = 'multipart/form-data';
+        }
 
         // Get request body
+        const formData = new FormData();
         let body: any = data.bodyDataSource === 'raw' ? (data.bodyJson || '') : {};
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
                 if (item.name && item.value && !item.hidden) {
                     body[item.name] = item.value;
+                    if (data.sendAsFormData) {
+                        formData.append(item.name, item.value);
+                    }
                 }
             });
         }
 
+        const headers = new HttpHeaders(headersData);
+        const requestData = data.sendAsFormData ? formData : {body};
+        const responseType = 'blob';
+
         let httpRequest;
         switch (data.requestMethod) {
             case 'POST':
-                httpRequest = this.httpClient.post(data.requestUrl, {body}, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.post(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'PUT':
-                httpRequest = this.httpClient.put(data.requestUrl, {body}, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.put(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'PATCH':
-                httpRequest = this.httpClient.patch(data.requestUrl, {body}, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.patch(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'DELETE':
                 httpRequest = this.httpClient.delete(data.requestUrl, {headers, responseType, observe: 'response'});
@@ -80,7 +89,7 @@ export class ApiService {
         return httpRequest;
     }
 
-    getDataFromBlob(blob: Blob): Promise<any> {
+    getDataFromBlob(blob: Blob, contentType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.onload = (fileLoadedEvent) => {
@@ -95,7 +104,11 @@ export class ApiService {
                     resolve(fileLoadedEvent.target?.result || '');
                 }
             };
-            fileReader.readAsText(blob);
+            if (contentType === 'image') {
+                fileReader.readAsDataURL(blob);
+            } else {
+                fileReader.readAsText(blob);
+            }
         });
     }
 }

@@ -22,6 +22,7 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
         requestMethod: 'GET',
         requestUrl: 'http://httpbin.org/json',
         basicAuth: false,
+        sendAsFormData: false,
         responseBody: '',
         responseHeaders: [],
         responseContentType: 'json',
@@ -40,7 +41,7 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
         bodyJson: ''
     };
     requestMethods = [
-        'GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'PATCH', 'PURGE', 'OPTIONS'
+        'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'PURGE', 'OPTIONS'
     ];
     responseContentTypes = [
         'json', 'xml', 'html', 'text', 'image'
@@ -136,21 +137,25 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
                         });
                     });
                     this.isResponseError = false;
-                    const fileReader = new FileReader();
-                    fileReader.onload = (fileLoadedEvent) => {
-                        this.data.responseBody = fileLoadedEvent.target?.result as string;
-                        if (this.data.responseContentType !== 'image') {
-                            this.aceEditor.session.setValue(this.data.responseBody);
-                        }
-                    }
                     if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
                         this.data.responseContentType = 'image';
                     }
-                    if (this.data.responseContentType === 'image') {
-                        fileReader.readAsDataURL(res.body);
-                    } else {
-                        fileReader.readAsText(res.body);
-                    }
+
+                    this.apiService.getDataFromBlob(res.body, this.data.responseContentType)
+                        .then((data) => {
+                            if (typeof data === 'object') {
+                                this.data.responseBody = JSON.stringify(data, null, 2);
+                            } else {
+                                this.data.responseBody = data;
+                            }
+                            if (this.data.responseContentType !== 'image') {
+                                this.aceEditor.session.setValue(this.data.responseBody);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log(err);
+                        });
+
                     this.loading = false;
                     this.submitted = false;
                 },
