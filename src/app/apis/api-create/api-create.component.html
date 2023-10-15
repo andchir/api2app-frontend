@@ -54,20 +54,22 @@
 
             <div class="flex gap-3 mb-4">
 
-                <div class="dropdown inline-block relative">
+                <div class="dropdown inline-block">
                     <button class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
                         <span class="mr-1 uppercase">{{ data.requestMethod }}</span>
                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
                     </button>
-                    <ul class="dropdown-menu absolute hidden text-gray-700 pt-1">
-                        <li class="" *ngFor="let method of requestMethods; index as index">
-                            <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                                [ngClass]="{'rounded-b': index === requestMethods.length - 1, 'rounded-t': index === 0}"
-                                (click)="requestMethodUpdate(method)">
-                                {{ method }}
-                            </button>
-                        </li>
-                    </ul>
+                    <div class="dropdown-menu absolute hidden pt-1">
+                        <ul class="text-gray-700 rounded border border-slate-300 shadow-md">
+                            <li class="" *ngFor="let method of requestMethods; index as index">
+                                <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+                                        [ngClass]="{'rounded-b': index === requestMethods.length - 1, 'rounded-t': index === 0}"
+                                        (click)="requestMethodUpdate(method)">
+                                    {{ method }}
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="grow">
@@ -112,9 +114,12 @@
 
                     <div class="mb-6" *ngIf="data.bodyDataSource === 'fields'">
 
-                        <div class="flex mb-4" *ngFor="let field of data.bodyFields; index as index">
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer">
-                                <i class="bi bi-eye-fill"></i>
+                        <div class="flex mb-4" *ngFor="let item of data.bodyFields; index as index"
+                             [ngClass]="{'opacity-50': item.hidden}">
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
+                                  (click)="item.hidden = !item.hidden">
+                                <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
+                                <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
                             </span>
                             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
                                   title="Delete field"
@@ -123,11 +128,11 @@
                             </span>
                             <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="Field Name"
-                                   [(ngModel)]="field.name"
+                                   [(ngModel)]="item.name"
                                    (ngModelChange)="onOptionsListChange('bodyFields', index)">
                             <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="Value"
-                                   [(ngModel)]="field.value"
+                                   [(ngModel)]="item.value"
                                    (ngModelChange)="onOptionsListChange('bodyFields', index)">
                         </div>
 
@@ -147,9 +152,12 @@
 
                     <div class="mb-6">
 
-                        <div class="flex mb-4" *ngFor="let hdr of data.headers; index as index">
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer">
-                                <i class="bi bi-eye-fill"></i>
+                        <div class="flex mb-4" *ngFor="let item of data.headers; index as index"
+                            [ngClass]="{'opacity-50': item.hidden}">
+                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
+                                (click)="item.hidden = !item.hidden">
+                                <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
+                                <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
                             </span>
                             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
                                  title="Delete header"
@@ -158,12 +166,12 @@
                             </span>
                             <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="Header"
-                                   [(ngModel)]="hdr.name"
+                                   [(ngModel)]="item.name"
                                    (ngModelChange)="onOptionsListChange('headers', index)">
                             <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                    placeholder="Value"
                                    value="application/json"
-                                   [(ngModel)]="hdr.value"
+                                   [(ngModel)]="item.value"
                                    (ngModelChange)="onOptionsListChange('headers', index)">
                         </div>
 
@@ -201,12 +209,61 @@
                 </div>
                 <div class="flex flex-col">
                     <h3 class="mb-2">Preview</h3>
+
+                    <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
+                        <ul class="flex flex-wrap -mb-px">
+                            <li class="mr-2">
+                                <button type="button" class="inline-block p-3 border-b-2 border-transparent"
+                                        [ngClass]="{'text-blue-600 border-blue-600': previewSate === 'data', 'border-transparent hover:text-gray-600 hover:border-gray-300': previewSate !== 'data'}"
+                                        (click)="previewSate = 'data'">Data</button>
+                            </li>
+                            <li class="mr-2" *ngIf="data.responseHeaders.length > 0">
+                                <button type="button" class="inline-block p-3 border-b-2 hover:text-gray-600 hover:border-gray-300"
+                                        [ngClass]="{'text-blue-600 border-blue-600': previewSate === 'headers', 'border-transparent hover:text-gray-600 hover:border-gray-300': previewSate !== 'headers'}"
+                                        (click)="previewSate = 'headers'">Headers</button>
+                            </li>
+                            <li class="mr-2 dropdown">
+                                <button type="button" class="inline-block p-3 border-b-2 border-transparent border-transparent hover:text-gray-600 hover:border-gray-300">
+                                    {{ responseContentType }}
+                                    <svg class="inline-block fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                </button>
+                                <div class="dropdown-menu absolute hidden pt-1">
+                                    <ul class="text-gray-700 rounded border border-slate-300 shadow-md">
+                                        <li class="" *ngFor="let cntType of responseContentTypes; index as index">
+                                            <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+                                                    [ngClass]="{'rounded-b': index === requestMethods.length - 1, 'rounded-t': index === 0}"
+                                                    (click)="responseContentType = cntType">
+                                                {{ cntType }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
                     <textarea class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 grow"
                               rows="8"
                               cols="40"
                               placeholder="Response Data"
                               [ngClass]="{'text-cyan-600': !isResponseError, 'text-red-600 border-red-600': isResponseError}"
-                              [(ngModel)]="data.responseJson"></textarea>
+                              [(ngModel)]="data.responseJson"
+                              *ngIf="previewSate == 'data'"></textarea>
+
+                    <div *ngIf="previewSate == 'headers'">
+                        <table class="w-full text-sm text-left bg-gray-50 text-gray-500 border">
+                            <tbody>
+                                <tr class="border-b" *ngFor="let item of data.responseHeaders">
+                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                        {{ item.name }}
+                                    </th>
+                                    <td class="px-6 py-4">
+                                        {{ item.value }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

@@ -1,4 +1,5 @@
-import {NameValueStringObject} from './name-value-string-object.interface';
+import { RequestDataField } from './request-data-field.interface';
+import { NameValueStringObject } from './name-value-string-object.interface';
 
 export interface ApiItem {
     name: string;
@@ -6,8 +7,9 @@ export interface ApiItem {
     requestUrl: string;
     basicAuth: boolean;
     responseJson: string;
+    responseHeaders: NameValueStringObject[];
     bodyDataSource: 'fields'|'raw';
-    bodyFields: NameValueStringObject[];
-    headers: NameValueStringObject[];
+    bodyFields: RequestDataField[];
+    headers: RequestDataField[];
     bodyJson: string;
 }

@@ -3,6 +3,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.dropdown {
+    position: relative;
+}
 .dropdown:hover .dropdown-menu {
     display: block;
 }

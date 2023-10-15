@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Subject, takeUntil } from 'rxjs';
 
 import { ApiItem } from '../models/api-item.interface';
+import { ApiService } from '../../services/api.service';
 
 @Component({
-  selector: 'app-api-create',
-  templateUrl: './api-create.component.html',
-  styleUrls: ['./api-create.component.css']
+    selector: 'app-api-create',
+    templateUrl: './api-create.component.html',
+    styleUrls: ['./api-create.component.css'],
+    providers: [ApiService]
 })
 export class ApiCreateComponent implements OnInit, OnDestroy {
 
@@ -18,20 +19,26 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         requestUrl: 'http://httpbin.org/json',
         basicAuth: false,
         responseJson: '',
+        responseHeaders: [],
         bodyDataSource: 'fields',
         bodyFields: [
             {name: '', value: ''}
         ],
         headers: [
-            {name: 'Content-Type', value: 'application/json', active: true},
-            {name: 'Accept', value: 'application/json', active: true},
-            {name: '', value: '', active: true}
+            {name: 'Content-Type', value: 'application/json'},
+            {name: 'Accept', value: 'application/json'},
+            {name: '', value: ''}
         ],
         bodyJson: ''
     };
     requestMethods = [
         'GET', 'POST', 'PUT', 'HEAD', 'DELETE', 'PATCH', 'PURGE', 'OPTIONS'
     ];
+    responseContentTypes = [
+        'json', 'xml', 'html', 'text'
+    ];
+    responseContentType: string = 'json';
+    previewSate: 'data'|'headers' = 'data';
     isResponseError = false;
     timer: any;
     loading = false;
@@ -39,7 +46,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
-        protected httpClient: HttpClient
+        protected apiService: ApiService
     ) {}
 
     ngOnInit(): void {
@@ -75,7 +82,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         this.timer = setTimeout(() => {
             const lastEmptyIndex = this.findDataEmptyIndex(optionName);
             if (lastEmptyIndex === -1) {
-                this.data[optionName].push({name: '', value: '', active: true});
+                this.data[optionName].push({name: '', value: ''});
                 return;
             }
             if (!this.data[optionName][index].name && !this.data[optionName][index].value && index !== lastEmptyIndex) {
@@ -88,52 +95,22 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         if (!this.data.requestUrl) {
             return;
         }
-
-        // Get headers
-        let responseTypeValue = 'json';
-        const headersData: {[header: string]: string} = {};
-        this.data.headers.forEach((item) => {
-            if (item.name && item.value) {
-                headersData[item.name] = item.value;
-                if (item.name.toLowerCase() === 'accept' && item.value.includes('/')) {
-                    responseTypeValue = item.value.split('/')[1];
-                }
-            }
-        });
-        const headers = new HttpHeaders(headersData);
-        const responseType = 'text';
-
-        // Get request body
-        let body: any = this.data.bodyDataSource === 'raw' ? (this.data.bodyJson || '') : {};
-        if (this.data.bodyDataSource === 'fields') {
-            body = {};
-            this.data.bodyFields.forEach((item) => {
-                if (item.name && item.value) {
-                    body[item.name] = item.value;
-                }
-            });
-        }
-
-        let httpRequest;
-        switch (this.data.requestMethod) {
-            case 'POST':
-                httpRequest = this.httpClient.post(this.data.requestUrl, {body}, {headers, responseType});
-                break;
-            default:
-                httpRequest = this.httpClient.get(this.data.requestUrl, {headers, responseType});
-        }
-
         this.loading = true;
         this.submitted = true;
 
-        httpRequest
+        this.apiService.apiRequest(this.data)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    this.data.responseHeaders = [];
+                    res.headers.keys().forEach((headerName) => {
+                        this.data.responseHeaders.push({
+                            name: headerName,
+                            value: String(res.headers.get(headerName))
+                        });
+                    });
                     this.isResponseError = false;
-                    this.data.responseJson = typeof res === 'object'
-                        ? JSON.stringify(res, null, 4)
-                        : res.trim();
+                    this.data.responseJson = res.body.trim();
                     this.loading = false;
                     this.submitted = false;
                 },
