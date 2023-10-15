@@ -127,6 +127,7 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    this.data.responseBody = '';
                     this.data.responseHeaders = [];
                     res.headers.keys().forEach((headerName) => {
                         this.data.responseHeaders.push({
@@ -154,13 +155,21 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    const fileReader = new FileReader();
-                    fileReader.onload = (fileLoadedEvent) => {
-                        console.log(fileLoadedEvent.target?.result);
-                    };
-                    fileReader.readAsText(err.error);
+                    if (err.error instanceof Blob) {
+                        this.apiService.getDataFromBlob(err.error)
+                            .then((errorData) => {
+                                if (typeof errorData === 'object') {
+                                    this.data.responseBody = JSON.stringify(errorData, null, 4);
+                                    this.aceEditor.session.setValue(this.data.responseBody);
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
 
                     const errorMessage = err?.message || 'Error.';
+                    this.data.responseContentType = 'json';
                     this.data.responseBody = '{"error": "' + errorMessage + '"}';
                     this.aceEditor.session.setValue(this.data.responseBody);
 
