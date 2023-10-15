@@ -25,6 +25,10 @@ export class ApiService {
                 }
             }
         });
+        if (data.basicAuth) {
+            const authToken = btoa(`${data.authLogin}:${data.authPassword}`);
+            headersData['Authorization'] = `Basic ${authToken}`;
+        }
         const headers = new HttpHeaders(headersData);
         const responseType = 'blob';
 

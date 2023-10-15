@@ -23,6 +23,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         responseHeaders: [],
         responseContentType: 'json',
         bodyDataSource: 'fields',
+        authLogin: '',
+        authPassword: '',
         bodyFields: [
             {name: '', value: ''}
         ],

@@ -191,7 +191,9 @@
                                     <label for="fieldBasicAuthLogin">Login:</label>
                                 </div>
                                 <div class="col-span-2">
-                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthLogin" placeholder="Login">
+                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthLogin"
+                                           placeholder="Login"
+                                           [(ngModel)]="data.authLogin">
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
@@ -199,7 +201,9 @@
                                     <label for="fieldBasicAuthPassword">Password:</label>
                                 </div>
                                 <div class="col-span-2">
-                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthPassword" placeholder="Password">
+                                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthPassword"
+                                           placeholder="Password"
+                                           [(ngModel)]="data.authPassword">
                                 </div>
                             </div>
                         </div>

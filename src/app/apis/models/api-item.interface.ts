@@ -6,11 +6,15 @@ export interface ApiItem {
     requestMethod: string;
     requestUrl: string;
     basicAuth: boolean;
+    bodyDataSource: 'fields'|'raw';
+    authLogin: string;
+    authPassword: string;
+
+    bodyFields: RequestDataField[];
+    bodyJson: string;
+    headers: RequestDataField[];
+
     responseBody: string;
     responseHeaders: NameValueStringObject[];
     responseContentType: string;
-    bodyDataSource: 'fields'|'raw';
-    bodyFields: RequestDataField[];
-    headers: RequestDataField[];
-    bodyJson: string;
 }
