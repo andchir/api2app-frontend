@@ -85,7 +85,19 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     saveData(): void {
-        console.log('saveData', this.data);
+        this.loading = true;
+        this.apiService.updateApiRecord(this.data)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    console.log(res);
+                    this.loading = false;
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loading = false;
+                }
+            });
     }
 
     findDataEmptyIndex(optionName: 'headers'|'bodyFields'): number {

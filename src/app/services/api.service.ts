@@ -1,9 +1,9 @@
-import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
-import {RequestDataField} from "../apis/models/request-data-field.interface";
+import { RequestDataField } from "../apis/models/request-data-field.interface";
 
 @Injectable()
 export class ApiService {
@@ -93,6 +93,22 @@ export class ApiService {
         return httpRequest;
     }
 
+    updateApiRecord(apiItem: ApiItem): Observable<any> {
+        const url = '/api_item';
+        apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
+        apiItem.bodyFields.forEach((item) => {
+            delete item.file;
+        });
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        });
+        return this.httpClient.post(url, {body: apiItem}, {headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     getDataFromBlob(blob: Blob, contentType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -114,5 +130,15 @@ export class ApiService {
                 fileReader.readAsText(blob);
             }
         });
+    }
+
+    handleError<T>(error: HttpErrorResponse): Observable<any> {
+        if (error.status && [401, 403].indexOf(error.status) > -1) {
+            window.location.href = '/login';
+        }
+        if (error.message) {
+            return throwError(() => error.message);
+        }
+        return throwError(error.error);
     }
 }
