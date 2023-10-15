@@ -1,10 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
-import { Buffer } from 'buffer/';
 
 import { ApiItem } from '../models/api-item.interface';
 import { ApiService } from '../../services/api.service';
+
+import * as ace from 'ace-builds';
 
 @Component({
     selector: 'app-api-create',
@@ -12,7 +13,9 @@ import { ApiService } from '../../services/api.service';
     styleUrls: ['./api-create.component.css'],
     providers: [ApiService]
 })
-export class ApiCreateComponent implements OnInit, OnDestroy {
+export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
+
+    @ViewChild('editor') editor!: ElementRef<HTMLElement>;
 
     data: ApiItem = {
         name: '',
@@ -47,6 +50,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     timer: any;
     loading = false;
     submitted = false;
+    aceEditor: any;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -57,9 +61,26 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     }
 
+    ngAfterViewInit(): void {
+        this.aceEditorInit();
+    }
+
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
+    }
+
+    aceEditorInit(): void {
+        ace.config.set('fontSize', '16px');
+        ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
+        this.aceEditor = ace.edit(this.editor.nativeElement);
+        this.aceEditor.setTheme('ace/theme/textmate');
+        this.aceEditor.session.setMode('ace/mode/json');
+
+        this.aceEditor.on('change', () => {
+            this.data.responseBody = this.aceEditor.getValue();
+            console.log(this.data.responseBody);
+        });
     }
 
     saveData(): void {
@@ -117,6 +138,12 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     const fileReader = new FileReader();
                     fileReader.onload = (fileLoadedEvent) => {
                         this.data.responseBody = fileLoadedEvent.target?.result as string;
+                        if (this.data.responseContentType !== 'image') {
+                            this.aceEditor.session.setValue(this.data.responseBody);
+                        }
+                    }
+                    if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
+                        this.data.responseContentType = 'image';
                     }
                     if (this.data.responseContentType === 'image') {
                         fileReader.readAsDataURL(res.body);
@@ -127,9 +154,17 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    const errorMessage = err.error?.error?.message;
+                    const fileReader = new FileReader();
+                    fileReader.onload = (fileLoadedEvent) => {
+                        console.log(fileLoadedEvent.target?.result);
+                    };
+                    fileReader.readAsText(err.error);
+
+                    const errorMessage = err?.message || 'Error.';
+                    this.data.responseBody = '{"error": "' + errorMessage + '"}';
+                    this.aceEditor.session.setValue(this.data.responseBody);
+
                     this.isResponseError = true;
-                    this.data.responseBody = '{"error": "' + (err?.message || '') + (errorMessage ? ` - ${errorMessage}` : '') + '"}';
                     this.loading = false;
                     this.submitted = false;
                 }
@@ -138,5 +173,18 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     requestMethodUpdate(method: string): void {
         this.data.requestMethod = method;
+    }
+
+    responseContentTypeUpdate(contentType: string) {
+        this.data.responseContentType = contentType;
+        const responseContentTypes = this.responseContentTypes.filter((item) => {
+            return item !== 'image';
+        });
+        if (responseContentTypes.includes(contentType)) {
+            this.aceEditor.session.setMode(`ace/mode/${this.data.responseContentType}`);
+        }
+        if (this.data.responseContentType === 'image' && !this.data.responseBody.includes('data:image/')) {
+            this.data.responseBody = '';
+        }
     }
 }
