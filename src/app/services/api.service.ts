@@ -46,7 +46,7 @@ export class ApiService {
 
         // Get request body
         const formData = new FormData();
-        let body: any = data.bodyDataSource === 'raw' ? (data.bodyJson || '') : {};
+        let body: any = data.bodyDataSource === 'raw' ? JSON.parse(data.bodyJson || '{}') : {};
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
@@ -62,9 +62,10 @@ export class ApiService {
                 }
             });
         }
+        console.log(body);
 
         const headers = new HttpHeaders(headersData);
-        const requestData = data.sendAsFormData ? formData : {body};
+        const requestData = data.sendAsFormData ? formData : body;
         const responseType = 'blob';
 
         let httpRequest;
