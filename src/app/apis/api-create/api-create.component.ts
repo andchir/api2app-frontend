@@ -35,7 +35,7 @@ export class ApiCreateComponent implements OnInit, AfterViewInit, OnDestroy {
         headers: [
             {name: 'Content-Type', value: 'application/json'},
             {name: 'Accept', value: 'application/json'},
-            {name: 'Access-Control-Allow-Origin', value: '*'},
+            // {name: 'Access-Control-Allow-Origin', value: '*'},
             {name: '', value: ''}
         ],
         bodyJson: ''
