@@ -95,7 +95,23 @@ export class ApiService {
         return httpRequest;
     }
 
-    updateApiRecord(apiItem: ApiItem): Observable<any> {
+    getList(): Observable<{count: number, results: ApiItem[]}> {
+        const url = `${this.BASE_URL}apiitem/`;
+        const authLogin = 'admin';
+        const authPassword = '111111';
+        const authToken = btoa(`${authLogin}:${authPassword}`);
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Basic ${authToken}`
+        });
+        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, {headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    updateApiRecord(apiItem: ApiItem): Observable<ApiItem> {
         const url = `${this.BASE_URL}apiitem/`;
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
         apiItem.bodyFields = apiItem.bodyFields.map((item) => {
@@ -125,7 +141,7 @@ export class ApiService {
             'Accept': 'application/json',
             'Authorization': `Basic ${authToken}`
         });
-        return this.httpClient.post(url, apiItem, {headers})
+        return this.httpClient.post<ApiItem>(url, apiItem, {headers})
             .pipe(
                 catchError(this.handleError)
             );
