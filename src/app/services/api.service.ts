@@ -1,5 +1,7 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from './../../environments/environment';
+
 import { catchError, Observable, throwError } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
@@ -8,7 +10,7 @@ import { RequestDataField } from "../apis/models/request-data-field.interface";
 @Injectable()
 export class ApiService {
 
-    readonly BASE_URL = 'http://127.0.0.1:8000/api/';
+    readonly BASE_URL = environment.apiUrl;
 
     constructor(
         public httpClient: HttpClient
@@ -97,9 +99,7 @@ export class ApiService {
 
     getList(): Observable<{count: number, results: ApiItem[]}> {
         const url = `${this.BASE_URL}apiitem/`;
-        const authLogin = 'admin';
-        const authPassword = '111111';
-        const authToken = btoa(`${authLogin}:${authPassword}`);
+        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -133,9 +133,7 @@ export class ApiService {
             }
             return item;
         });
-        const authLogin = 'admin';
-        const authPassword = '111111';
-        const authToken = btoa(`${authLogin}:${authPassword}`);
+        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             'Accept': 'application/json',
