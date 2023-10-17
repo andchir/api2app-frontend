@@ -8,6 +8,8 @@ import { RequestDataField } from "../apis/models/request-data-field.interface";
 @Injectable()
 export class ApiService {
 
+    readonly BASE_URL = 'http://127.0.0.1:8000/api/';
+
     constructor(
         public httpClient: HttpClient
     ) {
@@ -62,7 +64,6 @@ export class ApiService {
                 }
             });
         }
-        console.log(body);
 
         const headers = new HttpHeaders(headersData);
         const requestData = data.sendAsFormData ? formData : body;
@@ -95,16 +96,36 @@ export class ApiService {
     }
 
     updateApiRecord(apiItem: ApiItem): Observable<any> {
-        const url = '/api_item';
+        const url = `${this.BASE_URL}apiitem/`;
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
-        apiItem.bodyFields.forEach((item) => {
+        apiItem.bodyFields = apiItem.bodyFields.map((item) => {
+            if (typeof item.hidden === 'undefined') {
+                item.hidden = false;
+            }
+            if (typeof item.private === 'undefined') {
+                item.private = false;
+            }
             delete item.file;
+            return item;
         });
+        apiItem.headers = apiItem.headers.map((item) => {
+            if (typeof item.hidden === 'undefined') {
+                item.hidden = false;
+            }
+            if (typeof item.private === 'undefined') {
+                item.private = false;
+            }
+            return item;
+        });
+        const authLogin = 'admin';
+        const authPassword = '111111';
+        const authToken = btoa(`${authLogin}:${authPassword}`);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Authorization': `Basic ${authToken}`
         });
-        return this.httpClient.post(url, {body: apiItem}, {headers})
+        return this.httpClient.post(url, apiItem, {headers})
             .pipe(
                 catchError(this.handleError)
             );
@@ -134,9 +155,9 @@ export class ApiService {
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {
-        if (error.status && [401, 403].indexOf(error.status) > -1) {
-            window.location.href = '/login';
-        }
+        // if (error.status && [401, 403].indexOf(error.status) > -1) {
+        //     window.location.href = '/login';
+        // }
         if (error.message) {
             return throwError(() => error.message);
         }
