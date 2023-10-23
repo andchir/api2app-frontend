@@ -98,7 +98,7 @@ export class ApiService {
     }
 
     getList(): Observable<{count: number, results: ApiItem[]}> {
-        const url = `${this.BASE_URL}api_item/`;
+        const url = `${this.BASE_URL}api_items/`;
         const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export class ApiService {
     }
 
     updateApiRecord(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_item/`;
+        const url = `${this.BASE_URL}api_items/`;
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
         apiItem.bodyFields = apiItem.bodyFields.map((item) => {
             if (typeof item.hidden === 'undefined') {
