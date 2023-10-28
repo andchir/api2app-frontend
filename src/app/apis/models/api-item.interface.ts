@@ -2,6 +2,7 @@ import { RequestDataField } from './request-data-field.interface';
 import { NameValueStringObject } from './name-value-string-object.interface';
 
 export interface ApiItem {
+    id: number;
     name: string;
     requestMethod: string;
     requestUrl: string;

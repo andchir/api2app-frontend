@@ -4,6 +4,7 @@ import {Subject, takeUntil} from 'rxjs';
 
 import {ApiService} from '../../services/api.service';
 import {ApiItem} from '../models/api-item.interface';
+import {Router} from "@angular/router";
 
 @Component({
     selector: 'app-list',
@@ -18,6 +19,7 @@ export class ListComponent implements OnInit {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        protected router: Router,
         protected apiService: ApiService
     ) {
     }
@@ -39,5 +41,14 @@ export class ListComponent implements OnInit {
                     this.loading = false;
                 }
             });
+    }
+
+    editItem(item: ApiItem) {
+        console.log(item);
+        this.router.navigate(['/apis/', item.id]);
+    }
+
+    deleteItem(item: ApiItem) {
+        console.log(item);
     }
 }

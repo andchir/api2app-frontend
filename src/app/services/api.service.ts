@@ -18,6 +18,33 @@ export class ApiService {
 
     }
 
+    static getDefault(): ApiItem {
+        return {
+            id: 0,
+            name: '',
+            requestMethod: 'GET',
+            requestUrl: 'http://httpbin.org/json',
+            basicAuth: false,
+            sendAsFormData: false,
+            responseBody: '',
+            responseHeaders: [],
+            responseContentType: 'json',
+            bodyDataSource: 'fields',
+            authLogin: '',
+            authPassword: '',
+            bodyFields: [
+                {name: '', value: ''}
+            ],
+            headers: [
+                {name: 'Content-Type', value: 'application/json'},
+                {name: 'Accept', value: 'application/json'},
+                // {name: 'Access-Control-Allow-Origin', value: '*'},
+                {name: '', value: ''}
+            ],
+            bodyJson: ''
+        };
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};
@@ -172,6 +199,9 @@ export class ApiService {
         // if (error.status && [401, 403].indexOf(error.status) > -1) {
         //     window.location.href = '/login';
         // }
+        if (error.error) {
+            return throwError(error.error);
+        }
         if (error.message) {
             return throwError(() => error.message);
         }
