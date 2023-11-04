@@ -31,20 +31,20 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     saveData(): void {
         console.log('saveData', this.data);
-        // this.errors = {};
-        // this.loading = true;
-        // this.apiService.updateApiRecord(this.data)
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.loading = false;
-        //             this.router.navigate(['/apis']);
-        //         },
-        //         error: (err) => {
-        //             this.errors = err;
-        //             this.loading = false;
-        //         }
-        //     });
+        this.errors = {};
+        this.loading = true;
+        this.apiService.updateApiRecord(this.data)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.loading = false;
+                    this.router.navigate(['/apis']);
+                },
+                error: (err) => {
+                    this.errors = err;
+                    this.loading = false;
+                }
+            });
     }
 
     deleteErrorMessages(name: string) {
