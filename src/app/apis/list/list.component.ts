@@ -16,6 +16,8 @@ export class ListComponent implements OnInit {
 
     items: ApiItem[] = [];
     loading = false;
+    isDeleteAction = false;
+    selectedId = 0;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -43,12 +45,23 @@ export class ListComponent implements OnInit {
             });
     }
 
-    editItem(item: ApiItem) {
+    editItem(item: ApiItem): void {
         console.log(item);
         this.router.navigate(['/apis/', item.id]);
     }
 
     deleteItem(item: ApiItem) {
-        console.log(item);
+        this.selectedId = item.id;
+        this.isDeleteAction = true;
+    }
+
+    deleteItemConfirmed(): void {
+        console.log('deleteItemConfirmed', this.selectedId);
+        this.closeConfirmModal();
+    }
+
+    closeConfirmModal(): void {
+        this.selectedId = 0;
+        this.isDeleteAction = false;
     }
 }
