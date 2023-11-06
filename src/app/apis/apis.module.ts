@@ -2,22 +2,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { SharedModule } from '../shared.module';
 import { ApisRoutingModule } from './apis-routing.module';
 import { ListComponent } from './list/list.component';
 import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
 
 @NgModule({
-  declarations: [
-    ListComponent,
-    ApiCreateComponent,
-    ApiItemComponent,
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ApisRoutingModule
-  ]
+    declarations: [
+        ListComponent,
+        ApiCreateComponent,
+        ApiItemComponent,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ApisRoutingModule,
+        SharedModule
+    ]
 })
-export class ApisModule { }
+export class ApisModule {
+}

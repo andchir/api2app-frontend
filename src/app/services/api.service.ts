@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angul
 import { Injectable } from '@angular/core';
 import { environment } from './../../environments/environment';
 
-import { catchError, Observable, throwError } from 'rxjs';
+import {catchError, iif, Observable, throwError} from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from "../apis/models/request-data-field.interface";
@@ -157,8 +157,7 @@ export class ApiService {
             );
     }
 
-    updateApiRecord(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/`;
+    updateItem(apiItem: ApiItem): Observable<ApiItem> {
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
         apiItem.bodyFields = apiItem.bodyFields.map((item) => {
             if (typeof item.hidden === 'undefined') {
@@ -179,13 +178,24 @@ export class ApiService {
             }
             return item;
         });
-        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Basic ${authToken}`
-        });
-        return this.httpClient.post<ApiItem>(url, apiItem, {headers})
+        return iif(
+            () => !!apiItem.id,
+            this.putItem(apiItem),
+            this.postItem(apiItem)
+        )
+    }
+
+    postItem(apiItem: ApiItem): Observable<ApiItem> {
+        const url = `${this.BASE_URL}api_items/`;
+        return this.httpClient.post<ApiItem>(url, apiItem, {headers: this.headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    putItem(apiItem: ApiItem): Observable<ApiItem> {
+        const url = `${this.BASE_URL}api_items/${apiItem.id}/`;
+        return this.httpClient.put<ApiItem>(url, apiItem, {headers: this.headers})
             .pipe(
                 catchError(this.handleError)
             );

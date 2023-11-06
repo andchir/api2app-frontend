@@ -15,6 +15,8 @@ import { ApiService } from '../../services/api.service';
 export class ApiCreateComponent implements OnInit, OnDestroy {
 
     errors: {[name: string]: string[]} = {};
+    message: string = '';
+    messageType: 'error'|'success' = 'error';
     loading = false;
 
     itemId: number = 0;
@@ -50,10 +52,10 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     }
 
     saveData(): void {
-        console.log('saveData', this.data);
+        this.message = '';
         this.errors = {};
         this.loading = true;
-        this.apiService.updateApiRecord(this.data)
+        this.apiService.updateItem(this.data)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -62,6 +64,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     this.errors = err;
+                    this.message = 'Please correct the errors.';
+                    this.messageType = 'error';
                     this.loading = false;
                 }
             });
