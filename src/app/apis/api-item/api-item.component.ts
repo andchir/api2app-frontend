@@ -1,10 +1,10 @@
-import {AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 
-import {Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import * as ace from 'ace-builds';
 
-import {ApiService} from '../../services/api.service';
-import {ApiItem} from '../models/api-item.interface';
+import { ApiService } from '../../services/api.service';
+import { ApiItem } from '../models/api-item.interface';
 
 @Component({
     selector: 'app-api-item',
@@ -12,7 +12,7 @@ import {ApiItem} from '../models/api-item.interface';
     styleUrls: ['./api-item.component.css'],
     providers: [ApiService]
 })
-export class ApiItemComponent implements OnInit, AfterViewInit {
+export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() apiItem: ApiItem = ApiService.getDefault();
     @ViewChild('editor') editor!: ElementRef<HTMLElement>;
@@ -45,6 +45,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit(): void {
         this.aceEditorInit();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['apiItem'] && this.aceEditor) {
+            this.aceEditor.session.setValue(this.apiItem.responseBody);
+        }
     }
 
     aceEditorInit(): void {

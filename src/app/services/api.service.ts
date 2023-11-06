@@ -45,6 +45,15 @@ export class ApiService {
         };
     }
 
+    get headers(): HttpHeaders {
+        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Basic ${authToken}`
+        })
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};
@@ -126,13 +135,23 @@ export class ApiService {
 
     getList(): Observable<{count: number, results: ApiItem[]}> {
         const url = `${this.BASE_URL}api_items/`;
-        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
-        const headers = new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Basic ${authToken}`
-        });
-        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, {headers})
+        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, {headers: this.headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    getItem(itemId: number): Observable<ApiItem> {
+        const url = `${this.BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.get<ApiItem>(url, {headers: this.headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    deleteItem(itemId: number): Observable<any> {
+        const url = `${this.BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.delete<any>(url, {headers: this.headers})
             .pipe(
                 catchError(this.handleError)
             );

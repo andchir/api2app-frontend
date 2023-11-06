@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
 
@@ -17,16 +17,36 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     errors: {[name: string]: string[]} = {};
     loading = false;
 
+    itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        protected route: ActivatedRoute,
         protected router: Router,
         protected apiService: ApiService
     ) {}
 
     ngOnInit(): void {
+        this.itemId = Number(this.route.snapshot.paramMap.get('id'));
+        if (this.itemId) {
+            this.getData();
+        }
+    }
 
+    getData(): void {
+        this.apiService.getItem(this.itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.data = res;
+                    this.loading = false;
+                },
+                error: (err) => {
+                    this.errors = err;
+                    this.loading = false;
+                }
+            });
     }
 
     saveData(): void {

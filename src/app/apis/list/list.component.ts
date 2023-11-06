@@ -46,8 +46,7 @@ export class ListComponent implements OnInit {
     }
 
     editItem(item: ApiItem): void {
-        console.log(item);
-        this.router.navigate(['/apis/', item.id]);
+        this.router.navigate(['/apis/edit/', item.id]);
     }
 
     deleteItem(item: ApiItem) {
@@ -56,8 +55,22 @@ export class ListComponent implements OnInit {
     }
 
     deleteItemConfirmed(): void {
-        console.log('deleteItemConfirmed', this.selectedId);
+        if (!this.selectedId) {
+            return;
+        }
+        const itemId = this.selectedId;
         this.closeConfirmModal();
+        this.loading = true;
+        this.apiService.deleteItem(itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.getData();
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
     }
 
     closeConfirmModal(): void {

@@ -15,6 +15,10 @@ const routes: Routes = [
         component: ApiCreateComponent
     },
     {
+        path: 'edit/:id',
+        component: ApiCreateComponent
+    },
+    {
         path: '',
         redirectTo: 'list',
         pathMatch: 'full'
