@@ -6,9 +6,6 @@
 .dropdown {
     position: relative;
 }
-.dropdown .dropdown-menu {
-    z-index: 1;
-}
 .dropdown:hover .dropdown-menu {
     display: block;
 }

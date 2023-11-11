@@ -15,7 +15,8 @@ import { ApiItem } from '../models/api-item.interface';
 export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() apiItem: ApiItem = ApiService.getDefault();
-    @ViewChild('editor') editor!: ElementRef<HTMLElement>;
+    @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
+    @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
     requestMethods = [
         'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'PURGE', 'OPTIONS'
@@ -29,6 +30,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     loading = false;
     submitted = false;
     aceEditor: any;
+    aceEditorRequest: any;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -50,19 +52,28 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['apiItem'] && this.aceEditor) {
             this.aceEditor.session.setValue(this.apiItem.responseBody);
+            this.aceEditorRequest.session.setValue(this.apiItem.bodyJson);
         }
     }
 
     aceEditorInit(): void {
         ace.config.set('fontSize', '16px');
         ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
-        this.aceEditor = ace.edit(this.editor.nativeElement);
+        this.aceEditor = ace.edit(this.editorResponse.nativeElement);
         this.aceEditor.setTheme('ace/theme/textmate');
         this.aceEditor.session.setMode('ace/mode/json');
 
         this.aceEditor.on('change', () => {
             this.apiItem.responseBody = this.aceEditor.getValue();
             // console.log(this.apiItem.responseBody);
+        });
+
+        this.aceEditorRequest = ace.edit(this.editorRequest.nativeElement);
+        this.aceEditorRequest.setTheme('ace/theme/textmate');
+        this.aceEditorRequest.session.setMode('ace/mode/json');
+
+        this.aceEditorRequest.on('change', () => {
+            this.apiItem.bodyJson = this.aceEditorRequest.getValue();
         });
     }
 
