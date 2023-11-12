@@ -24,6 +24,7 @@ export class ApiService {
             name: '',
             requestMethod: 'GET',
             requestUrl: 'http://httpbin.org/json',
+            requestContentType: 'json',
             basicAuth: false,
             sendAsFormData: false,
             responseBody: '',
@@ -41,7 +42,7 @@ export class ApiService {
                 // {name: 'Access-Control-Allow-Origin', value: '*'},
                 {name: '', value: ''}
             ],
-            bodyJson: ''
+            bodyContent: ''
         };
     }
 
@@ -86,7 +87,9 @@ export class ApiService {
 
         // Get request body
         const formData = new FormData();
-        let body: any = data.bodyDataSource === 'raw' ? JSON.parse(data.bodyJson || '{}') : {};
+        let body: any = data.bodyDataSource === 'raw'
+            ? data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent
+            : {};
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
@@ -178,6 +181,9 @@ export class ApiService {
             }
             return item;
         });
+        if (['image', 'audio'].includes(apiItem.responseContentType)) {
+            apiItem.responseBody = '';
+        }
         return iif(
             () => !!apiItem.id,
             this.putItem(apiItem),
@@ -216,7 +222,7 @@ export class ApiService {
                     resolve(fileLoadedEvent.target?.result || '');
                 }
             };
-            if (contentType === 'image') {
+            if (['image', 'audio'].includes(contentType)) {
                 fileReader.readAsDataURL(blob);
             } else {
                 fileReader.readAsText(blob);

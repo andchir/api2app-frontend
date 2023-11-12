@@ -18,11 +18,14 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
+    requestContentTypes = [
+        'json', 'xml'
+    ];
     requestMethods = [
         'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'PURGE', 'OPTIONS'
     ];
     responseContentTypes = [
-        'json', 'xml', 'html', 'text', 'image'
+        'json', 'xml', 'html', 'text', 'image', 'audio'
     ];
     previewSate: 'data'|'headers' = 'data';
     isResponseError = false;
@@ -51,8 +54,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['apiItem'] && this.aceEditor) {
+            this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
+            this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
+
             this.aceEditor.session.setValue(this.apiItem.responseBody);
-            this.aceEditorRequest.session.setValue(this.apiItem.bodyJson);
+            this.aceEditorRequest.session.setValue(this.apiItem.bodyContent);
         }
     }
 
@@ -61,7 +67,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
         this.aceEditor = ace.edit(this.editorResponse.nativeElement);
         this.aceEditor.setTheme('ace/theme/textmate');
-        this.aceEditor.session.setMode('ace/mode/json');
+        this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
 
         this.aceEditor.on('change', () => {
             this.apiItem.responseBody = this.aceEditor.getValue();
@@ -70,10 +76,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.aceEditorRequest = ace.edit(this.editorRequest.nativeElement);
         this.aceEditorRequest.setTheme('ace/theme/textmate');
-        this.aceEditorRequest.session.setMode('ace/mode/json');
+        this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
 
         this.aceEditorRequest.on('change', () => {
-            this.apiItem.bodyJson = this.aceEditorRequest.getValue();
+            this.apiItem.bodyContent = this.aceEditorRequest.getValue();
         });
     }
 
@@ -137,7 +143,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                             } else {
                                 this.apiItem.responseBody = data;
                             }
-                            if (this.apiItem.responseContentType !== 'image') {
+                            if (!['image', 'audio'].includes(this.apiItem.responseContentType)) {
                                 this.aceEditor.session.setValue(this.apiItem.responseBody);
                             }
                         })
@@ -181,7 +187,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     responseContentTypeUpdate(contentType: string) {
         this.apiItem.responseContentType = contentType;
         const responseContentTypes = this.responseContentTypes.filter((item) => {
-            return item !== 'image';
+            return !['image', 'audio'].includes(item);
         });
         if (responseContentTypes.includes(contentType)) {
             this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
@@ -189,6 +195,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         if (this.apiItem.responseContentType === 'image' && !this.apiItem.responseBody.includes('data:image/')) {
             this.apiItem.responseBody = '';
         }
+    }
+
+    requestContentTypeUpdate(contentType: string): void {
+        this.apiItem.requestContentType = contentType;
+        this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
     }
 
     onFileChanged(event: Event, optionName: 'headers'|'bodyFields', index: number): void {

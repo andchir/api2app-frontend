@@ -55,6 +55,23 @@
                             [ngClass]="{'text-blue-600 border-blue-600': apiItem.bodyDataSource === 'raw', 'border-transparent hover:text-gray-600 hover:border-gray-300': apiItem.bodyDataSource !== 'raw'}"
                             (click)="apiItem.bodyDataSource = 'raw'">Raw</button>
                 </li>
+                <li class="mr-2 dropdown" *ngIf="apiItem.bodyDataSource === 'raw'">
+                    <button type="button" class="inline-block p-3 border-b-2 border-transparent border-transparent hover:text-gray-600 hover:border-gray-300">
+                        {{ apiItem.requestContentType }}
+                        <svg class="inline-block fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                    </button>
+                    <div class="dropdown-menu absolute z-10 hidden pt-1">
+                        <ul class="text-gray-700 rounded border border-slate-300 shadow-md">
+                            <li class="" *ngFor="let cntType of requestContentTypes; index as index">
+                                <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
+                                        [ngClass]="{'rounded-b': index === requestContentTypes.length - 1, 'rounded-t': index === 0}"
+                                        (click)="requestContentTypeUpdate(cntType)">
+                                    {{ cntType }}
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
             </ul>
         </div>
 
@@ -215,7 +232,7 @@
                         <ul class="text-gray-700 rounded border border-slate-300 shadow-md">
                             <li class="" *ngFor="let cntType of responseContentTypes; index as index">
                                 <button type="button" class="block w-full bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                                        [ngClass]="{'rounded-b': index === requestMethods.length - 1, 'rounded-t': index === 0}"
+                                        [ngClass]="{'rounded-b': index === responseContentTypes.length - 1, 'rounded-t': index === 0}"
                                         (click)="responseContentTypeUpdate(cntType)">
                                     {{ cntType }}
                                 </button>
@@ -226,7 +243,7 @@
             </ul>
         </div>
 
-        <div class="relative grow min-h-[300px]" [ngClass]="{'hidden': previewSate !== 'data' || apiItem.responseContentType == 'image'}">
+        <div class="relative grow min-h-[300px]" [ngClass]="{'hidden': previewSate !== 'data' || ['image', 'audio'].includes(apiItem.responseContentType)}">
             <div class="app-ace-editor w-full h-full rounded-md border border-gray-200 shadow-sm" #editorResponse
                  [ngClass]="{'border-red-600': isResponseError, 'opacity-50': loading && submitted}"></div>
             <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2" *ngIf="loading && submitted">
@@ -236,7 +253,11 @@
         </div>
 
         <div *ngIf="previewSate == 'data' && apiItem.responseContentType === 'image'">
-            <img class="border border-slate-300 shadow-md" [src]="apiItem.responseBody" width="300" alt="" *ngIf="apiItem.responseBody; else templateEmptyImage">
+            <img class="border border-slate-300 shadow-md" [src]="apiItem.responseBody" width="300" alt="Image" *ngIf="apiItem.responseBody; else templateEmptyImage">
+        </div>
+
+        <div *ngIf="previewSate == 'data' && apiItem.responseContentType === 'audio'">
+            <audio class="block w-full border border-slate-300 shadow-md" [src]="apiItem.responseBody" *ngIf="apiItem.responseBody; else templateEmptyImage" controls></audio>
         </div>
 
         <div *ngIf="previewSate == 'headers'">

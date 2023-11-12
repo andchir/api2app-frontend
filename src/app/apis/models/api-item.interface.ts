@@ -6,6 +6,7 @@ export interface ApiItem {
     name: string;
     requestMethod: string;
     requestUrl: string;
+    requestContentType: string;
     basicAuth: boolean;
     bodyDataSource: 'fields'|'raw';
     authLogin: string;
@@ -13,7 +14,7 @@ export interface ApiItem {
     sendAsFormData: boolean;
 
     bodyFields: RequestDataField[];
-    bodyJson: string;
+    bodyContent: string;
     headers: RequestDataField[];
 
     responseBody: string;
