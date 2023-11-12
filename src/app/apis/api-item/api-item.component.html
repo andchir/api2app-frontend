@@ -284,6 +284,8 @@
             Error.
         </div>
         <div *ngIf="!isResponseError">
+            <i class="bi bi-image mr-2" *ngIf="apiItem.responseContentType === 'image'"></i>
+            <i class="bi bi-music-note-beamed mr-2" *ngIf="apiItem.responseContentType === 'audio'"></i>
             Empty.
         </div>
     </div>

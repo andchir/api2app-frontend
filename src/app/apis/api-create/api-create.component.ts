@@ -18,6 +18,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     message: string = '';
     messageType: 'error'|'success' = 'error';
     loading = false;
+    submitted = false;
 
     itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
@@ -55,11 +56,13 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         this.message = '';
         this.errors = {};
         this.loading = true;
+        this.submitted = true;
         this.apiService.updateItem(this.data)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.loading = false;
+                    this.submitted = false;
                     this.router.navigate(['/apis']);
                 },
                 error: (err) => {
@@ -67,6 +70,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     this.message = 'Please correct the errors.';
                     this.messageType = 'error';
                     this.loading = false;
+                    this.submitted = false;
                 }
             });
     }
