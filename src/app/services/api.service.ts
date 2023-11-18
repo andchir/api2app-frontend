@@ -160,6 +160,14 @@ export class ApiService {
             );
     }
 
+    patch(itemId: number, data: any): Observable<ApiItem> {
+        const url = `${this.BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.patch<ApiItem>(url, data, {headers: this.headers})
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     updateItem(apiItem: ApiItem): Observable<ApiItem> {
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
         apiItem.bodyFields = apiItem.bodyFields.map((item) => {

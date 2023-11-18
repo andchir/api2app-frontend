@@ -66,4 +66,4 @@
 
 <app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
 
-<app-share-api [(isActive)]="isShareActive"></app-share-api>
+<app-share-api [(isActive)]="isShareActive" [item]="selectedItem" (confirmed)="makeSharedConfirmed($event)"></app-share-api>

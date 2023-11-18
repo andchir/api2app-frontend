@@ -20,4 +20,7 @@ export interface ApiItem {
     responseBody: string;
     responseHeaders: NameValueStringObject[];
     responseContentType: string;
+
+    uuid?: string;
+    shared?: boolean;
 }

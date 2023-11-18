@@ -19,6 +19,7 @@ export class ListComponent implements OnInit {
     isShareActive = false;
     isDeleteAction = false;
     selectedId = 0;
+    selectedItem: ApiItem;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -39,11 +40,23 @@ export class ListComponent implements OnInit {
                 next: (res) => {
                     this.items = res.results;
                     this.loading = false;
+                    this.onDataLoaded();
                 },
                 error: (err) => {
                     this.loading = false;
                 }
             });
+    }
+
+    onDataLoaded(): void {
+        if (this.selectedId && this.selectedItem) {
+            const index = this.items.findIndex((item) => {
+                return item.id === this.selectedId;
+            });
+            if (index > -1) {
+                Object.assign(this.selectedItem, this.items[index]);
+            }
+        }
     }
 
     editItem(item: ApiItem): void {
@@ -55,8 +68,14 @@ export class ListComponent implements OnInit {
         this.isDeleteAction = true;
     }
 
-    shareItem(item: ApiItem): void {
-        this.selectedId = item.id;
+    shareItem(apiItem: ApiItem): void {
+        this.selectedId = apiItem.id;
+        const index = this.items.findIndex((item) => {
+            return item.id === apiItem.id;
+        });
+        this.selectedItem = index > -1
+            ? Object.assign({}, this.items[index])
+            : null;
         this.isShareActive = true;
     }
 
@@ -69,6 +88,22 @@ export class ListComponent implements OnInit {
         this.closeConfirmModal();
         this.loading = true;
         this.apiService.deleteItem(itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.getData();
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
+    }
+
+    makeSharedConfirmed(shared: boolean): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.apiService.patch(this.selectedId, {shared})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

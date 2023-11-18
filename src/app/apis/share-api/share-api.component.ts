@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ApiItem } from "../models/api-item.interface";
 
 @Component({
     selector: 'app-share-api',
@@ -7,9 +8,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class ShareApiComponent implements OnInit {
 
+    @Input() item: ApiItem;
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();
-    @Output() confirmed = new EventEmitter<void>();
+    @Output() confirmed = new EventEmitter<boolean>();
 
     ngOnInit(): void {
 
@@ -23,5 +25,9 @@ export class ShareApiComponent implements OnInit {
     confirm(): void {
         this.confirmed.emit();
         this.closeModal();
+    }
+
+    makeSharedToggle(): void {
+        this.confirmed.emit(!this.item.shared);
     }
 }
