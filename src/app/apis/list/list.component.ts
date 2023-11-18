@@ -16,6 +16,7 @@ export class ListComponent implements OnInit {
 
     items: ApiItem[] = [];
     loading = false;
+    isShareActive = false;
     isDeleteAction = false;
     selectedId = 0;
     destroyed$: Subject<void> = new Subject();
@@ -54,10 +55,16 @@ export class ListComponent implements OnInit {
         this.isDeleteAction = true;
     }
 
+    shareItem(item: ApiItem): void {
+        this.selectedId = item.id;
+        this.isShareActive = true;
+    }
+
     deleteItemConfirmed(): void {
         if (!this.selectedId) {
             return;
         }
+        this.isDeleteAction = false;
         const itemId = this.selectedId;
         this.closeConfirmModal();
         this.loading = true;

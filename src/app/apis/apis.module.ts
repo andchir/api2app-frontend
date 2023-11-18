@@ -7,12 +7,14 @@ import { ApisRoutingModule } from './apis-routing.module';
 import { ListComponent } from './list/list.component';
 import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
+import { ShareApiComponent } from "./share-api/share-api.component";
 
 @NgModule({
     declarations: [
         ListComponent,
         ApiCreateComponent,
         ApiItemComponent,
+        ShareApiComponent
     ],
     imports: [
         CommonModule,

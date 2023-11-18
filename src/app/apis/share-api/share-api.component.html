@@ -1,0 +1,37 @@
+<div class="bg-gray-900 bg-opacity-50 dark:bg-opacity-80 fixed inset-0 z-40" [ngClass]="{'hidden': !isActive}"></div>
+
+<div tabindex="-1" class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex"
+     [ngClass]="{'hidden': !isActive}">
+    <div class="relative w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
+                    (click)="closeModal()">
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                </svg>
+                <span class="sr-only">Close modal</span>
+            </button>
+            <div class="p-6 text-center">
+                <div class="mb-2 text-gray-400">
+                    <i class="bi bi-share-fill text-7xl"></i>
+                </div>
+                <h3 class="mb-5 text-lg font-normal text-gray-500">
+                    Share API
+                </h3>
+                <div class="mb-6">
+                    <input type="text" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           value="http://example.com/share/fdfdjfdf-dfdfdf"
+                           readonly>
+                </div>
+                <button type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2">
+                    Copy URL
+                </button>
+
+                <button type="button" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                        (click)="closeModal()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
