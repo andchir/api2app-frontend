@@ -26,7 +26,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
 
-            <div class="bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
+            <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
                 <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
                     {{ item.name }}
                 </div>
@@ -57,6 +57,9 @@
                         </span>
                     </button>
                 </div>
+                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-green-400 shadow-md absolute right-2 -top-2" *ngIf="item.shared">
+                    Shared
+                </span>
             </div>
 
         </div>
@@ -66,4 +69,7 @@
 
 <app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
 
-<app-share-api [(isActive)]="isShareActive" [item]="selectedItem" (confirmed)="makeSharedConfirmed($event)"></app-share-api>
+<app-share-api [loading]="loading"
+               [(isActive)]="isShareActive"
+               [item]="selectedItem"
+               (confirmed)="makeSharedConfirmed($event)"></app-share-api>

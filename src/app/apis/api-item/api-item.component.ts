@@ -15,6 +15,7 @@ import { ApiItem } from '../models/api-item.interface';
 export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() apiItem: ApiItem = ApiService.getDefault();
+    @Input() authorized = true;
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 

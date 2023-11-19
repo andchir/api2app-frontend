@@ -8,6 +8,7 @@ import { ApiItem } from "../models/api-item.interface";
 })
 export class ShareApiComponent implements OnInit {
 
+    @Input() loading = false;
     @Input() item: ApiItem;
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();

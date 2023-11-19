@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ListComponent } from './list/list.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { ApiCreateComponent } from './api-create/api-create.component';
+import { ApiSharedComponent } from './api-shared/api-shared.component';
 
 const routes: Routes = [
     {
@@ -17,6 +18,10 @@ const routes: Routes = [
     {
         path: 'edit/:id',
         component: ApiCreateComponent
+    },
+    {
+        path: 'shared/:uuid',
+        component: ApiSharedComponent
     },
     {
         path: '',

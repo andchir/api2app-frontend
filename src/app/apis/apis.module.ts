@@ -8,12 +8,14 @@ import { ListComponent } from './list/list.component';
 import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
 import { ShareApiComponent } from "./share-api/share-api.component";
+import { ApiSharedComponent } from './api-shared/api-shared.component';
 
 @NgModule({
     declarations: [
         ListComponent,
         ApiCreateComponent,
         ApiItemComponent,
+        ApiSharedComponent,
         ShareApiComponent
     ],
     imports: [
