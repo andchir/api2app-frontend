@@ -29,7 +29,6 @@ export class AuthLogoutComponent implements OnInit {
         setTimeout(() => {
             this.authService.userSubject.next(null);
         }, 1);
-        const nextRoute = this.tokenStorageService.getNextRoute();
-        this.router.navigate(nextRoute ? [nextRoute] : ['/']);
+        this.authService.navigateBack();
     }
 }

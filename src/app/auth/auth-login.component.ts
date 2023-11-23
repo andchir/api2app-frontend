@@ -99,8 +99,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     }
 
     private navigateBack(): void {
-        const nextRoute = this.tokenStorageService.getNextRoute();
-        this.router.navigate(nextRoute ? [nextRoute] : ['/']);
+        this.authService.navigateBack();
     }
 
     ngOnDestroy(): void {

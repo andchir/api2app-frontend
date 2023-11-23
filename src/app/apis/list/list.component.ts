@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../models/api-item.interface';
-import { TokenStorageService } from '../../services/token-storage.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-list',
@@ -25,7 +25,7 @@ export class ListComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private tokenStorageService: TokenStorageService,
+        private authService: AuthService,
         private apiService: ApiService
     ) {
     }
@@ -126,6 +126,6 @@ export class ListComponent implements OnInit {
     }
 
     navigateToLoginPage(): void {
-        this.tokenStorageService.navigateLogin();
+        this.authService.navigateLogin();
     }
 }

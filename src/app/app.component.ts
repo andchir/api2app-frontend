@@ -37,6 +37,6 @@ export class AppComponent implements OnInit {
         if (event) {
             event.preventDefault();
         }
-        this.tokenStorageService.navigateLogout();
+        this.authService.navigateLogout();
     }
 }
