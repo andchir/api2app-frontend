@@ -81,6 +81,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     this.user = res;
                     this.tokenStorageService.saveUser(this.user);
+                    this.authService.userSubject.next(this.user);
                     this.submitted = false;
                     this.navigateBack();
                 },

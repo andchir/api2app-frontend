@@ -31,7 +31,7 @@
                     <div class="ml-4 flex items-center md:ml-6">
                         <button type="button"
                                 class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                *ngIf="isLoggedIn">
+                                *ngIf="userSubject$ | async">
                             <span class="absolute -inset-1.5"></span>
                             <span class="sr-only">View notifications</span>
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -42,7 +42,7 @@
                         </button>
 
                         <!-- Profile dropdown -->
-                        <div class="dropdown relative ml-3" *ngIf="isLoggedIn">
+                        <div class="dropdown relative ml-3" *ngIf="userSubject$ | async">
                             <div>
                                 <button type="button"
                                         class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"

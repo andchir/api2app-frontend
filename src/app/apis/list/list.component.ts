@@ -45,7 +45,6 @@ export class ListComponent implements OnInit {
                     this.onDataLoaded();
                 },
                 error: (err) => {
-                    console.log(err);
                     this.loading = false;
                     if (err === 'forbidden') {
                         this.navigateToLoginPage();
@@ -100,7 +99,6 @@ export class ListComponent implements OnInit {
                     this.getData();
                 },
                 error: (err) => {
-                    console.log(err);
                     this.loading = false;
                 }
             });
@@ -117,7 +115,6 @@ export class ListComponent implements OnInit {
                     this.getData();
                 },
                 error: (err) => {
-                    console.log(err);
                     this.loading = false;
                 }
             });

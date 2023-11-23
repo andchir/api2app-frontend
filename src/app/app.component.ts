@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+import {BehaviorSubject, Observable, of} from 'rxjs';
 import { initFlowbite } from 'flowbite';
 import { TokenStorageService } from "./services/token-storage.service";
+import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
 
 @Component({
@@ -11,12 +13,15 @@ import { User } from './apis/models/user.interface';
 })
 export class AppComponent implements OnInit {
 
-    user: User;
+    userSubject$: BehaviorSubject<User>;
     isLoggedIn = false;
 
     constructor(
-        private tokenStorageService: TokenStorageService
-    ) { }
+        private tokenStorageService: TokenStorageService,
+        private authService: AuthService
+    ) {
+        this.userSubject$ = this.authService.userSubject;
+    }
 
     ngOnInit(): void {
         initFlowbite();
@@ -24,7 +29,7 @@ export class AppComponent implements OnInit {
         this.isLoggedIn = !!this.tokenStorageService.getToken();
 
         if (this.isLoggedIn) {
-            this.user = this.tokenStorageService.getUser();
+            this.userSubject$.next(this.tokenStorageService.getUser());
         }
     }
 

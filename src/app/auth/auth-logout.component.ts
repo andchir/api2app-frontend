@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 
 import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
     selector: 'app-auth-logout',
@@ -14,6 +15,7 @@ export class AuthLogoutComponent implements OnInit {
 
     constructor(
         private router: Router,
+        private authService: AuthService,
         private tokenStorageService: TokenStorageService
     ) {
     }
@@ -24,6 +26,9 @@ export class AuthLogoutComponent implements OnInit {
     }
 
     private navigateBack(): void {
+        setTimeout(() => {
+            this.authService.userSubject.next(null);
+        }, 1);
         const nextRoute = this.tokenStorageService.getNextRoute();
         this.router.navigate(nextRoute ? [nextRoute] : ['/']);
     }

@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { User } from "../apis/models/user.interface";
 
 const BASE_URL = environment.apiUrl;
 
@@ -10,6 +11,8 @@ const BASE_URL = environment.apiUrl;
     providedIn: 'root'
 })
 export class AuthService {
+
+    public userSubject: BehaviorSubject<User> = new BehaviorSubject<User>(null);
 
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -36,8 +39,8 @@ export class AuthService {
         }, this.httpOptions);
     }
 
-    refreshToken(token: string) {
-        return this.httpClient.post(`${BASE_URL}token/refresh/`, {
+    refreshToken(token: string): Observable<{access: string}> {
+        return this.httpClient.post<{access: string}>(`${BASE_URL}token/refresh/`, {
             refresh: token
         }, this.httpOptions);
     }
