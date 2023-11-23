@@ -1,11 +1,11 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment } from './../../environments/environment';
+import { environment } from '../../environments/environment';
 
 import {catchError, iif, Observable, throwError} from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
-import { RequestDataField } from "../apis/models/request-data-field.interface";
+import { RequestDataField } from '../apis/models/request-data-field.interface';
 
 @Injectable()
 export class ApiService {

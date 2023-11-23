@@ -3,8 +3,18 @@ import {RouterModule, Routes} from '@angular/router';
 
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
+import {AuthLoginComponent} from './auth/auth-login.component';
 
 const routes: Routes = [
+    {
+        path: 'auth',
+        redirectTo: 'auth/login',
+        pathMatch: 'full'
+    },
+    {
+        path: 'auth/login',
+        component: AuthLoginComponent
+    },
     {
         path: 'dashboard',
         component: DashboardComponent

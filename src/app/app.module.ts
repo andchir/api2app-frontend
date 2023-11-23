@@ -6,12 +6,14 @@ import {HttpClientModule} from '@angular/common/http';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
+import {AuthLoginComponent} from './auth/auth-login.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 
 @NgModule({
     declarations: [
         AppComponent,
+        AuthLoginComponent,
         DashboardComponent,
         NotFoundComponent
     ],
