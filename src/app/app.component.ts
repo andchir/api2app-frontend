@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { initFlowbite } from 'flowbite';
 import { TokenStorageService } from "./services/token-storage.service";
+import { User } from './apis/models/user.interface';
 
 @Component({
     selector: 'app-root',
@@ -10,9 +11,8 @@ import { TokenStorageService } from "./services/token-storage.service";
 })
 export class AppComponent implements OnInit {
 
-    private groups: string[] = [];
+    user: User;
     isLoggedIn = false;
-    username?: string;
 
     constructor(
         private tokenStorageService: TokenStorageService
@@ -24,17 +24,14 @@ export class AppComponent implements OnInit {
         this.isLoggedIn = !!this.tokenStorageService.getToken();
 
         if (this.isLoggedIn) {
-            const user = this.tokenStorageService.getUser();
-            this.groups = user?.groups;
-            this.username = user?.username;
+            this.user = this.tokenStorageService.getUser();
         }
-
-        console.log('isLoggedIn', this.isLoggedIn);
     }
 
-    logout(): void {
-        this.tokenStorageService.signOut();
-        this.isLoggedIn = false;
-        this.groups = [];
+    navigateLogout(event?: MouseEvent) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.tokenStorageService.navigateLogout();
     }
 }

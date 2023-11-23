@@ -38,7 +38,7 @@ export class AuthService {
 
     refreshToken(token: string) {
         return this.httpClient.post(`${BASE_URL}token/refresh/`, {
-            refreshToken: token
+            refresh: token
         }, this.httpOptions);
     }
 }

@@ -9,6 +9,8 @@ import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
 import { ShareApiComponent } from "./share-api/share-api.component";
 import { ApiSharedComponent } from './api-shared/api-shared.component';
+import { ApiService } from '../services/api.service';
+import { authInterceptorProviders } from '../helpers/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -24,7 +26,8 @@ import { ApiSharedComponent } from './api-shared/api-shared.component';
         ReactiveFormsModule,
         ApisRoutingModule,
         SharedModule
-    ]
+    ],
+    providers: [authInterceptorProviders, ApiService]
 })
 export class ApisModule {
 }

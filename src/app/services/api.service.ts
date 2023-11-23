@@ -2,15 +2,19 @@ import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angul
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
-import {catchError, iif, Observable, throwError} from 'rxjs';
+import { catchError, iif, Observable, throwError } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
 
+const BASE_URL = environment.apiUrl;
+
 @Injectable()
 export class ApiService {
 
-    readonly BASE_URL = environment.apiUrl;
+    httpOptions = {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    };
 
     constructor(
         public httpClient: HttpClient
@@ -44,22 +48,6 @@ export class ApiService {
             ],
             bodyContent: ''
         };
-    }
-
-    get headersWithAuth(): HttpHeaders {
-        const authToken = btoa(`${environment.apiUser}:${environment.apiPassword}`);
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Basic ${authToken}`
-        })
-    }
-
-    get headers(): HttpHeaders {
-        return new HttpHeaders({
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-        })
     }
 
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
@@ -144,40 +132,40 @@ export class ApiService {
     }
 
     getList(): Observable<{count: number, results: ApiItem[]}> {
-        const url = `${this.BASE_URL}api_items/`;
-        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/`;
+        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     getItem(itemId: number): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.get<ApiItem>(url, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.get<ApiItem>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     getItemByUuid(itemUuid: string): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/${itemUuid}/shared/`;
-        return this.httpClient.get<ApiItem>(url, {headers: this.headers})
+        const url = `${BASE_URL}api_items/${itemUuid}/shared/`;
+        return this.httpClient.get<ApiItem>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     deleteItem(itemId: number): Observable<any> {
-        const url = `${this.BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.delete<any>(url, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.delete<any>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     patch(itemId: number, data: any): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.patch<ApiItem>(url, data, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/${itemId}/`;
+        return this.httpClient.patch<ApiItem>(url, data, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -215,16 +203,16 @@ export class ApiService {
     }
 
     postItem(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/`;
-        return this.httpClient.post<ApiItem>(url, apiItem, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/`;
+        return this.httpClient.post<ApiItem>(url, apiItem, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
     putItem(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${this.BASE_URL}api_items/${apiItem.id}/`;
-        return this.httpClient.put<ApiItem>(url, apiItem, {headers: this.headersWithAuth})
+        const url = `${BASE_URL}api_items/${apiItem.id}/`;
+        return this.httpClient.put<ApiItem>(url, apiItem, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -254,9 +242,6 @@ export class ApiService {
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {
-        // if (error.status && [401, 403].indexOf(error.status) > -1) {
-        //     window.location.href = '/login';
-        // }
         if (error.error) {
             return throwError(error.error);
         }

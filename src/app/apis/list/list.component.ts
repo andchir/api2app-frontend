@@ -1,16 +1,17 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
-import {Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
-import {ApiService} from '../../services/api.service';
-import {ApiItem} from '../models/api-item.interface';
-import {Router} from "@angular/router";
+import { ApiService } from '../../services/api.service';
+import { ApiItem } from '../models/api-item.interface';
+import { TokenStorageService } from '../../services/token-storage.service';
 
 @Component({
     selector: 'app-list',
     templateUrl: './list.component.html',
     styleUrls: ['./list.component.css'],
-    providers: [ApiService]
+    providers: []
 })
 export class ListComponent implements OnInit {
 
@@ -23,8 +24,9 @@ export class ListComponent implements OnInit {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
-        protected router: Router,
-        protected apiService: ApiService
+        private router: Router,
+        private tokenStorageService: TokenStorageService,
+        private apiService: ApiService
     ) {
     }
 
@@ -43,7 +45,11 @@ export class ListComponent implements OnInit {
                     this.onDataLoaded();
                 },
                 error: (err) => {
+                    console.log(err);
                     this.loading = false;
+                    if (err === 'forbidden') {
+                        this.navigateToLoginPage();
+                    }
                 }
             });
     }
@@ -90,10 +96,11 @@ export class ListComponent implements OnInit {
         this.apiService.deleteItem(itemId)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
-                next: (res) => {
+                next: () => {
                     this.getData();
                 },
                 error: (err) => {
+                    console.log(err);
                     this.loading = false;
                 }
             });
@@ -106,10 +113,11 @@ export class ListComponent implements OnInit {
         this.apiService.patch(this.selectedId, {shared})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
-                next: (res) => {
+                next: () => {
                     this.getData();
                 },
                 error: (err) => {
+                    console.log(err);
                     this.loading = false;
                 }
             });
@@ -118,5 +126,9 @@ export class ListComponent implements OnInit {
     closeConfirmModal(): void {
         this.selectedId = 0;
         this.isDeleteAction = false;
+    }
+
+    navigateToLoginPage(): void {
+        this.tokenStorageService.navigateLogin();
     }
 }

@@ -7,6 +7,7 @@ import {HttpClientModule} from '@angular/common/http';
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
+import {AuthLogoutComponent} from './auth/auth-logout.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 
@@ -17,6 +18,7 @@ import {SharedModule} from "./shared.module";
     declarations: [
         AppComponent,
         AuthLoginComponent,
+        AuthLogoutComponent,
         DashboardComponent,
         NotFoundComponent
     ],

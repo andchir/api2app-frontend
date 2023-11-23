@@ -4,6 +4,7 @@ import {RouterModule, Routes} from '@angular/router';
 import {NotFoundComponent} from './not-found/not-found.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
+import {AuthLogoutComponent} from './auth/auth-logout.component';
 
 const routes: Routes = [
     {
@@ -14,6 +15,10 @@ const routes: Routes = [
     {
         path: 'auth/login',
         component: AuthLoginComponent
+    },
+    {
+        path: 'auth/logout',
+        component: AuthLogoutComponent
     },
     {
         path: 'dashboard',

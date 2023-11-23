@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { User } from '../apis/models/user.interface';
 
 const TOKEN_KEY = 'auth-token';
 const REFRESHTOKEN_KEY = 'auth-refreshtoken';
 const USER_KEY = 'auth-user';
+const NEXT_ROUTE_KEY = 'next-route';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenStorageService {
-    constructor() { }
+    constructor(
+        private router: Router
+    ) { }
 
     signOut(): void {
-        window.sessionStorage.clear();
+        window.sessionStorage.removeItem(TOKEN_KEY);
+        window.sessionStorage.removeItem(REFRESHTOKEN_KEY);
+        window.sessionStorage.removeItem(USER_KEY);
     }
 
     public saveToken(token: string): void {
@@ -50,5 +56,29 @@ export class TokenStorageService {
             return JSON.parse(user);
         }
         return null;
+    }
+
+    public saveNextRoute(route: string): void {
+        window.sessionStorage.setItem(NEXT_ROUTE_KEY, route);
+    }
+
+    public getNextRoute(): string | null {
+        return window.sessionStorage.getItem(NEXT_ROUTE_KEY);
+    }
+
+    navigateLogin(): void {
+        if (this.router.url.includes('/auth')) {
+            return;
+        }
+        this.saveNextRoute(this.router.url);
+        this.router.navigate(['/auth', 'login']);
+    }
+
+    navigateLogout(): void {
+        if (this.router.url.includes('/auth')) {
+            return;
+        }
+        this.saveNextRoute(this.router.url);
+        this.router.navigate(['/auth', 'logout']);
     }
 }

@@ -1,7 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import {Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
@@ -31,17 +32,18 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     });
 
     constructor(
+        private router: Router,
         private formBuilder: FormBuilder,
         private authService: AuthService,
-        private tokenStorage: TokenStorageService,
+        private tokenStorageService: TokenStorageService,
         private userService: UserService
     ) {
     }
 
     ngOnInit(): void {
-        if (this.tokenStorage.getToken()) {
+        if (this.tokenStorageService.getToken()) {
             this.isLoggedIn = true;
-            this.user = this.tokenStorage.getUser();
+            this.user = this.tokenStorageService.getUser();
             this.groups = this.user?.groups || [];
             this.getCurrentUser();
         }
@@ -58,15 +60,15 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    this.tokenStorage.saveToken(res.access);
-                    this.tokenStorage.saveRefreshToken(res.refresh);
+                    this.tokenStorageService.saveToken(res.access);
+                    this.tokenStorageService.saveRefreshToken(res.refresh);
                     this.isLoggedIn = true;
                     this.getCurrentUser();
                 },
                 error: (err) => {
                     this.messageType = 'error';
                     this.message = err?.error?.detail;
-                    this.isLoggedIn = true;
+                    this.isLoggedIn = false;
                     this.submitted = false;
                 }
             });
@@ -78,9 +80,9 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.user = res;
-                    this.tokenStorage.saveUser(this.user);
+                    this.tokenStorageService.saveUser(this.user);
                     this.submitted = false;
-                    this.navigateHomePage();
+                    this.navigateBack();
                 },
                 error: (err) => {
                     this.messageType = 'error';
@@ -95,8 +97,9 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
         window.location.reload();
     }
 
-    private navigateHomePage(): void {
-
+    private navigateBack(): void {
+        const nextRoute = this.tokenStorageService.getNextRoute();
+        this.router.navigate(nextRoute ? [nextRoute] : ['/']);
     }
 
     ngOnDestroy(): void {

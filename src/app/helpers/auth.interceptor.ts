@@ -16,48 +16,50 @@ export class AuthInterceptor implements HttpInterceptor {
     private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
     constructor(
-        private tokenService: TokenStorageService,
+        private tokenStorageService: TokenStorageService,
         private authService: AuthService
     ) { }
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
         let authReq = req;
-        const token = this.tokenService.getToken();
-        if (token != null) {
+        const token = this.tokenStorageService.getToken();
+        if (token != null && !authReq.url.includes('/token/')) {
             authReq = this.addTokenHeader(req, token);
         }
-        return next.handle(authReq).pipe(catchError(error => {
-            if (error instanceof HttpErrorResponse && !authReq.url.includes('/token/') && [401, 403].includes(error.status)) {
-                return this.handle401Error(authReq, next);
-            }
-            return throwError(error);
-        }));
+        return next.handle(authReq)
+            .pipe(catchError(error => {
+                if (error instanceof HttpErrorResponse && !authReq.url.includes('/token/') && [401, 403].includes(error.status)) {
+                    return this.handle401Error(authReq, next);
+                }
+                return throwError(() => new Error('forbidden'));
+            }));
     }
 
     private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-        if (!this.isRefreshing) {
+        const token = this.tokenStorageService.getRefreshToken();
+
+        if (!this.isRefreshing && token) {
             this.isRefreshing = true;
             this.refreshTokenSubject.next(null);
 
-            const token = this.tokenService.getRefreshToken();
+            return this.authService.refreshToken(token).pipe(
+                switchMap((token: any) => {
+                    this.isRefreshing = false;
 
-            if (token) {
-                return this.authService.refreshToken(token).pipe(
-                    switchMap((token: any) => {
-                        this.isRefreshing = false;
+                    this.tokenStorageService.saveToken(token.accessToken);
+                    this.refreshTokenSubject.next(token.accessToken);
 
-                        this.tokenService.saveToken(token.accessToken);
-                        this.refreshTokenSubject.next(token.accessToken);
-
-                        return next.handle(this.addTokenHeader(request, token.accessToken));
-                    }),
-                    catchError((err) => {
-                        this.isRefreshing = false;
-                        this.tokenService.signOut();
-                        return throwError(err);
-                    })
-                );
-            }
+                    return next.handle(this.addTokenHeader(request, token.accessToken));
+                }),
+                catchError((err) => {
+                    this.isRefreshing = false;
+                    this.tokenStorageService.signOut();
+                    return throwError(err);
+                })
+            );
+        }
+        if (!token) {
+            return throwError(() => new Error('forbidden'));
         }
 
         return this.refreshTokenSubject.pipe(
