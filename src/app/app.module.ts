@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 
@@ -9,6 +9,9 @@ import {AppComponent} from './app.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {NotFoundComponent} from './not-found/not-found.component';
+
+import {authInterceptorProviders} from './helpers/auth.interceptor';
+import {SharedModule} from "./shared.module";
 
 @NgModule({
     declarations: [
@@ -20,12 +23,14 @@ import {NotFoundComponent} from './not-found/not-found.component';
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        FormsModule
+        FormsModule,
+        SharedModule
     ],
-    providers: [],
+    providers: [authInterceptorProviders],
     bootstrap: [AppComponent]
 })
 export class AppModule {
