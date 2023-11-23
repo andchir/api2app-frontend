@@ -45,7 +45,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
             this.isLoggedIn = true;
             this.user = this.tokenStorageService.getUser();
             this.groups = this.user?.groups || [];
-            this.getCurrentUser();
+            this.getCurrentUser(false);
         }
     }
 
@@ -74,7 +74,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
             });
     }
 
-    getCurrentUser(): void {
+    getCurrentUser(navigateBack = true): void {
         this.userService.getCurrentUser()
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -83,7 +83,9 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
                     this.tokenStorageService.saveUser(this.user);
                     this.authService.userSubject.next(this.user);
                     this.submitted = false;
-                    this.navigateBack();
+                    if (navigateBack) {
+                        this.navigateBack();
+                    }
                 },
                 error: (err) => {
                     this.messageType = 'error';

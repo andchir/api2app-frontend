@@ -5,6 +5,7 @@ import {NotFoundComponent} from './not-found/not-found.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
 import {AuthLogoutComponent} from './auth/auth-logout.component';
+import {SharedAppsComponent} from './apps-shared/shared-apps.component';
 
 const routes: Routes = [
     {
@@ -23,6 +24,10 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent
+    },
+    {
+        path: 'shared',
+        component: SharedAppsComponent
     },
     {
         path: 'apis',
