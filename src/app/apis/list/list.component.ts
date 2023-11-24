@@ -23,6 +23,9 @@ export class ListComponent implements OnInit {
     selectedItem: ApiItem;
     destroyed$: Subject<void> = new Subject();
 
+    readonly STATUS_PRIVATE = 'private'
+    readonly STATUS_SHARED = 'shared'
+
     constructor(
         private router: Router,
         private authService: AuthService,
@@ -108,7 +111,7 @@ export class ListComponent implements OnInit {
         if (!this.selectedId) {
             return;
         }
-        this.apiService.patch(this.selectedId, {shared})
+        this.apiService.patch(this.selectedId, {status: shared ? this.STATUS_SHARED : this.STATUS_PRIVATE})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: () => {

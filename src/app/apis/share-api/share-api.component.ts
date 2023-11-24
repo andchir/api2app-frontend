@@ -14,6 +14,9 @@ export class ShareApiComponent implements OnInit {
     @Output() isActiveChange = new EventEmitter<boolean>();
     @Output() confirmed = new EventEmitter<boolean>();
 
+    readonly STATUS_PRIVATE = 'private'
+    readonly STATUS_SHARED = 'shared'
+
     ngOnInit(): void {
 
     }
@@ -29,6 +32,6 @@ export class ShareApiComponent implements OnInit {
     }
 
     makeSharedToggle(): void {
-        this.confirmed.emit(!this.item.shared);
+        this.confirmed.emit(this.item.status !== this.STATUS_SHARED);
     }
 }
