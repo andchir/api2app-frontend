@@ -1,25 +1,23 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
-import { catchError, iif, Observable, throwError } from 'rxjs';
+import { iif, Observable } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
+import { DataService } from './data.service.abstract';
 
 const BASE_URL = environment.apiUrl;
 
 @Injectable()
-export class ApiService {
-
-    httpOptions = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    };
+export class ApiService extends DataService<ApiItem> {
 
     constructor(
-        public httpClient: HttpClient
+        httpClient: HttpClient
     ) {
-
+        super(httpClient);
+        this.requestUrl = `${BASE_URL}api_items`;
     }
 
     static getDefault(): ApiItem {
@@ -133,55 +131,7 @@ export class ApiService {
         return httpRequest;
     }
 
-    getList(): Observable<{count: number, results: ApiItem[]}> {
-        const url = `${BASE_URL}api_items/`;
-        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    getListShared(): Observable<{count: number, results: ApiItem[]}> {
-        const url = `${BASE_URL}api_items/list_shared/`;
-        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    getItem(itemId: number): Observable<ApiItem> {
-        const url = `${BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.get<ApiItem>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    getItemByUuid(itemUuid: string): Observable<ApiItem> {
-        const url = `${BASE_URL}api_items/${itemUuid}/shared/`;
-        return this.httpClient.get<ApiItem>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    deleteItem(itemId: number): Observable<any> {
-        const url = `${BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.delete<any>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    patch(itemId: number, data: any): Observable<ApiItem> {
-        const url = `${BASE_URL}api_items/${itemId}/`;
-        return this.httpClient.patch<ApiItem>(url, data, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    updateItem(apiItem: ApiItem): Observable<ApiItem> {
+    override updateItem(apiItem: ApiItem): Observable<ApiItem> {
         apiItem = JSON.parse(JSON.stringify(apiItem));// Clone object
         apiItem.bodyFields = apiItem.bodyFields.map((item) => {
             if (typeof item.hidden === 'undefined') {
@@ -212,22 +162,6 @@ export class ApiService {
         )
     }
 
-    postItem(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${BASE_URL}api_items/`;
-        return this.httpClient.post<ApiItem>(url, apiItem, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
-    putItem(apiItem: ApiItem): Observable<ApiItem> {
-        const url = `${BASE_URL}api_items/${apiItem.id}/`;
-        return this.httpClient.put<ApiItem>(url, apiItem, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
-    }
-
     getDataFromBlob(blob: Blob, contentType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
@@ -249,15 +183,5 @@ export class ApiService {
                 fileReader.readAsText(blob);
             }
         });
-    }
-
-    handleError<T>(error: HttpErrorResponse): Observable<any> {
-        if (error.error) {
-            return throwError(error.error);
-        }
-        if (error.message) {
-            return throwError(() => error.message);
-        }
-        return throwError(error.error);
     }
 }

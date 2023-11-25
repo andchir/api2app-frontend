@@ -21,16 +21,16 @@ export class ListSharedComponent extends ListAbstractComponent<ApiItem> implemen
     constructor(
         router: Router,
         authService: AuthService,
-        apiService: ApiService
+        dataService: ApiService
     ) {
-        super(router, authService, apiService);
+        super(router, authService, dataService);
     }
 
     getData(shared = true): void {
         this.loading = true;
         iif(() => shared,
-            this.apiService.getListShared(),
-            this.apiService.getList()
+            this.dataService.getListShared(),
+            this.dataService.getList()
         )
             .pipe(takeUntil(this.destroyed$))
             .subscribe({

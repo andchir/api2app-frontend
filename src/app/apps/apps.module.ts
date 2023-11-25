@@ -7,6 +7,7 @@ import { ListComponent } from './list/list.component';
 import { ApiService } from '../services/api.service';
 import { ApplicationsListSharedComponent } from './list/shared/shared.component';
 import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
+import {SharedModule} from "../shared.module";
 
 @NgModule({
     declarations: [
@@ -16,7 +17,8 @@ import { ApplicationsListPersonalComponent } from './list/personal/personal.comp
     ],
     imports: [
         CommonModule,
-        AppsRoutingModule
+        AppsRoutingModule,
+        SharedModule
     ],
     providers: [authInterceptorProviders, ApiService]
 })

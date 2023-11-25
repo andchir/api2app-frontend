@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BehaviorSubject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
 import { TokenStorageService } from '../../../services/token-storage.service';
-import { User } from '../../models/user.interface';
 import { ListSharedComponent} from '../shared/shared.component';
 
 @Component({
@@ -18,17 +17,13 @@ import { ListSharedComponent} from '../shared/shared.component';
 })
 export class ListPersonalComponent extends ListSharedComponent implements OnInit, OnDestroy {
 
-    userSubject$: BehaviorSubject<User>;
-    isDeleteAction = false;
-
     constructor(
         router: Router,
         authService: AuthService,
-        apiService: ApiService,
+        dataService: ApiService,
         private tokenStorageService: TokenStorageService
     ) {
-        super(router, authService, apiService);
-        this.userSubject$ = this.authService.userSubject;
+        super(router, authService, dataService);
     }
 
     override ngOnInit(): void {
@@ -59,12 +54,12 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         const itemId = this.selectedId;
         this.closeConfirmModal();
         this.loading = true;
-        this.apiService.deleteItem(itemId)
+        this.dataService.deleteItem(itemId)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: () => {
                     this.selectionClear();
-                    this.getData();
+                    this.getData(false);
                 },
                 error: (err) => {
                     this.loading = false;
@@ -76,11 +71,11 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         if (!this.selectedId) {
             return;
         }
-        this.apiService.patch(this.selectedId, {shared})
+        this.dataService.patch(this.selectedId, {shared})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: () => {
-                    this.getData();
+                    this.getData(false);
                 },
                 error: (err) => {
                     this.loading = false;

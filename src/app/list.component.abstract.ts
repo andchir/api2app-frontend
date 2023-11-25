@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject } from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
 
 import { AuthService } from './services/auth.service';
-import { ApiService } from './services/api.service';
+import { User } from './apis/models/user.interface';
+import { DataService } from './services/data.service.abstract';
 
 @Component({
     template: ''
@@ -15,13 +16,17 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     loading = false;
     selectedId = 0;
     selectedItem: T;
+    isDeleteAction = false;
+    userSubject$: BehaviorSubject<User>;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
         protected router: Router,
         protected authService: AuthService,
-        protected apiService: ApiService
-    ) {}
+        protected dataService: DataService<T>
+    ) {
+        this.userSubject$ = this.authService.userSubject;
+    }
 
     ngOnInit(): void {
         this.getData();

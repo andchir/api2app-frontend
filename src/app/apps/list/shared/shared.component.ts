@@ -18,9 +18,9 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
     constructor(
         router: Router,
         authService: AuthService,
-        apiService: ApiService
+        dataService: ApiService
     ) {
-        super(router, authService, apiService);
+        super(router, authService, dataService);
     }
 
     getData(shared = true): void {

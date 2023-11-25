@@ -5,6 +5,7 @@ import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
+import {takeUntil} from "rxjs";
 
 @Component({
     selector: 'app-apps-list-personal',
@@ -18,9 +19,9 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     constructor(
         router: Router,
         authService: AuthService,
-        apiService: ApiService
+        dataService: ApiService
     ) {
-        super(router, authService, apiService);
+        super(router, authService, dataService);
     }
 
     getData(shared = true): void {
@@ -41,6 +42,27 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
         //             this.loading = false;
         //         }
         //     });
+    }
+
+    deleteItemConfirmed(): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.isDeleteAction = false;
+        const itemId = this.selectedId;
+        // this.closeConfirmModal();
+        this.loading = true;
+        this.dataService.deleteItem(itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.selectionClear();
+                    this.getData(false);
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
     }
 
     viewItem(item: ApplicationItem): void {
