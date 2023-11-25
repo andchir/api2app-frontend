@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../../../services/api.service';
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
     selector: 'app-apps-list-shared',
@@ -18,7 +18,7 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
     constructor(
         router: Router,
         authService: AuthService,
-        dataService: ApiService
+        dataService: ApplicationService
     ) {
         super(router, authService, dataService);
     }

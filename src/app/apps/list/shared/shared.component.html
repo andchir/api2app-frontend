@@ -4,7 +4,7 @@
     <span class="sr-only">Loading...</span>
 </div>
 
-<div class="px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="px-3 sm:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3" *ngIf="items.length > 0; else templateEmpty">
 
     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
         <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
@@ -16,7 +16,7 @@
         <div class="flex gap-2">
 
             <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
-                (click)="viewItem(item)">
+                    (click)="viewItem(item)">
                 <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                     View
                 </span>
@@ -34,3 +34,17 @@
     </div>
 
 </div>
+
+<ng-template #templateEmpty>
+    <div class="px-3 sm:px-0">
+        <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert" *ngIf="!loading">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">Info</span>
+            <div>
+                Empty.
+            </div>
+        </div>
+    </div>
+</ng-template>

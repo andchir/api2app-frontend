@@ -3,4 +3,5 @@ export interface ApplicationItem {
     name: string;
     uuid: string;
     shared: boolean;
+    gridColumns: number;
 }

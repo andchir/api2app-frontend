@@ -22,7 +22,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             id: 0,
             name: '',
             uuid: '',
-            shared: false
+            shared: false,
+            gridColumns: 3
         };
     }
 }

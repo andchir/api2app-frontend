@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../../../services/api.service';
+import { takeUntil } from 'rxjs';
+
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
-import {takeUntil} from "rxjs";
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
     selector: 'app-apps-list-personal',
@@ -19,7 +20,7 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     constructor(
         router: Router,
         authService: AuthService,
-        dataService: ApiService
+        dataService: ApplicationService
     ) {
         super(router, authService, dataService);
     }
@@ -45,24 +46,24 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     }
 
     deleteItemConfirmed(): void {
-        if (!this.selectedId) {
-            return;
-        }
-        this.isDeleteAction = false;
-        const itemId = this.selectedId;
-        // this.closeConfirmModal();
-        this.loading = true;
-        this.dataService.deleteItem(itemId)
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: () => {
-                    this.selectionClear();
-                    this.getData(false);
-                },
-                error: (err) => {
-                    this.loading = false;
-                }
-            });
+        // if (!this.selectedId) {
+        //     return;
+        // }
+        // this.isDeleteAction = false;
+        // const itemId = this.selectedId;
+        // // this.closeConfirmModal();
+        // this.loading = true;
+        // this.dataService.deleteItem(itemId)
+        //     .pipe(takeUntil(this.destroyed$))
+        //     .subscribe({
+        //         next: () => {
+        //             this.selectionClear();
+        //             this.getData(false);
+        //         },
+        //         error: (err) => {
+        //             this.loading = false;
+        //         }
+        //     });
     }
 
     viewItem(item: ApplicationItem): void {
