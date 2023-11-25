@@ -92,8 +92,4 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         this.selectionClear();
         this.isDeleteAction = false;
     }
-
-    navigateToLoginPage(): void {
-        this.authService.navigateLogin();
-    }
 }

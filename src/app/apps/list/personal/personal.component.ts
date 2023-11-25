@@ -7,11 +7,11 @@ import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
 
 @Component({
-    selector: 'app-apps-list-shared',
-    templateUrl: './shared.component.html',
+    selector: 'app-apps-list-personal',
+    templateUrl: './personal.component.html',
     styleUrls: []
 })
-export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
+export class ApplicationsListPersonalComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
     isShareActive = false;
 

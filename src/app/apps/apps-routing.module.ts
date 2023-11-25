@@ -3,7 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { ListComponent } from './list/list.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
-import { ListSharedComponent } from './list/shared/shared.component';
+import { ApplicationsListSharedComponent } from './list/shared/shared.component';
+import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
 
 const routes: Routes = [
     {
@@ -17,12 +18,12 @@ const routes: Routes = [
             },
             {
                 path: 'shared',
-                component: ListSharedComponent
+                component: ApplicationsListSharedComponent
             },
-            // {
-            //     path: 'personal',
-            //     component: ListPersonalComponent
-            // }
+            {
+                path: 'personal',
+                component: ApplicationsListPersonalComponent
+            }
         ]
     },
     {

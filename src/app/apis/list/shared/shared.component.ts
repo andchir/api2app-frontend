@@ -6,6 +6,7 @@ import {iif, Subject, takeUntil} from 'rxjs';
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
+import { ListAbstractComponent } from '../../../list.component.abstract';
 
 @Component({
     selector: 'app-apis-list-shared',
@@ -13,23 +14,16 @@ import { AuthService } from '../../../services/auth.service';
     styleUrls: [],
     providers: []
 })
-export class ListSharedComponent implements OnInit, OnDestroy {
+export class ListSharedComponent extends ListAbstractComponent<ApiItem> implements OnInit, OnDestroy {
 
-    items: ApiItem[] = [];
-    loading = false;
     isShareActive = false;
-    selectedId = 0;
-    selectedItem: ApiItem;
-    destroyed$: Subject<void> = new Subject();
 
     constructor(
-        protected router: Router,
-        protected authService: AuthService,
-        protected apiService: ApiService
-    ) {}
-
-    ngOnInit(): void {
-        this.getData();
+        router: Router,
+        authService: AuthService,
+        apiService: ApiService
+    ) {
+        super(router, authService, apiService);
     }
 
     getData(shared = true): void {
@@ -46,49 +40,24 @@ export class ListSharedComponent implements OnInit, OnDestroy {
                     this.onDataLoaded();
                 },
                 error: (err) => {
-                    console.log(err);
                     this.loading = false;
+                    if (err === 'forbidden') {
+                        this.navigateToLoginPage();
+                    }
                 }
             });
-    }
-
-    onDataLoaded(): void {
-        if (this.selectedId && this.selectedItem) {
-            const index = this.items.findIndex((item) => {
-                return item.id === this.selectedId;
-            });
-            if (index > -1) {
-                Object.assign(this.selectedItem, this.items[index]);
-            }
-        }
     }
 
     viewItem(item: ApiItem): void {
         this.router.navigate(['/apis/shared/', item.uuid]);
     }
 
-    selectItem(targetItem: ApiItem): void {
-        this.selectedId = targetItem.id;
-        const index = this.items.findIndex((item) => {
-            return item.id === targetItem.id;
-        });
-        this.selectedItem = index > -1
-            ? Object.assign({}, this.items[index])
-            : null;
-    }
-
-    selectionClear(): void {
-        this.selectedId = 0;
-        this.selectedItem = null;
-    }
-
-    viewShareUrl(item: ApiItem): void {
+    viewSharedUrl(item: ApiItem): void {
         this.selectItem(item);
         this.isShareActive = true;
     }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
+    navigateToLoginPage(): void {
+        this.authService.navigateLogin();
     }
 }

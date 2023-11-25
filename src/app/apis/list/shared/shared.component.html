@@ -4,7 +4,7 @@
     <span class="sr-only">Loading...</span>
 </div>
 
-<div class="px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="px-3 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
         <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
@@ -24,7 +24,7 @@
 
             <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
                     title="Get Shared URL"
-                    (click)="viewShareUrl(item)">
+                    (click)="viewSharedUrl(item)">
                 <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                     <i class="bi bi-share-fill"></i>
                 </span>
