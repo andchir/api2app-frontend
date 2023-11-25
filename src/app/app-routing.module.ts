@@ -26,10 +26,6 @@ const routes: Routes = [
         component: DashboardComponent
     },
     {
-        path: 'shared',
-        component: SharedAppsComponent
-    },
-    {
         path: 'apis',
         loadChildren: () => import('./apis/apis.module').then(m => m.ApisModule),
     },

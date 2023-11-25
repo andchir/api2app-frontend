@@ -13,25 +13,33 @@ export class ShareApiComponent implements OnInit {
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();
     @Output() confirmed = new EventEmitter<boolean>();
-
-    readonly STATUS_PRIVATE = 'private'
-    readonly STATUS_SHARED = 'shared'
+    message = '';
 
     ngOnInit(): void {
 
     }
 
     closeModal(): void {
+        this.message = '';
         this.isActive = false;
         this.isActiveChange.emit(this.isActive);
     }
 
     confirm(): void {
+        this.message = '';
         this.confirmed.emit();
         this.closeModal();
     }
 
     makeSharedToggle(): void {
-        this.confirmed.emit(this.item.status !== this.STATUS_SHARED);
+        this.message = '';
+        this.confirmed.emit(!this.item.shared);
+    }
+
+    copyUrl(input: HTMLInputElement): void {
+        input.select();
+        input.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(input.value);
+        this.message = 'The URL has been successfully copied to the clipboard.';
     }
 }

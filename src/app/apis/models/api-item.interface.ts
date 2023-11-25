@@ -22,5 +22,5 @@ export interface ApiItem {
     responseContentType: string;
 
     uuid?: string;
-    status?: string;
+    shared?: boolean;
 }

@@ -139,6 +139,14 @@ export class ApiService {
             );
     }
 
+    getListShared(): Observable<{count: number, results: ApiItem[]}> {
+        const url = `${BASE_URL}api_items/list_shared/`;
+        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     getItem(itemId: number): Observable<ApiItem> {
         const url = `${BASE_URL}api_items/${itemId}/`;
         return this.httpClient.get<ApiItem>(url, this.httpOptions)

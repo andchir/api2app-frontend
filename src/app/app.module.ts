@@ -9,7 +9,6 @@ import {AppComponent} from './app.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
 import {AuthLogoutComponent} from './auth/auth-logout.component';
 import {DashboardComponent} from './dashboard/dashboard.component';
-import {SharedAppsComponent} from './apps-shared/shared-apps.component';
 import {NotFoundComponent} from './not-found/not-found.component';
 
 import {authInterceptorProviders} from './helpers/auth.interceptor';
@@ -21,7 +20,6 @@ import {SharedModule} from './shared.module';
         AuthLoginComponent,
         AuthLogoutComponent,
         DashboardComponent,
-        SharedAppsComponent,
         NotFoundComponent
     ],
     imports: [
