@@ -1,5 +1,5 @@
 
-<div class="flex flex-wrap justify-center gap-4 mb-5" *ngIf="userSubject$ | async">
+<div class="flex flex-wrap justify-center gap-4 mb-6" *ngIf="userSubject$ | async">
     <a class="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
        routerLink="../create"
        routerLinkActive="active">Add new API</a>
@@ -25,26 +25,26 @@
         </div>
         <div class="flex gap-2">
             <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
-                    (click)="editItem(item)">
-                        <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                            Edit
-                        </span>
+                (click)="viewItem(item)">
+                <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                    Edit
+                </span>
             </button>
 
             <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-                    title="Share"
-                    (click)="shareItem(item)">
-                        <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                            <i class="bi bi-share-fill"></i>
-                        </span>
+                title="Share"
+                (click)="shareItem(item)">
+                <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                    <i class="bi bi-share-fill"></i>
+                </span>
             </button>
 
             <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
-                    title="Delete"
-                    (click)="deleteItem(item)">
-                        <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                            <i class="bi bi-trash3"></i>
-                        </span>
+                title="Delete"
+                (click)="deleteItem(item)">
+                <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                    <i class="bi bi-trash3"></i>
+                </span>
             </button>
         </div>
         <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-green-400 shadow-md absolute right-0 -top-2"
@@ -66,31 +66,9 @@
     <div class="px-3">
         <div class="grid gap-6 mb-6 md:grid-cols-4">
             <div class="md:col-start-2 md:col-span-2">
-                <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
 
-                    <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-                        </svg>
-                        <span class="sr-only">Info</span>
-                        <div>
-                            You are not authorized. Please login or register.
-                        </div>
-                    </div>
-                    <div>
-                        <a class="inline-block text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-6 py-3 text-center mr-2"
-                           [routerLink]="['/auth', 'login']">
-                            <i class="bi bi-box-arrow-in-right mr-2"></i>
-                            Log in
-                        </a>
-                        <a class="inline-block text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-6 py-3 text-center"
-                           [routerLink]="['/auth', 'register']">
-                            <i class="bi bi-people-fill mr-2"></i>
-                            Register
-                        </a>
-                    </div>
+                <app-not-authorized></app-not-authorized>
 
-                </div>
             </div>
         </div>
     </div>

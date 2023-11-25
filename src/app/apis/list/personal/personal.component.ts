@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
 import { TokenStorageService } from '../../../services/token-storage.service';
-import {User} from "../../models/user.interface";
+import { User } from '../../models/user.interface';
+import { ListSharedComponent} from '../shared/shared.component';
 
 @Component({
     selector: 'app-apis-list-personal',
@@ -15,79 +16,38 @@ import {User} from "../../models/user.interface";
     styleUrls: [],
     providers: []
 })
-export class ListPersonalComponent implements OnInit {
+export class ListPersonalComponent extends ListSharedComponent implements OnInit, OnDestroy {
 
     userSubject$: BehaviorSubject<User>;
-    items: ApiItem[] = [];
-    loading = false;
-    isShareActive = false;
     isDeleteAction = false;
-    selectedId = 0;
-    selectedItem: ApiItem;
-    destroyed$: Subject<void> = new Subject();
 
     constructor(
-        private router: Router,
-        private authService: AuthService,
-        private tokenStorageService: TokenStorageService,
-        private apiService: ApiService
+        router: Router,
+        authService: AuthService,
+        apiService: ApiService,
+        private tokenStorageService: TokenStorageService
     ) {
+        super(router, authService, apiService);
         this.userSubject$ = this.authService.userSubject;
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         if (this.userSubject$.getValue()) {
-            this.getData();
+            this.getData(false);
         }
     }
 
-    getData(): void {
-        this.loading = true;
-        this.apiService.getList()
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: (res) => {
-                    this.items = res.results;
-                    this.loading = false;
-                    this.onDataLoaded();
-                },
-                error: (err) => {
-                    this.loading = false;
-                    if (err === 'forbidden') {
-                        this.navigateToLoginPage();
-                    }
-                }
-            });
-    }
-
-    onDataLoaded(): void {
-        if (this.selectedId && this.selectedItem) {
-            const index = this.items.findIndex((item) => {
-                return item.id === this.selectedId;
-            });
-            if (index > -1) {
-                Object.assign(this.selectedItem, this.items[index]);
-            }
-        }
-    }
-
-    editItem(item: ApiItem): void {
+    override viewItem(item: ApiItem): void {
         this.router.navigate(['/apis/edit/', item.id]);
     }
 
-    deleteItem(item: ApiItem) {
-        this.selectedId = item.id;
+    deleteItem(apiItem: ApiItem) {
+        this.selectItem(apiItem);
         this.isDeleteAction = true;
     }
 
     shareItem(apiItem: ApiItem): void {
-        this.selectedId = apiItem.id;
-        const index = this.items.findIndex((item) => {
-            return item.id === apiItem.id;
-        });
-        this.selectedItem = index > -1
-            ? Object.assign({}, this.items[index])
-            : null;
+        this.selectItem(apiItem);
         this.isShareActive = true;
     }
 
@@ -103,6 +63,7 @@ export class ListPersonalComponent implements OnInit {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: () => {
+                    this.selectionClear();
                     this.getData();
                 },
                 error: (err) => {
@@ -128,7 +89,7 @@ export class ListPersonalComponent implements OnInit {
     }
 
     closeConfirmModal(): void {
-        this.selectedId = 0;
+        this.selectionClear();
         this.isDeleteAction = false;
     }
 
