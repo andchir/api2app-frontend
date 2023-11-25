@@ -26,6 +26,8 @@ export class ApiService {
         return {
             id: 0,
             name: '',
+            uuid: '',
+            shared: false,
             requestMethod: 'GET',
             requestUrl: 'http://httpbin.org/json',
             requestContentType: 'json',

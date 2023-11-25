@@ -3,15 +3,17 @@ import { CommonModule } from '@angular/common';
 
 import { AppsRoutingModule } from './apps-routing.module';
 import { ListComponent } from './list/list.component';
-
+import { ListSharedComponent } from './list/shared/shared.component';
 
 @NgModule({
-  declarations: [
-    ListComponent
-  ],
-  imports: [
-    CommonModule,
-    AppsRoutingModule
-  ]
+    declarations: [
+        ListComponent,
+        ListSharedComponent
+    ],
+    imports: [
+        CommonModule,
+        AppsRoutingModule
+    ]
 })
-export class AppsModule { }
+export class AppsModule {
+}

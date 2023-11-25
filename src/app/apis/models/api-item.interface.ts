@@ -21,6 +21,6 @@ export interface ApiItem {
     responseHeaders: NameValueStringObject[];
     responseContentType: string;
 
-    uuid?: string;
-    shared?: boolean;
+    uuid: string;
+    shared: boolean;
 }
