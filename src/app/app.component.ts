@@ -15,6 +15,7 @@ export class AppComponent implements OnInit {
 
     userSubject$: BehaviorSubject<User>;
     isLoggedIn = false;
+    isMobileMenuActive = false;
 
     constructor(
         private tokenStorageService: TokenStorageService,
@@ -38,5 +39,12 @@ export class AppComponent implements OnInit {
             event.preventDefault();
         }
         this.authService.navigateLogout();
+    }
+
+    mobileMenuToggle(event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+        }
+        this.isMobileMenuActive = !this.isMobileMenuActive;
     }
 }
