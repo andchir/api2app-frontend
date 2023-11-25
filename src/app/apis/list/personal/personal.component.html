@@ -1,5 +1,5 @@
 
-<div class="flex flex-wrap justify-center gap-4 mb-5">
+<div class="flex flex-wrap justify-center gap-4 mb-5" *ngIf="userSubject$ | async">
     <a class="inline-block rounded bg-indigo-600 px-8 py-3 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none focus:ring active:bg-indigo-500"
        routerLink="../create"
        routerLinkActive="active">Add new API</a>
@@ -14,7 +14,7 @@
     <span class="sr-only">Loading...</span>
 </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3" *ngIf="userSubject$ | async; else templateNotLoggedIn">
 
     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
         <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
@@ -48,9 +48,9 @@
             </button>
         </div>
         <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-green-400 shadow-md absolute right-0 -top-2"
-              *ngIf="item.shared">
-                    Shared
-                </span>
+            *ngIf="item.shared">
+            Shared
+        </span>
     </div>
 
 </div>
@@ -61,3 +61,37 @@
                [(isActive)]="isShareActive"
                [item]="selectedItem"
                (confirmed)="makeSharedConfirmed($event)"></app-share-api>
+
+<ng-template #templateNotLoggedIn>
+    <div class="px-3">
+        <div class="grid gap-6 mb-6 md:grid-cols-4">
+            <div class="md:col-start-2 md:col-span-2">
+                <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
+
+                    <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50" role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only">Info</span>
+                        <div>
+                            You are not authorized. Please login or register.
+                        </div>
+                    </div>
+                    <div>
+                        <a class="inline-block text-white bg-gradient-to-br from-green-400 to-blue-600 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-6 py-3 text-center mr-2"
+                           [routerLink]="['/auth', 'login']">
+                            <i class="bi bi-box-arrow-in-right mr-2"></i>
+                            Log in
+                        </a>
+                        <a class="inline-block text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-6 py-3 text-center"
+                           [routerLink]="['/auth', 'register']">
+                            <i class="bi bi-people-fill mr-2"></i>
+                            Register
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</ng-template>

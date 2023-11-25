@@ -8,7 +8,7 @@ import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
-    selector: 'app-list-shared',
+    selector: 'app-apis-list-shared',
     templateUrl: './shared.component.html',
     styleUrls: [],
     providers: []
@@ -17,10 +17,6 @@ export class ListSharedComponent implements OnInit {
 
     items: ApiItem[] = [];
     loading = false;
-    isShareActive = false;
-    isDeleteAction = false;
-    selectedId = 0;
-    selectedItem: ApiItem;
     destroyed$: Subject<void> = new Subject();
 
     constructor(

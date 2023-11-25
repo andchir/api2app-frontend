@@ -1,21 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
+import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
 
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
-import {ListSharedComponent} from "../shared/shared.component";
+import { TokenStorageService } from '../../../services/token-storage.service';
+import {User} from "../../models/user.interface";
 
 @Component({
-    selector: 'app-list-personal',
+    selector: 'app-apis-list-personal',
     templateUrl: './personal.component.html',
     styleUrls: [],
     providers: []
 })
 export class ListPersonalComponent implements OnInit {
 
+    userSubject$: BehaviorSubject<User>;
     items: ApiItem[] = [];
     loading = false;
     isShareActive = false;
@@ -27,12 +29,16 @@ export class ListPersonalComponent implements OnInit {
     constructor(
         private router: Router,
         private authService: AuthService,
+        private tokenStorageService: TokenStorageService,
         private apiService: ApiService
     ) {
+        this.userSubject$ = this.authService.userSubject;
     }
 
     ngOnInit(): void {
-        this.getData();
+        if (this.userSubject$.getValue()) {
+            this.getData();
+        }
     }
 
     getData(): void {
