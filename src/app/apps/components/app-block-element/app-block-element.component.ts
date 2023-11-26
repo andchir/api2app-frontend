@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import { AppBlockElementType } from '../../models/app-block.interface';
+import { AppBlockElementOption, AppBlockElementType, AppOptions } from '../../models/app-block.interface';
 
 @Component({
     selector: 'app-block-element',
@@ -10,11 +10,13 @@ import { AppBlockElementType } from '../../models/app-block.interface';
 })
 export class AppBlockElementComponent implements OnInit, OnChanges {
 
-    @Input() index: number;
+    @Input() index: number = 0;
     @Input() editorMode = true;
     @Input() type: AppBlockElementType;
+    @Input() options: any = {};
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
+    @Output() delete: EventEmitter<void> = new EventEmitter<void>();
 
     inputTypes: {name: string, title: string}[] = [
         {name: 'text-header', title: 'Text Header'},
@@ -53,5 +55,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             event.stopPropagation();
         }
         this.showOptions.emit();
+    }
+
+    elementDeleteInit(): void {
+        this.delete.emit();
     }
 }

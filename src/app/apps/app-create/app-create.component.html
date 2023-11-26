@@ -91,10 +91,12 @@
                 <div class="block" *ngFor="let block of blocks; index as index">
 
                     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
-                        <ng-container *ngFor="let element of block.elements">
-                            <app-block-element [(type)]="element.type"
-                                               (typeChange)="onElementUpdate(element)"
-                                               (showOptions)="showOptions(element)"></app-block-element>
+                        <ng-container *ngFor="let element of block.elements; index as ind">
+                            <app-block-element [type]="element.type"
+                                               [options]="element.options"
+                                               (typeChange)="onElementUpdate(element, $event)"
+                                               (showOptions)="showOptions(element)"
+                                               (delete)="deleteElement(block, ind)"></app-block-element>
                         </ng-container>
                         <button type="button" class="block w-full p-1 bg-white border border-gray-200 rounded-lg shadow-inner hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
                                 title="Add Element"
@@ -121,9 +123,8 @@
 
 <app-alert [message]="message" [type]="messageType"></app-alert>
 
-<app-drawer [(isActive)]="isOptionsActive" title="Element Options">
-    <ng-container *ngFor="let option of currentOptions">
-        <app-block-element [type]="option.type" [editorMode]="false"></app-block-element>
+<app-drawer [(isActive)]="isOptionsActive" title="Element Options" *ngIf="selectedElement">
+    <ng-container *ngFor="let field of selectedElement.fields">
+        <app-block-element [type]="field.type" [options]="field" [editorMode]="false"></app-block-element>
     </ng-container>
 </app-drawer>
-
