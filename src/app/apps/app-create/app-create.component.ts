@@ -6,7 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
-import { AppBlock } from '../models/app-block.interface';
+import {AppBlock, AppBlockElement} from '../models/app-block.interface';
 
 @Component({
     selector: 'app-application-create',
@@ -25,9 +25,9 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     itemId: number = 0;
     data: ApplicationItem = ApplicationService.getDefault();
     blocks: AppBlock[] = [
-        {id: 0, type: 'empty'},
-        {id: 0, type: 'empty'},
-        {id: 0, type: 'empty'}
+        {id: 0, elements: []},
+        {id: 0, elements: []},
+        {id: 0, elements: []}
     ];
     destroyed$: Subject<void> = new Subject();
 
@@ -46,15 +46,25 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     findEmptyBlocks(): AppBlock[] {
         return this.blocks.filter((item) => {
-            return item.type === 'empty';
+            return item.elements.length === 0;
+        });
+    }
+
+    findEmptyElements(block: AppBlock): AppBlockElement[] {
+        return block.elements.filter((item) => {
+            return ['empty', 'select-type'].includes(item.type);
         });
     }
 
     deleteEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
+        // console.log('deleteEmptyBlockByGrid', gridColumns, emptyItems.length);
+        if (emptyItems.length <= gridColumns) {
+            return;
+        }
         const index = this.blocks.findIndex((item) => {
-            return item.type === 'empty';
+            return item.elements.length === 0;
         });
         this.blocks.splice(index, 1);
 
@@ -67,8 +77,11 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     addEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
-        this.blocks.push({id: 0, type: 'empty'});
-
+        // console.log('addEmptyBlockByGrid', gridColumns, emptyItems.length);
+        if (emptyItems.length >= gridColumns) {
+            return;
+        }
+        this.blocks.push({id: 0, elements: []});
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();
@@ -78,18 +91,45 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     setValue(key: string, value: number): void {
         this.data[key] = value;
         if (key === 'gridColumns') {
-            let emptyItems = this.findEmptyBlocks();
-            if (emptyItems.length > value) {
-                this.deleteEmptyBlockByGrid();
-            }
-            if (emptyItems.length < value) {
-                this.addEmptyBlockByGrid();
-            }
+            this.deleteEmptyElements();
+            this.deleteEmptyBlockByGrid();
+            this.addEmptyBlockByGrid();
         }
     }
 
-    createBlockInit(index: number): void {
-        console.log('createBlockInit', index);
+    blockAddElement(block: AppBlock): void {
+        const emptyElements = this.findEmptyElements(block);
+        if (emptyElements.length > 0) {
+            return;
+        }
+        block.elements.push({
+            id: 0,
+            type: 'select-type'
+        });
+        this.deleteEmptyElements(block);
+        this.deleteEmptyBlockByGrid();
+        this.addEmptyBlockByGrid();
+    }
+
+    deleteEmptyElements(blockCurrent?: AppBlock): void {
+        this.blocks.forEach((block) => {
+            if (block !== blockCurrent) {
+                block.elements.forEach((element, index, object) => {
+                    if (['empty', 'select-type'].includes(element.type)) {
+                        object.splice(index, 1);
+                    }
+                });
+            }
+        });
+    }
+
+    updateBlock(block: AppBlock, index?: number): void {
+        console.log('updateBlock', block, index);
+        this.addEmptyBlockByGrid();
+    }
+
+    onElementUpdate(element: AppBlockElement, index?: number): void {
+        console.log('onElementUpdate', element, index);
     }
 
     getData(): void {

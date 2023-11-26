@@ -6,6 +6,14 @@
 .dropdown {
     position: relative;
 }
+.hover-parent .hover-element,
+.dropdown .dropdown-menu {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms;
+}
+.hover-parent:hover .hover-element,
 .dropdown:hover .dropdown-menu {
-    display: block;
+    opacity: 1;
+    pointer-events: all;
 }
