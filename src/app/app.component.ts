@@ -1,10 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 
-import {BehaviorSubject, Observable, of} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { initFlowbite } from 'flowbite';
+
 import { TokenStorageService } from "./services/token-storage.service";
 import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
+import {filter} from "rxjs/operators";
+
 
 @Component({
     selector: 'app-root',
@@ -18,15 +22,20 @@ export class AppComponent implements OnInit {
     isMobileMenuActive = false;
 
     constructor(
+        private router: Router,
         private tokenStorageService: TokenStorageService,
         private authService: AuthService
     ) {
         this.userSubject$ = this.authService.userSubject;
+        router.events
+            .pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe((e) => {
+                // initFlowbite();
+            });
     }
 
     ngOnInit(): void {
-        initFlowbite();
-
+        // initFlowbite();
         this.isLoggedIn = !!this.tokenStorageService.getToken();
 
         if (this.isLoggedIn) {

@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
-    selector: 'app-confirm',
-    templateUrl: './confirm.component.html',
+    selector: 'app-drawer',
+    templateUrl: './drawer.component.html',
     styleUrls: []
 })
-export class ConfirmComponent implements OnInit {
+export class DrawerComponent implements OnInit {
 
-    @Input() message = 'Are you sure you want to delete this item?';
-    @Input() type = 'confirm';
+    @Input() title = 'Options';
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();
     @Output() confirmed = new EventEmitter<void>();
@@ -17,13 +16,12 @@ export class ConfirmComponent implements OnInit {
 
     }
 
-    closeModal(): void {
+    close(): void {
         this.isActive = false;
         this.isActiveChange.emit(this.isActive);
     }
 
     confirm(): void {
         this.confirmed.emit();
-        this.closeModal();
     }
 }

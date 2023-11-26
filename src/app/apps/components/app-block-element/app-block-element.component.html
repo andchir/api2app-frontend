@@ -1,6 +1,6 @@
 <div class="relative hover-parent group">
 
-    <ng-container [ngSwitch]="item.type">
+    <ng-container [ngSwitch]="type">
 
         <ng-container *ngSwitchCase="'empty'">
             <button type="button" class="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-inner hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
@@ -12,7 +12,7 @@
         <ng-container *ngSwitchCase="'select-type'">
             <div class="mb-3">
                 <select id="input-type-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                        [(ngModel)]="item.type"
+                        [(ngModel)]="type"
                         (ngModelChange)="updateItemType()">
                     <option value="select-type" selected>Select Element Type</option>
                     <option [value]="item.name" *ngFor="let item of inputTypes">{{ item.title }}</option>
@@ -21,17 +21,20 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">Text</div>
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">Text</div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
-            <h4 class="text-2xl font-bold mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">Header Text</h4>
+            <h4 class="text-2xl font-bold mb-3"
+                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">Header Text</h4>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'button'">
-            <div class="mb-3 rounded-full ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <button type="button" class="block w-full text-white bg-green-500 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2">
                     Button
                 </button>
@@ -40,7 +43,8 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-text'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <label for="first_name" class="block mb-2 text-sm font-medium text-gray-900">Text Field</label>
                 <input type="text" id="first_name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
             </div>
@@ -48,7 +52,8 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-textarea'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
                 <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                           placeholder="Write your thoughts here..."></textarea>
@@ -57,7 +62,8 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-switch'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" value="" class="sr-only peer">
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -68,7 +74,8 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-select'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <select id="input-select" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
                     <option value="1">Select Value1</option>
                     <option value="2">Select Value2</option>
@@ -78,7 +85,8 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-radio'">
-            <div class="mb-3 rounded ring-offset-2 ring-blue-400 group-hover:ring-1">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
                 <fieldset>
                     <legend class="sr-only">Countries</legend>
                     <div class="flex items-center mb-4">
@@ -111,10 +119,10 @@
 </div>
 
 <ng-template #templateButtonOptions>
-    <div class="absolute -right-2 -top-2 hover-element">
+    <div class="absolute -right-2 -top-2 hover-element" *ngIf="editorMode">
         <button type="button" class="cursor-pointer shadow-lg text-white bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1"
                 title="Options"
-                (click)="elementOptionsInit(item, $event)">
+                (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-xl"></i>
         </button>
     </div>

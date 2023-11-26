@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { AppBlockElement } from '../models/app-block.interface';
+
+import { AppBlockElementType } from '../../models/app-block.interface';
 
 @Component({
     selector: 'app-block-element',
@@ -9,9 +10,11 @@ import { AppBlockElement } from '../models/app-block.interface';
 })
 export class AppBlockElementComponent implements OnInit, OnChanges {
 
-    @Input() item: AppBlockElement;
-    @Output() itemChange: EventEmitter<AppBlockElement> = new EventEmitter<AppBlockElement>();
     @Input() index: number;
+    @Input() editorMode = true;
+    @Input() type: AppBlockElementType;
+    @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
+    @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
 
     inputTypes: {name: string, title: string}[] = [
         {name: 'text-header', title: 'Text Header'},
@@ -36,19 +39,19 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     }
 
-    updateItemType(type?: string): void {
-        console.log('updateItemType', this.item, this.index);
-        // if (!type && this.item.type === 'empty') {
-        //     this.item.type = 'select-type';
-        // }
-        // this.itemChange.emit(this.item);
+    updateItemType(): void {
+        console.log('updateItemType', this.type, this.index);
+        if (this.type === 'empty') {
+            this.type = 'select-type';
+        }
+        this.typeChange.emit(this.type);
     }
 
-    elementOptionsInit(item: AppBlockElement, event?: MouseEvent) {
+    elementOptionsInit(event?: MouseEvent) {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
-        console.log('elementOptionsInit', item);
+        this.showOptions.emit();
     }
 }

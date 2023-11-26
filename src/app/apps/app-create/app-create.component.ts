@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
-import {AppBlock, AppBlockElement} from '../models/app-block.interface';
+import {AppBlock, AppBlockElement, AppBlockElementOption} from '../models/app-block.interface';
 
 @Component({
     selector: 'app-application-create',
@@ -21,6 +21,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
+    isOptionsActive = false;
 
     itemId: number = 0;
     data: ApplicationItem = ApplicationService.getDefault();
@@ -29,13 +30,35 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         {id: 0, elements: []},
         {id: 0, elements: []}
     ];
+    currentOptions: AppBlockElementOption[] = [
+        {
+            name: 'name',
+            title: 'Name',
+            type: 'input-text',
+            value: ''
+        },
+        {
+            name: 'label',
+            title: 'Label',
+            type: 'input-text',
+            value: ''
+        },
+        {
+            name: 'defaultValue',
+            title: 'Default Value',
+            type: 'input-text',
+            value: ''
+        }
+    ];
     destroyed$: Subject<void> = new Subject();
 
     constructor(
         protected route: ActivatedRoute,
         protected router: Router,
         protected dataService: ApplicationService
-    ) {}
+    ) {
+
+    }
 
     ngOnInit(): void {
         this.itemId = Number(this.route.snapshot.paramMap.get('id'));
@@ -59,7 +82,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     deleteEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
-        // console.log('deleteEmptyBlockByGrid', gridColumns, emptyItems.length);
+        console.log('deleteEmptyBlockByGrid', gridColumns, emptyItems.length);
         if (emptyItems.length <= gridColumns) {
             return;
         }
@@ -92,13 +115,14 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.data[key] = value;
         if (key === 'gridColumns') {
             this.deleteEmptyElements();
-            this.deleteEmptyBlockByGrid();
-            this.addEmptyBlockByGrid();
+            // this.deleteEmptyBlockByGrid();
+            // this.addEmptyBlockByGrid();
         }
     }
 
     blockAddElement(block: AppBlock): void {
         const emptyElements = this.findEmptyElements(block);
+        // console.log('blockAddElement', block, 'emptyElements:', emptyElements.length, emptyElements);
         if (emptyElements.length > 0) {
             return;
         }
@@ -128,8 +152,13 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.addEmptyBlockByGrid();
     }
 
-    onElementUpdate(element: AppBlockElement, index?: number): void {
-        console.log('onElementUpdate', element, index);
+    onElementUpdate(element: AppBlockElement): void {
+        console.log('onElementUpdate', element);
+    }
+
+    showOptions(element: AppBlockElement): void {
+        console.log('showOptions', element);
+        this.isOptionsActive = true;
     }
 
     getData(): void {

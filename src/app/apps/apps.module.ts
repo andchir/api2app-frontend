@@ -9,7 +9,7 @@ import { ApplicationsListSharedComponent } from './list/shared/shared.component'
 import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
 import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { ApplicationService } from '../services/application.service';
-import { AppBlockElementComponent } from './components/app-block-element.component';
+import { AppBlockElementComponent } from './components/app-block-element/app-block-element.component';
 
 @NgModule({
     declarations: [
