@@ -4,7 +4,7 @@ export interface AppOptions {
     [key: string]: string | number | boolean;
 }
 
-export interface AppBlockElementOption {
+export interface AppBlockElementOptions {
     name: string;
     label: string;
     type: AppBlockElementType;
@@ -13,14 +13,12 @@ export interface AppBlockElementOption {
 }
 
 export interface AppBlockElement {
-    id: number;
     type: AppBlockElementType;
-    options?: AppOptions;
-    fields?: AppBlockElementOption[];
+    fields?: AppBlockElementOptions[];
+    options?: any;
 }
 
 export interface AppBlock {
-    id: number;
     elements: AppBlockElement[];
-    options?: AppOptions;
+    options?: any;
 }

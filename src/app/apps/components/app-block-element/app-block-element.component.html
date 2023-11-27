@@ -45,9 +45,9 @@
         <ng-container *ngSwitchCase="'input-text'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
-                <label for="{{ options?.name }}{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">{{ options?.label }}</label>
-                <input type="text" id="{{ options?.name }}{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                       [placeholder]="options?.placeholder"
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">{{ options?.label }}</label>
+                <input type="text" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       [placeholder]="options?.placeholder || ''"
                        [(ngModel)]="options.value">
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -56,9 +56,9 @@
         <ng-container *ngSwitchCase="'input-textarea'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
-                <label for="{{ options?.name }}{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ options?.label }}</label>
-                <textarea id="{{ options?.name }}{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          [placeholder]="options?.placeholder"
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{{ options?.label }}</label>
+                <textarea id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          [placeholder]="options?.placeholder || ''"
                           [(ngModel)]="options.value"></textarea>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

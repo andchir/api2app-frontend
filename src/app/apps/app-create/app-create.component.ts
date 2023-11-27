@@ -9,7 +9,7 @@ import { ApplicationService } from '../../services/application.service';
 import {
     AppBlock,
     AppBlockElement,
-    AppBlockElementOption,
+    AppBlockElementOptions,
     AppBlockElementType,
     AppOptions
 } from '../models/app-block.interface';
@@ -32,13 +32,13 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     itemId: number = 0;
     data: ApplicationItem = ApplicationService.getDefault();
     blocks: AppBlock[] = [
-        {id: 0, elements: []},
-        {id: 0, elements: []},
-        {id: 0, elements: []}
+        {elements: []},
+        {elements: []},
+        {elements: []}
     ];
     selectedElement: AppBlockElement;
 
-    currentOptions: AppBlockElementOption[] = [
+    currentOptions: AppBlockElementOptions[] = [
         {
             name: 'name',
             label: 'Name',
@@ -112,7 +112,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyItems.length >= gridColumns) {
             return;
         }
-        this.blocks.push({id: 0, elements: []});
+        this.blocks.push({elements: []});
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();
@@ -134,10 +134,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyElements.length > 0) {
             return;
         }
-        block.elements.push({
-            id: 0,
-            type: 'select-type'
-        });
+        block.elements.push({type: 'select-type'});
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
@@ -162,8 +159,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     onElementUpdate(element: AppBlockElement, type: AppBlockElementType): void {
         if (!element.options) {
-            element.fields = this.createElementOptionsFields(type);
-            element.options = this.createElementOptionsObject(element.fields);
+            element.fields = ApplicationService.createElementOptionsFields(type);
+            element.options = ApplicationService.fieldsToOptionsObject(element.fields);
         }
         element.type = type;
         console.log('onElementUpdate', type, element);
@@ -171,161 +168,12 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     showOptions(element: AppBlockElement): void {
         if (!element.options) {
-            element.fields = this.createElementOptionsFields(element.type);
-            element.options = this.createElementOptionsObject(element.fields);
+            element.fields = ApplicationService.createElementOptionsFields(element.type);
+            element.options = ApplicationService.fieldsToOptionsObject(element.fields);
         }
         this.selectedElement = element;
         console.log('showOptions', element);
         this.isOptionsActive = true;
-    }
-
-    createElementOptionsObject(fields: AppBlockElementOption[]): AppOptions {
-        const output = {} as AppOptions;
-        fields.forEach((item) => {
-            output[item.name] = item.value;
-        });
-        return output;
-    }
-
-    createElementOptionsFields(type: AppBlockElementType, options?: any): AppBlockElementOption[] {
-        if (!options) {
-            options = {} as any;
-        }
-        const output = [] as AppBlockElementOption[];
-        switch (type) {
-            case 'text-header':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'header1',
-                    choices: []
-                });
-                output.push({
-                    name: 'value',
-                    label: 'Value',
-                    type: 'input-text',
-                    value: options?.value || 'Header Text',
-                    choices: []
-                });
-                break;
-            case 'text':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'text1',
-                    choices: []
-                });
-                output.push({
-                    name: 'value',
-                    label: 'Value',
-                    type: 'input-text',
-                    value: options?.value || 'Example Text',
-                    choices: []
-                });
-                break;
-            case 'button':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'submit',
-                    choices: []
-                });
-                output.push({
-                    name: 'text',
-                    label: 'Text',
-                    type: 'input-text',
-                    value: options?.text || 'Submit',
-                    choices: []
-                });
-                break;
-            case 'input-text':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'name',
-                    choices: []
-                });
-                output.push({
-                    name: 'label',
-                    label: 'Label',
-                    type: 'input-text',
-                    value: options?.label || 'Text Field',
-                    choices: []
-                });
-                output.push({
-                    name: 'placeholder',
-                    label: 'Placeholder',
-                    type: 'input-text',
-                    value: options?.placeholder || 'Enter your name',
-                    choices: []
-                });
-                output.push({
-                    name: 'defaultValue',
-                    label: 'Default Value',
-                    type: 'input-text',
-                    value: options?.defaultValue || '',
-                    choices: []
-                });
-                break;
-            case 'input-textarea':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'content',
-                    choices: []
-                });
-                output.push({
-                    name: 'label',
-                    label: 'Label',
-                    type: 'input-text',
-                    value: options?.label || 'Content',
-                    choices: []
-                });
-                output.push({
-                    name: 'placeholder',
-                    label: 'Placeholder',
-                    type: 'input-text',
-                    value: options?.placeholder || 'Enter your message here',
-                    choices: []
-                });
-                output.push({
-                    name: 'defaultValue',
-                    label: 'Default Value',
-                    type: 'input-text',
-                    value: options?.defaultValue || '',
-                    choices: []
-                });
-                break;
-            case 'input-switch':
-                output.push({
-                    name: 'name',
-                    label: 'Name',
-                    type: 'input-text',
-                    value: options?.name || 'enabled',
-                    choices: []
-                });
-                output.push({
-                    name: 'label',
-                    label: 'Label',
-                    type: 'input-text',
-                    value: options?.label || 'Enabled',
-                    choices: []
-                });
-                output.push({
-                    name: 'value',
-                    label: 'Value',
-                    type: 'input-switch',
-                    value: options?.value !== null,
-                    choices: []
-                });
-                break;
-        }
-        return output;
     }
 
     deleteElement(block: AppBlock, elementIndex: number): void {
@@ -333,6 +181,14 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             return;
         }
         block.elements.splice(elementIndex, 1);
+    }
+
+    updateElementOptions(): void {
+        if (!this.selectedElement) {
+            return;
+        }
+        this.selectedElement.options = ApplicationService.fieldsToOptionsObject(this.selectedElement.fields);
+        this.isOptionsActive = false;
     }
 
     getData(): void {

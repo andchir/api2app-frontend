@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import { AppBlockElementOption, AppBlockElementType, AppOptions } from '../../models/app-block.interface';
+import { AppBlockElementType } from '../../models/app-block.interface';
 
 @Component({
     selector: 'app-block-element',
@@ -11,7 +11,8 @@ import { AppBlockElementOption, AppBlockElementType, AppOptions } from '../../mo
 export class AppBlockElementComponent implements OnInit, OnChanges {
 
     @Input() index: number = 0;
-    @Input() editorMode = true;
+    @Input() parentIndex: number = 0;
+    @Input() editorMode = false;
     @Input() type: AppBlockElementType;
     @Input() options: any = {};
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();

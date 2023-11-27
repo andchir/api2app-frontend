@@ -93,7 +93,10 @@
                     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
                         <ng-container *ngFor="let element of block.elements; index as ind">
                             <app-block-element [type]="element.type"
+                                               [parentIndex]="index"
+                                               [index]="ind"
                                                [options]="element.options"
+                                               [editorMode]="true"
                                                (typeChange)="onElementUpdate(element, $event)"
                                                (showOptions)="showOptions(element)"
                                                (delete)="deleteElement(block, ind)"></app-block-element>
@@ -123,8 +126,11 @@
 
 <app-alert [message]="message" [type]="messageType"></app-alert>
 
-<app-drawer [(isActive)]="isOptionsActive" title="Element Options" *ngIf="selectedElement">
+<app-drawer [(isActive)]="isOptionsActive"
+            title="Element Options"
+            (confirmed)="updateElementOptions()"
+            *ngIf="selectedElement">
     <ng-container *ngFor="let field of selectedElement.fields">
-        <app-block-element [type]="field.type" [options]="field" [editorMode]="false"></app-block-element>
+        <app-block-element [type]="field.type" [options]="field"></app-block-element>
     </ng-container>
 </app-drawer>
