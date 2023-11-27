@@ -20,6 +20,7 @@ export class AppComponent implements OnInit {
     userSubject$: BehaviorSubject<User>;
     isLoggedIn = false;
     isMobileMenuActive = false;
+    isSharedUrl = false;
 
     constructor(
         private router: Router,
@@ -29,8 +30,9 @@ export class AppComponent implements OnInit {
         this.userSubject$ = this.authService.userSubject;
         router.events
             .pipe(filter(e => e instanceof NavigationEnd))
-            .subscribe((e) => {
+            .subscribe((e: NavigationEnd) => {
                 // initFlowbite();
+                this.isSharedUrl = e.url.includes('/shared/');
             });
     }
 
