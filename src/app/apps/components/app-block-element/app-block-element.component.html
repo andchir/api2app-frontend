@@ -18,6 +18,18 @@
                            [clearable]="false"
                            [(ngModel)]="type"
                            (ngModelChange)="updateItemType()">
+                    <ng-template ng-option-tmp let-item="item">
+                        <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
+                        <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text'"></i>
+                        <i class="bi bi-app mr-1 text-gray-400" *ngIf="item.name === 'button'"></i>
+                        <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
+                        <i class="bi bi-textarea-resize mr-1 text-gray-400" *ngIf="item.name === 'input-textarea'"></i>
+                        <i class="bi bi-toggle-off mr-1 text-gray-400" *ngIf="item.name === 'input-switch'"></i>
+                        <i class="bi bi-menu-button mr-1 text-gray-400" *ngIf="item.name === 'input-select'"></i>
+                        <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
+                        <i class="bi bi-ui-radios mr-1 text-gray-400" *ngIf="item.name === 'input-radio'"></i>
+                        {{ item.title }}
+                    </ng-template>
                 </ng-select>
             </div>
         </ng-container>
