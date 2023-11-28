@@ -18,6 +18,7 @@
     "@angular/platform-browser": "^16.2.0",
     "@angular/platform-browser-dynamic": "^16.2.0",
     "@angular/router": "^16.2.0",
+    "@ng-select/ng-select": "^11.2.0",
     "ace-builds": "^1.30.0",
     "bootstrap-icons": "^1.11.1",
     "flowbite": "^1.8.1",
