@@ -12,6 +12,7 @@ export interface AppBlockElement {
     placeholder?: string;
     value?: string | number | boolean | string[];
     choices?: string[];
+    color?: string;
 }
 
 export interface AppBlock {

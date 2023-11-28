@@ -56,7 +56,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'value',
                     label: 'Text',
                     type: 'input-text',
-                    value: options?.text || 'Submit'
+                    value: options?.value || 'Submit'
+                });
+                output.push({
+                    name: 'color',
+                    label: 'Color',
+                    type: 'input-select',
+                    value: options?.color || 'Green',
+                    choices: ['Green', 'Blue', 'Red']
                 });
                 break;
             case 'input-text':
@@ -229,7 +236,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'button':
                 Object.assign(output, {
                     name: 'submit',
-                    value: 'Submit'
+                    value: 'Submit',
+                    color: 'Green'
                 });
                 break;
             case 'input-text':
