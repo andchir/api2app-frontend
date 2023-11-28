@@ -19,7 +19,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
 
-    inputTypes: {name: string, title: string}[] = [
+    inputTypes: {name: AppBlockElementType, title: string}[] = [
         {name: 'text-header', title: 'Text Header'},
         {name: 'text', title: 'Text'},
         {name: 'button', title: 'Button'},
@@ -27,6 +27,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-textarea', title: 'Text Area'},
         {name: 'input-switch', title: 'Switch'},
         {name: 'input-select', title: 'Select'},
+        {name: 'input-tags', title: 'Tags'},
         {name: 'input-radio', title: 'Radio Buttons'}
     ];
 

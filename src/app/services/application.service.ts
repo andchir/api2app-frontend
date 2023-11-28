@@ -22,15 +22,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'header1',
-                    choices: []
+                    value: options?.name || 'header1'
                 });
                 output.push({
                     name: 'value',
                     label: 'Value',
                     type: 'input-textarea',
-                    value: options?.value || 'Header Text',
-                    choices: []
+                    value: options?.value || 'Header Text'
                 });
                 break;
             case 'text':
@@ -38,15 +36,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'text1',
-                    choices: []
+                    value: options?.name || 'text1'
                 });
                 output.push({
                     name: 'value',
                     label: 'Value',
                     type: 'input-textarea',
-                    value: options?.value || 'Example Text',
-                    choices: []
+                    value: options?.value || 'Example Text'
                 });
                 break;
             case 'button':
@@ -54,15 +50,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'submit',
-                    choices: []
+                    value: options?.name || 'submit'
                 });
                 output.push({
                     name: 'value',
                     label: 'Text',
                     type: 'input-text',
-                    value: options?.text || 'Submit',
-                    choices: []
+                    value: options?.text || 'Submit'
                 });
                 break;
             case 'input-text':
@@ -70,29 +64,25 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'name',
-                    choices: []
+                    value: options?.name || 'name'
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Text Field',
-                    choices: []
+                    value: options?.label || 'Text Field'
                 });
                 output.push({
                     name: 'placeholder',
                     label: 'Placeholder',
                     type: 'input-text',
-                    value: options?.placeholder || 'Enter your name',
-                    choices: []
+                    value: options?.placeholder || 'Enter your name'
                 });
                 output.push({
                     name: 'value',
                     label: 'Default Value',
                     type: 'input-text',
-                    value: options?.value || '',
-                    choices: []
+                    value: options?.value || ''
                 });
                 break;
             case 'input-textarea':
@@ -100,29 +90,25 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'content',
-                    choices: []
+                    value: options?.name || 'content'
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Content',
-                    choices: []
+                    value: options?.label || 'Content'
                 });
                 output.push({
                     name: 'placeholder',
                     label: 'Placeholder',
                     type: 'input-text',
-                    value: options?.placeholder || 'Enter your message here',
-                    choices: []
+                    value: options?.placeholder || 'Enter your message here'
                 });
                 output.push({
                     name: 'value',
                     label: 'Default Value',
                     type: 'input-textarea',
-                    value: options?.value || '',
-                    choices: []
+                    value: options?.value || ''
                 });
                 break;
             case 'input-switch':
@@ -130,15 +116,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'enabled',
-                    choices: []
+                    value: options?.name || 'enabled'
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Enabled',
-                    choices: []
+                    value: options?.label || 'Enabled'
                 });
                 output.push({
                     name: 'value',
@@ -153,22 +137,74 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'select',
-                    choices: []
+                    value: options?.name || 'select'
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Example Select',
-                    choices: []
+                    value: options?.label || 'Example Select'
                 });
                 output.push({
                     name: 'choices',
                     label: 'Choices',
                     type: 'input-tags',
-                    value: ['Value1', 'Value2', 'Value3'],
+                    value: options?.choices || [],
                     choices: []
+                });
+                output.push({
+                    name: 'value',
+                    label: 'Default Value',
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
+            case 'input-tags':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name || 'tags'
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label || 'Tags'
+                });
+                output.push({
+                    name: 'value',
+                    label: 'Default Value',
+                    type: 'input-tags',
+                    value: options?.value || [],
+                    choices: []
+                });
+                break;
+            case 'input-radio':
+                output.push({
+                    name: 'radio',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name || 'radio'
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label || 'Example Radio Buttons'
+                });
+                output.push({
+                    name: 'choices',
+                    label: 'Choices',
+                    type: 'input-tags',
+                    value: options?.choices || [],
+                    choices: []
+                });
+                output.push({
+                    name: 'value',
+                    label: 'Default Value',
+                    type: 'input-text',
+                    value: options?.value
                 });
                 break;
         }
@@ -229,6 +265,24 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-select',
                     value: 'Value1',
                     placeholder: 'Please Select',
+                    choices: ['Value1', 'Value2', 'Value3']
+                });
+                break;
+            case 'input-tags':
+                Object.assign(output, {
+                    name: 'tags',
+                    label: 'Tags',
+                    type: 'input-select',
+                    value: ['Value1', 'Value2', 'Value3'],
+                    placeholder: 'Please Add Tags',
+                    choices: []
+                });
+                break;
+            case 'input-radio':
+                Object.assign(output, {
+                    name: 'radio',
+                    label: 'Example Radio Buttons',
+                    value: 'Value1',
                     choices: ['Value1', 'Value2', 'Value3']
                 });
                 break;

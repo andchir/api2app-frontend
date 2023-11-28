@@ -1,4 +1,5 @@
-export type AppBlockElementType = 'empty'|'text-header'|'text'|'button'|'input-text'|'input-textarea'|'input-switch'|'input-select'|'input-radio'|'input-tags';
+export type AppBlockElementType = 'empty'|'text-header'|'text'|'button'|'input-text'
+    |'input-textarea'|'input-switch'|'input-select'|'input-radio'|'input-tags';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[];

@@ -11,7 +11,7 @@
 
         <ng-container *ngSwitchCase="null">
             <div class="mb-3">
-                <ng-select [items]="inputTypes"
+                <ng-select class="ng-select-custom" [items]="inputTypes"
                            bindLabel="title"
                            bindValue="name"
                            placeholder="Select Element Type"
@@ -88,7 +88,7 @@
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
-                <ng-select
+                <ng-select class="ng-select-custom"
                     [items]="options.choices"
                     [placeholder]="options.placeholder"
                     [clearable]="false"
@@ -105,7 +105,7 @@
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
-                <ng-select
+                <ng-select class="ng-select-custom"
                     [items]="options.choices"
                     [placeholder]="options.placeholder"
                     [clearable]="false"
@@ -122,26 +122,21 @@
         <ng-container *ngSwitchCase="'input-radio'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    {{ options?.label }}
+                </label>
                 <fieldset>
                     <legend class="sr-only">Countries</legend>
-                    <div class="flex items-center mb-4">
-                        <input id="country-option-1" type="radio" name="countries" value="USA" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600" checked>
-                        <label for="country-option-1" class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
-                            United States
-                        </label>
-                    </div>
-
-                    <div class="flex items-center mb-4">
-                        <input id="country-option-2" type="radio" name="countries" value="Germany" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="country-option-2" class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Germany
-                        </label>
-                    </div>
-
-                    <div class="flex items-center mb-4">
-                        <input id="country-option-3" type="radio" name="countries" value="Spain" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:bg-gray-700 dark:border-gray-600">
-                        <label for="country-option-3" class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                            Spain
+                    <div class="flex items-center mb-4" *ngFor="let option of options.choices; index as optIndex">
+                        <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
+                               type="radio"
+                               name="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                               [value]="option"
+                               [(ngModel)]="options.value">
+                        <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
+                               class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {{ option }}
                         </label>
                     </div>
                 </fieldset>

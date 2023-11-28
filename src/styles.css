@@ -17,3 +17,13 @@
     opacity: 1;
     pointer-events: all;
 }
+
+/* ng-select.ng-select-custom */
+.ng-select.ng-select-custom {
+    min-height: 0;
+    border-radius: .5rem;
+}
+.ng-select.ng-select-custom .ng-select-container  {
+    min-height: 42px;
+    border-radius: .5rem;
+}
