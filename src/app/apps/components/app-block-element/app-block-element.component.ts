@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import { AppBlockElementType } from '../../models/app-block.interface';
+import {AppBlockElement, AppBlockElementType} from '../../models/app-block.interface';
 
 @Component({
     selector: 'app-block-element',
@@ -14,7 +14,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() parentIndex: number = 0;
     @Input() editorMode = false;
     @Input() type: AppBlockElementType;
-    @Input() options: any = {};
+    @Input() options: AppBlockElement;
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
@@ -45,7 +45,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     updateItemType(): void {
         console.log('updateItemType', this.type, this.index);
         if (this.type === 'empty') {
-            this.type = 'select-type';
+            this.type = null;
         }
         this.typeChange.emit(this.type);
     }

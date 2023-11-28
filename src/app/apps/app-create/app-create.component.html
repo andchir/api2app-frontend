@@ -95,7 +95,7 @@
                             <app-block-element [type]="element.type"
                                                [parentIndex]="index"
                                                [index]="ind"
-                                               [options]="element.options"
+                                               [options]="element"
                                                [editorMode]="true"
                                                (typeChange)="onElementUpdate(element, $event)"
                                                (showOptions)="showOptions(element)"
@@ -130,7 +130,7 @@
             title="Element Options"
             (confirmed)="updateElementOptions()"
             *ngIf="selectedElement">
-    <ng-container *ngFor="let field of selectedElement.fields">
+    <ng-container *ngFor="let field of selectedElementOptionsFields">
         <app-block-element [type]="field.type" [options]="field"></app-block-element>
     </ng-container>
 </app-drawer>

@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { NgSelectModule } from '@ng-select/ng-select';
+
 import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.component';
 import { AlertComponent } from './shared/alert/alert.component';
 import { ConfirmComponent } from './shared/confirm/confirm.component';
@@ -11,7 +13,8 @@ import { DrawerComponent } from './shared/drawer/drawer.component';
 @NgModule({
     imports: [
         CommonModule,
-        RouterModule
+        RouterModule,
+        NgSelectModule
     ],
     declarations: [
         AlertComponent,
@@ -26,7 +29,8 @@ import { DrawerComponent } from './shared/drawer/drawer.component';
         NotAuthorizedComponent,
         CommonModule,
         FormsModule,
-        RouterModule
+        RouterModule,
+        NgSelectModule
     ]
 })
 export class SharedModule { }

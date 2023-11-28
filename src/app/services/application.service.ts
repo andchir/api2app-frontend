@@ -4,18 +4,18 @@ import { environment } from '../../environments/environment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import {AppBlockElementOptions, AppBlockElementType, AppOptions} from "../apps/models/app-block.interface";
+import { AppBlockElement, AppBlockElementType, AppOptions } from "../apps/models/app-block.interface";
 
 const BASE_URL = environment.apiUrl;
 
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {
 
-    static createElementOptionsFields(type: AppBlockElementType, options?: any): AppBlockElementOptions[] {
+    static createElementOptionsFields(type: AppBlockElementType, options?: any): AppBlockElement[] {
         if (!options) {
             options = {} as any;
         }
-        const output = [] as AppBlockElementOptions[];
+        const output = [] as AppBlockElement[];
         switch (type) {
             case 'text-header':
                 output.push({
@@ -58,7 +58,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     choices: []
                 });
                 output.push({
-                    name: 'text',
+                    name: 'value',
                     label: 'Text',
                     type: 'input-text',
                     value: options?.text || 'Submit',
@@ -148,11 +148,95 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     choices: []
                 });
                 break;
+            case 'input-select':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name || 'select',
+                    choices: []
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label || 'Example Select',
+                    choices: []
+                });
+                output.push({
+                    name: 'choices',
+                    label: 'Choices',
+                    type: 'input-tags',
+                    value: ['Value1', 'Value2', 'Value3'],
+                    choices: []
+                });
+                break;
         }
         return output;
     }
 
-    static fieldsToOptionsObject(fields: AppBlockElementOptions[]): any {
+    static getBlockElementDefault(type: AppBlockElementType): AppBlockElement {
+        const output = {type} as AppBlockElement;
+        switch (type) {
+            case 'text-header':
+                Object.assign(output, {
+                    name: 'header',
+                    value: 'Header Example Text'
+                });
+                break;
+            case 'text':
+                Object.assign(output, {
+                    name: 'text',
+                    value: 'Example Text'
+                });
+                break;
+            case 'button':
+                Object.assign(output, {
+                    name: 'submit',
+                    value: 'Submit'
+                });
+                break;
+            case 'input-text':
+                Object.assign(output, {
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    placeholder: 'Enter your name',
+                    value: ''
+                });
+                break;
+            case 'input-textarea':
+                Object.assign(output, {
+                    name: 'content',
+                    label: 'Content',
+                    type: 'input-textarea',
+                    placeholder: 'Enter your message here',
+                    value: ''
+                });
+                break;
+            case 'input-switch':
+                Object.assign(output, {
+                    name: 'enabled',
+                    label: 'Enabled',
+                    type: 'input-switch',
+                    value: true
+                });
+                break;
+            case 'input-select':
+                Object.assign(output, {
+                    name: 'select',
+                    label: 'Example Select',
+                    type: 'input-select',
+                    value: 'Value1',
+                    placeholder: 'Please Select',
+                    choices: ['Value1', 'Value2', 'Value3']
+                });
+                break;
+        }
+        return output;
+    }
+
+    static fieldsToOptionsObject(fields: AppBlockElement[]): any {
         const output = {} as AppOptions;
         fields.forEach((item) => {
             output[item.name] = item.value;

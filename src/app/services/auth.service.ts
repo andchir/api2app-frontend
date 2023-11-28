@@ -56,20 +56,20 @@ export class AuthService {
         return window.sessionStorage.getItem(NEXT_ROUTE_KEY);
     }
 
-    navigateLogin(): void {
+    navigateAuthPage(pageName: 'login'|'logout'|'register'): void {
         if (this.router.url.includes('/auth')) {
             return;
         }
         this.saveNextRoute(this.router.url);
-        this.router.navigate(['/auth', 'login']);
+        this.router.navigate(['/auth', pageName]);
+    }
+
+    navigateLogin(): void {
+        this.navigateAuthPage('login');
     }
 
     navigateLogout(): void {
-        if (this.router.url.includes('/auth')) {
-            return;
-        }
-        this.saveNextRoute(this.router.url);
-        this.router.navigate(['/auth', 'logout']);
+        this.navigateAuthPage('logout');
     }
 
     navigateBack(): void {

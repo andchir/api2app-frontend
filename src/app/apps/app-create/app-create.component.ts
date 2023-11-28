@@ -6,13 +6,7 @@ import { Subject } from 'rxjs';
 import { ApiService } from '../../services/api.service';
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
-import {
-    AppBlock,
-    AppBlockElement,
-    AppBlockElementOptions,
-    AppBlockElementType,
-    AppOptions
-} from '../models/app-block.interface';
+import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
 
 @Component({
     selector: 'app-application-create',
@@ -37,27 +31,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         {elements: []}
     ];
     selectedElement: AppBlockElement;
-
-    currentOptions: AppBlockElementOptions[] = [
-        {
-            name: 'name',
-            label: 'Name',
-            type: 'input-text',
-            value: ''
-        },
-        {
-            name: 'label',
-            label: 'Label',
-            type: 'input-text',
-            value: ''
-        },
-        {
-            name: 'defaultValue',
-            label: 'Default Value',
-            type: 'input-text',
-            value: ''
-        }
-    ];
+    selectedElementOptionsFields: AppBlockElement[] = [];
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -83,7 +57,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     findEmptyElements(block: AppBlock): AppBlockElement[] {
         return block.elements.filter((item) => {
-            return ['empty', 'select-type'].includes(item.type);
+            return ['empty', null].includes(item.type);
         });
     }
 
@@ -134,7 +108,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyElements.length > 0) {
             return;
         }
-        block.elements.push({type: 'select-type'});
+        block.elements.push({type: null});
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
@@ -144,7 +118,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.blocks.forEach((block) => {
             if (block !== blockCurrent) {
                 block.elements.forEach((element, index, object) => {
-                    if (['empty', 'select-type'].includes(element.type)) {
+                    if (['empty', null].includes(element.type)) {
                         object.splice(index, 1);
                     }
                 });
@@ -158,21 +132,16 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     }
 
     onElementUpdate(element: AppBlockElement, type: AppBlockElementType): void {
-        if (!element.options) {
-            element.fields = ApplicationService.createElementOptionsFields(type);
-            element.options = ApplicationService.fieldsToOptionsObject(element.fields);
+        if (!element.name) {
+            Object.assign(element, ApplicationService.getBlockElementDefault(type));
         }
         element.type = type;
         console.log('onElementUpdate', type, element);
     }
 
     showOptions(element: AppBlockElement): void {
-        if (!element.options) {
-            element.fields = ApplicationService.createElementOptionsFields(element.type);
-            element.options = ApplicationService.fieldsToOptionsObject(element.fields);
-        }
         this.selectedElement = element;
-        console.log('showOptions', element);
+        this.selectedElementOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
     }
 
@@ -187,7 +156,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (!this.selectedElement) {
             return;
         }
-        this.selectedElement.options = ApplicationService.fieldsToOptionsObject(this.selectedElement.fields);
+        Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedElementOptionsFields));
         this.isOptionsActive = false;
     }
 
