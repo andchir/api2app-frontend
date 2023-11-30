@@ -93,6 +93,20 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.value || defaultValues.value
                 });
                 break;
+            case 'input-number':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name || defaultValues.name
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label || defaultValues.label
+                });
+                break;
             case 'input-textarea':
                 output.push({
                     name: 'name',
@@ -250,6 +264,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: ''
                 });
                 break;
+            case 'input-number':
+                Object.assign(output, {
+                    name: 'number',
+                    label: 'Number',
+                    type: 'input-number',
+                    value: 0
+                });
+                break;
             case 'input-textarea':
                 Object.assign(output, {
                     name: 'content',
@@ -296,6 +318,24 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 });
                 break;
         }
+        return output;
+    }
+
+    static createBlockOptionsFields(options?: any): AppBlockElement[] {
+        const output = [] as AppBlockElement[];
+        const defaultValues = {
+            gridColumnSpan: 1
+        };
+        output.push({
+            name: 'gridColumnSpan',
+            label: 'Grid Columns Span',
+            type: 'input-number',
+            value: options?.gridColumnSpan || defaultValues.gridColumnSpan,
+            options: {
+                min: 0,
+                max: 3
+            }
+        });
         return output;
     }
 

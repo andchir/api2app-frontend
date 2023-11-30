@@ -32,7 +32,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     ];
     selectedElement: AppBlockElement;
     selectedBlock: AppBlock;
-    selectedElementOptionsFields: AppBlockElement[] = [];
+    selectedItemOptionsFields: AppBlockElement[] = [];
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -52,7 +52,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     findEmptyBlocks(): AppBlock[] {
         return this.blocks.filter((item) => {
-            return item.elements.length === 0;
+            const emptyElements = this.findEmptyElements(item);
+            return emptyElements.length === item.elements.length;
         });
     }
 
@@ -137,12 +138,14 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             Object.assign(element, ApplicationService.getBlockElementDefault(type));
         }
         element.type = type;
+        this.deleteEmptyBlockByGrid();
+        this.addEmptyBlockByGrid();
     }
 
     showElementOptions(element: AppBlockElement): void {
         this.selectedElement = element;
         this.selectedBlock = null;
-        this.selectedElementOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
+        this.selectedItemOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
     }
 
@@ -151,10 +154,13 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             event.preventDefault();
             event.stopPropagation();
         }
-        console.log('showBlockInit', block);
+        if (!block.options) {
+            block.options = {};
+        }
+        this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options);
         this.selectedBlock = block;
         this.selectedElement = null;
-
+        this.isOptionsActive = true;
     }
 
     deleteElement(block: AppBlock, elementIndex: number): void {
@@ -162,13 +168,20 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             return;
         }
         block.elements.splice(elementIndex, 1);
+        this.deleteEmptyBlockByGrid();
+        this.addEmptyBlockByGrid();
     }
 
-    updateElementOptions(): void {
-        if (!this.selectedElement) {
-            return;
+    updateItemOptions(): void {
+        if (this.selectedElement) {
+            Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
         }
-        Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedElementOptionsFields));
+        if (this.selectedBlock) {
+            Object.assign(this.selectedBlock.options, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
+        }
+        this.selectedItemOptionsFields = [];
+        this.selectedElement = null;
+        this.selectedBlock = null;
         this.isOptionsActive = false;
     }
 

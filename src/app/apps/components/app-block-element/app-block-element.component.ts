@@ -24,6 +24,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'text', title: 'Text'},
         {name: 'button', title: 'Button'},
         {name: 'input-text', title: 'Text Field'},
+        {name: 'input-number', title: 'Number Field'},
         {name: 'input-textarea', title: 'Text Area'},
         {name: 'input-switch', title: 'Switch'},
         {name: 'input-select', title: 'Select'},
@@ -57,5 +58,22 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     elementDeleteInit(): void {
         this.delete.emit();
+    }
+
+    numberIncrease(keyName = 'value', max: number = 0): void {
+        this.options[keyName] = Number(this.options[keyName] || 0);
+        if (max && this.options[keyName] >= max) {
+            return;
+        }
+        this.options[keyName]++;
+    }
+
+    numberDecrease(keyName = 'value', min: number = 0): void {
+        min = min || 0;
+        this.options[keyName] = Number(this.options[keyName] || 0);
+        if (this.options[keyName] <= min) {
+            return;
+        }
+        this.options[keyName]--;
     }
 }
