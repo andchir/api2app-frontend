@@ -15,6 +15,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!options) {
             options = {} as any;
         }
+        const defaultValues = ApplicationService.getBlockElementDefault(type);
         const output = [] as AppBlockElement[];
         switch (type) {
             case 'text-header':
@@ -22,13 +23,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'header1'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'value',
                     label: 'Value',
                     type: 'input-textarea',
-                    value: options?.value || 'Header Text'
+                    value: options?.value || defaultValues.value
                 });
                 break;
             case 'text':
@@ -36,13 +37,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'text1'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'value',
                     label: 'Value',
                     type: 'input-textarea',
-                    value: options?.value || 'Example Text'
+                    value: options?.value || defaultValues.value
                 });
                 break;
             case 'button':
@@ -50,19 +51,19 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'submit'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'value',
                     label: 'Text',
                     type: 'input-text',
-                    value: options?.value || 'Submit'
+                    value: options?.value || defaultValues.value
                 });
                 output.push({
                     name: 'color',
                     label: 'Color',
                     type: 'input-select',
-                    value: options?.color || 'Green',
+                    value: options?.color || defaultValues.color,
                     choices: ['Green', 'Blue', 'Red']
                 });
                 break;
@@ -71,25 +72,25 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'name'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Text Field'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'placeholder',
                     label: 'Placeholder',
                     type: 'input-text',
-                    value: options?.placeholder || 'Enter your name'
+                    value: options?.placeholder || defaultValues.value
                 });
                 output.push({
                     name: 'value',
                     label: 'Default Value',
                     type: 'input-text',
-                    value: options?.value || ''
+                    value: options?.value || defaultValues.value
                 });
                 break;
             case 'input-textarea':
@@ -97,25 +98,25 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'content'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Content'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'placeholder',
                     label: 'Placeholder',
                     type: 'input-text',
-                    value: options?.placeholder || 'Enter your message here'
+                    value: options?.placeholder || defaultValues.placeholder
                 });
                 output.push({
                     name: 'value',
                     label: 'Default Value',
                     type: 'input-textarea',
-                    value: options?.value || ''
+                    value: options?.value || defaultValues.value
                 });
                 break;
             case 'input-switch':
@@ -123,13 +124,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'enabled'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Enabled'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'value',
@@ -144,13 +145,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'select'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Example Select'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'choices',
@@ -171,13 +172,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'name',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'tags'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Tags'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'value',
@@ -192,13 +193,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'radio',
                     label: 'Name',
                     type: 'input-text',
-                    value: options?.name || 'radio'
+                    value: options?.name || defaultValues.name
                 });
                 output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
-                    value: options?.label || 'Example Radio Buttons'
+                    value: options?.label || defaultValues.label
                 });
                 output.push({
                     name: 'choices',

@@ -1,13 +1,6 @@
-<div class="relative hover-parent group">
+<div class="relative group/element">
 
     <ng-container [ngSwitch]="type">
-
-        <ng-container *ngSwitchCase="'empty'">
-            <button type="button" class="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-inner hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
-                    (click)="updateItemType()">
-                <i class="bi bi-plus-circle-dotted text-5xl"></i>
-            </button>
-        </ng-container>
 
         <ng-container *ngSwitchCase="null">
             <div class="mb-3">
@@ -36,19 +29,19 @@
 
         <ng-container *ngSwitchCase="'text'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">{{ options?.value }}</div>
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">{{ options?.value }}</div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
             <h4 class="text-2xl font-bold mb-3 min-h-[20px]"
-                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">{{ options?.value }}</h4>
+                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">{{ options?.value }}</h4>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'button'">
             <div class="mb-3"
-                 [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <button type="button" class="block w-full text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2"
                     [ngClass]="{
                     'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color === 'Green',
@@ -63,7 +56,7 @@
 
         <ng-container *ngSwitchCase="'input-text'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                     {{ options?.label }}
                 </label>
@@ -76,7 +69,7 @@
 
         <ng-container *ngSwitchCase="'input-textarea'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
@@ -89,7 +82,7 @@
 
         <ng-container *ngSwitchCase="'input-switch'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="options.value">
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
@@ -101,7 +94,7 @@
 
         <ng-container *ngSwitchCase="'input-select'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
@@ -118,7 +111,7 @@
 
         <ng-container *ngSwitchCase="'input-tags'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ing-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
@@ -138,7 +131,7 @@
 
         <ng-container *ngSwitchCase="'input-radio'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
@@ -166,13 +159,13 @@
 </div>
 
 <ng-template #templateButtonOptions>
-    <div class="absolute -right-2 -top-2 hover-element" *ngIf="editorMode">
-        <button type="button" class="cursor-pointer shadow-lg text-white bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1 me-2"
+    <div class="absolute -right-2 -top-2 invisible group-hover/element:visible" *ngIf="editorMode">
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1 me-2"
                 title="Options"
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-xl"></i>
         </button>
-        <button type="button" class="cursor-pointer shadow-lg text-white bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1"
                 title="Delete"
                 (click)="elementDeleteInit()">
             <i class="bi bi-trash3-fill text-xl"></i>

@@ -44,10 +44,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     updateItemType(): void {
-        console.log('updateItemType', this.type, this.index);
-        if (this.type === 'empty') {
-            this.type = null;
-        }
         this.typeChange.emit(this.type);
     }
 

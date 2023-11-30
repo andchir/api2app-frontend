@@ -31,6 +31,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         {elements: []}
     ];
     selectedElement: AppBlockElement;
+    selectedBlock: AppBlock;
     selectedElementOptionsFields: AppBlockElement[] = [];
     destroyed$: Subject<void> = new Subject();
 
@@ -136,13 +137,24 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             Object.assign(element, ApplicationService.getBlockElementDefault(type));
         }
         element.type = type;
-        console.log('onElementUpdate', type, element);
     }
 
-    showOptions(element: AppBlockElement): void {
+    showElementOptions(element: AppBlockElement): void {
         this.selectedElement = element;
+        this.selectedBlock = null;
         this.selectedElementOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
+    }
+
+    showBlockInit(block: AppBlock, event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        console.log('showBlockInit', block);
+        this.selectedBlock = block;
+        this.selectedElement = null;
+
     }
 
     deleteElement(block: AppBlock, elementIndex: number): void {

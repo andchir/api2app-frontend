@@ -1,4 +1,4 @@
-export type AppBlockElementType = 'empty'|'text-header'|'text'|'button'|'input-text'
+export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text'
     |'input-textarea'|'input-switch'|'input-select'|'input-radio'|'input-tags';
 
 export interface AppOptions {
@@ -13,6 +13,10 @@ export interface AppBlockElement {
     value?: string | number | boolean | string[];
     choices?: string[];
     color?: string;
+}
+
+export interface AppBlockOptions {
+    gridColumnSpan: number;
 }
 
 export interface AppBlock {
