@@ -142,7 +142,7 @@
 <app-drawer [(isActive)]="isOptionsActive"
             [title]="selectedElement ? 'Element Options' : 'Block Options'"
             (confirmed)="updateItemOptions()">
-    <ng-container *ngFor="let field of selectedItemOptionsFields">
-        <app-block-element [type]="field.type" [options]="field"></app-block-element>
+    <ng-container *ngFor="let field of selectedItemOptionsFields; index as index">
+        <app-block-element [type]="field.type" [options]="field" [index]="index" [parentIndex]="-1"></app-block-element>
     </ng-container>
 </app-drawer>

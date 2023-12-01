@@ -158,21 +158,21 @@
         <ng-container *ngSwitchCase="'input-number'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.type }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                     {{ options?.label }}
                 </label>
                 <div class="relative flex items-center w-full">
                     <button type="button" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
-                            (click)="numberDecrease('value', options.options?.min)">
+                            (click)="numberDecrease('value', options?.min)">
                         <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
                         </svg>
                     </button>
-                    <input type="text" id="{{ options?.type }}-{{ parentIndex }}-{{ index }}"
+                    <input type="text" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                            class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5"
-                           [(ngModel)]="options.value">
+                           [(ngModel)]="options.value" readonly>
                     <button type="button" data-input-counter-increment="quantity-input" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
-                            (click)="numberIncrease('value', options.options?.max)">
+                            (click)="numberIncrease('value', options?.max)">
                         <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                         </svg>

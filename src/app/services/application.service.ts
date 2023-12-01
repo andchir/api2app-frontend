@@ -106,6 +106,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.label || defaultValues.label
                 });
+                output.push({
+                    name: 'min',
+                    label: 'Minimum Value',
+                    type: 'input-number',
+                    value: options?.min || defaultValues.min
+                });
+                output.push({
+                    name: 'max',
+                    label: 'Maximum Value',
+                    type: 'input-number',
+                    value: options?.max || defaultValues.max
+                });
                 break;
             case 'input-textarea':
                 output.push({
@@ -269,7 +281,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'number',
                     label: 'Number',
                     type: 'input-number',
-                    value: 0
+                    min: 0,
+                    max: 10,
+                    value: 1
                 });
                 break;
             case 'input-textarea':
@@ -330,11 +344,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: 'gridColumnSpan',
             label: 'Grid Columns Span',
             type: 'input-number',
-            value: options?.gridColumnSpan || defaultValues.gridColumnSpan,
-            options: {
-                min: 0,
-                max: 3
-            }
+            min: 0,
+            max: 3,
+            value: options?.gridColumnSpan || defaultValues.gridColumnSpan
         });
         return output;
     }

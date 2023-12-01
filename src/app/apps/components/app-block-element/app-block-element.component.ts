@@ -60,18 +60,17 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.delete.emit();
     }
 
-    numberIncrease(keyName = 'value', max: number = 0): void {
+    numberIncrease(keyName = 'value', max?: number): void {
         this.options[keyName] = Number(this.options[keyName] || 0);
-        if (max && this.options[keyName] >= max) {
+        if (typeof max === 'number' && this.options[keyName] >= max) {
             return;
         }
         this.options[keyName]++;
     }
 
-    numberDecrease(keyName = 'value', min: number = 0): void {
-        min = min || 0;
+    numberDecrease(keyName = 'value', min?: number): void {
         this.options[keyName] = Number(this.options[keyName] || 0);
-        if (this.options[keyName] <= min) {
+        if (typeof min === 'number' && this.options[keyName] <= min) {
             return;
         }
         this.options[keyName]--;

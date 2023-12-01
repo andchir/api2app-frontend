@@ -13,6 +13,8 @@ export interface AppBlockElement {
     value?: string | number | boolean | string[];
     choices?: string[];
     color?: string;
+    min?: number;
+    max?: number;
     options?: any;
 }
 
