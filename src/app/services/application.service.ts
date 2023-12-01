@@ -344,7 +344,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: 'gridColumnSpan',
             label: 'Grid Columns Span',
             type: 'input-number',
-            min: 0,
+            min: 1,
             max: 3,
             value: options?.gridColumnSpan || defaultValues.gridColumnSpan
         });
