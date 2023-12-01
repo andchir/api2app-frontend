@@ -149,6 +149,11 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.isOptionsActive = true;
     }
 
+    elementActionSelect(element: AppBlockElement): void {
+        console.log('selectElementAction', element);
+
+    }
+
     showBlockInit(block: AppBlock, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();

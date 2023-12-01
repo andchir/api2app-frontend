@@ -3,7 +3,7 @@
     <ng-container [ngSwitch]="type">
 
         <ng-container *ngSwitchCase="null">
-            <div class="mb-3">
+            <div class="min-h[15px] mb-3">
                 <ng-select class="ng-select-custom" [items]="inputTypes"
                            bindLabel="title"
                            bindValue="name"
@@ -12,7 +12,7 @@
                            [(ngModel)]="type"
                            (ngModelChange)="updateItemType()">
                     <ng-template ng-option-tmp let-item="item">
-                        <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
+                        <i class="bi bi-type-h1 mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
                         <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text'"></i>
                         <i class="bi bi-app mr-1 text-gray-400" *ngIf="item.name === 'button'"></i>
                         <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
@@ -188,15 +188,20 @@
 
 <ng-template #templateButtonOptions>
     <div class="absolute -right-2 -top-2 invisible group-hover/element:visible" *ngIf="editorMode">
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1 me-2"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Options"
                 (click)="elementOptionsInit($event)">
-            <i class="bi bi-gear-fill text-xl"></i>
+            <i class="bi bi-gear-fill text-base"></i>
         </button>
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 py-1"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+                title="Action"
+                (click)="elementActionSelect($event)">
+            <i class="bi bi-lightning-charge-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Delete"
                 (click)="elementDeleteInit()">
-            <i class="bi bi-trash3-fill text-xl"></i>
+            <i class="bi bi-trash3-fill text-base"></i>
         </button>
     </div>
 </ng-template>
