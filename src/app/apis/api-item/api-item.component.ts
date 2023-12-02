@@ -126,31 +126,35 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                 next: (res) => {
                     this.apiItem.responseBody = '';
                     this.apiItem.responseHeaders = [];
-                    res.headers.keys().forEach((headerName) => {
-                        this.apiItem.responseHeaders.push({
-                            name: headerName,
-                            value: String(res.headers.get(headerName))
-                        });
-                    });
                     this.isResponseError = false;
-                    if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
-                        this.apiItem.responseContentType = 'image';
+                    if (res.headers) {
+                        res.headers.keys().forEach((headerName) => {
+                            this.apiItem.responseHeaders.push({
+                                name: headerName,
+                                value: String(res.headers.get(headerName))
+                            });
+                        });
+                        if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
+                            this.apiItem.responseContentType = 'image';
+                        }
                     }
 
-                    this.apiService.getDataFromBlob(res.body, this.apiItem.responseContentType)
-                        .then((data) => {
-                            if (typeof data === 'object') {
-                                this.apiItem.responseBody = JSON.stringify(data, null, 2);
-                            } else {
-                                this.apiItem.responseBody = data;
-                            }
-                            if (!['image', 'audio'].includes(this.apiItem.responseContentType)) {
-                                this.aceEditor.session.setValue(this.apiItem.responseBody);
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                        });
+                    if (res.body) {
+                        this.apiService.getDataFromBlob(res.body, this.apiItem.responseContentType)
+                            .then((data) => {
+                                if (typeof data === 'object') {
+                                    this.apiItem.responseBody = JSON.stringify(data, null, 2);
+                                } else {
+                                    this.apiItem.responseBody = data;
+                                }
+                                if (!['image', 'audio'].includes(this.apiItem.responseContentType)) {
+                                    this.aceEditor.session.setValue(this.apiItem.responseBody);
+                                }
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                            });
+                    }
 
                     this.loading = false;
                     this.submitted = false;
