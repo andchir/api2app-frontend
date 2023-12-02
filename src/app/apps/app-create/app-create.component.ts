@@ -1,9 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Subject } from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 
-import { ApiService } from '../../services/api.service';
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
 import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
@@ -12,7 +11,7 @@ import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-bl
     selector: 'app-application-create',
     templateUrl: './app-create.component.html',
     styleUrls: ['./app-create.component.css'],
-    providers: [ApiService]
+    providers: []
 })
 export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
@@ -25,11 +24,6 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     itemId: number = 0;
     data: ApplicationItem = ApplicationService.getDefault();
-    blocks: AppBlock[] = [
-        {elements: []},
-        {elements: []},
-        {elements: []}
-    ];
     selectedElement: AppBlockElement;
     selectedBlock: AppBlock;
     selectedItemOptionsFields: AppBlockElement[] = [];
@@ -51,7 +45,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     }
 
     findEmptyBlocks(): AppBlock[] {
-        return this.blocks.filter((item) => {
+        return this.data.blocks.filter((item) => {
             const emptyElements = this.findEmptyElements(item);
             return emptyElements.length === item.elements.length;
         });
@@ -70,10 +64,10 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyItems.length <= gridColumns) {
             return;
         }
-        const index = this.blocks.findIndex((item) => {
+        const index = this.data.blocks.findIndex((item) => {
             return item.elements.length === 0;
         });
-        this.blocks.splice(index, 1);
+        this.data.blocks.splice(index, 1);
 
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
@@ -88,7 +82,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyItems.length >= gridColumns) {
             return;
         }
-        this.blocks.push({elements: []});
+        this.data.blocks.push({elements: []});
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();
@@ -117,7 +111,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     }
 
     deleteEmptyElements(blockCurrent?: AppBlock): void {
-        this.blocks.forEach((block) => {
+        this.data.blocks.forEach((block) => {
             if (block !== blockCurrent) {
                 block.elements.forEach((element, index, object) => {
                     if (['empty', null].includes(element.type)) {
@@ -191,41 +185,48 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     }
 
     getData(): void {
-        // this.apiService.getItem(this.itemId)
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.data = res;
-        //             this.loading = false;
-        //         },
-        //         error: (err) => {
-        //             this.errors = err;
-        //             this.loading = false;
-        //         }
-        //     });
+        this.dataService.getItem(this.itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.data = res;
+                    this.loading = false;
+                },
+                error: (err) => {
+                    this.errors = err;
+                    this.loading = false;
+                }
+            });
     }
 
     saveData(): void {
-        // this.message = '';
-        // this.errors = {};
-        // this.loading = true;
-        // this.submitted = true;
-        // this.apiService.updateItem(this.data)
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.loading = false;
-        //             this.submitted = false;
-        //             this.router.navigate(['/apis']);
-        //         },
-        //         error: (err) => {
-        //             this.errors = err;
-        //             this.message = 'Please correct the errors.';
-        //             this.messageType = 'error';
-        //             this.loading = false;
-        //             this.submitted = false;
-        //         }
-        //     });
+        console.log('saveData', this.data);
+        const data = Object.assign({}, this.data);
+        data.blocks = this.data.blocks.filter((block) => {
+            const emptyElements = this.findEmptyElements(block);
+            return block.elements.length > emptyElements.length;
+        });
+        this.message = '';
+        this.errors = {};
+        this.loading = true;
+        this.submitted = true;
+        this.dataService.updateItem(data)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.loading = false;
+                    this.submitted = false;
+                    this.router.navigate(['/apps', 'personal']);
+                },
+                error: (err) => {
+                    this.errors = err;
+                    this.message = 'Please correct the errors.';
+                    this.messageType = 'error';
+                    this.loading = false;
+                    this.submitted = false;
+                    console.log(this.errors);
+                }
+            });
     }
 
     deleteErrorMessages(name: string) {

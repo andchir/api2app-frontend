@@ -10,7 +10,7 @@ import { ApiService } from '../../services/api.service';
     selector: 'app-api-shared',
     templateUrl: './api-shared.component.html',
     styleUrls: ['./api-shared.component.css'],
-    providers: [ApiService]
+    providers: []
 })
 export class ApiSharedComponent implements OnInit, OnDestroy {
 
@@ -48,29 +48,6 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
                 error: (err) => {
                     this.errors = err;
                     this.loading = false;
-                }
-            });
-    }
-
-    saveData(): void {
-        this.message = '';
-        this.errors = {};
-        this.loading = true;
-        this.submitted = true;
-        this.apiService.updateItem(this.data)
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: (res) => {
-                    this.loading = false;
-                    this.submitted = false;
-                    this.router.navigate(['/apis']);
-                },
-                error: (err) => {
-                    this.errors = err;
-                    this.message = 'Please correct the errors.';
-                    this.messageType = 'error';
-                    this.loading = false;
-                    this.submitted = false;
                 }
             });
     }

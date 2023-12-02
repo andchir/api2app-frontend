@@ -10,7 +10,7 @@ import { ApiService } from '../../services/api.service';
     selector: 'app-api-create',
     templateUrl: './api-create.component.html',
     styleUrls: ['./api-create.component.css'],
-    providers: [ApiService]
+    providers: []
 })
 export class ApiCreateComponent implements OnInit, OnDestroy {
 

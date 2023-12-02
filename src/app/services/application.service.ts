@@ -4,7 +4,7 @@ import { environment } from '../../environments/environment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import { AppBlockElement, AppBlockElementType, AppOptions } from "../apps/models/app-block.interface";
+import {AppBlock, AppBlockElement, AppBlockElementType, AppOptions} from "../apps/models/app-block.interface";
 
 const BASE_URL = environment.apiUrl;
 
@@ -371,7 +371,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         httpClient: HttpClient
     ) {
         super(httpClient);
-        this.requestUrl = `${BASE_URL}apps_items`;
+        this.requestUrl = `${BASE_URL}applications`;
     }
 
     static getDefault(): ApplicationItem {
@@ -380,7 +380,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: '',
             uuid: '',
             shared: false,
-            gridColumns: 3
+            gridColumns: 3,
+            blocks: [{elements: []}, {elements: []}, {elements: []}]
         };
     }
 }

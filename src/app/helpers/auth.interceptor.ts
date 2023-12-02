@@ -31,9 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (error instanceof HttpErrorResponse && !authReq.url.includes('/token/') && [401, 403].includes(error.status)) {
                     return this.handle401Error(authReq, next);
                 }
-                return !authReq.url.includes('/token/')
-                    ? throwError(() => new Error('forbidden'))
-                    : throwError(error);
+                return throwError(error);
             }));
     }
 

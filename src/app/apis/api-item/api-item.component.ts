@@ -10,7 +10,7 @@ import { ApiItem } from '../models/api-item.interface';
     selector: 'app-api-item',
     templateUrl: './api-item.component.html',
     styleUrls: ['./api-item.component.css'],
-    providers: [ApiService]
+    providers: []
 })
 export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
