@@ -124,6 +124,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    console.log(res);
                     this.apiItem.responseBody = '';
                     this.apiItem.responseHeaders = [];
                     this.isResponseError = false;
