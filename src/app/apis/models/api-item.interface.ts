@@ -9,6 +9,7 @@ export interface ApiItem {
     requestContentType: string;
     basicAuth: boolean;
     bodyDataSource: 'fields'|'raw';
+    sender: 'server'|'browser';
     authLogin: string;
     authPassword: string;
     sendAsFormData: boolean;

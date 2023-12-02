@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
-import { iif, Observable } from 'rxjs';
+import {catchError, iif, Observable} from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
@@ -35,6 +35,7 @@ export class ApiService extends DataService<ApiItem> {
             responseHeaders: [],
             responseContentType: 'json',
             bodyDataSource: 'fields',
+            sender: 'browser',
             authLogin: '',
             authPassword: '',
             bodyFields: [
@@ -78,6 +79,10 @@ export class ApiService extends DataService<ApiItem> {
         }
         if (data.sendAsFormData && !headersData['enctype']) {
             headersData['enctype'] = 'multipart/form-data';
+        }
+
+        if (data.sender === 'server') {
+            return this.apiRequestByProxy(data);
         }
 
         // Get request body
@@ -129,6 +134,20 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         return httpRequest;
+    }
+
+    apiRequestByProxy(data: any): Observable<any> {
+        const url = `${BASE_URL}proxy`;
+        const CSRFToken = this.getCookie('csrftoken');
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            // 'X-CSRFToken': CSRFToken,
+            // 'Mode': 'same-origin'
+        });
+        return this.httpClient.post<any>(url, data, {headers})
+            .pipe(
+                catchError(this.handleError)
+            );
     }
 
     override updateItem(apiItem: ApiItem): Observable<ApiItem> {
@@ -183,5 +202,21 @@ export class ApiService extends DataService<ApiItem> {
                 fileReader.readAsText(blob);
             }
         });
+    }
+
+    getCookie(name: string|null): string {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 }

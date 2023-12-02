@@ -1,4 +1,4 @@
-<div class="flex gap-3 mb-4">
+<div class="flex flex-wrap gap-3 mb-4">
 
     <div class="dropdown inline-block">
         <button class="bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded inline-flex items-center">
@@ -26,7 +26,7 @@
     </div>
 
     <div>
-        <button type="button" class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-4 py-2 transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline w-40"
+        <button type="button" class="border border-indigo-500 bg-indigo-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-indigo-600 focus:outline-none focus:shadow-outline"
                 [disabled]="loading"
                 (click)="apiSendRequest()">
             <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg" *ngIf="loading && submitted">
@@ -35,6 +35,27 @@
             </svg>
             Test
         </button>
+    </div>
+
+    <div>
+        <ul class="flex gap-1 flex-wrap text-xs font-medium text-center text-gray-500 dark:text-gray-400 p-1 rounded-md border border-gray-400">
+            <li>
+                <button type="button"
+                        class="inline-block px-3 py-2 rounded-md hover:text-gray-900 hover:bg-gray-200"
+                        [ngClass]="{'text-white bg-gray-400 hover:text-white hover:bg-gray-400': apiItem.sender === 'browser'}"
+                        (click)="apiItem.sender = 'browser'">
+                    Browser
+                </button>
+            </li>
+            <li>
+                <button type="button"
+                        class="inline-block px-3 py-2 rounded-md active hover:text-gray-900 hover:bg-gray-200"
+                        [ngClass]="{'text-white bg-gray-400 hover:text-white hover:bg-gray-400': apiItem.sender === 'server'}"
+                        (click)="apiItem.sender = 'server'">
+                    Server
+                </button>
+            </li>
+        </ul>
     </div>
 
 </div>
