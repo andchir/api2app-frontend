@@ -136,18 +136,16 @@ export class ApiService extends DataService<ApiItem> {
         return httpRequest;
     }
 
-    apiRequestByProxy(data: any): Observable<any> {
+    apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}proxy`;
         const CSRFToken = this.getCookie('csrftoken');
+        const responseType = 'blob';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
             // 'X-CSRFToken': CSRFToken,
             // 'Mode': 'same-origin'
         });
-        return this.httpClient.post<any>(url, data, {headers})
-            .pipe(
-                catchError(this.handleError)
-            );
+        return this.httpClient.post(url, data, {headers, responseType, observe: 'response'});
     }
 
     override updateItem(apiItem: ApiItem): Observable<ApiItem> {
