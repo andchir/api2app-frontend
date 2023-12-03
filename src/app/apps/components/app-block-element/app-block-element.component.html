@@ -30,7 +30,9 @@
 
         <ng-container *ngSwitchCase="'text'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">{{ options?.value }}</div>
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode, 'whitespace-pre-line': options?.whiteSpacePre}">
+                {{ options?.value }}
+            </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 

@@ -44,6 +44,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-textarea',
                     value: options?.value
                 });
+                output.push({
+                    name: 'whiteSpacePre',
+                    label: 'Use line break',
+                    type: 'input-switch',
+                    value: options?.whiteSpacePre
+                });
                 break;
             case 'button':
                 output.push({
@@ -256,7 +262,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'text':
                 Object.assign(output, {
                     name: 'text',
-                    value: 'Example Text'
+                    value: 'Example Text',
+                    whiteSpacePre: false
                 });
                 break;
             case 'button':

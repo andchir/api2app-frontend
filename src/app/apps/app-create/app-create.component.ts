@@ -201,7 +201,6 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     }
 
     saveData(): void {
-        console.log('saveData', this.data);
         const data = Object.assign({}, this.data);
         data.blocks = this.data.blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);
@@ -225,7 +224,6 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
                     this.messageType = 'error';
                     this.loading = false;
                     this.submitted = false;
-                    console.log(this.errors);
                 }
             });
     }

@@ -9,9 +9,25 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
 
-        <div>
+        <div class="grid grid-cols-1 gap-4"
+             [ngClass]="{'md:grid-cols-2 lg:grid-cols-3': data?.gridColumns === 3, 'md:grid-cols-2': data?.gridColumns === 2}">
 
+            <div class="block relative group/block"
+                 [ngClass]="{'col-span-2': block.options?.gridColumnSpan === 2, 'col-span-3': block.options?.gridColumnSpan === 3}"
+                 *ngFor="let block of data?.blocks; index as index">
 
+                <div class="relative z-20 bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
+                    <ng-container *ngFor="let element of block.elements; index as ind">
+                        <app-block-element [type]="element.type"
+                                           [parentIndex]="index"
+                                           [index]="ind"
+                                           [options]="element"
+                                           [editorMode]="false"></app-block-element>
+
+                    </ng-container>
+                </div>
+
+            </div>
 
         </div>
 

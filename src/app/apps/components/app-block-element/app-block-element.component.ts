@@ -14,7 +14,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() parentIndex: number = 0;
     @Input() editorMode = false;
     @Input() type: AppBlockElementType;
-    @Input() options: AppBlockElement;
+    @Input() options: any;
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<void> = new EventEmitter<void>();
