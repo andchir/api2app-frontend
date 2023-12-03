@@ -16,8 +16,6 @@ import { ListAbstractComponent } from '../../../list.component.abstract';
 })
 export class ListSharedComponent extends ListAbstractComponent<ApiItem> implements OnInit, OnDestroy {
 
-    isShareActive = false;
-
     constructor(
         router: Router,
         authService: AuthService,

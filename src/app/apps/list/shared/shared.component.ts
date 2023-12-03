@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { iif, takeUntil } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
@@ -13,8 +14,6 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
-    isShareActive = false;
-
     constructor(
         router: Router,
         authService: AuthService,
@@ -24,27 +23,27 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
     }
 
     getData(shared = true): void {
-        // this.loading = true;
-        // iif(() => shared,
-        //     this.apiService.getListShared(),
-        //     this.apiService.getList()
-        // )
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.items = res.results;
-        //             this.loading = false;
-        //             this.onDataLoaded();
-        //         },
-        //         error: (err) => {
-        //             console.log(err);
-        //             this.loading = false;
-        //         }
-        //     });
+        this.loading = true;
+        iif(() => shared,
+            this.dataService.getListShared(),
+            this.dataService.getList()
+        )
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.items = res.results;
+                    this.loading = false;
+                    this.onDataLoaded();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loading = false;
+                }
+            });
     }
 
     viewItem(item: ApplicationItem): void {
-        this.router.navigate(['/apis/shared/', item.uuid]);
+        this.router.navigate(['/apps/shared/', item.uuid]);
     }
 
     viewSharedUrl(item: ApplicationItem): void {

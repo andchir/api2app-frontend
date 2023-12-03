@@ -17,6 +17,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     selectedId = 0;
     selectedItem: T;
     isDeleteAction = false;
+    isShareActive = false;
     userSubject$: BehaviorSubject<User>;
     destroyed$: Subject<void> = new Subject();
 
@@ -44,6 +45,16 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
                 Object.assign(this.selectedItem, this.items[index]);
             }
         }
+    }
+
+    deleteItem(item: T) {
+        this.selectItem(item);
+        this.isDeleteAction = true;
+    }
+
+    shareItem(item: T): void {
+        this.selectItem(item);
+        this.isShareActive = true;
     }
 
     selectItem(targetItem: T): void {

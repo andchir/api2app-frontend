@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { takeUntil } from 'rxjs';
+import { iif, takeUntil } from 'rxjs';
 
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
@@ -15,8 +15,6 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationsListPersonalComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
-    isShareActive = false;
-
     constructor(
         router: Router,
         authService: AuthService,
@@ -25,24 +23,21 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
         super(router, authService, dataService);
     }
 
-    getData(shared = true): void {
-        // this.loading = true;
-        // iif(() => shared,
-        //     this.apiService.getListShared(),
-        //     this.apiService.getList()
-        // )
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.items = res.results;
-        //             this.loading = false;
-        //             this.onDataLoaded();
-        //         },
-        //         error: (err) => {
-        //             console.log(err);
-        //             this.loading = false;
-        //         }
-        //     });
+    getData(): void {
+        this.loading = true;
+        this.dataService.getList()
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.items = res.results;
+                    this.loading = false;
+                    this.onDataLoaded();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loading = false;
+                }
+            });
     }
 
     deleteItemConfirmed(): void {
@@ -67,7 +62,7 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     }
 
     viewItem(item: ApplicationItem): void {
-        this.router.navigate(['/apis/shared/', item.uuid]);
+        this.router.navigate(['/apps/edit/', item.id]);
     }
 
     viewSharedUrl(item: ApplicationItem): void {

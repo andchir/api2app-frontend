@@ -44,6 +44,22 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         }
     }
 
+    getData(): void {
+        this.dataService.getItem(this.itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.data = res;
+                    this.loading = false;
+                    this.addEmptyBlockByGrid();
+                },
+                error: (err) => {
+                    this.errors = err;
+                    this.loading = false;
+                }
+            });
+    }
+
     findEmptyBlocks(): AppBlock[] {
         return this.data.blocks.filter((item) => {
             const emptyElements = this.findEmptyElements(item);
@@ -182,21 +198,6 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.selectedElement = null;
         this.selectedBlock = null;
         this.isOptionsActive = false;
-    }
-
-    getData(): void {
-        this.dataService.getItem(this.itemId)
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: (res) => {
-                    this.data = res;
-                    this.loading = false;
-                },
-                error: (err) => {
-                    this.errors = err;
-                    this.loading = false;
-                }
-            });
     }
 
     saveData(): void {

@@ -36,16 +36,6 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         this.router.navigate(['/apis/edit/', item.id]);
     }
 
-    deleteItem(apiItem: ApiItem) {
-        this.selectItem(apiItem);
-        this.isDeleteAction = true;
-    }
-
-    shareItem(apiItem: ApiItem): void {
-        this.selectItem(apiItem);
-        this.isShareActive = true;
-    }
-
     deleteItemConfirmed(): void {
         if (!this.selectedId) {
             return;
