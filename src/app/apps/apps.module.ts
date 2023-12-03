@@ -11,6 +11,7 @@ import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { ApplicationService } from '../services/application.service';
 import { AppBlockElementComponent } from './components/app-block-element/app-block-element.component';
 import { ApplicationSharedComponent } from './app-shared/app-shared.component';
+import { AppActionComponent } from './components/app-action/app-action.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { ApplicationSharedComponent } from './app-shared/app-shared.component';
         ApplicationsListPersonalComponent,
         ApplicationCreateComponent,
         ApplicationSharedComponent,
-        AppBlockElementComponent
+        AppBlockElementComponent,
+        AppActionComponent
     ],
     imports: [
         CommonModule,

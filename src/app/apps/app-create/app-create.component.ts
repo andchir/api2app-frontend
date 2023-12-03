@@ -1,11 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, ComponentRef, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {Subject, takeUntil} from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
 import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
+import {AppActionComponent} from "../components/app-action/app-action.component";
 
 @Component({
     selector: 'app-application-create',
@@ -14,6 +15,9 @@ import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-bl
     providers: []
 })
 export class ApplicationCreateComponent implements OnInit, OnDestroy {
+
+    @ViewChild('dynamic', { read: ViewContainerRef })
+    private viewRef: ViewContainerRef;
 
     errors: {[name: string]: string[]} = {};
     message: string = '';
@@ -159,11 +163,6 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.isOptionsActive = true;
     }
 
-    elementActionSelect(element: AppBlockElement): void {
-        console.log('selectElementAction', element);
-
-    }
-
     showBlockInit(block: AppBlock, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
@@ -232,6 +231,34 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (this.errors[name]) {
             delete this.errors[name];
         }
+    }
+
+    elementActionSelect(element: AppBlockElement): void {
+        console.log('selectElementAction', element);
+
+        const componentRef = this.showDynamicComponent(AppActionComponent);
+        componentRef.instance.customData = {
+            test: 'test key',
+            value: 'test value'
+        }
+
+        componentRef.instance.close.subscribe({
+            next: (reason) => {
+                if (reason === 'submit') {
+                    console.log('SUBMIT', componentRef.instance.customData);
+                }
+                this.removeDynamicComponent();
+            }
+        });
+    }
+
+    showDynamicComponent(dynamicComponent: Type<any>): ComponentRef<any> {
+        this.removeDynamicComponent();
+        return this.viewRef.createComponent(dynamicComponent);
+    }
+
+    removeDynamicComponent(): void {
+        this.viewRef.clear();
     }
 
     ngOnDestroy(): void {
