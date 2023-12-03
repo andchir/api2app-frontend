@@ -55,9 +55,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['apiItem'] && this.aceEditor) {
-            this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
-            this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
-
+            if (!['audio', 'image'].includes(this.apiItem.responseContentType)) {
+                this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
+            }
+            if (!['audio', 'image'].includes(this.apiItem.requestContentType)) {
+                this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
+            }
             this.aceEditor.session.setValue(this.apiItem.responseBody);
             this.aceEditorRequest.session.setValue(this.apiItem.bodyContent);
         }
@@ -68,7 +71,9 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
         this.aceEditor = ace.edit(this.editorResponse.nativeElement);
         this.aceEditor.setTheme('ace/theme/textmate');
-        this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
+        if (!['audio', 'image'].includes(this.apiItem.responseContentType)) {
+            this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
+        }
 
         this.aceEditor.on('change', () => {
             this.apiItem.responseBody = this.aceEditor.getValue();
@@ -77,7 +82,9 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.aceEditorRequest = ace.edit(this.editorRequest.nativeElement);
         this.aceEditorRequest.setTheme('ace/theme/textmate');
-        this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
+        if (!['audio', 'image'].includes(this.apiItem.requestContentType)) {
+            this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
+        }
 
         this.aceEditorRequest.on('change', () => {
             this.apiItem.bodyContent = this.aceEditorRequest.getValue();
@@ -124,7 +131,6 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    console.log(res);
                     this.apiItem.responseBody = '';
                     this.apiItem.responseHeaders = [];
                     this.isResponseError = false;
@@ -139,7 +145,6 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                             this.apiItem.responseContentType = 'image';
                         }
                     }
-
                     if (res.body) {
                         this.apiService.getDataFromBlob(res.body, this.apiItem.responseContentType)
                             .then((data) => {
