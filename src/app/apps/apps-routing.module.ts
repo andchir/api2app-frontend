@@ -6,6 +6,7 @@ import { NotFoundComponent } from '../not-found/not-found.component';
 import { ApplicationsListSharedComponent } from './list/shared/shared.component';
 import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
 import { ApplicationCreateComponent } from './app-create/app-create.component';
+import { ApplicationSharedComponent } from './app-shared/app-shared.component';
 
 const routes: Routes = [
     {
@@ -34,6 +35,10 @@ const routes: Routes = [
     {
         path: 'edit/:id',
         component: ApplicationCreateComponent
+    },
+    {
+        path: 'shared/:uuid',
+        component: ApplicationSharedComponent
     },
     {
         path: '**',

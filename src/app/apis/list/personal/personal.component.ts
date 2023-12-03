@@ -57,22 +57,6 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
             });
     }
 
-    makeSharedConfirmed(shared: boolean): void {
-        if (!this.selectedId) {
-            return;
-        }
-        this.dataService.patch(this.selectedId, {shared})
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: () => {
-                    this.getData(false);
-                },
-                error: (err) => {
-                    this.loading = false;
-                }
-            });
-    }
-
     closeConfirmModal(): void {
         this.selectionClear();
         this.isDeleteAction = false;

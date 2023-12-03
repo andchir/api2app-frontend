@@ -35,6 +35,14 @@
 
 </div>
 
+<app-share-item title="Share Application"
+                [loading]="loading"
+                [(isActive)]="isShareActive"
+                [shareUrl]="'http://localhost:4200/apps/shared/'"
+                [itemUuid]="selectedItem.uuid"
+                [readOnly]="true"
+                [isShared]="true" *ngIf="selectedItem"></app-share-item>
+
 <ng-template #templateEmpty>
     <div class="px-3 sm:px-0">
         <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert" *ngIf="!loading">

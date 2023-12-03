@@ -47,10 +47,15 @@
                 </span>
             </button>
         </div>
-        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded border border-green-400 shadow-md absolute right-0 -top-2"
-            *ngIf="item.shared">
-            Shared
-        </span>
+        <div class="absolute right-2 -top-2">
+            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
+                  *ngIf="item.shared">
+                Shared
+            </span>
+            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md ms-2">
+                {{ item.requestMethod }}
+            </span>
+        </div>
     </div>
 
 </div>

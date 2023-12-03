@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import {BehaviorSubject, Subject} from 'rxjs';
+import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
 
 import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
@@ -70,6 +70,22 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     selectionClear(): void {
         this.selectedId = 0;
         this.selectedItem = null;
+    }
+
+    makeSharedConfirmed(shared: boolean): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.dataService.patch(this.selectedId, {shared})
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.getData();
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
     }
 
     ngOnDestroy(): void {

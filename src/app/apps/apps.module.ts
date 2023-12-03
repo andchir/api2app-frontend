@@ -10,6 +10,7 @@ import { ApplicationsListPersonalComponent } from './list/personal/personal.comp
 import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { ApplicationService } from '../services/application.service';
 import { AppBlockElementComponent } from './components/app-block-element/app-block-element.component';
+import { ApplicationSharedComponent } from './app-shared/app-shared.component';
 
 @NgModule({
     declarations: [
@@ -17,6 +18,7 @@ import { AppBlockElementComponent } from './components/app-block-element/app-blo
         ApplicationsListSharedComponent,
         ApplicationsListPersonalComponent,
         ApplicationCreateComponent,
+        ApplicationSharedComponent,
         AppBlockElementComponent
     ],
     imports: [
