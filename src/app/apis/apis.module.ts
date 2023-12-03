@@ -10,7 +10,6 @@ import { ListPersonalComponent } from './list/personal/personal.component';
 import { ListSharedComponent } from './list/shared/shared.component';
 import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
-import { ShareApiComponent } from "./share-api/share-api.component";
 import { ApiSharedComponent } from './api-shared/api-shared.component';
 import { ApiService } from '../services/api.service';
 
@@ -21,8 +20,7 @@ import { ApiService } from '../services/api.service';
         ListSharedComponent,
         ApiCreateComponent,
         ApiItemComponent,
-        ApiSharedComponent,
-        ShareApiComponent
+        ApiSharedComponent
     ],
     imports: [
         CommonModule,

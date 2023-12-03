@@ -35,11 +35,13 @@
 
 </div>
 
-<app-share-api [loading]="loading"
-               [title]="'Shared URL'"
-               [readOnly]="true"
-               [(isActive)]="isShareActive"
-               [item]="selectedItem"></app-share-api>
+<app-share-item title="Share API"
+                [loading]="loading"
+                [(isActive)]="isShareActive"
+                [shareUrl]="'http://localhost:4200/apis/shared/'"
+                [itemUuid]="selectedItem.uuid"
+                [readOnly]="true"
+                [isShared]="true" *ngIf="selectedItem"></app-share-item>
 
 <ng-template #templateEmpty>
     <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert" *ngIf="!loading">

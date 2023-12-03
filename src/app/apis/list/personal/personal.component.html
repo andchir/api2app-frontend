@@ -57,10 +57,13 @@
 
 <app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
 
-<app-share-api [loading]="loading"
-               [(isActive)]="isShareActive"
-               [item]="selectedItem"
-               (confirmed)="makeSharedConfirmed($event)"></app-share-api>
+<app-share-item title="Share API"
+                [loading]="loading"
+                [(isActive)]="isShareActive"
+                [(isShared)]="selectedItem.shared"
+                [shareUrl]="'http://localhost:4200/apis/shared/'"
+                [itemUuid]="selectedItem.uuid"
+                (confirmed)="makeSharedConfirmed($event)" *ngIf="selectedItem"></app-share-item>
 
 <ng-template #templateNotLoggedIn>
     <div class="px-3">

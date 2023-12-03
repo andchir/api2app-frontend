@@ -9,6 +9,7 @@ import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.c
 import { AlertComponent } from './shared/alert/alert.component';
 import { ConfirmComponent } from './shared/confirm/confirm.component';
 import { DrawerComponent } from './shared/drawer/drawer.component';
+import { ShareItemComponent } from './shared/share-item/share-item.component';
 
 @NgModule({
     imports: [
@@ -20,12 +21,14 @@ import { DrawerComponent } from './shared/drawer/drawer.component';
         AlertComponent,
         ConfirmComponent,
         DrawerComponent,
+        ShareItemComponent,
         NotAuthorizedComponent
     ],
     exports: [
         AlertComponent,
         ConfirmComponent,
         DrawerComponent,
+        ShareItemComponent,
         NotAuthorizedComponent,
         CommonModule,
         FormsModule,
