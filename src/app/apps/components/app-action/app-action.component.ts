@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ApiItem } from '../../../apis/models/api-item.interface';
 
 @Component({
     selector: 'app-element-action',
@@ -8,6 +9,8 @@ export class AppActionComponent implements OnInit {
 
     @Input() customData: any;
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
+    apisList: ApiItem[] = [];
+    selectedApi: ApiItem;
 
     constructor() {
 

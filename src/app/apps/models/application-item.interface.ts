@@ -5,6 +5,7 @@ export interface ApplicationItem {
     name: string;
     uuid: string;
     shared: boolean;
+    hidden: boolean;
     gridColumns: number;
     blocks: AppBlock[];
 }

@@ -38,6 +38,7 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
     }
 
     getData(): void {
+        this.loading = true;
         this.apiService.getItemByUuid(this.itemUuid)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({

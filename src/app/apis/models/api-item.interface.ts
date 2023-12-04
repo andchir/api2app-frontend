@@ -24,4 +24,5 @@ export interface ApiItem {
 
     uuid: string;
     shared: boolean;
+    hidden: boolean;
 }

@@ -387,6 +387,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: '',
             uuid: '',
             shared: false,
+            hidden: false,
             gridColumns: 3,
             blocks: [{elements: []}, {elements: []}, {elements: []}]
         };

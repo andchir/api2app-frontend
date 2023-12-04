@@ -26,6 +26,7 @@ export class ApiService extends DataService<ApiItem> {
             name: '',
             uuid: '',
             shared: false,
+            hidden: false,
             requestMethod: 'GET',
             requestUrl: 'http://httpbin.org/json',
             requestContentType: 'json',
