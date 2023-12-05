@@ -220,9 +220,9 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     searchItems(term: string): Observable<ApiItem[]> {
-        console.log('searchItems', term);
         const url = `${this.requestUrl}/search/`;
-        return this.httpClient.get<ApiItem[]>(url, this.httpOptions)
+        const params = this.createParams({term});
+        return this.httpClient.get<ApiItem[]>(url, Object.assign(this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );

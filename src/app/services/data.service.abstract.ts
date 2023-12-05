@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {HttpClient, HttpErrorResponse, HttpHeaders, HttpParams} from '@angular/common/http';
 import { catchError, iif, Observable, throwError } from "rxjs";
 
 export abstract class DataService<T extends {id: number}> {
@@ -85,6 +85,18 @@ export abstract class DataService<T extends {id: number}> {
             .pipe(
                 catchError(this.handleError)
             );
+    }
+
+    createParams(options: any): HttpParams {
+        let params = new HttpParams();
+        for (const name in options) {
+            if (!options.hasOwnProperty(name)
+                || typeof options[name] === 'undefined') {
+                continue;
+            }
+            params = params.append(name, options[name] !== null ? options[name] : '');
+        }
+        return params;
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {
