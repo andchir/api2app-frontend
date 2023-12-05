@@ -218,4 +218,13 @@ export class ApiService extends DataService<ApiItem> {
         }
         return cookieValue;
     }
+
+    searchItems(term: string): Observable<ApiItem[]> {
+        console.log('searchItems', term);
+        const url = `${this.requestUrl}/search/`;
+        return this.httpClient.get<ApiItem[]>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
 }

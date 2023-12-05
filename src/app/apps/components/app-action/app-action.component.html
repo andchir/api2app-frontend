@@ -21,12 +21,14 @@
                 <div class="flex gap-3 mb-3">
                     <div class="grow">
                         <ng-select class="ng-select-custom"
-                                   [items]="apisList"
-                                   [placeholder]="'Enter the name of the API to search'"
-                                   [clearable]="false"
-                                   [addTag]="true"
-                                   [multiple]="true"
-                                   [selectOnTab]="true"
+                                   [items]="items$ | async"
+                                   [clearable]="true"
+                                   [hideSelected]="true"
+                                   [typeahead]="searchInput$"
+                                   [minTermLength]="2"
+                                   [loading]="loading"
+                                   placeholder="Enter the name of the API to search"
+                                   typeToSearchText="Type to search"
                                    labelForId="apiSelectField"
                                    [(ngModel)]="selectedApi">
                         </ng-select>

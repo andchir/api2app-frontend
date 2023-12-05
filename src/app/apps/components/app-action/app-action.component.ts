@@ -1,5 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
+import { catchError, concat, debounceTime, distinctUntilChanged, Observable, of, Subject, tap } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+
 import { ApiItem } from '../../../apis/models/api-item.interface';
+import { ApiService } from '../../../services/api.service';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
     selector: 'app-element-action',
@@ -9,15 +15,20 @@ export class AppActionComponent implements OnInit {
 
     @Input() customData: any;
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
-    apisList: ApiItem[] = [];
     selectedApi: ApiItem;
+    items$: Observable<ApiItem[]>;
+    searchInput$ = new Subject<string>();
+    loading = false;
+    submitted = false;
 
-    constructor() {
-
-    }
+    constructor(
+        protected dataService: ApiService,
+        protected applicationService: ApplicationService
+    ) {}
 
     ngOnInit(): void {
         console.log('AppActionComponent INIT', this.customData);
+        this.loadItems();
     }
 
     submit(): void {
@@ -26,5 +37,20 @@ export class AppActionComponent implements OnInit {
 
     closeModal(): void {
         this.close.emit('close');
+    }
+
+    private loadItems() {
+        this.items$ = concat(
+            of([]),
+            this.searchInput$.pipe(
+                distinctUntilChanged(),
+                debounceTime(700),
+                tap(() => this.loading = true),
+                switchMap(term => this.dataService.searchItems(term).pipe(
+                    catchError(() => of([])),
+                    tap(() => this.loading = false)
+                ))
+            )
+        );
     }
 }
