@@ -1,12 +1,14 @@
-import {Component, ComponentRef, OnDestroy, OnInit, Type, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
 import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
-import {AppActionComponent} from "../components/app-action/app-action.component";
+import { AppActionComponent } from '../components/app-action/app-action.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
     selector: 'app-application-create',
@@ -36,7 +38,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     constructor(
         protected route: ActivatedRoute,
         protected router: Router,
-        protected dataService: ApplicationService
+        protected dataService: ApplicationService,
+        protected modalService: ModalService
     ) {
 
     }
@@ -236,29 +239,18 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     elementActionSelect(element: AppBlockElement): void {
         console.log('selectElementAction', element);
 
-        const componentRef = this.showDynamicComponent(AppActionComponent);
-        componentRef.instance.customData = {
-            test: 'test key',
-            value: 'test value'
-        }
-
-        componentRef.instance.close.subscribe({
-            next: (reason) => {
-                if (reason === 'submit') {
-                    console.log('SUBMIT', componentRef.instance.customData);
+        const initialData = {
+            selectedId: 0
+        };
+        this.modalService.showDynamicComponent(AppActionComponent, initialData, this.viewRef)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'submit') {
+                        console.log('SUBMIT', this.modalService.content);
+                    }
                 }
-                this.removeDynamicComponent();
-            }
-        });
-    }
-
-    showDynamicComponent(dynamicComponent: Type<any>): ComponentRef<any> {
-        this.removeDynamicComponent();
-        return this.viewRef.createComponent(dynamicComponent);
-    }
-
-    removeDynamicComponent(): void {
-        this.viewRef.clear();
+            });
     }
 
     ngOnDestroy(): void {

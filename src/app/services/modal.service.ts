@@ -1,40 +1,46 @@
-import { ApplicationRef, createComponent, EmbeddedViewRef, Inject, Injectable, Injector, Type } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
+import { Subject } from 'rxjs';
 
 @Injectable()
 export class ModalService {
 
-    constructor(
-        private appRef: ApplicationRef,
-        private injector: Injector,
-        @Inject(DOCUMENT) private document: Document
-    )
-    {}
+    private viewRef: ViewContainerRef;
+    private componentRef: ComponentRef<any>;
+    private close$: Subject<string> = new Subject();
 
-    public open(componentType: Type<any>, config: any): any {
+    constructor() {}
 
-        const dialogRef = this.appendDialogComponentToBody(config);
-
-        // this.dialogComponentRefMap.get(dialogRef).instance.childComponentType = componentType;
-
-        return dialogRef;
+    get content(): Type<any> {
+        return this.componentRef.instance;
     }
 
-    private appendDialogComponentToBody(config: any) {
-        console.log('appendDialogComponentToBody');
-
-        // const componentRef = createComponent(DynamicDialogComponent, { environmentInjector: this.appRef.injector, elementInjector: new DynamicDialogInjector(this.injector, map) });
-        //
-        // this.appRef.attachView(componentRef.hostView);
-        //
-        // const domElem = (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement;
-        //
-        // this.document.body.appendChild(domElem);
-
+    showDynamicComponent(dynamicComponent: Type<any>, data: any, parentView: ViewContainerRef): Subject<string> {
+        this.componentRef = this.createComponent(dynamicComponent, parentView);
+        for (let prop in data) {
+            if (data.hasOwnProperty(prop)) {
+                this.componentRef.instance[prop] = data[prop];
+            }
+        }
+        this.componentRef.instance.close
+            .subscribe({
+                next: (reason) => {
+                    this.close$.next(reason);
+                    this.removeDynamicComponent();
+                }
+            });
+        return this.close$;
     }
 
-    private removeDialogComponentFromBody(dialogRef: any) {
-        console.log('removeDialogComponentFromBody');
+    createComponent(dynamicComponent: Type<any>, parentView: ViewContainerRef): ComponentRef<any> {
+        this.removeDynamicComponent();
+        this.viewRef = parentView;
+        this.removeDynamicComponent();
+        return this.viewRef.createComponent(dynamicComponent);
+    }
 
+    removeDynamicComponent(): void {
+        if (this.viewRef) {
+            this.viewRef.clear();
+        }
     }
 }

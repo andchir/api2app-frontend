@@ -13,8 +13,8 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class AppActionComponent implements OnInit {
 
-    @Input() customData: any;
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
+    selectedId: number = 0;
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
     searchInput$ = new Subject<string>();
@@ -27,7 +27,6 @@ export class AppActionComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-        console.log('AppActionComponent INIT', this.customData);
         this.loadItems();
     }
 
