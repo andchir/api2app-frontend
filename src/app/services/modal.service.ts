@@ -14,8 +14,8 @@ export class ModalService {
         return this.componentRef.instance;
     }
 
-    showDynamicComponent(dynamicComponent: Type<any>, data: any, parentView: ViewContainerRef): Subject<string> {
-        this.componentRef = this.createComponent(dynamicComponent, parentView);
+    showDynamicComponent(parentView: ViewContainerRef, dynamicComponent: Type<any>, data: any): Subject<string> {
+        this.componentRef = this.createComponent(parentView, dynamicComponent);
         for (let prop in data) {
             if (data.hasOwnProperty(prop)) {
                 this.componentRef.instance[prop] = data[prop];
@@ -31,7 +31,7 @@ export class ModalService {
         return this.close$;
     }
 
-    createComponent(dynamicComponent: Type<any>, parentView: ViewContainerRef): ComponentRef<any> {
+    createComponent(parentView: ViewContainerRef, dynamicComponent: Type<any>): ComponentRef<any> {
         this.removeDynamicComponent();
         this.viewRef = parentView;
         this.removeDynamicComponent();

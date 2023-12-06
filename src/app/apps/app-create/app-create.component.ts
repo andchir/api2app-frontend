@@ -242,7 +242,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         const initialData = {
             selectedId: 0
         };
-        this.modalService.showDynamicComponent(AppActionComponent, initialData, this.viewRef)
+        this.modalService.showDynamicComponent(this.viewRef, AppActionComponent, initialData)
             .pipe(take(1))
             .subscribe({
                 next: (reason) => {
