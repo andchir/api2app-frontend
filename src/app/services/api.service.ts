@@ -219,10 +219,10 @@ export class ApiService extends DataService<ApiItem> {
         return cookieValue;
     }
 
-    searchItems(term: string): Observable<ApiItem[]> {
-        const url = `${this.requestUrl}/search/`;
-        const params = this.createParams({term});
-        return this.httpClient.get<ApiItem[]>(url, Object.assign(this.httpOptions, {params}))
+    searchItems(search: string): Observable<{count: number, results: ApiItem[]}> {
+        const url = `${this.requestUrl}/`;
+        const params = this.createParams({search});
+        return this.httpClient.get<{count: number, results: ApiItem[]}>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );

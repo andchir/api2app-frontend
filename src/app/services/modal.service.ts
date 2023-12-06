@@ -10,7 +10,7 @@ export class ModalService {
 
     constructor() {}
 
-    get content(): Type<any> {
+    get content(): any {
         return this.componentRef.instance;
     }
 
