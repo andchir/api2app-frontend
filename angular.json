@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "fastapp-frontend": {
+        "api2app-frontent": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/fastapp-frontend",
+                        "outputPath": "dist/api2app-frontent",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
@@ -73,10 +73,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "fastapp-frontend:build:production"
+                            "browserTarget": "api2app-frontent:build:production"
                         },
                         "development": {
-                            "browserTarget": "fastapp-frontend:build:development"
+                            "browserTarget": "api2app-frontent:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "fastapp-frontend:build"
+                        "browserTarget": "api2app-frontent:build"
                     }
                 },
                 "test": {
