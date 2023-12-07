@@ -1,8 +1,8 @@
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
-import {catchError, iif, Observable} from 'rxjs';
+import { catchError, iif, Observable } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
@@ -110,6 +110,9 @@ export class ApiService extends DataService<ApiItem> {
         const headers = new HttpHeaders(headersData);
         const requestData = data.sendAsFormData ? formData : body;
         const responseType = 'blob';
+        const params = data.requestMethod === 'GET'
+            ? this.createParams(body)
+            : new HttpParams();
 
         let httpRequest;
         switch (data.requestMethod) {
@@ -128,7 +131,7 @@ export class ApiService extends DataService<ApiItem> {
             case 'HEAD':
             case 'OPTIONS':
             case 'PURGE':
-                httpRequest = this.httpClient.request(data.requestMethod, data.requestUrl, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.request(data.requestMethod, data.requestUrl, {headers, responseType, params, observe: 'response'});
                 break;
             default:
                 httpRequest = this.httpClient.get(data.requestUrl, {headers, responseType, observe: 'response'});
