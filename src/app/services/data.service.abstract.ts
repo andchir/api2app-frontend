@@ -40,6 +40,14 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getItemByUuid(itemUuid: string): Observable<T> {
+        const url = `${this.requestUrl}/${itemUuid}/by_uuid/`;
+        return this.httpClient.get<T>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    getItemByUuidShared(itemUuid: string): Observable<T> {
         const url = `${this.requestUrl}/${itemUuid}/shared/`;
         return this.httpClient.get<T>(url, this.httpOptions)
             .pipe(

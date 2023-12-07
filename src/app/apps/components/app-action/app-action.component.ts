@@ -25,7 +25,7 @@ import { ApplicationService } from '../../../services/application.service';
 export class AppActionComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
-    selectedId: number = null;
+    selectedUuid: string | null = null;
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
     loading = false;
@@ -40,7 +40,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loadItems();
-        if (this.selectedId) {
+        if (this.selectedUuid) {
             this.onApiSelected();
         }
     }
@@ -71,11 +71,11 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     onApiSelected(): void {
-        if (!this.selectedId) {
+        if (!this.selectedUuid) {
             return;
         }
         this.loading = true;
-        this.dataService.getItem(this.selectedId)
+        this.dataService.getItemByUuid(this.selectedUuid)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -99,7 +99,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     onSearchCleared(): void {
-        this.selectedId = null;
+        this.selectedUuid = '';
         this.selectedApi = null;
     }
 

@@ -27,12 +27,12 @@
                                [minTermLength]="2"
                                [loading]="loading"
                                bindLabel="name"
-                               bindValue="id"
+                               bindValue="uuid"
                                placeholder="Enter the name of the API to search"
                                typeToSearchText="Type to search"
                                labelForId="apiSelectField"
                                (clear)="onSearchCleared()"
-                               [(ngModel)]="selectedId"
+                               [(ngModel)]="selectedUuid"
                                (ngModelChange)="onApiSelected()">
                     </ng-select>
                 </div>

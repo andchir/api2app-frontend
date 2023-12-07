@@ -241,14 +241,14 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             element.options = {};
         }
         const initialData = {
-            selectedId: element.options?.apiId
+            selectedUuid: element.options?.apiUuid
         };
         this.modalService.showDynamicComponent(this.viewRef, AppActionComponent, initialData)
             .pipe(take(1))
             .subscribe({
                 next: (reason) => {
                     if (reason === 'submit') {
-                        element.options.apiId = this.modalService.content.selectedApi?.id;
+                        element.options.apiUuid = this.modalService.content.selectedApi?.uuid;
                     }
                 }
             });

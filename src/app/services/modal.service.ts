@@ -11,7 +11,7 @@ export class ModalService {
     constructor() {}
 
     get content(): any {
-        return this.componentRef.instance;
+        return this.componentRef?.instance;
     }
 
     showDynamicComponent(parentView: ViewContainerRef, dynamicComponent: Type<any>, data: any): Subject<string> {

@@ -39,7 +39,7 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
 
     getData(): void {
         this.loading = true;
-        this.apiService.getItemByUuid(this.itemUuid)
+        this.apiService.getItemByUuidShared(this.itemUuid)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

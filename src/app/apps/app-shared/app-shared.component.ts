@@ -37,7 +37,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     getData(): void {
         this.loading = true;
-        this.dataService.getItemByUuid(this.itemUuid)
+        this.dataService.getItemByUuidShared(this.itemUuid)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
