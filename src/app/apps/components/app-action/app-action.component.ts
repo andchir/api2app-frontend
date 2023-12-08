@@ -128,6 +128,8 @@ export class AppActionComponent implements OnInit, OnDestroy {
                     this.outputFields.push(prop);
                 }
             }
+        } else if (['image', 'audio'].includes(this.selectedApi.responseContentType)) {
+            this.outputFields.push('response_value');
         }
     }
 

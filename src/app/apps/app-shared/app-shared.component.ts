@@ -128,7 +128,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.submitted = false;
             return;
         }
-        this.apiService.apiRequest(currentApi)
+        const apiItem = this.prepareApiItem(currentApi);
+        this.apiService.apiRequest(apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -144,13 +145,36 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
+    prepareApiItem(inputApiItem: ApiItem): ApiItem {
+        const apiItem = Object.assign({}, inputApiItem);
+        if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
+            const bodyFields = apiItem.bodyFields.map(field => {
+                return {...field};
+            })
+            const allElements = this.getAllElements();
+            bodyFields.forEach((bodyField) => {
+                const element = allElements.find((element) => {
+                    return element.options?.apiUuid === apiItem.uuid
+                        && element.options?.fieldName === bodyField.name
+                        && element.options?.fieldType === 'input';
+                });
+                if (!element) {
+                    return;
+                }
+                bodyField.value = String(element.value);
+            });
+            apiItem.bodyFields = bodyFields;
+        }
+        return apiItem;
+    }
+
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
         if (response.body) {
             const allElements = this.getAllElements();
             this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
                 .then((data) => {
                     const elements = allElements.filter((element) => {
-                        return element.options?.apiUuid === apiItem.uuid;
+                        return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
                     });
                     elements.forEach((element) => {
                         this.blockElementValueApply(element, data);
@@ -164,12 +188,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     blockElementValueApply(element: AppBlockElement, data: any): void {
         const fieldName = element.options?.fieldName;
-        if (!fieldName || !data[fieldName]) {
+        if (!fieldName) {
             return;
         }
-        element.value = (element.prefixText || '')
-            + data[fieldName]
-            + (element.suffixText || '');
+        if (['image', 'audio'].includes(element.type)) {
+            element.value = typeof data === 'string' ? data : null;
+        } else {
+            element.value = (element.prefixText || '')
+                + (data[fieldName] || '')
+                + (element.suffixText || '');
+        }
     }
 
     ngOnDestroy(): void {
