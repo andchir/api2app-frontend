@@ -258,6 +258,22 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.value
                 });
                 break;
+            case 'audio':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name
+                });
+                break;
+            case 'image':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name
+                });
+                break;
         }
         return output;
     }
@@ -347,6 +363,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Example Radio Buttons',
                     value: 'Value1',
                     choices: ['Value1', 'Value2', 'Value3']
+                });
+                break;
+            case 'image':
+                Object.assign(output, {
+                    name: 'image'
+                });
+                break;
+            case 'audio':
+                Object.assign(output, {
+                    name: 'audio'
                 });
                 break;
         }

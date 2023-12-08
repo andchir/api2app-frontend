@@ -31,7 +31,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-switch', title: 'Switch'},
         {name: 'input-select', title: 'Select'},
         {name: 'input-tags', title: 'Tags'},
-        {name: 'input-radio', title: 'Radio Buttons'}
+        {name: 'input-radio', title: 'Radio Buttons'},
+        {name: 'image', title: 'Image'},
+        {name: 'audio', title: 'Audio'}
     ];
 
     constructor() {
