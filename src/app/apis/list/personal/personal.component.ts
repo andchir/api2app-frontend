@@ -32,6 +32,10 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         }
     }
 
+    override getData(shared: boolean = false) {
+        super.getData(shared);
+    }
+
     override viewItem(item: ApiItem): void {
         this.router.navigate(['/apis/edit/', item.id]);
     }

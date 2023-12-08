@@ -5,6 +5,12 @@ export interface AppOptions {
     [key: string]: string | number | boolean | string[];
 }
 
+export interface AppBlockElementOptions {
+    apiUuid?: string;
+    fieldName?: string;
+    fieldType?: string;
+}
+
 export interface AppBlockElement {
     type: AppBlockElementType;
     name?: string;
@@ -15,7 +21,7 @@ export interface AppBlockElement {
     color?: string;
     min?: number;
     max?: number;
-    options?: any;
+    options?: AppBlockElementOptions;
 }
 
 export interface AppBlockOptions {

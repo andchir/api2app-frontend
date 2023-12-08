@@ -241,7 +241,10 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             element.options = {};
         }
         const initialData = {
-            selectedUuid: element.options?.apiUuid
+            selectedUuid: element.options?.apiUuid,
+            selectedFieldName: element.options?.fieldName,
+            selectedFieldType: element.options?.fieldType,
+            elementType: element.type
         };
         this.modalService.showDynamicComponent(this.viewRef, AppActionComponent, initialData)
             .pipe(take(1))
@@ -249,6 +252,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
                 next: (reason) => {
                     if (reason === 'submit') {
                         element.options.apiUuid = this.modalService.content.selectedApi?.uuid;
+                        element.options.fieldName = this.modalService.content.selectedFieldName;
+                        element.options.fieldType = this.modalService.content.selectedFieldType;
                     }
                 }
             });

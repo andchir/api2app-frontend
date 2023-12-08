@@ -17,6 +17,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { ApiItem } from '../../../apis/models/api-item.interface';
 import { ApiService } from '../../../services/api.service';
 import { ApplicationService } from '../../../services/application.service';
+import {AppBlockElementType} from "../../models/app-block.interface";
 
 @Component({
     selector: 'app-element-action',
@@ -26,11 +27,16 @@ export class AppActionComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
     selectedUuid: string | null = null;
+    elementType: AppBlockElementType;
     selectedApi: ApiItem;
+    selectedFieldName: string | null = null;
+    selectedFieldType: string | null = null;
     items$: Observable<ApiItem[]>;
     loading = false;
     submitted = false;
     searchInput$ = new Subject<string>();
+    inputFields: string[] = [];
+    outputFields: string[] = [];
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -74,6 +80,8 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (!this.selectedUuid) {
             return;
         }
+        this.inputFields = [];
+        this.outputFields = [];
         this.loading = true;
         this.dataService.getItemByUuid(this.selectedUuid)
             .pipe(takeUntil(this.destroyed$))
@@ -90,12 +98,41 @@ export class AppActionComponent implements OnInit, OnDestroy {
                             }
                         });
                     this.loading = false;
+                    this.getApiOptions();
                 },
                 error: (err) => {
                     console.log(err);
                     this.loading = false;
                 }
             });
+    }
+
+    getApiOptions(): void {
+        if (!this.selectedApi || this.elementType === 'button') {
+            return;
+        }
+        if (this.selectedApi.bodyDataSource === 'fields') {
+            this.inputFields = this.selectedApi.bodyFields.map((item) => {
+                return item.name;
+            });
+            this.inputFields = this.inputFields.filter((name) => {
+                return name;
+            });
+        }
+        if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
+
+        }
+        // console.log('getApiOptions', this.selectedApi, this.inputFields, this.outputFields);
+    }
+
+    selectField(fieldName: string, fieldType: string): void{
+        if (this.selectedFieldName === fieldName && this.selectedFieldType === fieldType) {
+            this.selectedFieldName = null;
+            this.selectedFieldType = null;
+            return;
+        }
+        this.selectedFieldName = fieldName;
+        this.selectedFieldType = fieldType;
     }
 
     onSearchCleared(): void {

@@ -37,7 +37,7 @@
                     </ng-select>
                 </div>
 
-                <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="selectedApi; else templateEmptyApi">
+                <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow mb-4" *ngIf="selectedApi; else templateEmptyApi">
                     <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
                         {{ selectedApi.name }}
                     </div>
@@ -52,6 +52,47 @@
                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md ms-2">
                             {{ selectedApi.requestMethod }}
                         </span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4" *ngIf="selectedApi">
+                    <div *ngIf="inputFields.length > 0">
+
+                        <h3 class="mb-2">API Input</h3>
+
+                        <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                            <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
+                                [ngClass]="{
+                                'rounded-t-lg': i === 0,
+                                'rounded-b-lg': i === inputFields.length - 1,
+                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
+                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
+                                }"
+                                *ngFor="let fieldName of inputFields; let i = index"
+                                (click)="selectField(fieldName, 'input')">
+                                {{ fieldName }}
+                            </button>
+                        </div>
+
+                    </div>
+                    <div *ngIf="outputFields.length > 0">
+
+                        <h3 class="mb-2">API Output</h3>
+
+                        <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                            <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
+                                    [ngClass]="{
+                                'rounded-t-lg': i === 0,
+                                'rounded-b-lg': i === outputFields.length - 1,
+                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
+                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
+                                }"
+                                    *ngFor="let fieldName of outputFields; let i = index"
+                                    (click)="selectField(fieldName, 'input')">
+                                {{ fieldName }}
+                            </button>
+                        </div>
+
                     </div>
                 </div>
 
