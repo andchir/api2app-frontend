@@ -31,12 +31,11 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text'">
-            <div class=""
+            <div class="mb-3"
                  [ngClass]="{
                  'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode,
                  'whitespace-pre-line': options?.whiteSpacePre,
-                 'min-h-[20px]': editorMode,
-                 'mb-3': options?.value
+                 'min-h-[20px]': editorMode
                  }">
                 <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
                 <span *ngIf="options?.value">{{ options?.value }}</span>
