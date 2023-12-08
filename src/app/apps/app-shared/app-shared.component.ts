@@ -110,6 +110,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
+        this.message = '';
         this.loading = true;
         this.submitted = true;
         if (!this.apiItems && this.apiUuidsList.length > 0) {
@@ -138,9 +139,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    console.log(err);
                     this.loading = false;
                     this.submitted = false;
+                    if (err?.error instanceof Blob) {
+                        this.createErrorMessage(err.error);
+                    } else {
+                        this.messageType = 'error';
+                        this.message = err.message || 'Error.';
+                    }
                 }
             });
     }
@@ -184,6 +190,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     console.log(err);
                 });
         }
+    }
+
+    createErrorMessage(blob: Blob): void {
+        console.log('createErrorMessage');
+        this.apiService.getDataFromBlob(blob)
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     blockElementValueApply(element: AppBlockElement, data: any): void {
