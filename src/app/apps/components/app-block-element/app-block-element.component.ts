@@ -19,6 +19,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<void> = new EventEmitter<void>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
 
     inputTypes: {name: AppBlockElementType, title: string}[] = [
         {name: 'text-header', title: 'Text Header'},
@@ -83,5 +84,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             return;
         }
         this.options[keyName]--;
+    }
+
+    onClick(): void {
+        this.elementClick.emit();
     }
 }
