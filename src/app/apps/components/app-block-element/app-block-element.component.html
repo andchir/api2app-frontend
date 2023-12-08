@@ -29,16 +29,20 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text'">
-            <div class="mb-3"
+            <div class="min-h-[20px] mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode, 'whitespace-pre-line': options?.whiteSpacePre}">
-                {{ options?.value }}
+                <span *ngIf="options?.value">{{ options?.value }}</span>
+                <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
             <h4 class="text-2xl font-bold mb-3 min-h-[20px]"
-                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">{{ options?.value }}</h4>
+                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <span *ngIf="options?.value">{{ options?.value }}</span>
+                <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
+            </h4>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 

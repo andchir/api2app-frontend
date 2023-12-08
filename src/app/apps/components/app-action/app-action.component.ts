@@ -113,16 +113,22 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
         if (this.selectedApi.bodyDataSource === 'fields') {
             this.inputFields = this.selectedApi.bodyFields.map((item) => {
-                return item.name;
+                return !item.hidden ? item.name : '';
             });
             this.inputFields = this.inputFields.filter((name) => {
                 return name;
             });
         }
         if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
+            const body = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
+            if (Array.isArray(body)) {
 
+            } else {
+                for (let prop in body) {
+                    this.outputFields.push(prop);
+                }
+            }
         }
-        // console.log('getApiOptions', this.selectedApi, this.inputFields, this.outputFields);
     }
 
     selectField(fieldName: string, fieldType: string): void{
