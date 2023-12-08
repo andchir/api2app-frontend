@@ -29,6 +29,10 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
         this.userSubject$ = this.authService.userSubject;
     }
 
+    get baseUrl(): string {
+        return `${window.location.protocol}//${window.location.host}`;
+    }
+
     ngOnInit(): void {
         this.getData();
     }

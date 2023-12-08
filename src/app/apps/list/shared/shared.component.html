@@ -38,7 +38,7 @@
 <app-share-item title="Share Application"
                 [loading]="loading"
                 [(isActive)]="isShareActive"
-                [shareUrl]="'http://localhost:4200/apps/shared/'"
+                shareUrl="{{ baseUrl }}/apps/shared/"
                 [itemUuid]="selectedItem.uuid"
                 [readOnly]="true"
                 [isShared]="true" *ngIf="selectedItem"></app-share-item>
