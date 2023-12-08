@@ -45,6 +45,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.value
                 });
                 output.push({
+                    name: 'prefixText',
+                    label: 'Prefix Text',
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: 'Suffix Text',
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
                     name: 'whiteSpacePre',
                     label: 'Use line break',
                     type: 'input-switch',

@@ -21,6 +21,8 @@ export interface AppBlockElement {
     color?: string;
     min?: number;
     max?: number;
+    prefixText?: string;
+    suffixText?: string;
     options?: AppBlockElementOptions;
 }
 

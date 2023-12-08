@@ -167,7 +167,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldName || !data[fieldName]) {
             return;
         }
-        element.value = data[fieldName];
+        element.value = (element.prefixText || '')
+            + data[fieldName]
+            + (element.suffixText || '');
     }
 
     ngOnDestroy(): void {

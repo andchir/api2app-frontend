@@ -36,8 +36,10 @@
                  'min-h-[20px]': editorMode,
                  'mb-3': options?.value
                  }">
+                <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
                 <span *ngIf="options?.value">{{ options?.value }}</span>
                 <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
+                <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
