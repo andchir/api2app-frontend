@@ -70,7 +70,7 @@
                                 }"
                                 *ngFor="let fieldName of inputFields; let i = index"
                                 (click)="selectField(fieldName, 'input')">
-                                {{ fieldName }}
+                                <span class="capitalize">{{ fieldName }}</span>
                             </button>
                         </div>
 
@@ -89,7 +89,7 @@
                                 }"
                                     *ngFor="let fieldName of outputFields; let i = index"
                                     (click)="selectField(fieldName, 'output')">
-                                {{ fieldName }}
+                                <span class="capitalize">{{ fieldName }}</span>
                             </button>
                         </div>
 

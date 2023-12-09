@@ -178,13 +178,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
         if (response.body) {
             const allElements = this.getAllElements();
+            const elements = allElements.filter((element) => {
+                return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
+            });
             this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
                 .then((data) => {
-                    const elements = allElements.filter((element) => {
-                        return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
-                    });
+                    const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                    const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                     elements.forEach((element) => {
-                        this.blockElementValueApply(element, data);
+                        this.blockElementValueApply(element, valuesObj);
                     });
                 })
                 .catch((err) => {

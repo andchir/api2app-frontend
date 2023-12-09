@@ -88,7 +88,7 @@
             <div class="grid grid-cols-1 gap-4"
                 [ngClass]="{'md:grid-cols-2 lg:grid-cols-3': data.gridColumns === 3, 'md:grid-cols-2': data.gridColumns === 2}">
 
-                <div class="block relative group/block"
+                <div class="block relative group/block hover:z-30"
                      [ngClass]="{'col-span-2': block.options?.gridColumnSpan === 2, 'col-span-3': block.options?.gridColumnSpan === 3}"
                      *ngFor="let block of data.blocks; index as index">
 

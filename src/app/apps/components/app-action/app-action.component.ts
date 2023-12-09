@@ -119,17 +119,19 @@ export class AppActionComponent implements OnInit, OnDestroy {
                 return name;
             });
         }
+        if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent) {
+            const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
+            this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
+        }
         if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
-            const body = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
-            if (Array.isArray(body)) {
-
-            } else {
-                for (let prop in body) {
-                    this.outputFields.push(prop);
-                }
-            }
-        } else if (['image', 'audio'].includes(this.selectedApi.responseContentType)) {
-            this.outputFields.push('response_value');
+            const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
+            this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;
+        }
+        if (this.inputFields.length === 0) {
+            this.inputFields.push('value');
+        }
+        if (this.outputFields.length === 0) {
+            this.outputFields.push('value');
         }
     }
 

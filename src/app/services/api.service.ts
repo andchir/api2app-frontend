@@ -52,6 +52,43 @@ export class ApiService extends DataService<ApiItem> {
         };
     }
 
+    static getPropertiesRecursively(data: any, string: string = '', outputKeys = [], values = []): {outputKeys: string[], values: string|number|boolean[]} {
+        if (typeof data === 'object') {
+            if (Array.isArray(data)) {
+                if (data.length > 0) {
+                    data.forEach((value, index) => {
+                        if (typeof value === 'object') {
+                            if (index === 0) {
+                                this.getPropertiesRecursively(value, string, outputKeys, values);
+                            }
+                        } else {
+                            outputKeys.push(string + (string ? '.' : '') + value);
+                            values.push(value);
+                        }
+                    });
+                }
+            } else {
+                for (let prop in data) {
+                    if (typeof data[prop] === 'object') {
+                        this.getPropertiesRecursively(data[prop], string + (string ? '.' : '') + prop, outputKeys, values);
+                    } else {
+                        outputKeys.push(string + (string ? '.' : '') + prop);
+                        values.push(data[prop]);
+                    }
+                }
+            }
+        }
+        return {outputKeys, values};
+    }
+
+    static getPropertiesKeyValueObject(outputKeys: string[], values: string|number|boolean[]): {[key: string]: string|number|boolean} {
+        const output = {};
+        outputKeys.forEach((value, index) => {
+            output[value] = values[index];
+        });
+        return output;
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};

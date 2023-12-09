@@ -120,6 +120,12 @@
                     [clearable]="false"
                     labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                     [(ngModel)]="options.value">
+                    <ng-template ng-label-tmp let-item="item">
+                        <span class="capitalize">{{ item }}</span>
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item">
+                        <span class="capitalize">{{ item }}</span>
+                    </ng-template>
                 </ng-select>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
