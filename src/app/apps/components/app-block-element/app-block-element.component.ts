@@ -2,13 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 
 import { AppBlockElementType } from '../../models/app-block.interface';
 
-import {
-    ChartComponent,
-    ApexAxisChartSeries,
-    ApexChart,
-    ApexXAxis,
-    ApexTitleSubtitle, ApexStroke, ApexMarkers, ApexGrid, ApexDataLabels, ApexFill
-} from "ng-apexcharts";
+import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexStroke, ApexMarkers, ApexDataLabels, ApexFill } from "ng-apexcharts";
 
 export type ChartOptions = {
     series: ApexAxisChartSeries;
@@ -64,32 +58,32 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.chartOptions = {
             series: [
                 {
-                    name: "My-series",
+                    name: 'My-series',
                     data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
                 }
             ],
             chart: {
                 height: 350,
-                type: "area",
+                type: 'area',
                 toolbar: {
-                    autoSelected: "pan",
+                    autoSelected: 'pan',
                     show: false
                 }
             },
-            colors: ["#00BAEC"],
+            colors: ['#00BAEC'],
             stroke: {
                 width: 3
             },
             title: {
-                text: "My First Angular Chart"
+                text: 'My First Angular Chart'
             },
             xaxis: {
-                categories: ["Jan", "Feb",  "Mar",  "Apr",  "May",  "Jun",  "Jul",  "Aug", "Sep"]
+                categories: ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep']
             },
             markers: {
                 size: 5,
-                colors: ["#fff"],
-                strokeColors: ["#00BAEC"],
+                colors: ['#fff'],
+                strokeColors: ['#00BAEC'],
                 strokeWidth: 3
             },
             dataLabels: {
