@@ -20,7 +20,7 @@ export class UserService {
     ) {}
 
     getCurrentUser(): Observable<User> {
-        const url = `${BASE_URL}users/current/`;
+        const url = `${BASE_URL}users/current`;
         return this.httpClient.get<User>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)

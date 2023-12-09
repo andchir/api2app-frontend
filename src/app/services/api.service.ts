@@ -142,7 +142,7 @@ export class ApiService extends DataService<ApiItem> {
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}proxy`;
-        const CSRFToken = this.getCookie('csrftoken');
+        const csrfToken = this.getCookie('csrftoken');
         const responseType = 'blob';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
@@ -223,7 +223,7 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     searchItems(search: string): Observable<{count: number, results: ApiItem[]}> {
-        const url = `${this.requestUrl}/`;
+        const url = this.requestUrl;
         const params = this.createParams({search});
         return this.httpClient.get<{count: number, results: ApiItem[]}>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(

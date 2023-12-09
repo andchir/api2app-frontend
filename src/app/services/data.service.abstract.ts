@@ -16,7 +16,7 @@ export abstract class DataService<T extends {id: number}> {
     ) {}
 
     getList(): Observable<{count: number, results: T[]}> {
-        const url = `${this.requestUrl}/`;
+        const url = this.requestUrl;
         return this.httpClient.get<{count: number, results: T[]}>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -24,7 +24,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getListShared(): Observable<{count: number, results: T[]}> {
-        const url = `${this.requestUrl}/list_shared/`;
+        const url = `${this.requestUrl}/list_shared`;
         return this.httpClient.get<{count: number, results: T[]}>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -32,7 +32,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getItem(itemId: number): Observable<T> {
-        const url = `${this.requestUrl}/${itemId}/`;
+        const url = `${this.requestUrl}/${itemId}`;
         return this.httpClient.get<T>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -40,7 +40,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getItemByUuid(itemUuid: string): Observable<T> {
-        const url = `${this.requestUrl}/${itemUuid}/by_uuid/`;
+        const url = `${this.requestUrl}/${itemUuid}/by_uuid`;
         return this.httpClient.get<T>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -48,7 +48,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getItemByUuidShared(itemUuid: string): Observable<T> {
-        const url = `${this.requestUrl}/${itemUuid}/shared/`;
+        const url = `${this.requestUrl}/${itemUuid}/shared`;
         return this.httpClient.get<T>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -56,7 +56,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     deleteItem(itemId: number): Observable<any> {
-        const url = `${this.requestUrl}/${itemId}/`;
+        const url = `${this.requestUrl}/${itemId}`;
         return this.httpClient.delete<any>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -64,7 +64,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     patch(itemId: number, data: any): Observable<T> {
-        const url = `${this.requestUrl}/${itemId}/`;
+        const url = `${this.requestUrl}/${itemId}`;
         return this.httpClient.patch<T>(url, data, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -80,7 +80,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     postItem(item: T): Observable<T> {
-        const url = `${this.requestUrl}/`;
+        const url = this.requestUrl;
         return this.httpClient.post<T>(url, item, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -88,7 +88,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     putItem(item: T): Observable<T> {
-        const url = `${this.requestUrl}/${item.id}/`;
+        const url = `${this.requestUrl}/${item.id}`;
         return this.httpClient.put<T>(url, item, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
