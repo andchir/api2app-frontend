@@ -1,6 +1,26 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import {AppBlockElement, AppBlockElementType} from '../../models/app-block.interface';
+import { AppBlockElementType } from '../../models/app-block.interface';
+
+import {
+    ChartComponent,
+    ApexAxisChartSeries,
+    ApexChart,
+    ApexXAxis,
+    ApexTitleSubtitle, ApexStroke, ApexMarkers, ApexGrid, ApexDataLabels, ApexFill
+} from "ng-apexcharts";
+
+export type ChartOptions = {
+    series: ApexAxisChartSeries;
+    chart: ApexChart;
+    xaxis: ApexXAxis;
+    title: ApexTitleSubtitle;
+    colors: string[];
+    stroke: ApexStroke;
+    markers: ApexMarkers;
+    dataLabels: ApexDataLabels;
+    fill: ApexFill;
+};
 
 @Component({
     selector: 'app-block-element',
@@ -34,11 +54,54 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-radio', title: 'Radio Buttons'},
         {name: 'input-date', title: 'Calendar'},
         {name: 'image', title: 'Image'},
-        {name: 'audio', title: 'Audio'}
+        {name: 'audio', title: 'Audio'},
+        {name: 'chart-line', title: 'Line Chart'}
     ];
 
-    constructor() {
+    public chartOptions: Partial<ChartOptions>;
 
+    constructor() {
+        this.chartOptions = {
+            series: [
+                {
+                    name: "My-series",
+                    data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+                }
+            ],
+            chart: {
+                height: 350,
+                type: "area",
+                toolbar: {
+                    autoSelected: "pan",
+                    show: false
+                }
+            },
+            colors: ["#00BAEC"],
+            stroke: {
+                width: 3
+            },
+            title: {
+                text: "My First Angular Chart"
+            },
+            xaxis: {
+                categories: ["Jan", "Feb",  "Mar",  "Apr",  "May",  "Jun",  "Jul",  "Aug", "Sep"]
+            },
+            markers: {
+                size: 5,
+                colors: ["#fff"],
+                strokeColors: ["#00BAEC"],
+                strokeWidth: 3
+            },
+            dataLabels: {
+                enabled: false
+            },
+            fill: {
+                gradient: {
+                    opacityFrom: 0.55,
+                    opacityTo: 0
+                }
+            }
+        };
     }
 
     ngOnInit(): void {

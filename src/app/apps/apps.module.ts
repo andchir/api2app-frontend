@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
+import { NgApexchartsModule } from 'ng-apexcharts';
+
 import { authInterceptorProviders } from '../helpers/auth.interceptor';
 import { SharedModule } from '../shared.module';
 import { AppsRoutingModule } from './apps-routing.module';
@@ -29,7 +31,8 @@ import { ModalService } from '../services/modal.service';
     imports: [
         CommonModule,
         AppsRoutingModule,
-        SharedModule
+        SharedModule,
+        NgApexchartsModule
     ],
     providers: [ authInterceptorProviders, ApplicationService, ApiService, ModalService ]
 })

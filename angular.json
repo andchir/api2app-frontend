@@ -34,7 +34,9 @@
                             "node_modules/@ng-select/ng-select/themes/default.theme.css",
                             "src/styles.css"
                         ],
-                        "scripts": []
+                        "scripts": [
+                            "node_modules/apexcharts/dist/apexcharts.min.js"
+                        ]
                     },
                     "configurations": {
                         "production": {

@@ -25,6 +25,7 @@
                         <i class="bi bi-calendar3 mr-1 text-gray-400" *ngIf="item.name === 'input-date'"></i>
                         <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
                         <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
+                        <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'chart-line'"></i>
                         {{ item.title }}
                     </ng-template>
                 </ng-select>
@@ -242,6 +243,25 @@
                     <i class="bi bi-image mr-2"></i>
                     Image
                 </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'chart-line'">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    {{ options?.label }}
+                </label>
+                <apx-chart
+                    [series]="chartOptions.series"
+                    [colors]="chartOptions.colors"
+                    [chart]="chartOptions.chart"
+                    [xaxis]="chartOptions.xaxis"
+                    [title]="chartOptions.title"
+                    [markers]="chartOptions.markers"
+                    [dataLabels]="chartOptions.dataLabels"
+                    [fill]="chartOptions.fill"></apx-chart>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
