@@ -23,12 +23,12 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
-        if (token != null && !authReq.url.includes('/token/')) {
+        if (token != null && !authReq.url.includes('/token')) {
             authReq = this.addTokenHeader(req, token);
         }
         return next.handle(authReq)
             .pipe(catchError(error => {
-                if (error instanceof HttpErrorResponse && !authReq.url.includes('/token/') && [401, 403].includes(error.status)) {
+                if (error instanceof HttpErrorResponse && !authReq.url.includes('/token') && [401, 403].includes(error.status)) {
                     return this.handle401Error(authReq, next);
                 }
                 return throwError(error);

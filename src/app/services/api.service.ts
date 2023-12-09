@@ -146,8 +146,8 @@ export class ApiService extends DataService<ApiItem> {
         const responseType = 'blob';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            // 'X-CSRFToken': CSRFToken,
-            // 'Mode': 'same-origin'
+            'X-CSRFToken': csrfToken,
+            'Mode': 'same-origin'
         });
         return this.httpClient.post(url, data, {headers, responseType, observe: 'response'});
     }
