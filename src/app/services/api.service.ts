@@ -143,11 +143,12 @@ export class ApiService extends DataService<ApiItem> {
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}proxy`;
         const csrfToken = this.getCookie('csrftoken');
-        // console.log('csrfToken', csrfToken, window['csrf_token']);
+        // console.log('csrfToken', csrfToken);
+        // console.log('window.csrf_token', csrfToken, window['csrf_token']);
         const responseType = 'blob';
         const headers = new HttpHeaders({
             'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken,
+            'X-CSRFToken': csrfToken || window['csrf_token'] || '',
             'Mode': 'same-origin'
         });
         return this.httpClient.post(url, data, {headers, responseType, observe: 'response'});

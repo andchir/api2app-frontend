@@ -139,6 +139,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
+                    console.log(err);
                     this.loading = false;
                     this.submitted = false;
                     if (err?.error instanceof Blob) {
