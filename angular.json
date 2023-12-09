@@ -38,6 +38,7 @@
                     },
                     "configurations": {
                         "production": {
+                            "deployUrl": "/static/",
                             "budgets": [
                                 {
                                     "type": "initial",
