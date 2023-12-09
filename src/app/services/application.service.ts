@@ -258,6 +258,32 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.value
                 });
                 break;
+            case 'input-date':
+                output.push({
+                    name: 'date',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'format',
+                    label: 'Date Format',
+                    type: 'input-text',
+                    value: options?.format
+                });
+                output.push({
+                    name: 'value',
+                    label: 'Default Value',
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
             case 'audio':
                 output.push({
                     name: 'name',
@@ -363,6 +389,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Example Radio Buttons',
                     value: 'Value1',
                     choices: ['Value1', 'Value2', 'Value3']
+                });
+                break;
+            case 'input-date':
+                Object.assign(output, {
+                    name: 'date',
+                    label: 'Date',
+                    format: 'YYYY-MM-DD HH:mm',
+                    value: ''
                 });
                 break;
             case 'image':

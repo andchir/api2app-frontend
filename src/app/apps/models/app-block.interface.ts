@@ -1,5 +1,5 @@
-export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text'
-    |'input-textarea'|'input-switch'|'input-select'|'input-radio'|'input-tags'|'input-number'|'image'|'audio';
+export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text' |'input-textarea'|'input-switch'
+    |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-date'|'image'|'audio';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[];
