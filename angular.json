@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "api2app-frontent": {
+        "api2app-frontend": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/api2app-frontent",
+                        "outputPath": "dist/api2app-frontend",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
@@ -79,10 +79,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "api2app-frontent:build:production"
+                            "browserTarget": "api2app-frontend:build:production"
                         },
                         "development": {
-                            "browserTarget": "api2app-frontent:build:development"
+                            "browserTarget": "api2app-frontend:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -90,7 +90,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "api2app-frontent:build"
+                        "browserTarget": "api2app-frontend:build"
                     }
                 },
                 "test": {
