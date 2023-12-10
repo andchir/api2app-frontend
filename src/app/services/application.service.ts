@@ -429,9 +429,21 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'chart-line':
                 output.push({
                     name: 'name',
-                    label: 'Chart',
+                    label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'fieldNameAxisX',
+                    label: 'Field name for X axis',
+                    type: 'input-text',
+                    value: options?.fieldNameAxisX
+                });
+                output.push({
+                    name: 'fieldNameAxisY',
+                    label: 'Field name for Y axis',
+                    type: 'input-text',
+                    value: options?.fieldNameAxisY
                 });
                 output.push({
                     name: 'orderIndex',

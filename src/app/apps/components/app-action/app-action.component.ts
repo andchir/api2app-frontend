@@ -108,7 +108,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     getApiOptions(): void {
-        if (!this.selectedApi || this.elementType === 'button') {
+        if (!this.selectedApi || ['button'].includes(this.elementType)) {
             return;
         }
         if (this.selectedApi.bodyDataSource === 'fields') {

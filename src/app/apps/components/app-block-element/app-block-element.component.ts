@@ -135,12 +135,15 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.chartOptions.series = [
             {
                 name: this.options?.itemTitle || 'Item',
-                data: this.valueObj?.yAxisData
+                data: this.valueObj?.yAxisData.map((value) => {
+                    return Number((value || 0).toFixed(2));
+                })
             }
         ];
         this.chartOptions.xaxis = {
             categories: this.options?.valueObj?.xAxisData
         };
+        this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
     }
 
     updateStateByOptions(): void {
