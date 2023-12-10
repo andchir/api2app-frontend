@@ -100,7 +100,7 @@
                                                [options]="element"
                                                [editorMode]="true"
                                                (typeChange)="onElementUpdate(element, $event)"
-                                               (showOptions)="showElementOptions(element)"
+                                               (showOptions)="showElementOptions(element, index, ind)"
                                                (selectAction)="elementActionSelect(element)"
                                                (delete)="deleteElement(block, ind)"></app-block-element>
 
@@ -124,7 +124,7 @@
                          *ngIf="block.elements.length > 0 && block.elements[0].type">
                         <button type="button" class="cursor-pointer shadow-gray-400 text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 pt-1 pb-3 me-2"
                                 title="Options"
-                                (click)="showBlockInit(block, $event)">
+                                (click)="showBlockOptions(block, $event)">
                             <i class="bi bi-gear-fill text-xl"></i>
                         </button>
                     </div>

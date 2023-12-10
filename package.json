@@ -23,6 +23,7 @@
     "apexcharts": "^3.44.2",
     "bootstrap-icons": "^1.11.1",
     "flowbite": "^1.8.1",
+    "moment": "^2.29.4",
     "ng-apexcharts": "^1.8.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

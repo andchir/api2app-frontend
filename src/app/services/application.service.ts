@@ -25,6 +25,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'value',
                     label: 'Value',
                     type: 'input-textarea',
@@ -37,6 +45,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'value',
@@ -71,6 +87,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'value',
                     label: 'Text',
                     type: 'input-text',
@@ -90,6 +114,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
@@ -118,6 +150,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
@@ -142,6 +182,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
@@ -170,6 +218,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
@@ -189,6 +245,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
@@ -218,6 +282,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'label',
                     label: 'Label',
                     type: 'input-text',
@@ -233,10 +305,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 break;
             case 'input-radio':
                 output.push({
-                    name: 'radio',
+                    name: 'name',
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
@@ -260,10 +340,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 break;
             case 'input-date':
                 output.push({
-                    name: 'date',
+                    name: 'name',
                     label: 'Name',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
@@ -291,6 +379,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.name
                 });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
                 break;
             case 'image':
                 output.push({
@@ -299,13 +395,29 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.name
                 });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
                 break;
             case 'chart-line':
                 output.push({
-                    name: 'chart',
+                    name: 'name',
                     label: 'Chart',
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: 'Order Index',
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',

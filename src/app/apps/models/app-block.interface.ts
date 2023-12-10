@@ -18,6 +18,7 @@ export interface AppBlockElement {
     placeholder?: string;
     value?: string | number | boolean | string[];
     valueObj?: any;
+    orderIndex?: number;
     choices?: string[];
     color?: string;
     min?: number;

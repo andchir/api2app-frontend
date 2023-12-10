@@ -44,16 +44,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     constructor() {}
 
-    get chartSeriesItemTitle(): string {
-        console.log('chartSeriesItemTitle');
-        return this.options?.itemTitle || 'Item';
-    }
-
     ngOnInit(): void {
         this.chartOptions = {
             series: [
                 {
-                    name: this.chartSeriesItemTitle,
+                    name: this.options?.itemTitle || 'Item',
                     data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
                 }
             ],
@@ -134,7 +129,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
         this.chartOptions.series = [
             {
-                name: this.chartSeriesItemTitle,
+                name: this.options?.itemTitle || 'Item',
                 data: this.valueObj?.yAxisData
             }
         ];
