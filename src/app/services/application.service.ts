@@ -78,7 +78,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'whiteSpacePre',
                     label: 'Use line break',
                     type: 'input-switch',
-                    value: options?.whiteSpacePre
+                    value: true,
+                    enabled: options?.whiteSpacePre
                 });
                 break;
             case 'button':
@@ -390,8 +391,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'Use Default Value',
                     type: 'input-switch',
                     value: true,
-                    enabled: options?.useDefault,
-                    choices: []
+                    enabled: options?.useDefault
                 });
                 break;
             case 'audio':
@@ -483,6 +483,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 Object.assign(output, {
                     name: 'text',
                     value: 'Example Text',
+                    prefixText: '',
+                    suffixText: '',
                     whiteSpacePre: false
                 });
                 break;
@@ -617,8 +619,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     static fieldsToOptionsObject(fields: AppBlockElement[]): any {
         const output = {} as AppOptions;
         fields.forEach((item) => {
-            if (item.type === 'input-switch' && item.name === 'enabled') {
+            if (item.type === 'input-switch') {
                 output['enabled'] = !!item.enabled;
+                output[item.name] = !!item.enabled;
             } else {
                 output[item.name] = item.value;
             }

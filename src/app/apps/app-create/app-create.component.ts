@@ -169,6 +169,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         element.orderIndex = elementIndex;
         this.selectedItemOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
+
+        // console.log('showElementOptions', element, this.selectedItemOptionsFields);
     }
 
     showBlockOptions(block: AppBlock, event?: MouseEvent): void {
@@ -197,6 +199,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     updateItemOptions(): void {
         if (this.selectedElement) {
             Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
+            // console.log('updateItemOptions', this.selectedItemOptionsFields, this.selectedElement);
             if (this.selectedElement.orderIndex !== this.selectedElementIndex) {
                 this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
             }
