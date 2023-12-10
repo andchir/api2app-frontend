@@ -186,7 +186,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                     elements.forEach((element) => {
-                        this.blockElementValueApply(element, valuesObj);
+                        if (['chart-line'].includes(element.type)) {
+                            this.chartElementValueApply(element, data);
+                        } else {
+                            this.blockElementValueApply(element, valuesObj);
+                        }
                     });
                 })
                 .catch((err) => {
@@ -204,6 +208,32 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    chartElementValueApply(element: AppBlockElement, data: any): void {
+        const xFieldName = 'feeds.created_at';
+        const yFieldName = element.options.fieldName;
+        const xFieldNameArr = xFieldName.split('.');
+        const yFieldNameArr = yFieldName.split('.');
+
+        let outData = data[yFieldNameArr[0]];
+        yFieldNameArr.shift();
+        xFieldNameArr.shift();
+        if (!Array.isArray(outData)) {
+            yFieldNameArr.shift();
+            xFieldNameArr.shift();
+            outData = outData[yFieldNameArr[1]];
+        }
+        if (!Array.isArray(outData)) {
+            return;
+        }
+        const yAxisData = outData.map((item) => {
+            return parseFloat(item[yFieldNameArr[0]]);
+        });
+        const xAxisData = outData.map((item) => {
+            return item[xFieldNameArr[0]];
+        });
+        element.valueObj = {xAxisData, yAxisData};
     }
 
     blockElementValueApply(element: AppBlockElement, data: any): void {

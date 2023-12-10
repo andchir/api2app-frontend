@@ -254,14 +254,13 @@
                     {{ options?.label }}
                 </label>
                 <apx-chart
-                    [series]="chartOptions.series"
-                    [colors]="chartOptions.colors"
-                    [chart]="chartOptions.chart"
-                    [xaxis]="chartOptions.xaxis"
-                    [title]="chartOptions.title"
-                    [markers]="chartOptions.markers"
-                    [dataLabels]="chartOptions.dataLabels"
-                    [fill]="chartOptions.fill"></apx-chart>
+                    [series]="chartOptions?.series"
+                    [xaxis]="chartOptions?.xaxis"
+                    [chart]="chartOptions?.chart"
+                    [colors]="chartOptions?.colors"
+                    [markers]="chartOptions?.markers"
+                    [fill]="chartOptions?.fill"
+                    [dataLabels]="{enabled: false}"></apx-chart>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

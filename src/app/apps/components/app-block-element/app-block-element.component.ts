@@ -1,20 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 import { AppBlockElementType } from '../../models/app-block.interface';
-
-import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexTitleSubtitle, ApexStroke, ApexMarkers, ApexDataLabels, ApexFill } from "ng-apexcharts";
-
-export type ChartOptions = {
-    series: ApexAxisChartSeries;
-    chart: ApexChart;
-    xaxis: ApexXAxis;
-    title: ApexTitleSubtitle;
-    colors: string[];
-    stroke: ApexStroke;
-    markers: ApexMarkers;
-    dataLabels: ApexDataLabels;
-    fill: ApexFill;
-};
+import {ChartOptions} from "../../models/chart-options.interface";
 
 @Component({
     selector: 'app-block-element',
@@ -52,42 +39,31 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'chart-line', title: 'Line Chart'}
     ];
 
-    public chartOptions: Partial<ChartOptions>;
+    public chartOptions: ChartOptions;
 
-    constructor() {
+    constructor() {}
+
+    ngOnInit(): void {
         this.chartOptions = {
             series: [
                 {
-                    name: 'My-series',
-                    data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
+                    name: 'Example',
+                    data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
                 }
             ],
+            xaxis: {
+                categories: this.editorMode ? ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep'] : []
+            },
             chart: {
                 height: 350,
-                type: 'area',
-                toolbar: {
-                    autoSelected: 'pan',
-                    show: false
-                }
+                type: 'area'
             },
             colors: ['#00BAEC'],
-            stroke: {
-                width: 3
-            },
-            title: {
-                text: 'My First Angular Chart'
-            },
-            xaxis: {
-                categories: ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep']
-            },
             markers: {
                 size: 5,
                 colors: ['#fff'],
                 strokeColors: ['#00BAEC'],
                 strokeWidth: 3
-            },
-            dataLabels: {
-                enabled: false
             },
             fill: {
                 gradient: {
@@ -96,10 +72,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 }
             }
         };
-    }
-
-    ngOnInit(): void {
-
     }
 
     ngOnChanges(changes: SimpleChanges) {
