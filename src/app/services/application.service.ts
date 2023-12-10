@@ -313,6 +313,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.label
                 });
+                output.push({
+                    name: 'itemTitle',
+                    label: 'Item Title',
+                    type: 'input-text',
+                    value: options?.itemTitle
+                });
                 break;
         }
         return output;
@@ -426,7 +432,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'chart-line':
                 Object.assign(output, {
                     name: 'chart',
-                    label: 'Line Chart'
+                    label: 'Line Chart',
+                    itemTitle: 'Item Title'
                 });
                 break;
         }

@@ -250,16 +250,15 @@
         <ng-container *ngSwitchCase="'chart-line'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
                 <apx-chart
+                    [title]="{text: options?.label}"
                     [series]="chartOptions?.series"
                     [xaxis]="chartOptions?.xaxis"
                     [chart]="chartOptions?.chart"
                     [colors]="chartOptions?.colors"
                     [markers]="chartOptions?.markers"
                     [fill]="chartOptions?.fill"
+                    [stroke]="{width: 2}"
                     [dataLabels]="{enabled: false}"></apx-chart>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -276,7 +275,7 @@
 </div>
 
 <ng-template #templateButtonOptions>
-    <div class="absolute -right-2 -top-2 invisible group-hover/element:visible" *ngIf="editorMode">
+    <div class="absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode">
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Options"
                 (click)="elementOptionsInit($event)">
