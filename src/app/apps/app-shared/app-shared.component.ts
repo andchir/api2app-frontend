@@ -168,7 +168,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
-                bodyField.value = String(element.value);
+                bodyField.value = ApplicationService.getElementValue(element) as string;
+                if (element.type === 'input-switch') {
+                    bodyField.hidden = !element?.enabled;
+                }
             });
             apiItem.bodyFields = bodyFields;
         }
@@ -200,7 +203,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createErrorMessage(blob: Blob): void {
-        console.log('createErrorMessage');
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
                 console.log(data);

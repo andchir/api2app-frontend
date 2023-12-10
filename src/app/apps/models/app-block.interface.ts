@@ -25,6 +25,8 @@ export interface AppBlockElement {
     max?: number;
     prefixText?: string;
     suffixText?: string;
+    format?: string;
+    enabled?: boolean;
     options?: AppBlockElementOptions;
 }
 

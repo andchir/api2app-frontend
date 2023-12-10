@@ -2,9 +2,11 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
+import * as moment from 'moment';
+
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import {AppBlock, AppBlockElement, AppBlockElementType, AppOptions} from "../apps/models/app-block.interface";
+import { AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
 
 const BASE_URL = environment.apiUrl;
 
@@ -233,10 +235,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 });
                 output.push({
                     name: 'value',
-                    label: 'Default Value',
+                    label: 'Value',
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
+                    name: 'enabled',
+                    label: 'Enabled By Default?',
                     type: 'input-switch',
-                    value: options?.value,
-                    choices: []
+                    value: options?.value || '1',
+                    enabled: options?.enabled
                 });
                 break;
             case 'input-select':
@@ -371,6 +379,20 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'offset',
+                    label: 'Default Days Offset',
+                    type: 'input-number',
+                    value: options?.offset
+                });
+                output.push({
+                    name: 'useDefault',
+                    label: 'Use Default Value',
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useDefault,
+                    choices: []
+                });
                 break;
             case 'audio':
                 output.push({
@@ -492,7 +514,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'enabled',
                     label: 'Enabled',
                     type: 'input-switch',
-                    value: true
+                    value: '1',
+                    enabled: true
                 });
                 break;
             case 'input-select':
@@ -528,7 +551,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'date',
                     label: 'Date',
                     format: 'YYYY-MM-DD HH:mm',
-                    value: ''
+                    value: '',
+                    offset: 0,
+                    enabled: false
                 });
                 break;
             case 'image':
@@ -580,9 +605,23 @@ export class ApplicationService extends DataService<ApplicationItem> {
     static fieldsToOptionsObject(fields: AppBlockElement[]): any {
         const output = {} as AppOptions;
         fields.forEach((item) => {
-            output[item.name] = item.value;
+            if (item.type === 'input-switch' && item.name === 'enabled') {
+                output['enabled'] = !!item.enabled;
+            } else {
+                output[item.name] = item.value;
+            }
         });
         return output;
+    }
+
+    static getElementValue(element: AppBlockElement): string|number|boolean {
+        switch (element.type) {
+            case 'input-date':
+                const dateFormat = element?.format;
+                const date = moment(String(element?.value));
+                return date.format(dateFormat);
+        }
+        return String(element.value);
     }
 
     constructor(

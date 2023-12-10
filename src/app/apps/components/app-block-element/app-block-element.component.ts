@@ -1,5 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
+import * as moment from 'moment';
+
 import { AppBlockElementType } from '../../models/app-block.interface';
 import { ChartOptions } from '../../models/chart-options.interface';
 
@@ -74,10 +76,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 }
             }
         };
+        if (!this.editorMode) {
+            this.updateStateByOptions();
+        }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('ngOnChanges', changes);
+        // console.log('ngOnChanges', changes);
         if (this.options.type === 'chart-line' && changes['valueObj']) {
             this.chartOptionsUpdate();
         }
@@ -138,7 +143,25 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         };
     }
 
+    updateStateByOptions(): void {
+        switch (this.options.type) {
+            case 'input-date':
+                if (!this.options.value && this.options.useDefault) {
+                    const offsetDays = this.options?.offset || 0;
+                    const now = moment();
+                    // now.set({hour: 0, minutes: 0, seconds: 0});
+                    now.add(offsetDays, 'days');
+                    this.options.value = now.format('YYYY-MM-DD HH:mm');
+                }
+                break;
+        }
+    }
+
     onClick(): void {
         this.elementClick.emit();
+    }
+
+    onChange(optionName: string, isChecked: boolean) {
+        this.options[optionName] = !isChecked;
     }
 }
