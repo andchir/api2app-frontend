@@ -2,13 +2,15 @@ import { HTTP_INTERCEPTORS, HttpEvent, HttpErrorResponse } from '@angular/common
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { catchError, filter, switchMap, take } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
+
 import { TokenStorageService } from '../services/token-storage.service';
 import { AuthService } from '../services/auth.service';
 
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, filter, switchMap, take } from 'rxjs/operators';
-
 const TOKEN_HEADER_KEY = 'Authorization';
+const BASE_URL = environment.apiUrl;
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -23,13 +25,21 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
-        if (token != null && !authReq.url.includes('/token')) {
+        const urlsWhitelist = [
+            `${BASE_URL}proxy`,
+            `${BASE_URL}token`,
+            `${BASE_URL}token/refresh`,
+            `${BASE_URL}token/verify`
+        ];
+        if (token != null && !urlsWhitelist.includes(authReq.url)) {
             authReq = this.addTokenHeader(req, token);
         }
         return next.handle(authReq)
             .pipe(catchError(error => {
-                if (error instanceof HttpErrorResponse && !authReq.url.includes('/token') && [401, 403].includes(error.status)) {
-                    return this.handle401Error(authReq, next);
+                if (error instanceof HttpErrorResponse
+                    && [401, 403].includes(error.status)
+                    && !urlsWhitelist.includes(authReq.url)) {
+                        return this.handle401Error(authReq, next);
                 }
                 return throwError(error);
             }));
