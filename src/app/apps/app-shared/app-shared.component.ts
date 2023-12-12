@@ -192,7 +192,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         if (['chart-line'].includes(element.type)) {
                             this.chartElementValueApply(element, data);
                         } else {
-                            this.blockElementValueApply(element, valuesObj);
+                            this.blockElementValueApply(element, valuesObj, data);
                         }
                     });
                 })
@@ -229,16 +229,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = {xAxisData, yAxisData};
     }
 
-    blockElementValueApply(element: AppBlockElement, data: any): void {
+    blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
         const fieldName = element.options?.fieldName;
         if (!fieldName) {
             return;
         }
         if (['image', 'audio'].includes(element.type)) {
-            element.value = typeof data === 'string' ? data : null;
+            element.value = typeof rawData === 'string' ? rawData : null;
         } else {
             element.value = (element.prefixText || '')
-                + (data[fieldName] || '')
+                + (valuesObj[fieldName] || '')
                 + (element.suffixText || '');
         }
     }
