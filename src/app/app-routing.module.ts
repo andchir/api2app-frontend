@@ -6,8 +6,13 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {AuthLoginComponent} from './auth/auth-login.component';
 import {AuthLogoutComponent} from './auth/auth-logout.component';
 import {SharedAppsComponent} from './apps-shared/shared-apps.component';
+import {HomeComponent} from "./home/home.component";
 
 const routes: Routes = [
+    {
+        path: '',
+        component: HomeComponent
+    },
     {
         path: 'auth',
         redirectTo: 'auth/login',
@@ -32,11 +37,6 @@ const routes: Routes = [
     {
         path: 'apps',
         loadChildren: () => import('./apps/apps.module').then(m => m.AppsModule),
-    },
-    {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
     },
     {
         path: '**',
