@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --allowed-hosts=api2app.loc",
+    "start": "ng serve --host 0.0.0.0 --disable-host-check",
+    "start-ru": "ng serve --configuration=ru --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build:localize": "ng build --localize",
+    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale"
   },
   "private": true,
   "dependencies": {

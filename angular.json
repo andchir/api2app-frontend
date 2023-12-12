@@ -13,6 +13,18 @@
             "root": "",
             "sourceRoot": "src",
             "prefix": "app",
+            "i18n": {
+                "sourceLocale": {
+                    "code": "en",
+                    "baseHref": ""
+                },
+                "locales": {
+                    "ru": {
+                        "translation": "src/locale/messages.ru.json",
+                        "baseHref": ""
+                    }
+                }
+            },
             "architect": {
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
@@ -39,7 +51,15 @@
                         ]
                     },
                     "configurations": {
+                        "ru": {
+                            "localize": ["ru"],
+                            "index": {
+                                "input": "src/index-ru.html",
+                                "output": "index.html"
+                            }
+                        },
                         "production": {
+                            "localize": ["en", "ru"],
                             "deployUrl": "/static/",
                             "budgets": [
                                 {
@@ -86,6 +106,9 @@
                         },
                         "development": {
                             "browserTarget": "api2app-frontend:build:development"
+                        },
+                        "ru": {
+                            "browserTarget": "api2app-frontend:build:development,ru"
                         }
                     },
                     "defaultConfiguration": "development"

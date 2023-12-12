@@ -9,20 +9,19 @@
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
                             <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink=""
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
                                [routerLinkActiveOptions]="{exact: true}"
-                               ariaCurrentWhenActive="page">Home Page</a>
+                               ariaCurrentWhenActive="page" i18n>Home Page</a>
                             <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink="/apps"
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
-                               ariaCurrentWhenActive="page">Applications</a>
+                               ariaCurrentWhenActive="page" i18n>Applications</a>
                             <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                                routerLink="/apis"
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
-                               ariaCurrentWhenActive="page">APIs</a>
+                               ariaCurrentWhenActive="page" i18n>APIs</a>
                         </div>
                     </div>
                 </div>
@@ -73,18 +72,18 @@
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                                        id="user-menu-item-0">
                                         <i class="bi bi-person-circle mr-2"></i>
-                                        My Profile
+                                        <span i18n>My Profile</span>
                                     </a>
                                     <a href="#" class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                                        id="user-menu-item-1">
                                         <i class="bi bi-gear mr-2"></i>
-                                        Settings
+                                        <span i18n>Settings</span>
                                     </a>
                                     <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1"
                                        href="#logout"
                                        (click)="navigateLogout($event)">
                                         <i class="bi bi-box-arrow-in-left mr-2"></i>
-                                        Sign Out
+                                        <span i18n>Sign Out</span>
                                     </a>
                                 </div>
                             </div>
@@ -123,14 +122,14 @@
                    aria-current="page"
                    routerLink=""
                    [routerLinkActiveOptions]="{exact: true}"
-                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white">Home Page</a>
+                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>Home Page</a>
                 <a class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
                    routerLink="/apps"
-                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white">Applications</a>
+                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>Applications</a>
                 <a href="#"
                    class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
                    routerLink="/apis"
-                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white">APIs</a>
+                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>APIs</a>
             </div>
             <div class="border-t border-gray-700 pb-3 pt-4" *ngIf="userSubject$ | async">
                 <div class="flex items-center px-5">
@@ -158,18 +157,18 @@
                     <a href="#"
                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
                         <i class="bi bi-person-circle mr-2"></i>
-                        My Profile
+                        <span i18n>My Profile</span>
                     </a>
                     <a href="#"
                        class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white">
                         <i class="bi bi-gear mr-2"></i>
-                        Settings
+                        <span i18n>Settings</span>
                     </a>
                     <a class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-gray-700 hover:text-white"
                        href="#logout"
                        (click)="navigateLogout($event)">
                         <i class="bi bi-box-arrow-in-left mr-2"></i>
-                        Sign Out
+                        <span i18n>Sign Out</span>
                     </a>
                 </div>
             </div>
@@ -183,15 +182,15 @@
             <div class="pt-6">
                 <div class="text-center sm:flex sm:justify-between sm:text-left">
                     <p class="text-sm text-gray-500">
-                        <span class="block sm:inline mx-1">All rights reserved.</span>
+                        <span class="block sm:inline mx-1" i18n>All rights reserved.</span>
 
-                        <a class="inline-block text-teal-600 underline transition hover:text-teal-600/75 mx-1" href="/">
+                        <a class="inline-block text-teal-600 underline transition hover:text-teal-600/75 mx-1" href="/" i18n>
                             Terms & Conditions
                         </a>
 
                         <span>&middot;</span>
 
-                        <a class="inline-block text-teal-600 underline transition hover:text-teal-600/75 mx-1" href="/">
+                        <a class="inline-block text-teal-600 underline transition hover:text-teal-600/75 mx-1" href="/" i18n>
                             Privacy Policy
                         </a>
                     </p>
