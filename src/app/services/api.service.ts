@@ -169,7 +169,7 @@ export class ApiService extends DataService<ApiItem> {
                 httpRequest = this.httpClient.patch(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'DELETE':
-                httpRequest = this.httpClient.delete(data.requestUrl, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.delete(data.requestUrl, {headers, responseType, params, observe: 'response'});
                 break;
             case 'HEAD':
             case 'OPTIONS':
@@ -177,7 +177,7 @@ export class ApiService extends DataService<ApiItem> {
                 httpRequest = this.httpClient.request(data.requestMethod, data.requestUrl, {headers, responseType, params, observe: 'response'});
                 break;
             default:
-                httpRequest = this.httpClient.get(data.requestUrl, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.get(data.requestUrl, {headers, responseType, params, observe: 'response'});
         }
 
         return httpRequest;
