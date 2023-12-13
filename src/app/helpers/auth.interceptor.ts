@@ -31,14 +31,15 @@ export class AuthInterceptor implements HttpInterceptor {
             `${BASE_URL}token/refresh`,
             `${BASE_URL}token/verify`
         ];
-        if (token != null && !urlsWhitelist.includes(authReq.url)) {
+        if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);
         }
         return next.handle(authReq)
             .pipe(catchError(error => {
                 if (error instanceof HttpErrorResponse
                     && [401, 403].includes(error.status)
-                    && !urlsWhitelist.includes(authReq.url)) {
+                    && !urlsWhitelist.includes(authReq.url)
+                    && authReq.url.includes(BASE_URL)) {
                         return this.handle401Error(authReq, next);
                 }
                 return throwError(error);
