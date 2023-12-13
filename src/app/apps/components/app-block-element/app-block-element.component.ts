@@ -59,7 +59,20 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             },
             chart: {
                 height: 450,
-                type: 'area'
+                type: 'area',
+                events: {
+                    markerClick: (event, chartContext, config) => {
+                        console.log('markerClick', event, chartContext, config);
+                        const series = config?.series || config?.w?.config?.series;
+                        if (!series) {
+                            return;
+                        }
+                        const xAxis = config?.xaxis || config?.w?.config?.xaxis;
+                        const itemData = series[config.seriesIndex]?.data[config.dataPointIndex];
+                        // console.log(config.seriesIndex, config.dataPointIndex, xAxis, series, itemData);
+                        // console.log(this.options);
+                    }
+                }
             },
             colors: ['#00BAEC'],
             markers: {
