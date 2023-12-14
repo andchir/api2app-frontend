@@ -37,6 +37,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-tags', title: 'Tags'},
         {name: 'input-radio', title: 'Radio Buttons'},
         {name: 'input-date', title: 'Calendar'},
+        {name: 'input-file', title: 'Upload File'},
         {name: 'image', title: 'Image'},
         {name: 'audio', title: 'Audio'},
         {name: 'chart-line', title: 'Line Chart'}

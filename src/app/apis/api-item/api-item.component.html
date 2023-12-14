@@ -137,8 +137,9 @@
                 <label class="block w-full text-sm bg-gray-200 hover:bg-gray-300 text-gray-900 border border-gray-300 rounded-none rounded-r-lg flex-1 p-2.5 cursor-pointer" for="fileInput{{ index }}"
                        [ngClass]="{'bg-green-100 hover:bg-green-200': item.file}"
                        *ngIf="item.isFile">
-                    Select File
-                    <i class="bi bi-file-earmark-check" *ngIf="item.file"></i>
+                    <i class="bi bi-file-earmark mr-2" *ngIf="!item.file"></i>
+                    <i class="bi bi-file-earmark-check mr-2" *ngIf="item.file"></i>
+                    <span>Select File</span>
                     <input class="hidden" id="fileInput{{ index }}" type="file"
                            (change)="onFileChanged($event, 'bodyFields', index)">
                 </label>

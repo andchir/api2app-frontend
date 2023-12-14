@@ -10,6 +10,7 @@ import { AlertComponent } from './shared/alert/alert.component';
 import { ConfirmComponent } from './shared/confirm/confirm.component';
 import { DrawerComponent } from './shared/drawer/drawer.component';
 import { ShareItemComponent } from './shared/share-item/share-item.component';
+import { FileUploadComponent } from './shared/file-upload/file-upload.component';
 
 @NgModule({
     imports: [
@@ -22,7 +23,8 @@ import { ShareItemComponent } from './shared/share-item/share-item.component';
         ConfirmComponent,
         DrawerComponent,
         ShareItemComponent,
-        NotAuthorizedComponent
+        NotAuthorizedComponent,
+        FileUploadComponent
     ],
     exports: [
         AlertComponent,
@@ -30,6 +32,7 @@ import { ShareItemComponent } from './shared/share-item/share-item.component';
         DrawerComponent,
         ShareItemComponent,
         NotAuthorizedComponent,
+        FileUploadComponent,
         CommonModule,
         FormsModule,
         RouterModule,

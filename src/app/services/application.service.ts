@@ -394,6 +394,32 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     enabled: options?.useDefault
                 });
                 break;
+            case 'input-file':
+                output.push({
+                    name: 'name',
+                    label: 'Name',
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'label',
+                    label: 'Label',
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'accept',
+                    label: 'Accept',
+                    type: 'input-text',
+                    value: options?.accept
+                });
+                output.push({
+                    name: 'multiple',
+                    label: 'Multiple',
+                    type: 'input-switch',
+                    enabled: options?.multiple
+                });
+                break;
             case 'audio':
                 output.push({
                     name: 'name',
@@ -568,6 +594,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: '',
                     offset: 0,
                     enabled: false
+                });
+                break;
+            case 'input-file':
+                Object.assign(output, {
+                    name: 'file',
+                    label: 'File',
+                    value: [],
+                    multiple: false,
+                    accept: 'image/*'
                 });
                 break;
             case 'image':

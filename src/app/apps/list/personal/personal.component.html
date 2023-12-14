@@ -14,7 +14,7 @@
 <div class="px-3 sm:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" *ngIf="items.length > 0; else templateEmpty">
 
     <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
-        <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+        <div class="mb-3 w-full pt-2 whitespace-nowrap overflow-hidden text-ellipsis">
             {{ item.name }}
         </div>
         <div class="flex gap-2">

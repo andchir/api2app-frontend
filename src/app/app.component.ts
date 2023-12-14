@@ -30,7 +30,6 @@ export class AppComponent implements OnInit {
     ) {
         this.userSubject$ = this.authService.userSubject;
         router.events
-            // .pipe(filter(e => e instanceof NavigationEnd))
             .subscribe((e) => {
                 if (e instanceof NavigationStart) {
                     this.navigationLoading = true;
