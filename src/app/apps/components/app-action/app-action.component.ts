@@ -127,12 +127,8 @@ export class AppActionComponent implements OnInit, OnDestroy {
             const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
             this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;
         }
-        if (this.inputFields.length === 0) {
-            this.inputFields.push('value');
-        }
-        if (this.outputFields.length === 0) {
-            this.outputFields.push('value');
-        }
+        this.inputFields.unshift('value');
+        this.outputFields.unshift('value');
     }
 
     selectField(fieldName: string, fieldType: string): void{

@@ -234,11 +234,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldName) {
             return;
         }
+        const value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (['image', 'audio'].includes(element.type)) {
             element.value = typeof rawData === 'string' ? rawData : null;
         } else {
             element.value = (element.prefixText || '')
-                + (valuesObj[fieldName] || '')
+                + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
                 + (element.suffixText || '');
         }
     }
