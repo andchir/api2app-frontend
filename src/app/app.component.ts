@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
                     this.navigationLoading = true;
                 }
                 if (e instanceof NavigationEnd) {
-                    initFlowbite();
+                    // initFlowbite();
                     this.isSharedUrl = e.url.includes('/shared/');
                     this.navigationLoading = false;
                 }
