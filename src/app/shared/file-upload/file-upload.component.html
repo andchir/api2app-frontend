@@ -13,7 +13,7 @@
             (click)="buttonHandler($event)">
         <i class="bi bi-file-earmark mr-2" *ngIf="files.length === 0"></i>
         <i class="bi bi-file-earmark-check mr-2" *ngIf="files.length > 0"></i>
-        <span i18n>Upload File</span>
+        <span>{{ placeholder }}</span>
     </button>
 </div>
 <div class="pt-2" *ngIf="files.length > 0">

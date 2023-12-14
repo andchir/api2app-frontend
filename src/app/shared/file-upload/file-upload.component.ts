@@ -1,15 +1,27 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { noop } from 'rxjs';
 
 @Component({
     selector: 'app-file-upload',
-    templateUrl: './file-upload.component.html'
+    templateUrl: './file-upload.component.html',
+    providers: [
+        {
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => FileUploadComponent),
+            multi: true,
+        },
+    ]
 })
-export class FileUploadComponent implements OnInit {
+export class FileUploadComponent implements ControlValueAccessor, OnInit {
 
     @Input() fileInputAccept: string;
     @Input() multiple = true;
+    @Input() placeholder = 'Upload File';
+    disabled = false;
     files: File[] = [];
     loadingUpload = false;
+    value: File[] = null;
 
     constructor() {}
 
@@ -81,5 +93,25 @@ export class FileUploadComponent implements OnInit {
             return;
         }
         this.files.splice(index, 1);
+    }
+
+    onChange: (value: string) => void = noop;
+
+    onTouch: () => void = noop;
+
+    registerOnChange(fn: (value: string) => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouch = fn;
+    }
+
+    setDisabledState(isDisabled: boolean): void {
+        this.disabled = isDisabled;
+    }
+
+    writeValue(value: File[]): void {
+        this.value = value;
     }
 }

@@ -408,6 +408,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.label
                 });
                 output.push({
+                    name: 'placeholder',
+                    label: 'Placeholder',
+                    type: 'input-text',
+                    value: options?.placeholder
+                });
+                output.push({
                     name: 'accept',
                     label: 'Accept',
                     type: 'input-text',
@@ -602,7 +608,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: 'File',
                     value: [],
                     multiple: false,
-                    accept: 'image/*'
+                    accept: 'image/*',
+                    placeholder: 'Upload File'
                 });
                 break;
             case 'image':

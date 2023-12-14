@@ -238,7 +238,9 @@
                     {{ options?.label }}
                 </label>
                 <app-file-upload
-                    [multiple]="options?.multiple"></app-file-upload>
+                    [multiple]="options?.multiple"
+                    [placeholder]="options?.placeholder"
+                    [(ngModel)]="options.value"></app-file-upload>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
