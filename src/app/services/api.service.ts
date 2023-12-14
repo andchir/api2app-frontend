@@ -110,6 +110,15 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     apiRequest(data: ApiItem): Observable<HttpResponse<any>> {
+        let requestUrl = data.requestUrl;
+        let requestMethod = data.requestMethod;
+        const sendAsFormData = data?.sendAsFormData || false;
+
+        if (data.sender === 'server') {
+            requestUrl = `${BASE_URL}proxy`;
+            requestMethod = 'POST';
+        }
+
         // Get headers
         const headersData: {[header: string]: string} = {};
         data.headers.forEach((item) => {
@@ -121,13 +130,14 @@ export class ApiService extends DataService<ApiItem> {
             const authToken = btoa(`${data.authLogin}:${data.authPassword}`);
             headersData['Authorization'] = `Basic ${authToken}`;
         }
-        if (data.sendAsFormData && !headersData['enctype']) {
+
+        if (sendAsFormData && !headersData['enctype']) {
             headersData['enctype'] = 'multipart/form-data';
         }
 
-        if (data.sender === 'server') {
-            return this.apiRequestByProxy(data);
-        }
+        // if (data.sender === 'server') {
+        //     return this.apiRequestByProxy(data);
+        // }
 
         // Get request body
         const formData = new FormData();
@@ -160,34 +170,54 @@ export class ApiService extends DataService<ApiItem> {
             });
         }
 
+        if (data.sender === 'server') {
+            if (!isDevMode()) {
+                const csrfToken = this.getCookie('csrftoken');
+                headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
+                headersData['Mode'] = 'same-origin';
+            }
+            if (sendAsFormData) {
+                formData.append('uuid', data.uuid || '');
+                formData.append('requestUrl', data.requestUrl || '');
+                formData.append('requestMethod', data.requestMethod || 'GET');
+            } else {
+                body = Object.assign({}, {
+                    data: body,
+                    uuid: data.uuid || '',
+                    requestUrl: data.requestUrl || '',
+                    requestMethod: data.requestMethod || 'GET'
+                });
+            }
+        }
+
         const headers = new HttpHeaders(headersData);
-        const requestData = data.sendAsFormData ? formData : body;
+        const requestData = sendAsFormData ? formData : body;
         const responseType = 'blob';
-        const params = data.requestMethod === 'GET'
+        const params = requestMethod === 'GET'
             ? this.createParams(body)
             : new HttpParams();
 
         let httpRequest;
-        switch (data.requestMethod) {
+        switch (requestMethod) {
             case 'POST':
-                httpRequest = this.httpClient.post(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.post(requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'PUT':
-                httpRequest = this.httpClient.put(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.put(requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'PATCH':
-                httpRequest = this.httpClient.patch(data.requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.patch(requestUrl, requestData, {headers, responseType, observe: 'response'});
                 break;
             case 'DELETE':
-                httpRequest = this.httpClient.delete(data.requestUrl, {headers, responseType, params, observe: 'response'});
+                httpRequest = this.httpClient.delete(requestUrl, {headers, responseType, params, observe: 'response'});
                 break;
             case 'HEAD':
             case 'OPTIONS':
             case 'PURGE':
-                httpRequest = this.httpClient.request(data.requestMethod, data.requestUrl, {headers, responseType, params, observe: 'response'});
+                httpRequest = this.httpClient.request(requestMethod, requestUrl, {headers, responseType, params, observe: 'response'});
                 break;
             default:
-                httpRequest = this.httpClient.get(data.requestUrl, {headers, responseType, params, observe: 'response'});
+                httpRequest = this.httpClient.get(requestUrl, {headers, responseType, params, observe: 'response'});
         }
 
         return httpRequest;

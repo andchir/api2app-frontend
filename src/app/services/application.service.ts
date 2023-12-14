@@ -75,6 +75,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.suffixText
                 });
                 output.push({
+                    name: 'color',
+                    label: 'Color',
+                    type: 'input-select',
+                    value: options?.color,
+                    choices: ['Black', 'Gray', 'Green', 'Blue', 'Red']
+                });
+                output.push({
                     name: 'whiteSpacePre',
                     label: 'Use line break',
                     type: 'input-switch',
@@ -517,6 +524,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: 'Example Text',
                     prefixText: '',
                     suffixText: '',
+                    color: 'Black',
                     whiteSpacePre: false
                 });
                 break;
