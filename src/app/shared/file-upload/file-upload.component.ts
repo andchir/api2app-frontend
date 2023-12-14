@@ -50,7 +50,8 @@ export class FileUploadComponent implements ControlValueAccessor {
 
         (event.target as HTMLElement).classList.remove('border-green-400');
 
-        this.files = this.getTransferredFiles(event.dataTransfer);
+        const files = this.getTransferredFiles(event.dataTransfer);
+        this.files = [...files, ...this.files];
         if (!this.multiple) {
             this.files.splice(1, this.files.length);
         }
