@@ -671,12 +671,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|number|boolean {
+    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[] {
         switch (element.type) {
             case 'input-date':
                 const dateFormat = element?.format;
                 const date = moment(String(element?.value));
                 return date.format(dateFormat);
+            case 'input-file':
+                return element.value;
         }
         return String(element.value);
     }

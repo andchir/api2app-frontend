@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnInit } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { noop } from 'rxjs';
 
@@ -10,23 +10,29 @@ import { noop } from 'rxjs';
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => FileUploadComponent),
             multi: true,
-        },
+        }
     ]
 })
-export class FileUploadComponent implements ControlValueAccessor, OnInit {
+export class FileUploadComponent implements ControlValueAccessor {
 
+    private _value: File[];
     @Input() fileInputAccept: string;
     @Input() multiple = true;
     @Input() placeholder = 'Upload File';
     disabled = false;
     files: File[] = [];
     loadingUpload = false;
-    value: File[] = null;
 
     constructor() {}
 
-    ngOnInit(): void {
+    get value(): File[] {
+        return this._value;
+    }
 
+    @Input()
+    set value(val: File[]) {
+        this._value = val;
+        this.onChange(this._value);
     }
 
     onFileChange(event: Event): void {
@@ -35,6 +41,7 @@ export class FileUploadComponent implements ControlValueAccessor, OnInit {
         }
         const inputEl = event.target as HTMLInputElement;
         this.files = Array.from(inputEl.files);
+        this.writeValue(this.files);
     }
 
     dropHandler(event: DragEvent): void {
@@ -47,7 +54,7 @@ export class FileUploadComponent implements ControlValueAccessor, OnInit {
         if (!this.multiple) {
             this.files.splice(1, this.files.length);
         }
-        console.log(this.files);
+        this.writeValue(this.files);
     }
 
     dragOverHandler(event: DragEvent): void {
@@ -93,13 +100,14 @@ export class FileUploadComponent implements ControlValueAccessor, OnInit {
             return;
         }
         this.files.splice(index, 1);
+        this.writeValue(this.files);
     }
 
-    onChange: (value: string) => void = noop;
+    onChange: (value: File[]) => void = noop;
 
     onTouch: () => void = noop;
 
-    registerOnChange(fn: (value: string) => void): void {
+    registerOnChange(fn: (value: File[]) => void): void {
         this.onChange = fn;
     }
 

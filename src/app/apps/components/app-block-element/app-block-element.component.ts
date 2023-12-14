@@ -24,6 +24,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() selectAction: EventEmitter<void> = new EventEmitter<void>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
+    @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
 
     inputTypes: {name: AppBlockElementType, title: string}[] = [
         {name: 'text-header', title: 'Text Header'},
