@@ -180,12 +180,16 @@ export class ApiService extends DataService<ApiItem> {
                 formData.append('uuid', data.uuid || '');
                 formData.append('requestUrl', data.requestUrl || '');
                 formData.append('requestMethod', data.requestMethod || 'GET');
+                formData.append('responseContentType', data.responseContentType || '');
+                formData.append('sendAsFormData', data.sendAsFormData ? '0' : '1');
             } else {
                 body = Object.assign({}, {
                     data: body,
-                    uuid: data.uuid || '',
-                    requestUrl: data.requestUrl || '',
-                    requestMethod: data.requestMethod || 'GET'
+                    uuid: data?.uuid,
+                    requestUrl: data?.requestUrl,
+                    requestMethod: data?.requestMethod,
+                    responseContentType: data?.responseContentType,
+                    sendAsFormData: data?.sendAsFormData
                 });
             }
         }
