@@ -131,8 +131,8 @@ export class ApiService extends DataService<ApiItem> {
             headersData['Authorization'] = `Basic ${authToken}`;
         }
 
-        if (sendAsFormData && !headersData['enctype']) {
-            headersData['enctype'] = 'multipart/form-data';
+        if (sendAsFormData && !headersData['Enctype']) {
+            headersData['Enctype'] = 'multipart/form-data';
         }
 
         // if (data.sender === 'server') {
@@ -176,6 +176,8 @@ export class ApiService extends DataService<ApiItem> {
                 headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 headersData['Mode'] = 'same-origin';
             }
+            delete headersData['Content-Type'];
+            delete headersData['content-Type'];
             if (sendAsFormData) {
                 formData.append('uuid', data.uuid || '');
                 formData.append('requestUrl', data.requestUrl || '');
