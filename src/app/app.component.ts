@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {NavigationEnd, NavigationStart, Router} from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
 import { initFlowbite } from 'flowbite';
@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     isLoggedIn = false;
     isMobileMenuActive = false;
     isSharedUrl = false;
+    navigationLoading = false;
 
     constructor(
         private router: Router,
@@ -29,10 +30,16 @@ export class AppComponent implements OnInit {
     ) {
         this.userSubject$ = this.authService.userSubject;
         router.events
-            .pipe(filter(e => e instanceof NavigationEnd))
-            .subscribe((e: NavigationEnd) => {
-                // initFlowbite();
-                this.isSharedUrl = e.url.includes('/shared/');
+            // .pipe(filter(e => e instanceof NavigationEnd))
+            .subscribe((e) => {
+                if (e instanceof NavigationStart) {
+                    this.navigationLoading = true;
+                }
+                if (e instanceof NavigationEnd) {
+                    initFlowbite();
+                    this.isSharedUrl = e.url.includes('/shared/');
+                    this.navigationLoading = false;
+                }
             });
     }
 

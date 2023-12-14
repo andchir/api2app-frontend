@@ -47,48 +47,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     constructor() {}
 
     ngOnInit(): void {
-        this.chartOptions = {
-            series: [
-                {
-                    name: this.options?.itemTitle || 'Item',
-                    data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
-                }
-            ],
-            xaxis: {
-                categories: this.editorMode ? ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep'] : []
-            },
-            chart: {
-                height: 450,
-                type: 'area',
-                events: {
-                    markerClick: (event, chartContext, config) => {
-                        console.log('markerClick', event, chartContext, config);
-                        const series = config?.series || config?.w?.config?.series;
-                        if (!series) {
-                            return;
-                        }
-                        const xAxis = config?.xaxis || config?.w?.config?.xaxis;
-                        const itemData = series[config.seriesIndex]?.data[config.dataPointIndex];
-                        // console.log(config.seriesIndex, config.dataPointIndex, xAxis, series, itemData);
-                        // console.log(this.options);
-                    }
-                }
-            },
-            colors: ['#00BAEC'],
-            markers: {
-                size: 3,
-                colors: ['#fff'],
-                strokeColors: ['#00BAEC'],
-                strokeWidth: 2
-            },
-            fill: {
-                colors: ['#00BAEC'],
-                gradient: {
-                    opacityFrom: 1,
-                    opacityTo: 0
-                }
-            }
-        };
+        this.createChartOptions();
         if (!this.editorMode) {
             this.updateStateByOptions();
         }
@@ -179,5 +138,50 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     onChange(optionName: string, isChecked: boolean) {
         this.options[optionName] = !isChecked;
+    }
+
+    createChartOptions(): void {
+        this.chartOptions = {
+            series: [
+                {
+                    name: this.options?.itemTitle || 'Item',
+                    data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
+                }
+            ],
+            xaxis: {
+                categories: this.editorMode ? ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep'] : []
+            },
+            chart: {
+                height: 450,
+                type: 'area',
+                events: {
+                    markerClick: (event, chartContext, config) => {
+                        console.log('markerClick', event, chartContext, config);
+                        const series = config?.series || config?.w?.config?.series;
+                        if (!series) {
+                            return;
+                        }
+                        const xAxis = config?.xaxis || config?.w?.config?.xaxis;
+                        const itemData = series[config.seriesIndex]?.data[config.dataPointIndex];
+                        // console.log(config.seriesIndex, config.dataPointIndex, xAxis, series, itemData);
+                        // console.log(this.options);
+                    }
+                }
+            },
+            colors: ['#00BAEC'],
+            markers: {
+                size: 3,
+                colors: ['#fff'],
+                strokeColors: ['#00BAEC'],
+                strokeWidth: 2
+            },
+            fill: {
+                colors: ['#00BAEC'],
+                gradient: {
+                    opacityFrom: 1,
+                    opacityTo: 0
+                }
+            }
+        };
     }
 }
