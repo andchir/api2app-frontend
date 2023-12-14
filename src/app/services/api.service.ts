@@ -171,13 +171,6 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         if (data.sender === 'server') {
-            if (!isDevMode()) {
-                const csrfToken = this.getCookie('csrftoken');
-                headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
-                headersData['Mode'] = 'same-origin';
-            }
-            delete headersData['Content-Type'];
-            delete headersData['content-Type'];
             if (sendAsFormData) {
                 formData.append('uuid', data.uuid || '');
                 formData.append('requestUrl', data.requestUrl || '');
@@ -187,6 +180,7 @@ export class ApiService extends DataService<ApiItem> {
             } else {
                 body = Object.assign({}, {
                     data: body,
+                    headers: Object.assign({}, headersData),
                     uuid: data?.uuid,
                     requestUrl: data?.requestUrl,
                     requestMethod: data?.requestMethod,
@@ -194,6 +188,13 @@ export class ApiService extends DataService<ApiItem> {
                     sendAsFormData: data?.sendAsFormData
                 });
             }
+            if (!isDevMode()) {
+                const csrfToken = this.getCookie('csrftoken');
+                headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
+                headersData['Mode'] = 'same-origin';
+            }
+            delete headersData['Content-Type'];
+            delete headersData['content-Type'];
         }
 
         const headers = new HttpHeaders(headersData);
