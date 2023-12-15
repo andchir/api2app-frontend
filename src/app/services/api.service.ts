@@ -131,8 +131,11 @@ export class ApiService extends DataService<ApiItem> {
             headersData['Authorization'] = `Basic ${authToken}`;
         }
 
-        if (sendAsFormData && !headersData['Enctype']) {
+        if (sendAsFormData) {
             headersData['Enctype'] = 'multipart/form-data';
+            delete headersData['Content-Type'];
+            delete headersData['content-Type'];
+            // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
         // if (data.sender === 'server') {
@@ -172,20 +175,20 @@ export class ApiService extends DataService<ApiItem> {
 
         if (data.sender === 'server') {
             if (sendAsFormData) {
-                formData.append('uuid', data.uuid || '');
-                formData.append('requestUrl', data.requestUrl || '');
-                formData.append('requestMethod', data.requestMethod || 'GET');
-                formData.append('responseContentType', data.responseContentType || '');
-                formData.append('sendAsFormData', data.sendAsFormData ? '0' : '1');
+                formData.append('opt__uuid', data.uuid || '');
+                formData.append('opt__requestUrl', data.requestUrl || '');
+                formData.append('opt__requestMethod', data.requestMethod || 'GET');
+                formData.append('opt__responseContentType', data.responseContentType || '');
+                formData.append('opt__sendAsFormData', data.sendAsFormData ? '0' : '1');
             } else {
                 body = Object.assign({}, {
                     data: body,
                     headers: Object.assign({}, headersData),
-                    uuid: data?.uuid,
-                    requestUrl: data?.requestUrl,
-                    requestMethod: data?.requestMethod,
-                    responseContentType: data?.responseContentType,
-                    sendAsFormData: data?.sendAsFormData
+                    opt__uuid: data?.uuid,
+                    opt__requestUrl: data?.requestUrl,
+                    opt__requestMethod: data?.requestMethod,
+                    opt__responseContentType: data?.responseContentType,
+                    opt__sendAsFormData: data?.sendAsFormData
                 });
             }
             if (!isDevMode()) {
@@ -193,8 +196,6 @@ export class ApiService extends DataService<ApiItem> {
                 headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 headersData['Mode'] = 'same-origin';
             }
-            delete headersData['Content-Type'];
-            delete headersData['content-Type'];
         }
 
         const headers = new HttpHeaders(headersData);

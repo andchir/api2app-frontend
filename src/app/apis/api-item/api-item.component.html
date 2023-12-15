@@ -250,7 +250,7 @@
                             [ngClass]="{'text-blue-600 border-blue-600': previewSate === 'headers', 'border-transparent hover:text-gray-600 hover:border-gray-300': previewSate !== 'headers'}"
                             (click)="previewSate = 'headers'" i18n>Headers</button>
                 </li>
-                <li class="mr-2 dropdown">
+                <li class="mr-2 dropdown" *ngIf="previewSate == 'data'">
                     <button type="button" class="inline-block p-3 border-b-2 border-transparent border-transparent hover:text-gray-600 hover:border-gray-300">
                         {{ apiItem.responseContentType }}
                         <svg class="inline-block fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
