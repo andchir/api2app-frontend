@@ -21,6 +21,7 @@
     <div class="grow">
         <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                placeholder="API URL"
+               i18n-placeholder
                [disabled]="loading"
                [(ngModel)]="apiItem.requestUrl">
     </div>
@@ -33,7 +34,7 @@
                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
             </svg>
-            Test
+            <span i18n>Test</span>
         </button>
     </div>
 
@@ -44,7 +45,7 @@
                         class="inline-block px-3 py-2 rounded-md hover:text-gray-900 hover:bg-gray-200"
                         [ngClass]="{'text-white bg-gray-400 hover:text-white hover:bg-gray-400': apiItem.sender === 'browser'}"
                         (click)="apiItem.sender = 'browser'">
-                    Browser
+                    <span i18n>Browser</span>
                 </button>
             </li>
             <li>
@@ -52,7 +53,7 @@
                         class="inline-block px-3 py-2 rounded-md active hover:text-gray-900 hover:bg-gray-200"
                         [ngClass]="{'text-white bg-gray-400 hover:text-white hover:bg-gray-400': apiItem.sender === 'server'}"
                         (click)="apiItem.sender = 'server'">
-                    Server
+                    <span i18n>Server</span>
                 </button>
             </li>
         </ul>
@@ -62,19 +63,19 @@
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
     <div>
-        <h3 class="mb-2">Body</h3>
+        <h3 class="mb-2" i18n>Body</h3>
 
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
             <ul class="flex flex-wrap -mb-px">
                 <li class="mr-2">
                     <button type="button" class="inline-block p-3 border-b-2 border-transparent"
                             [ngClass]="{'text-blue-600 border-blue-600': apiItem.bodyDataSource === 'fields', 'border-transparent hover:text-gray-600 hover:border-gray-300': apiItem.bodyDataSource !== 'fields'}"
-                            (click)="apiItem.bodyDataSource = 'fields'">Fields</button>
+                            (click)="apiItem.bodyDataSource = 'fields'" i18n>Fields</button>
                 </li>
                 <li class="mr-2">
                     <button type="button" class="inline-block p-3 border-b-2 hover:text-gray-600 hover:border-gray-300"
                             [ngClass]="{'text-blue-600 border-blue-600': apiItem.bodyDataSource === 'raw', 'border-transparent hover:text-gray-600 hover:border-gray-300': apiItem.bodyDataSource !== 'raw'}"
-                            (click)="apiItem.bodyDataSource = 'raw'">Raw</button>
+                            (click)="apiItem.bodyDataSource = 'raw'" i18n>Raw</button>
                 </li>
                 <li class="mr-2 dropdown" *ngIf="apiItem.bodyDataSource === 'raw'">
                     <button type="button" class="inline-block p-3 border-b-2 border-transparent border-transparent hover:text-gray-600 hover:border-gray-300">
@@ -139,7 +140,7 @@
                        *ngIf="item.isFile">
                     <i class="bi bi-file-earmark mr-2" *ngIf="!item.file"></i>
                     <i class="bi bi-file-earmark-check mr-2" *ngIf="item.file"></i>
-                    <span>Select File</span>
+                    <span i18n>Select File</span>
                     <input class="hidden" id="fileInput{{ index }}" type="file"
                            (change)="onFileChanged($event, 'bodyFields', index)">
                 </label>
@@ -148,7 +149,7 @@
             <label class="relative inline-flex items-center cursor-pointer" *ngIf="['POST', 'PUT', 'PATCH'].includes(apiItem.requestMethod)">
                 <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="apiItem.sendAsFormData">
                 <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                <span class="ml-3 text-sm font-medium text-gray-900">Send as Form Data</span>
+                <span class="ml-3 text-sm font-medium text-gray-900" i18n>Send as Form Data</span>
             </label>
 
         </div>
@@ -159,7 +160,7 @@
 
         <hr class="mb-4">
 
-        <h3 class="mb-2">Headers</h3>
+        <h3 class="mb-2" i18n>Headers</h3>
 
         <div class="mb-6">
 
@@ -173,6 +174,7 @@
                             </span>
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600 cursor-pointer"
                       title="Private/Public"
+                      i18n-title
                       [ngClass]="{'text-red-700': item.private}"
                       (click)="item.private = !item.private" *ngIf="authorized">
                     <i class="bi bi-lock-fill" *ngIf="item.private"></i>
@@ -180,15 +182,18 @@
                 </span>
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 dark:bg-gray-600 cursor-pointer"
                       title="Delete header"
+                      i18n-title
                       (click)="deleteOption('headers', index)">
                     <i class="bi bi-trash-fill"></i>
                 </span>
                 <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5"
                        placeholder="Header"
+                       i18n-placeholder
                        [(ngModel)]="item.name"
                        (ngModelChange)="onOptionsListChange('headers', index)">
                 <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5"
                        placeholder="Value"
+                       i18n-placeholder
                        value="application/json"
                        [(ngModel)]="item.value"
                        (ngModelChange)="onOptionsListChange('headers', index)">
@@ -201,13 +206,13 @@
             <label class="relative inline-flex items-center cursor-pointer" [ngClass]="{'mb-4': apiItem.basicAuth}">
                 <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="apiItem.basicAuth">
                 <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                <span class="ml-3 text-sm font-medium text-gray-900">Basic Authentication</span>
+                <span class="ml-3 text-sm font-medium text-gray-900" i18n>Basic Authentication</span>
             </label>
 
             <div *ngIf="apiItem.basicAuth">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-4">
                     <div>
-                        <label for="fieldBasicAuthLogin">Login:</label>
+                        <label for="fieldBasicAuthLogin" i18n>Login:</label>
                     </div>
                     <div class="col-span-2">
                         <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthLogin"
@@ -217,7 +222,7 @@
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     <div>
-                        <label for="fieldBasicAuthPassword">Password:</label>
+                        <label for="fieldBasicAuthPassword" i18n>Password:</label>
                     </div>
                     <div class="col-span-2">
                         <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" id="fieldBasicAuthPassword"
@@ -231,19 +236,19 @@
 
     </div>
     <div class="flex flex-col">
-        <h3 class="mb-2">Preview</h3>
+        <h3 class="mb-2" i18n>Preview</h3>
 
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
             <ul class="flex flex-wrap -mb-px">
                 <li class="mr-2">
                     <button type="button" class="inline-block p-3 border-b-2 border-transparent"
                             [ngClass]="{'text-blue-600 border-blue-600': previewSate === 'data', 'border-transparent hover:text-gray-600 hover:border-gray-300': previewSate !== 'data'}"
-                            (click)="previewSate = 'data'">Data</button>
+                            (click)="previewSate = 'data'" i18n>Data</button>
                 </li>
                 <li class="mr-2" *ngIf="apiItem.responseHeaders.length > 0">
                     <button type="button" class="inline-block p-3 border-b-2 hover:text-gray-600 hover:border-gray-300"
                             [ngClass]="{'text-blue-600 border-blue-600': previewSate === 'headers', 'border-transparent hover:text-gray-600 hover:border-gray-300': previewSate !== 'headers'}"
-                            (click)="previewSate = 'headers'">Headers</button>
+                            (click)="previewSate = 'headers'" i18n>Headers</button>
                 </li>
                 <li class="mr-2 dropdown">
                     <button type="button" class="inline-block p-3 border-b-2 border-transparent border-transparent hover:text-gray-600 hover:border-gray-300">
@@ -270,7 +275,7 @@
                  [ngClass]="{'border-red-600': isResponseError, 'opacity-50': loading && submitted}"></div>
             <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2" *ngIf="loading && submitted">
                 <svg aria-hidden="true" class="w-8 h-8 mr-2 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
-                <span class="sr-only">Loading...</span>
+                <span class="sr-only" i18n>Loading...</span>
             </div>
         </div>
 
@@ -303,12 +308,12 @@
 <ng-template #templateEmptyImage>
     <div class="p-4 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center">
         <div *ngIf="isResponseError">
-            Error.
+            <span i18n>Error.</span>
         </div>
         <div *ngIf="!isResponseError">
             <i class="bi bi-image mr-2" *ngIf="apiItem.responseContentType === 'image'"></i>
             <i class="bi bi-music-note-beamed mr-2" *ngIf="apiItem.responseContentType === 'audio'"></i>
-            Empty.
+            <span i18n>Empty.</span>
         </div>
     </div>
 </ng-template>
