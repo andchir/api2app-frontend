@@ -156,6 +156,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const apiItem = Object.assign({}, inputApiItem);
         const allElements = this.getAllElements();
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
+            if (!apiItem.bodyFields) {
+                apiItem.bodyFields = [];
+            }
             const bodyFields = apiItem.bodyFields.map(field => {
                 return {...field};
             });
@@ -177,6 +180,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Query params
+        if (!apiItem.queryParams) {
+            apiItem.queryParams = [];
+        }
         const queryParams = apiItem.queryParams.map(field => {
             return {...field};
         });
