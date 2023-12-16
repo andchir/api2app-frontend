@@ -91,13 +91,13 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         });
     }
 
-    findDataEmptyIndex(optionName: 'headers'|'bodyFields'): number {
+    findDataEmptyIndex(optionName: 'headers'|'bodyFields'|'queryParams'): number {
         return this.apiItem[optionName].findLastIndex((item) => {
             return !item.name && !item.value;
         });
     }
 
-    deleteOption(optionName: 'headers'|'bodyFields', index: number): void {
+    deleteOption(optionName: 'headers'|'bodyFields'|'queryParams', index: number): void {
         this.apiItem[optionName][index].name = '';
         this.apiItem[optionName][index].value = '';
         if (this.apiItem[optionName].length === 1) {
@@ -106,7 +106,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         this.onOptionsListChange(optionName, index, 0);
     }
 
-    onOptionsListChange(optionName: 'headers'|'bodyFields', index: number, delay = 200): void {
+    onOptionsListChange(optionName: 'headers'|'bodyFields'|'queryParams', index: number, delay = 200): void {
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
             const lastEmptyIndex = this.findDataEmptyIndex(optionName);

@@ -101,12 +101,12 @@
 
             <div class="flex mb-4" *ngFor="let item of apiItem.bodyFields; index as index"
                  [ngClass]="{'opacity-50': item.hidden}">
-                            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md cursor-pointer"
-                                  title="Enabled/Disabled"
-                                  (click)="item.hidden = !item.hidden">
-                                <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
-                                <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
-                            </span>
+                <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md cursor-pointer"
+                      title="Enabled/Disabled"
+                      (click)="item.hidden = !item.hidden">
+                    <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
+                    <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
+                </span>
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 cursor-pointer"
                       title="Private/Public"
                       [ngClass]="{'text-red-700': item.private}"
@@ -160,6 +160,46 @@
 
         <hr class="mb-4">
 
+        <!-- Query parameters -->
+        <h3 class="mb-2" i18n>Query parameters</h3>
+
+        <div class="flex mb-4" *ngFor="let item of apiItem.queryParams; index as index"
+             [ngClass]="{'opacity-50': item.hidden}">
+
+            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md cursor-pointer"
+                  title="Enabled/Disabled"
+                  (click)="item.hidden = !item.hidden">
+                <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
+                <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
+            </span>
+            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 cursor-pointer"
+              title="Private/Public"
+              [ngClass]="{'text-red-700': item.private}"
+              (click)="item.private = !item.private" *ngIf="authorized">
+                <i class="bi bi-lock-fill" *ngIf="item.private"></i>
+                <i class="bi bi-unlock-fill" *ngIf="!item.private"></i>
+            </span>
+            <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 cursor-pointer"
+                  title="Delete field"
+                  (click)="deleteOption('queryParams', index)">
+                <i class="bi bi-trash-fill"></i>
+            </span>
+            <input type="text" class="rounded-none bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5"
+                   placeholder="Field Name"
+                   [(ngModel)]="item.name"
+                   (ngModelChange)="onOptionsListChange('queryParams', index)">
+            <input type="text" class="rounded-none rounded-r-lg bg-gray-50 border text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm border-gray-300 p-2.5"
+                   placeholder="Value"
+                   [(ngModel)]="item.value"
+                   (ngModelChange)="onOptionsListChange('queryParams', index)"
+                   *ngIf="!item.isFile">
+
+        </div>
+        <!-- /Query parameters -->
+
+        <hr class="mb-4">
+
+        <!-- Headers -->
         <h3 class="mb-2" i18n>Headers</h3>
 
         <div class="mb-6">
@@ -200,6 +240,8 @@
             </div>
 
         </div>
+
+        <!-- Headers -->
 
         <div>
 

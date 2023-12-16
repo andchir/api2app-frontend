@@ -48,6 +48,9 @@ export class ApiService extends DataService<ApiItem> {
                 // {name: 'Access-Control-Allow-Origin', value: '*'},
                 {name: '', value: ''}
             ],
+            queryParams: [
+                {name: '', value: ''}
+            ],
             bodyContent: ''
         };
     }
@@ -119,7 +122,7 @@ export class ApiService extends DataService<ApiItem> {
             requestMethod = 'POST';
         }
 
-        // Get headers
+        // Headers
         const headersData: {[header: string]: string} = {};
         data.headers.forEach((item) => {
             if (item.name && item.value && !item.hidden) {
@@ -142,7 +145,7 @@ export class ApiService extends DataService<ApiItem> {
         //     return this.apiRequestByProxy(data);
         // }
 
-        // Get request body
+        // Request body
         const formData = new FormData();
         let body: any = data.bodyDataSource === 'raw'
             ? data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent
@@ -173,9 +176,19 @@ export class ApiService extends DataService<ApiItem> {
             });
         }
 
+        // Query parameters
+        let queryParams = {};
+        data.queryParams.forEach((item) => {
+            if (!item.value || item.hidden) {
+                return;
+            }
+            queryParams[item.name] = item.value;
+        });
+
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__queryParams', Object.keys(queryParams).join(','));
                 formData.append('opt__uuid', data.uuid || '');
                 formData.append('opt__requestUrl', data.requestUrl || '');
                 formData.append('opt__requestMethod', data.requestMethod || 'GET');
@@ -185,6 +198,7 @@ export class ApiService extends DataService<ApiItem> {
                 body = Object.assign({}, {
                     data: body,
                     headers: Object.assign({}, headersData),
+                    queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid,
                     opt__requestUrl: data?.requestUrl,
                     opt__requestMethod: data?.requestMethod,
@@ -192,6 +206,7 @@ export class ApiService extends DataService<ApiItem> {
                     opt__sendAsFormData: data?.sendAsFormData
                 });
             }
+            queryParams = {};
             if (!isDevMode()) {
                 const csrfToken = this.getCookie('csrftoken');
                 headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
@@ -202,20 +217,18 @@ export class ApiService extends DataService<ApiItem> {
         const headers = new HttpHeaders(headersData);
         const requestData = sendAsFormData ? formData : body;
         const responseType = 'blob';
-        const params = requestMethod === 'GET'
-            ? this.createParams(body)
-            : new HttpParams();
+        const params = this.createParams(queryParams);
 
         let httpRequest;
         switch (requestMethod) {
             case 'POST':
-                httpRequest = this.httpClient.post(requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.post(requestUrl, requestData, {headers, responseType, params, observe: 'response'});
                 break;
             case 'PUT':
-                httpRequest = this.httpClient.put(requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.put(requestUrl, requestData, {headers, responseType, params, observe: 'response'});
                 break;
             case 'PATCH':
-                httpRequest = this.httpClient.patch(requestUrl, requestData, {headers, responseType, observe: 'response'});
+                httpRequest = this.httpClient.patch(requestUrl, requestData, {headers, responseType, params, observe: 'response'});
                 break;
             case 'DELETE':
                 httpRequest = this.httpClient.delete(requestUrl, {headers, responseType, params, observe: 'response'});

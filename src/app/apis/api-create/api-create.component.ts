@@ -43,6 +43,15 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.data = res;
+                    if (!this.data.queryParams || this.data.queryParams.length === 0) {
+                        this.data.queryParams = [{name: '', value: ''}];
+                    }
+                    if (!this.data.bodyFields || this.data.bodyFields.length === 0) {
+                        this.data.bodyFields = [{name: '', value: ''}];
+                    }
+                    if (!this.data.headers || this.data.headers.length === 0) {
+                        this.data.headers = [{name: '', value: ''}];
+                    }
                     this.loading = false;
                 },
                 error: (err) => {

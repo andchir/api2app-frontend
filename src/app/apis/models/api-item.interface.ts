@@ -17,6 +17,7 @@ export interface ApiItem {
     bodyFields: RequestDataField[];
     bodyContent: string;
     headers: RequestDataField[];
+    queryParams: RequestDataField[];
 
     responseBody: string;
     responseHeaders: NameValueStringObject[];
