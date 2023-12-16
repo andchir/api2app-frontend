@@ -11,6 +11,7 @@ import { ConfirmComponent } from './shared/confirm/confirm.component';
 import { DrawerComponent } from './shared/drawer/drawer.component';
 import { ShareItemComponent } from './shared/share-item/share-item.component';
 import { FileUploadComponent } from './shared/file-upload/file-upload.component';
+import { PaginationComponent } from './shared/pagination/pagination.component';
 
 @NgModule({
     imports: [
@@ -24,7 +25,8 @@ import { FileUploadComponent } from './shared/file-upload/file-upload.component'
         DrawerComponent,
         ShareItemComponent,
         NotAuthorizedComponent,
-        FileUploadComponent
+        FileUploadComponent,
+        PaginationComponent
     ],
     exports: [
         AlertComponent,
@@ -33,6 +35,7 @@ import { FileUploadComponent } from './shared/file-upload/file-upload.component'
         ShareItemComponent,
         NotAuthorizedComponent,
         FileUploadComponent,
+        PaginationComponent,
         CommonModule,
         FormsModule,
         RouterModule,
