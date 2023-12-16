@@ -206,7 +206,6 @@ export class ApiService extends DataService<ApiItem> {
                     opt__sendAsFormData: data?.sendAsFormData
                 });
             }
-            queryParams = {};
             if (!isDevMode()) {
                 const csrfToken = this.getCookie('csrftoken');
                 headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
