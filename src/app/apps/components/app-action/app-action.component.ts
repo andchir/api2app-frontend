@@ -36,6 +36,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     submitted = false;
     searchInput$ = new Subject<string>();
     inputFields: string[] = [];
+    inputParams: string[] = [];
     outputFields: string[] = [];
     destroyed$: Subject<void> = new Subject();
 
@@ -111,6 +112,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
             return;
         }
+        // Input fields
         if (this.selectedApi.bodyDataSource === 'fields') {
             this.inputFields = this.selectedApi.bodyFields.map((item) => {
                 return !item.hidden ? item.name : '';
@@ -123,6 +125,16 @@ export class AppActionComponent implements OnInit, OnDestroy {
             const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
             this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
         }
+
+        // Input params
+        this.inputParams = this.selectedApi.queryParams.map((item) => {
+            return !item.hidden ? item.name : '';
+        });
+        this.inputParams = this.inputParams.filter((name) => {
+            return name;
+        });
+
+        // Output fields
         if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
             const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
             this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;

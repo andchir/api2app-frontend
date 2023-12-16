@@ -193,7 +193,7 @@ export class ApiService extends DataService<ApiItem> {
                 formData.append('opt__requestUrl', data.requestUrl || '');
                 formData.append('opt__requestMethod', data.requestMethod || 'GET');
                 formData.append('opt__responseContentType', data.responseContentType || '');
-                formData.append('opt__sendAsFormData', data.sendAsFormData ? '0' : '1');
+                formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
             } else {
                 body = Object.assign({}, {
                     data: body,
