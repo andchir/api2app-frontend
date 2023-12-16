@@ -186,4 +186,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             }
         };
     }
+
+    isArray(obj: any ): boolean {
+        return Array.isArray(obj);
+    }
 }

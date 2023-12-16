@@ -253,10 +253,12 @@
         <ng-container *ngSwitchCase="'audio'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <audio class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></audio>
-                <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center" *ngIf="!options?.value && editorMode">
-                    <i class="bi bi-music-note-beamed mr-2"></i>
-                    Audio
+                <div class="block w-full max-w-[600px] mx-auto">
+                    <audio class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></audio>
+                    <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center" *ngIf="!options?.value && editorMode">
+                        <i class="bi bi-music-note-beamed mr-2"></i>
+                        Audio
+                    </div>
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -265,11 +267,25 @@
         <ng-container *ngSwitchCase="'image'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <img class="max-w-full" [src]="options?.value" *ngIf="options?.value">
-                <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center" *ngIf="!options?.value && editorMode">
-                    <i class="bi bi-image mr-2"></i>
-                    Image
-                </div>
+                <ng-container *ngIf="isArray(options?.value); else templateImageItem">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options?.value">
+                            <a [href]="image[options?.itemFieldName]" target="_blank">
+                                <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]">
+                            </a>
+                        </div>
+                    </div>
+                </ng-container>
+                <ng-template #templateImageItem>
+                    <div class="block w-full max-w-[600px] mx-auto">
+                        <img class="max-w-full" [src]="options?.value" *ngIf="options?.value">
+                        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md"
+                             *ngIf="!options?.value && editorMode">
+                            <i class="bi bi-image mr-2"></i>
+                            Image
+                        </div>
+                    </div>
+                </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

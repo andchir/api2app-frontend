@@ -464,6 +464,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     max: 100,
                     value: options?.orderIndex || 0
                 });
+                output.push({
+                    name: 'itemFieldName',
+                    label: 'Field name in the array',
+                    type: 'input-text',
+                    value: options?.itemFieldName
+                });
+                output.push({
+                    name: 'itemThumbnailFieldName',
+                    label: 'Name of the thumbnail field in the array',
+                    type: 'input-text',
+                    value: options?.itemThumbnailFieldName
+                });
                 break;
             case 'chart-line':
                 output.push({
@@ -622,7 +634,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 break;
             case 'image':
                 Object.assign(output, {
-                    name: 'image'
+                    name: 'image',
+                    itemFieldName: '',
+                    itemThumbnailFieldName: ''
                 });
                 break;
             case 'audio':
@@ -634,7 +648,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 Object.assign(output, {
                     name: 'chart',
                     label: 'Line Chart',
-                    itemTitle: 'Item Title'
+                    itemTitle: 'Item Title',
+                    fieldNameAxisXL: '',
+                    fieldNameAxisY: ''
                 });
                 break;
         }

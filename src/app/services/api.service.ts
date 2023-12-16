@@ -57,21 +57,7 @@ export class ApiService extends DataService<ApiItem> {
 
     static getPropertiesRecursively(data: any, string: string = '', outputKeys = [], values = []): {outputKeys: string[], values: string|number|boolean[]} {
         if (typeof data === 'object') {
-            if (Array.isArray(data)) {
-                console.log(data, string);
-                // if (data.length > 0) {
-                //     data.forEach((value, index) => {
-                //         if (typeof value === 'object') {
-                //             if (index === 0) {
-                //                 this.getPropertiesRecursively(value, string, outputKeys, values);
-                //             }
-                //         } else {
-                //             outputKeys.push(string + (string ? '.' : '') + value);
-                //             values.push(value);
-                //         }
-                //     });
-                // }
-            } else {
+            if (!Array.isArray(data)) {
                 for (let prop in data) {
                     if (typeof data[prop] === 'object') {
                         if (Array.isArray(data[prop])) {
@@ -140,10 +126,6 @@ export class ApiService extends DataService<ApiItem> {
             delete headersData['content-Type'];
             // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
         }
-
-        // if (data.sender === 'server') {
-        //     return this.apiRequestByProxy(data);
-        // }
 
         // Request body
         const formData = new FormData();

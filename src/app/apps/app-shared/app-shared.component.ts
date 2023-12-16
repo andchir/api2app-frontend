@@ -63,14 +63,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data) {
             return;
         }
+        const buttons = {};
         this.apiUuidsList = [];
         this.data.blocks.forEach((block) => {
             block.elements.forEach((element) => {
                 const uuid = element.options?.apiUuid;
-                if (uuid && !this.apiUuidsList.includes(uuid)) {
-                    this.apiUuidsList.push(uuid);
+                if (uuid) {
+                    if (!this.apiUuidsList.includes(uuid)) {
+                        this.apiUuidsList.push(uuid);
+                    }
+                    if (element.type === 'button') {
+                        buttons[uuid] = true;
+                    }
                 }
             });
+        });
+        // API auto submit
+        this.apiUuidsList.forEach((apiUuid) => {
+            if (!buttons[apiUuid]) {
+                this.appSubmit(apiUuid);
+            }
         });
     }
 
@@ -272,12 +284,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio'].includes(element.type)) {
-            element.value = typeof rawData === 'string' ? rawData : null;
+            if (typeof rawData === 'string' && this.isJson(rawData)) {
+                const value = JSON.parse(rawData);
+                element.value = Array.isArray(value) ? value : '';
+            } else {
+                element.value = typeof rawData === 'string' ? rawData : null;
+            }
         } else {
             element.value = (element.prefixText || '')
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
                 + (element.suffixText || '');
         }
+    }
+
+    isJson(str: string): boolean {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
     }
 
     ngOnDestroy(): void {
