@@ -143,7 +143,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.loading = false;
                     this.submitted = false;
                     if (err?.error instanceof Blob) {
-                        this.createErrorMessage(err.error);
+                        this.createErrorMessage(currentApi, err.error);
                     } else {
                         this.messageType = 'error';
                         this.message = err.message || 'Error.';
@@ -154,11 +154,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     prepareApiItem(inputApiItem: ApiItem): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
+        const allElements = this.getAllElements();
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
             const bodyFields = apiItem.bodyFields.map(field => {
                 return {...field};
-            })
-            const allElements = this.getAllElements();
+            });
             bodyFields.forEach((bodyField) => {
                 const element = allElements.find((element) => {
                     return element.options?.apiUuid === apiItem.uuid
@@ -175,6 +175,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             apiItem.bodyFields = bodyFields;
         }
+
+        // Query params
+        const queryParams = apiItem.queryParams.map(field => {
+            return {...field};
+        });
+        queryParams.forEach((field) => {
+            const element = allElements.find((element) => {
+                return element.options?.apiUuid === apiItem.uuid
+                    && element.options?.fieldName === field.name
+                    && element.options?.fieldType === 'params';
+            });
+            if (!element) {
+                return;
+            }
+            field.value = ApplicationService.getElementValue(element) as string;
+        });
+        apiItem.queryParams = queryParams;
         return apiItem;
     }
 
@@ -202,10 +219,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    createErrorMessage(blob: Blob): void {
+    createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
                 console.log(data);
+                const allElements = this.getAllElements();
+                const elements = allElements.filter((element) => {
+                    return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
+                });
+                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+                elements.forEach((element) => {
+                    this.blockElementValueApply(element, valuesObj, data);
+                });
             })
             .catch((err) => {
                 console.log(err);
@@ -235,6 +261,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         const value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
+        if (!value) {
+            element.value = '';
+            return;
+        }
         if (['image', 'audio'].includes(element.type)) {
             element.value = typeof rawData === 'string' ? rawData : null;
         } else {

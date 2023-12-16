@@ -2,7 +2,7 @@ export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-date'|'input-file'|'image'|'audio'|'chart-line';
 
 export interface AppOptions {
-    [key: string]: string | number | boolean | string[];
+    [key: string]: string | number | boolean | string[] | File[];
 }
 
 export interface AppBlockElementOptions {
@@ -16,7 +16,7 @@ export interface AppBlockElement {
     name?: string;
     label?: string;
     placeholder?: string;
-    value?: string | number | boolean | string[];
+    value?: string | number | boolean | string[] | File[];
     valueObj?: any;
     orderIndex?: number;
     choices?: string[];
@@ -27,6 +27,7 @@ export interface AppBlockElement {
     suffixText?: string;
     format?: string;
     enabled?: boolean;
+    multiple?: boolean;
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
     options?: AppBlockElementOptions;

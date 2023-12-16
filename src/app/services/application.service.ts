@@ -686,7 +686,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 const date = moment(String(element?.value));
                 return date.format(dateFormat);
             case 'input-file':
-                return element.value;
+                if ((element.value as File[]).length === 0) {
+                    return null;
+                }
+                return element.multiple ? element.value : element.value[0];
         }
         return String(element.value);
     }
