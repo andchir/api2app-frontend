@@ -27,14 +27,14 @@ export class ListSharedComponent extends ListAbstractComponent<ApiItem> implemen
     getData(shared = true): void {
         this.loading = true;
         iif(() => shared,
-            this.dataService.getListShared(),
-            this.dataService.getList()
+            this.dataService.getListShared(this.currentPage),
+            this.dataService.getList(this.currentPage)
         )
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.items = res.results;
-                    this.loading = false;
+                    this.totalRecords = res.count;
                     this.onDataLoaded();
                 },
                 error: (err) => {

@@ -15,17 +15,19 @@ export abstract class DataService<T extends {id: number}> {
         protected httpClient: HttpClient
     ) {}
 
-    getList(): Observable<{count: number, results: T[]}> {
+    getList(page = 1): Observable<{count: number, results: T[]}> {
         const url = this.requestUrl;
-        return this.httpClient.get<{count: number, results: T[]}>(url, this.httpOptions)
+        const params = this.createParams({page});
+        return this.httpClient.get<{count: number, results: T[]}>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );
     }
 
-    getListShared(): Observable<{count: number, results: T[]}> {
+    getListShared(page = 1): Observable<{count: number, results: T[]}> {
         const url = `${this.requestUrl}/list_shared`;
-        return this.httpClient.get<{count: number, results: T[]}>(url, this.httpOptions)
+        const params = this.createParams({page});
+        return this.httpClient.get<{count: number, results: T[]}>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );

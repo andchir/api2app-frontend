@@ -32,7 +32,6 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
             .subscribe({
                 next: (res) => {
                     this.items = res.results;
-                    this.loading = false;
                     this.onDataLoaded();
                 },
                 error: (err) => {

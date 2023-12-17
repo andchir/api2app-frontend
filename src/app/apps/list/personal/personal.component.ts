@@ -30,7 +30,6 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
             .subscribe({
                 next: (res) => {
                     this.items = res.results;
-                    this.loading = false;
                     this.onDataLoaded();
                 },
                 error: (err) => {

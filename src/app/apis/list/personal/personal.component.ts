@@ -8,6 +8,7 @@ import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
 import { TokenStorageService } from '../../../services/token-storage.service';
 import { ListSharedComponent} from '../shared/shared.component';
+import {PaginatorState} from "../../../apps/models/paginator-state.interface";
 
 @Component({
     selector: 'app-apis-list-personal',
