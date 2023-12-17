@@ -58,7 +58,9 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-
+                    this.form.reset();
+                    this.messageType = 'success';
+                    this.message = 'You have successfully registered.';
                     this.submitted = false;
                 },
                 error: (err) => {
@@ -69,7 +71,7 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
                     } else if (err?.error?.username) {
                         this.message = err?.error?.username.join(' ');
                     } else {
-                        this.message = 'Error.';
+                        this.message = 'Error. The user already exists.';
                     }
                     this.submitted = false;
                 }
