@@ -41,17 +41,22 @@
                 <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
                         title="Delete"
                         (click)="deleteItem(item)">
-                <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
-                    <i class="bi bi-trash3"></i>
-                </span>
+                    <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                        <i class="bi bi-trash3"></i>
+                    </span>
                 </button>
             </div>
-            <div class="absolute right-2 -top-2">
-            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
-                  *ngIf="item.shared" i18n="@@SharedItem">Shared</span>
+            <div class="absolute right-2 -top-2 flex">
+                <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
+                      *ngIf="item.shared">
+                    <span class="flex w-2 h-2 me-1 rounded-full"
+                        [ngClass]="{'bg-green-400': !item.hidden, 'bg-gray-400': item.hidden}"></span>
+                    <span [ngClass]="{'text-green-700': !item.hidden, 'text-gray-600': item.hidden}"
+                        i18n="@@SharedItem">Shared</span>
+                </span>
                 <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400 shadow-md ms-2">
-                {{ item.requestMethod }}
-            </span>
+                    {{ item.requestMethod }}
+                </span>
             </div>
         </div>
 
@@ -67,10 +72,12 @@
 
 <app-share-item title="Share API"
                 [loading]="loading"
+                [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
                 [(isShared)]="selectedItem.shared"
                 shareUrl="{{ baseUrl }}/apis/shared/"
                 [itemUuid]="selectedItem.uuid"
+                (isHiddenChange)="makeHiddenConfirmed($event)"
                 (confirmed)="makeSharedConfirmed($event)" *ngIf="selectedItem"></app-share-item>
 
 <ng-template #templateNotLoggedIn>

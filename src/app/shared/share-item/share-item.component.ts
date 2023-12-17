@@ -10,11 +10,13 @@ export class ShareItemComponent {
     @Input() loading: boolean = false;
     @Input() isActive: boolean = false;
     @Input() isShared: boolean = false;
+    @Input() isHidden: boolean = false;
     @Input() readOnly: boolean = false;
     @Input() itemUuid: string = '';
     @Input() shareUrl: string = 'https://example.com/item/shared/';
     @Output() isActiveChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() isSharedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Output() isHiddenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() confirmed: EventEmitter<boolean> = new EventEmitter<boolean>();
     message = '';
 
@@ -22,6 +24,11 @@ export class ShareItemComponent {
         this.message = '';
         this.isActive = false;
         this.isActiveChange.emit(this.isActive);
+    }
+
+    onChangeHidden(): void {
+        this.isHidden = !this.isHidden;
+        this.isHiddenChange.emit(this.isHidden);
     }
 
     makeSharedToggle(): void {

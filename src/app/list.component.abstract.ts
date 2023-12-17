@@ -84,7 +84,23 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
         if (!this.selectedId) {
             return;
         }
-        this.dataService.patch(this.selectedId, {shared})
+        this.dataService.patch(this.selectedId, {shared, hidden: false})
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.getData();
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
+    }
+
+    makeHiddenConfirmed(hidden: boolean): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.dataService.patch(this.selectedId, {hidden})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: () => {

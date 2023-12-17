@@ -60,10 +60,12 @@
 
 <app-share-item title="Share Application"
                 [loading]="loading"
+                [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
                 [(isShared)]="selectedItem.shared"
                 shareUrl="{{ baseUrl }}/apps/shared/"
                 [itemUuid]="selectedItem.uuid"
+                (isHiddenChange)="makeHiddenConfirmed($event)"
                 (confirmed)="makeSharedConfirmed($event)" *ngIf="selectedItem"></app-share-item>
 
 <ng-template #templateNotLoggedIn>
