@@ -112,6 +112,26 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
             });
     }
 
+    deleteItemConfirmed(): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.isDeleteAction = false;
+        const itemId = this.selectedId;
+        this.loading = true;
+        this.dataService.deleteItem(itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.selectionClear();
+                    this.getData();
+                },
+                error: (err) => {
+                    this.loading = false;
+                }
+            });
+    }
+
     onPageChange(event: PaginatorState) {
         this.currentPage = event.page + 1;
         this.getData();

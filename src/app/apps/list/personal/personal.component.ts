@@ -40,27 +40,6 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
             });
     }
 
-    deleteItemConfirmed(): void {
-        // if (!this.selectedId) {
-        //     return;
-        // }
-        // this.isDeleteAction = false;
-        // const itemId = this.selectedId;
-        // // this.closeConfirmModal();
-        // this.loading = true;
-        // this.dataService.deleteItem(itemId)
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: () => {
-        //             this.selectionClear();
-        //             this.getData(false);
-        //         },
-        //         error: (err) => {
-        //             this.loading = false;
-        //         }
-        //     });
-    }
-
     viewItem(item: ApplicationItem): void {
         this.router.navigate(['/apps/edit/', item.id]);
     }
