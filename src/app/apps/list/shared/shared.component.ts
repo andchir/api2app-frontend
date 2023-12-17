@@ -22,16 +22,14 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
         super(router, authService, dataService);
     }
 
-    getData(shared = true): void {
+    getData(): void {
         this.loading = true;
-        iif(() => shared,
-            this.dataService.getListShared(),
-            this.dataService.getList()
-        )
+        this.dataService.getListShared(this.currentPage)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.items = res.results;
+                    this.totalRecords = res.count;
                     this.onDataLoaded();
                 },
                 error: (err) => {

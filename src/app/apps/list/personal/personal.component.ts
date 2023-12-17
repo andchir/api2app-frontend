@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { iif, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
@@ -25,11 +25,12 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
 
     getData(): void {
         this.loading = true;
-        this.dataService.getList()
+        this.dataService.getList(this.currentPage)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.items = res.results;
+                    this.totalRecords = res.count;
                     this.onDataLoaded();
                 },
                 error: (err) => {

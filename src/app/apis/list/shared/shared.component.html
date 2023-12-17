@@ -36,7 +36,7 @@
 
     </div>
 
-    <div class="px-3" *ngIf="totalRecords > perPage">
+    <div class="px-3 sm:px-0" *ngIf="totalRecords > perPage">
         <app-pagination [totalRecords]="totalRecords"
                         [perPage]="perPage"
                         (onPageChange)="onPageChange($event)"></app-pagination>
