@@ -1,6 +1,6 @@
 <header class="bg-white shadow">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900">Log in</h1>
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900" i18n>Log in</h1>
     </div>
 </header>
 
@@ -43,6 +43,14 @@
                         </form>
 
                     </div>
+
+                    <div class="pt-4">
+                        <a class="text-teal-600 underline transition hover:text-teal-600/75 cursor-pointer"
+                            [routerLink]="['/auth', 'register']">
+                            <span i18n>Register</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>

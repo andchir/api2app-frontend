@@ -11,8 +11,7 @@ import { User } from '../apis/models/user.interface';
 
 @Component({
     selector: 'app-auth-login',
-    templateUrl: './auth-login.component.html',
-    styleUrls: ['./auth-login.component.css'],
+    templateUrl: './templates/auth-login.component.html',
     providers: [UserService]
 })
 export class AuthLoginComponent implements OnInit, OnDestroy {
@@ -66,6 +65,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
                     this.getCurrentUser();
                 },
                 error: (err) => {
+                    console.log(err);
                     this.messageType = 'error';
                     this.message = err?.error?.detail;
                     this.isLoggedIn = false;

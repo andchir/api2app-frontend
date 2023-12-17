@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { User } from "../apis/models/user.interface";
+import { User } from '../apis/models/user.interface';
 
 const BASE_URL = environment.apiUrl;
 const NEXT_ROUTE_KEY = 'next-route';
@@ -28,14 +28,14 @@ export class AuthService {
     }
 
     login(username: string, password: string): Observable<{access: string, refresh: string}> {
-        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}token`, {
+        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}auth/jwt/create/`, {
             username,
             password
         }, this.httpOptions);
     }
 
     register(username: string, email: string, password: string): Observable<any> {
-        return this.httpClient.post(`${BASE_URL}register`, {
+        return this.httpClient.post(`${BASE_URL}auth/users/`, {
             username,
             email,
             password
@@ -43,7 +43,7 @@ export class AuthService {
     }
 
     refreshToken(token: string): Observable<{access: string}> {
-        return this.httpClient.post<{access: string}>(`${BASE_URL}token/refresh`, {
+        return this.httpClient.post<{access: string}>(`${BASE_URL}auth/jwt/refresh/`, {
             refresh: token
         }, this.httpOptions);
     }

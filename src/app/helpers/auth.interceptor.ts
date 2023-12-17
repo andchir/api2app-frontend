@@ -29,7 +29,10 @@ export class AuthInterceptor implements HttpInterceptor {
             `${BASE_URL}proxy`,
             `${BASE_URL}token`,
             `${BASE_URL}token/refresh`,
-            `${BASE_URL}token/verify`
+            `${BASE_URL}token/verify`,
+            `${BASE_URL}auth/jwt/create/`,
+            `${BASE_URL}auth/jwt/refresh/`,
+            `${BASE_URL}auth/jwt/verify/`,
         ];
         if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);

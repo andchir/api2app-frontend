@@ -1,12 +1,12 @@
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
-import {NotFoundComponent} from './not-found/not-found.component';
-import {DashboardComponent} from './dashboard/dashboard.component';
-import {AuthLoginComponent} from './auth/auth-login.component';
-import {AuthLogoutComponent} from './auth/auth-logout.component';
-import {SharedAppsComponent} from './apps-shared/shared-apps.component';
-import {HomeComponent} from "./home/home.component";
+import { NotFoundComponent } from './not-found/not-found.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { AuthLoginComponent } from './auth/auth-login.component';
+import { AuthLogoutComponent } from './auth/auth-logout.component';
+import { AuthRegisterComponent } from './auth/auth-register.component';
+import { HomeComponent } from "./home/home.component";
 
 const routes: Routes = [
     {
@@ -21,6 +21,10 @@ const routes: Routes = [
     {
         path: 'auth/login',
         component: AuthLoginComponent
+    },
+    {
+        path: 'auth/register',
+        component: AuthRegisterComponent
     },
     {
         path: 'auth/logout',
