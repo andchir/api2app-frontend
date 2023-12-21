@@ -16,9 +16,6 @@ export interface AppBlockElement {
     name?: string;
     label?: string;
     placeholder?: string;
-    value?: string | number | boolean | string[] | File[] | null;
-    valueArr?: string[] | File[] | null;
-    valueObj?: any | null;
     orderIndex?: number;
     choices?: string[];
     color?: string;
@@ -32,6 +29,9 @@ export interface AppBlockElement {
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
     options?: AppBlockElementOptions;
+    value?: string | number | boolean | string[] | File[] | null;
+    valueArr?: string[] | File[] | null;
+    valueObj?: any | null;
 }
 
 export interface AppBlockOptions {
