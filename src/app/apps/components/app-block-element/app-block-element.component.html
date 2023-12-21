@@ -8,6 +8,7 @@
                            bindLabel="title"
                            bindValue="name"
                            placeholder="Select Element Type"
+                           i18n-placeholder
                            [clearable]="false"
                            [(ngModel)]="type"
                            (ngModelChange)="updateItemType()">
@@ -257,7 +258,7 @@
                     <audio class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></audio>
                     <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center" *ngIf="!options?.value && editorMode">
                         <i class="bi bi-music-note-beamed mr-2"></i>
-                        Audio
+                        <span i18n>Audio</span>
                     </div>
                 </div>
             </div>
@@ -271,7 +272,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options?.valueArr">
                             <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
-                                <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]">
+                                <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]" alt="">
                             </a>
                         </div>
                     </div>
@@ -284,7 +285,7 @@
                         <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md"
                              *ngIf="!options?.value && editorMode">
                             <i class="bi bi-image mr-2"></i>
-                            Image
+                            <span i18n>Image</span>
                         </div>
                     </div>
                 </ng-template>
@@ -323,16 +324,19 @@
     <div class="absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode">
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Options"
+                i18n-title
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Action"
+                i18n-title
                 (click)="elementActionSelect($event)">
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Delete"
+                i18n-title
                 (click)="elementDeleteInit()">
             <i class="bi bi-trash3-fill text-base"></i>
         </button>

@@ -27,21 +27,21 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
 
     inputTypes: {name: AppBlockElementType, title: string}[] = [
-        {name: 'text-header', title: 'Text Header'},
-        {name: 'text', title: 'Text'},
-        {name: 'button', title: 'Button'},
-        {name: 'input-text', title: 'Text Field'},
-        {name: 'input-number', title: 'Number Field'},
-        {name: 'input-textarea', title: 'Text Area'},
-        {name: 'input-switch', title: 'Switch'},
-        {name: 'input-select', title: 'Select'},
-        {name: 'input-tags', title: 'Tags'},
-        {name: 'input-radio', title: 'Radio Buttons'},
-        {name: 'input-date', title: 'Calendar'},
-        {name: 'input-file', title: 'Upload File'},
-        {name: 'image', title: 'Image'},
-        {name: 'audio', title: 'Audio'},
-        {name: 'chart-line', title: 'Line Chart'}
+        {name: 'text-header', title: $localize `Text Header`},
+        {name: 'text', title: $localize `Text`},
+        {name: 'button', title: $localize `Button`},
+        {name: 'input-text', title: $localize `Text Field`},
+        {name: 'input-number', title: $localize `Number Field`},
+        {name: 'input-textarea', title: $localize `Text Area`},
+        {name: 'input-switch', title: $localize `Switch`},
+        {name: 'input-select', title: $localize `Select`},
+        {name: 'input-tags', title: $localize `Tags`},
+        {name: 'input-radio', title: $localize `Radio Buttons`},
+        {name: 'input-date', title: $localize `Calendar`},
+        {name: 'input-file', title: $localize `Upload File`},
+        {name: 'image', title: $localize `Image`},
+        {name: 'audio', title: $localize `Audio`},
+        {name: 'chart-line', title: $localize `Line Chart`}
     ];
 
     public chartOptions: ChartOptions;

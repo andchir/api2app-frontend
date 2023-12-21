@@ -9,13 +9,13 @@
                         <a class="flex h-10 items-center gap-1.5 bg-gray-200 px-4 transition hover:text-gray-900"
                             [routerLink]="['/apps', 'personal']">
                             <i class="bi bi-house-door"></i>
-                            <span class="ms-1.5 text-xs font-medium"> Applications </span>
+                            <span class="ms-1.5 text-xs font-medium" i18n>Applications</span>
                         </a>
                     </li>
 
                     <li class="relative flex items-center">
                         <span class="absolute inset-y-0 -start-px h-10 w-4 bg-gray-200 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
-                        <span class="flex h-10 items-center bg-white pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
+                        <span class="flex h-10 items-center bg-white pe-4 ps-8 text-xs font-medium transition hover:text-gray-900" i18n>
                             Create
                         </span>
                     </li>
@@ -32,7 +32,7 @@
                         <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
                     </svg>
                     <i class="bi bi-check"></i>
-                    Save
+                    <span i18n>Save</span>
                 </button>
 
             </div>
@@ -46,17 +46,18 @@
     <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
 
         <h2 class="text-xl font-bold mb-4">
-            <span *ngIf="data?.id">Edit Application</span>
-            <span *ngIf="!data?.id">Create Application</span>
+            <span *ngIf="data?.id" i18n>Edit Application</span>
+            <span *ngIf="!data?.id" i18n>Create Application</span>
         </h2>
 
         <div>
 
             <div class="mb-5">
-                <label class="block mb-2" for="fieldName">Application name</label>
+                <label class="block mb-2" for="fieldName" i18n>Application name</label>
                 <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                        id="fieldName"
                        placeholder="Enter Application Name"
+                       i18n-placeholder
                        [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': errors['name']}"
                        [(ngModel)]="data.name"
                        (ngModelChange)="deleteErrorMessages('name')">
@@ -70,17 +71,17 @@
                     <button type="button" class="px-4 py-2 text-sm font-medium border rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
                         [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 1, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 1}"
                         (click)="setValue('gridColumns', 1)">
-                        1 Column
+                        <span i18n>1 Column</span>
                     </button>
                     <button type="button" class="px-4 py-2 text-sm font-medium hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
                         [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 border z-5': data.gridColumns === 2, 'border-t border-b bg-white text-gray-900 border-gray-200': data.gridColumns !== 2}"
                         (click)="setValue('gridColumns', 2)">
-                        2 Columns
+                        <span i18n>2 Columns</span>
                     </button>
                     <button type="button" class="px-4 py-2 text-sm font-medium border rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
                         [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 3, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 3}"
                         (click)="setValue('gridColumns', 3)">
-                        3 Columns
+                        <span i18n>3 Columns</span>
                     </button>
                 </div>
             </div>
@@ -107,6 +108,7 @@
                         </ng-container>
                         <button type="button" class="block w-full p-1 bg-white border border-gray-200 rounded-lg shadow-inner shadow-gray-300 hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
                                 title="Add Element"
+                                i18n-title
                                 (click)="blockAddElement(block)"
                                 *ngIf="block.elements.length > 0">
                             <i class="bi bi-plus-circle-dotted text-3xl"></i>
@@ -115,6 +117,7 @@
 
                     <button type="button" class="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-inner shadow-gray-300 hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
                             title="Add Block"
+                            i18n-title
                             (click)="blockAddElement(block)"
                             *ngIf="block.elements.length === 0">
                         <i class="bi bi-plus-circle-dotted text-5xl"></i>
@@ -124,6 +127,7 @@
                          *ngIf="block.elements.length > 0 && block.elements[0].type">
                         <button type="button" class="cursor-pointer shadow-gray-400 text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 pt-1 pb-3 me-2"
                                 title="Options"
+                                i18n-title
                                 (click)="showBlockOptions(block, $event)">
                             <i class="bi bi-gear-fill text-xl"></i>
                         </button>
@@ -141,7 +145,7 @@
 <app-alert [message]="message" [type]="messageType"></app-alert>
 
 <app-drawer [(isActive)]="isOptionsActive"
-            [title]="selectedElement ? 'Element Options' : 'Block Options'"
+            [title]="optionsTitle"
             (confirmed)="updateItemOptions()">
     <ng-container *ngFor="let field of selectedItemOptionsFields; index as index">
         <app-block-element [type]="field.type" [options]="field" [index]="index" [parentIndex]="-1"></app-block-element>

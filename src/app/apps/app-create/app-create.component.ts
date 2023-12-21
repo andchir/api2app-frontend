@@ -46,6 +46,12 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
 
     }
 
+    get optionsTitle(): string {
+        return this.selectedElement
+            ? $localize `Element Options`
+            : $localize `Block Options`;
+    }
+
     ngOnInit(): void {
         this.itemId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.itemId) {
