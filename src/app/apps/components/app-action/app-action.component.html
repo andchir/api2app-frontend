@@ -6,14 +6,14 @@
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                 <h3 class="text-xl font-semibold text-gray-900">
                     <i class="bi bi-lightning-charge-fill me-1"></i>
-                    Element Action
+                    <span i18n>Element Action</span>
                 </h3>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                         (click)="closeModal()">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                     </svg>
-                    <span class="sr-only">Close modal</span>
+                    <span class="sr-only" i18n>Close modal</span>
                 </button>
             </div>
             <div class="p-4 md:p-5">
@@ -29,7 +29,9 @@
                                bindLabel="name"
                                bindValue="uuid"
                                placeholder="Enter the name of the API to search"
+                               i18n-placeholder
                                typeToSearchText="Type to search"
+                               i18n-typeToSearchText
                                labelForId="apiSelectField"
                                (clear)="onSearchCleared()"
                                [(ngModel)]="selectedUuid"
@@ -47,7 +49,7 @@
                     <div class="absolute right-2 -top-2">
                         <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
                               *ngIf="selectedApi.shared">
-                            Shared
+                            <span i18n>Shared</span>
                         </span>
                         <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md ms-2">
                             {{ selectedApi.requestMethod }}
@@ -58,7 +60,7 @@
                 <div class="grid grid-cols-2 gap-4" *ngIf="selectedApi">
                     <div *ngIf="inputFields.length > 0">
 
-                        <h3 class="mb-2">API Input</h3>
+                        <h3 class="mb-2" i18n>API Input</h3>
 
                         <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg mb-3">
                             <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
@@ -75,16 +77,16 @@
                         </div>
 
                         <ng-container *ngIf="inputParams.length > 0">
-                            <h3 class="mb-2">Query parameters</h3>
+                            <h3 class="mb-2" i18n>Query parameters</h3>
 
                             <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                                 <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
                                         [ngClass]="{
-                                'rounded-t-lg': i === 0,
-                                'rounded-b-lg': i === inputParams.length - 1,
-                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'params',
-                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'params'
-                                }"
+                                        'rounded-t-lg': i === 0,
+                                        'rounded-b-lg': i === inputParams.length - 1,
+                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'params',
+                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'params'
+                                        }"
                                         *ngFor="let fieldName of inputParams; let i = index"
                                         (click)="selectField(fieldName, 'params')">
                                     <span class="capitalize">{{ fieldName }}</span>
@@ -95,16 +97,16 @@
                     </div>
                     <div *ngIf="outputFields.length > 0">
 
-                        <h3 class="mb-2">API Output</h3>
+                        <h3 class="mb-2" i18n>API Output</h3>
 
                         <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                             <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
                                     [ngClass]="{
-                                'rounded-t-lg': i === 0,
-                                'rounded-b-lg': i === outputFields.length - 1,
-                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
-                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
-                                }"
+                                    'rounded-t-lg': i === 0,
+                                    'rounded-b-lg': i === outputFields.length - 1,
+                                    'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
+                                    'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
+                                    }"
                                     *ngFor="let fieldName of outputFields; let i = index"
                                     (click)="selectField(fieldName, 'output')">
                                 <span class="capitalize">{{ fieldName }}</span>
@@ -118,11 +120,11 @@
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
                 <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-9 py-2.5 text-center"
                     (click)="submit()">
-                    Save
+                    <span i18n>Save</span>
                 </button>
                 <button type="button" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
                     (click)="closeModal()">
-                    Cancel
+                    <span i18n>Cancel</span>
                 </button>
             </div>
         </div>
@@ -134,10 +136,8 @@
         <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
         </svg>
-        <span class="sr-only">Info</span>
-        <div>
-            Please select an API.
-        </div>
+        <span class="sr-only" i18n>Info</span>
+        <div i18n>Please select an API.</div>
     </div>
     <div class="py-5 text-center" *ngIf="loading">
         <div role="status">
@@ -145,7 +145,7 @@
                 <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
                 <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
             </svg>
-            <span class="sr-only">Loading...</span>
+            <span class="sr-only" i18n>Loading...</span>
         </div>
     </div>
 </ng-template>
