@@ -267,10 +267,10 @@
         <ng-container *ngSwitchCase="'image'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <ng-container *ngIf="isArray(options?.value); else templateImageItem">
+                <ng-container *ngIf="options?.valueArr; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options?.value">
-                            <a [href]="image[options?.itemFieldName]" target="_blank">
+                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options?.valueArr">
+                            <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
                                 <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]">
                             </a>
                         </div>
@@ -278,7 +278,9 @@
                 </ng-container>
                 <ng-template #templateImageItem>
                     <div class="block w-full max-w-[600px] mx-auto">
-                        <img class="max-w-full" [src]="options?.value" *ngIf="options?.value">
+                        <a [href]="options?.value" target="_blank" *ngIf="options?.value">
+                            <img class="block w-full h-auto max-w-full" [src]="options?.value" alt="">
+                        </a>
                         <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md"
                              *ngIf="!options?.value && editorMode">
                             <i class="bi bi-image mr-2"></i>

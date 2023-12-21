@@ -278,18 +278,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldName) {
             return;
         }
-        const value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
+        let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = '';
             return;
         }
-        if (['image', 'audio'].includes(element.type)) {
-            if (typeof rawData === 'string' && this.isJson(rawData)) {
-                const value = JSON.parse(rawData);
-                element.value = Array.isArray(value) ? value : '';
-            } else {
-                element.value = typeof rawData === 'string' ? rawData : null;
-            }
+        if (this.isJson(value)) {
+            value = JSON.parse(value);
+        }
+        if (Array.isArray(value)) {
+            element.valueArr = value;
         } else {
             element.value = (element.prefixText || '')
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
