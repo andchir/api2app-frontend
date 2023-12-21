@@ -485,6 +485,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'fieldNameAxisX',
                     label: $localize `Field name for X axis`,
                     type: 'input-text',
@@ -497,12 +505,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.fieldNameAxisY
                 });
                 output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
+                    name: 'isYAxisDate',
+                    label: $localize `Y axis is date`,
+                    type: 'input-switch',
+                    enabled: options?.isYAxisDate
+                });
+                output.push({
+                    name: 'format',
+                    label: $localize `Date Format`,
+                    type: 'input-text',
+                    value: options?.format
                 });
                 output.push({
                     name: 'label',
@@ -650,7 +662,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Line Chart`,
                     itemTitle: $localize `Item Title`,
                     fieldNameAxisXL: '',
-                    fieldNameAxisY: ''
+                    fieldNameAxisY: '',
+                    isYAxisDate: false,
+                    format: 'MMM DD, HH:mm'
                 });
                 break;
         }
