@@ -3,11 +3,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import * as moment from 'moment';
+moment.locale('ru');
+
 import { ApplicationService } from '../../services/application.service';
 import { ApplicationItem } from '../models/application-item.interface';
 import { AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
-import { ApiItem } from "../../apis/models/api-item.interface";
+import { ApiItem } from '../../apis/models/api-item.interface';
 
 @Component({
     selector: 'app-item-shared',
@@ -263,12 +266,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
             return;
         }
+        const dateFormat = element?.format;
         const outData = data[dataKey];
         const yAxisData = outData.map((item) => {
             return parseFloat(item[fieldNameAxisY]);
         });
         const xAxisData = outData.map((item) => {
-            return item[fieldNameAxisX];
+            const value = item[fieldNameAxisX] || null;
+            if (element.isYAxisDate && dateFormat && value) {
+                const date = moment(String(value));
+                return date.format(dateFormat);
+            }
+            return value;
         });
         element.valueObj = {xAxisData, yAxisData};
     }
@@ -296,6 +305,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     isJson(str: string): boolean {
+        if (!str.match(/^[\[\{]/)) {
+            return false;
+        }
         try {
             JSON.parse(str);
         } catch (e) {
