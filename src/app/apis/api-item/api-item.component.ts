@@ -26,7 +26,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'PURGE', 'OPTIONS'
     ];
     responseContentTypes = [
-        'json', 'xml', 'html', 'text', 'image', 'audio'
+        'json',
+        'xml',
+        'html',
+        'text',
+        'image',
+        'audio'
     ];
     previewSate: 'data'|'headers' = 'data';
     isResponseError = false;
