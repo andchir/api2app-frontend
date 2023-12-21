@@ -13,6 +13,8 @@ import { ShareItemComponent } from './shared/share-item/share-item.component';
 import { FileUploadComponent } from './shared/file-upload/file-upload.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 
+import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -26,7 +28,9 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
         ShareItemComponent,
         NotAuthorizedComponent,
         FileUploadComponent,
-        PaginationComponent
+        PaginationComponent,
+
+        ToHtmlPipe
     ],
     exports: [
         AlertComponent,
@@ -39,7 +43,9 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
         CommonModule,
         FormsModule,
         RouterModule,
-        NgSelectModule
+        NgSelectModule,
+
+        ToHtmlPipe
     ]
 })
 export class SharedModule { }
