@@ -25,6 +25,7 @@
 
                 <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
                         title="Get Shared URL"
+                        i18n-title
                         (click)="viewSharedUrl(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                         <i class="bi bi-share-fill"></i>
@@ -42,7 +43,8 @@
     </div>
 </ng-container>
 
-<app-share-item title="Share Application"
+<app-share-item modalTitle="Share Application"
+                i18n-modalTitle
                 [loading]="loading"
                 [(isActive)]="isShareActive"
                 shareUrl="{{ baseUrl }}/apps/shared/"

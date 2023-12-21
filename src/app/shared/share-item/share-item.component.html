@@ -2,7 +2,7 @@
 
 <div tabindex="-1" class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex"
      [ngClass]="{'hidden': !isActive}">
-    <div class="relative w-full max-w-md max-h-full">
+    <div class="relative w-full max-w-lg max-h-full">
         <div class="relative bg-white rounded-lg shadow">
             <button type="button" class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ml-auto inline-flex justify-center items-center"
                     (click)="closeModal()">
@@ -16,7 +16,7 @@
                     <i class="bi bi-share-fill text-7xl"></i>
                 </div>
                 <h3 class="mb-5 text-lg font-normal text-gray-500">
-                    {{ title }}
+                    {{ modalTitle }}
                 </h3>
                 <div class="relative">
                     <div class="flex" [ngClass]="{'opacity-50': loading}" *ngIf="isShared">

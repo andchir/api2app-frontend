@@ -32,6 +32,7 @@
 
                 <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
                         title="Share"
+                        i18n-title
                         (click)="shareItem(item)">
                 <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                     <i class="bi bi-share-fill"></i>
@@ -40,6 +41,7 @@
 
                 <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
                         title="Delete"
+                        i18n-title
                         (click)="deleteItem(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                         <i class="bi bi-trash3"></i>
@@ -70,7 +72,8 @@
 
 <app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
 
-<app-share-item title="Share API"
+<app-share-item modalTitle="Share API"
+                i18n-modalTitle
                 [loading]="loading"
                 [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
@@ -98,10 +101,8 @@
             <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
             </svg>
-            <span class="sr-only">Info</span>
-            <div>
-                Empty.
-            </div>
+            <span class="sr-only" i18n>Info</span>
+            <div i18n>Empty.</div>
         </div>
     </ng-container>
 </ng-template>

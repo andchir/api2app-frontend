@@ -6,7 +6,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class ShareItemComponent {
 
-    @Input() title: string = 'Share Item';
+    @Input() modalTitle: string = 'Share Item';
     @Input() loading: boolean = false;
     @Input() isActive: boolean = false;
     @Input() isShared: boolean = false;
@@ -40,6 +40,6 @@ export class ShareItemComponent {
         input.select();
         input.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(input.value);
-        this.message = 'The URL has been successfully copied to the clipboard.';
+        this.message = $localize `The URL has been successfully copied to the clipboard.`;
     }
 }
