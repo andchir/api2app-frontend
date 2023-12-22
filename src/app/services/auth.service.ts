@@ -28,6 +28,15 @@ export class AuthService {
 
     }
 
+    getHeaders(): HttpHeaders {
+        const csrfToken = this.getCookie('csrftoken');
+        return new HttpHeaders({
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken || window['csrf_token'] || '',
+            'Mode': 'same-origin'
+        });
+    }
+
     login(username: string, password: string): Observable<{access: string, refresh: string}> {
         return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}${this.locale}/auth/jwt/create/`, {
             username,
@@ -76,5 +85,21 @@ export class AuthService {
     navigateBack(): void {
         const nextRoute = this.getNextRoute();
         this.router.navigate(nextRoute ? [nextRoute] : ['/']);
+    }
+
+    getCookie(name: string|null): string {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
     }
 }
