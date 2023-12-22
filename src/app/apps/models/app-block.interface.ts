@@ -42,4 +42,5 @@ export interface AppBlockOptions {
 export interface AppBlock {
     elements: AppBlockElement[];
     options?: any;
+    loading?: boolean;
 }

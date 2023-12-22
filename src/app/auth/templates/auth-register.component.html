@@ -12,14 +12,15 @@
                 <div class="md:col-start-2 md:col-span-2">
                     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow">
 
-                        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
                             <div class="mb-3">
                                 <label for="formFieldUsername" class="block mb-2 text-sm font-medium text-gray-900" i18n>Username</label>
                                 <input type="text" id="formFieldUsername"
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your username"
+                                       i18n-placeholder
                                        formControlName="username"
-                                       required i18n-placeholder>
+                                       required>
                                 <div class="pt-2 text-red-700 text-sm" *ngIf="form.controls.username.touched && !form.controls.username.valid">
                                     <div *ngIf="form.controls.username.hasError('required')" i18n>Username is required.</div>
                                 </div>
@@ -29,8 +30,9 @@
                                 <input type="email" id="formFieldEmail"
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your email"
+                                       i18n-placeholder
                                        formControlName="email"
-                                       required email i18n-placeholder>
+                                       required email>
                                 <div class="pt-2 text-red-700 text-sm" *ngIf="form.controls.email.touched && !form.controls.email.valid">
                                     <div *ngIf="form.controls.email.hasError('required')" i18n>Email is required.</div>
                                     <div *ngIf="form.controls.email.hasError('email')" i18n>Please enter a correct email.</div>
@@ -41,8 +43,9 @@
                                 <input type="password" id="formFieldPassword"
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your password"
+                                       i18n-placeholder
                                        formControlName="password"
-                                       required i18n-placeholder>
+                                       required>
                                 <div class="pt-2 text-red-700 text-sm" *ngIf="form.controls.username.touched && !form.controls.password.valid">
                                     <div *ngIf="form.controls.password.hasError('required')" i18n>Password is required.</div>
                                     <div *ngIf="form.controls.password.hasError('matching')" i18n>Password must match.</div>
@@ -56,8 +59,9 @@
                                 <input type="password" id="formFieldPasswordConfirm"
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Confirm the password"
+                                       i18n-placeholder
                                        formControlName="confirmPassword"
-                                       required i18n-placeholder>
+                                       required>
                                 <div class="pt-2 text-red-700 text-sm" *ngIf="form.controls.username.touched && !form.controls.confirmPassword.valid">
                                     <div *ngIf="form.controls.confirmPassword.hasError('matching')" i18n>Password must match.</div>
                                 </div>

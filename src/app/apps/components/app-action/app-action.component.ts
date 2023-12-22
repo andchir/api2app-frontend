@@ -127,6 +127,9 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
 
         // Input params
+        if (!this.selectedApi.queryParams) {
+            this.selectedApi.queryParams = [];
+        }
         this.inputParams = this.selectedApi.queryParams.map((item) => {
             return !item.hidden ? item.name : '';
         });

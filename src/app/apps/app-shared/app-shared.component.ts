@@ -144,6 +144,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.submitted = false;
             return;
         }
+        this.stateLoadingUpdate(apiUuid, true);
         const apiItem = this.prepareApiItem(currentApi);
         this.apiService.apiRequest(apiItem)
             .pipe(takeUntil(this.destroyed$))
@@ -152,6 +153,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.createAppResponse(currentApi, res);
                     this.loading = false;
                     this.submitted = false;
+                    this.stateLoadingUpdate(apiUuid, false);
                 },
                 error: (err) => {
                     console.log(err);
@@ -163,8 +165,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.messageType = 'error';
                         this.message = err.message || 'Error.';
                     }
+                    this.stateLoadingUpdate(apiUuid, false);
                 }
             });
+    }
+
+    stateLoadingUpdate(apiUuid: string, loading: boolean): void {
+        const blocks = this.data.blocks.filter((item) => {
+            const elements = item.elements.filter((el) => {
+                return el?.options?.apiUuid == apiUuid;
+            });
+            return elements.length > 0;
+        });
+        blocks.forEach((block) => {
+            block.loading = loading;
+        });
     }
 
     prepareApiItem(inputApiItem: ApiItem): ApiItem {
@@ -305,7 +320,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     isJson(str: string): boolean {
-        if (!str.match(/^[\[\{]/)) {
+        if (typeof str !== 'string' || !str.match(/^[\[\{]/)) {
             return false;
         }
         try {
