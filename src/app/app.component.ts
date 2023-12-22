@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import {NavigationEnd, NavigationStart, Router} from '@angular/router';
+import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
+import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
+import { filter } from 'rxjs/operators';
 import { initFlowbite } from 'flowbite';
 
-import { TokenStorageService } from "./services/token-storage.service";
+import { TokenStorageService } from './services/token-storage.service';
 import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
-import {filter} from "rxjs/operators";
 
 
 @Component({
@@ -24,6 +24,7 @@ export class AppComponent implements OnInit {
     navigationLoading = false;
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         private router: Router,
         private tokenStorageService: TokenStorageService,
         private authService: AuthService
