@@ -105,7 +105,7 @@ export class ApiService extends DataService<ApiItem> {
         const sendAsFormData = data?.sendAsFormData || false;
 
         if (data.sender === 'server') {
-            requestUrl = `${BASE_URL}${this.locale}/api/v1/proxy`;
+            requestUrl = `${BASE_URL}api/v1/proxy`;
             requestMethod = 'POST';
         }
 
@@ -228,7 +228,7 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
-        const url = `${BASE_URL}${this.locale}/api/v1/proxy`;
+        const url = `${BASE_URL}api/v1/proxy`;
         const csrfToken = this.getCookie('csrftoken');
         // console.log('csrfToken', csrfToken);
         // console.log('window.csrf_token', window['csrf_token']);
