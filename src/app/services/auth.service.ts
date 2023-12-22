@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -21,6 +21,7 @@ export class AuthService {
     };
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         private router: Router,
         private httpClient: HttpClient
     ) {
@@ -28,14 +29,14 @@ export class AuthService {
     }
 
     login(username: string, password: string): Observable<{access: string, refresh: string}> {
-        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}auth/jwt/create/`, {
+        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}${this.locale}/auth/jwt/create/`, {
             username,
             password
         }, this.httpOptions);
     }
 
     register(username: string, email: string, password: string): Observable<any> {
-        return this.httpClient.post(`${BASE_URL}auth/users/`, {
+        return this.httpClient.post(`${BASE_URL}${this.locale}/auth/users/`, {
             username,
             email,
             password
@@ -43,7 +44,7 @@ export class AuthService {
     }
 
     refreshToken(token: string): Observable<{access: string}> {
-        return this.httpClient.post<{access: string}>(`${BASE_URL}auth/jwt/refresh/`, {
+        return this.httpClient.post<{access: string}>(`${BASE_URL}${this.locale}/auth/jwt/refresh/`, {
             refresh: token
         }, this.httpOptions);
     }

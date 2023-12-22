@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { environment } from '../../environments/environment';
 
 import * as moment from 'moment';
@@ -725,10 +725,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         httpClient: HttpClient
     ) {
         super(httpClient);
-        this.requestUrl = `${BASE_URL}applications`;
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 
     static getDefault(): ApplicationItem {

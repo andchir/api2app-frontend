@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
+import { Inject, Injectable, isDevMode, LOCALE_ID } from '@angular/core';
 import { environment } from '../../environments/environment';
 
 import { catchError, iif, Observable } from 'rxjs';
@@ -14,10 +14,11 @@ const BASE_URL = environment.apiUrl;
 export class ApiService extends DataService<ApiItem> {
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         httpClient: HttpClient
     ) {
         super(httpClient);
-        this.requestUrl = `${BASE_URL}api_items`;
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/api_items`;
     }
 
     static getDefault(): ApiItem {
@@ -104,7 +105,7 @@ export class ApiService extends DataService<ApiItem> {
         const sendAsFormData = data?.sendAsFormData || false;
 
         if (data.sender === 'server') {
-            requestUrl = `${BASE_URL}proxy`;
+            requestUrl = `${BASE_URL}${this.locale}/api/v1/proxy`;
             requestMethod = 'POST';
         }
 
@@ -227,7 +228,7 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
-        const url = `${BASE_URL}proxy`;
+        const url = `${BASE_URL}${this.locale}/api/v1/proxy`;
         const csrfToken = this.getCookie('csrftoken');
         // console.log('csrfToken', csrfToken);
         // console.log('window.csrf_token', window['csrf_token']);

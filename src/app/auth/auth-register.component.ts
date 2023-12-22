@@ -47,7 +47,6 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
     }
 
     onSubmit(): void {
-        console.log(this.form.valid, this.form.controls);
         if (!this.form.valid || this.submitted) {
             return;
         }
@@ -64,12 +63,14 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    console.log(err?.error);
+                    console.log(err);
                     this.messageType = 'error';
                     if (err?.error?.password) {
                         this.message = err?.error?.password.join(' ');
                     } else if (err?.error?.username) {
                         this.message = err?.error?.username.join(' ');
+                    } else if (err?.error?.detail) {
+                        this.message = err?.error?.detail;
                     } else {
                         this.message = 'Error. The user already exists.';
                     }

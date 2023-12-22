@@ -2,8 +2,6 @@ import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
 
 import { BehaviorSubject } from 'rxjs';
-import { filter } from 'rxjs/operators';
-import { initFlowbite } from 'flowbite';
 
 import { TokenStorageService } from './services/token-storage.service';
 import { AuthService } from './services/auth.service';

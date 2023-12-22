@@ -1,5 +1,5 @@
 import { HTTP_INTERCEPTORS, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http';
 
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
@@ -18,6 +18,7 @@ export class AuthInterceptor implements HttpInterceptor {
     private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         private tokenStorageService: TokenStorageService,
         private authService: AuthService
     ) { }
@@ -26,13 +27,13 @@ export class AuthInterceptor implements HttpInterceptor {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
         const urlsWhitelist = [
-            `${BASE_URL}proxy`,
-            `${BASE_URL}token`,
-            `${BASE_URL}token/refresh`,
-            `${BASE_URL}token/verify`,
-            `${BASE_URL}auth/jwt/create/`,
-            `${BASE_URL}auth/jwt/refresh/`,
-            `${BASE_URL}auth/jwt/verify/`,
+            `${BASE_URL}${this.locale}/api/v1/proxy`,
+            `${BASE_URL}${this.locale}/api/v1/token`,
+            `${BASE_URL}${this.locale}/api/v1/token/refresh`,
+            `${BASE_URL}${this.locale}/api/v1/token/verify`,
+            `${BASE_URL}${this.locale}/api/v1/auth/jwt/create/`,
+            `${BASE_URL}${this.locale}/api/v1/auth/jwt/refresh/`,
+            `${BASE_URL}${this.locale}/api/v1/auth/jwt/verify/`,
         ];
         if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);

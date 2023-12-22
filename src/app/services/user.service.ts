@@ -1,5 +1,5 @@
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {Inject, Injectable, LOCALE_ID} from '@angular/core';
 
 import { catchError, Observable, throwError } from 'rxjs';
 
@@ -16,11 +16,12 @@ export class UserService {
     };
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         private httpClient: HttpClient
     ) {}
 
     getCurrentUser(): Observable<User> {
-        const url = `${BASE_URL}users/current`;
+        const url = `${BASE_URL}${this.locale}/api/v1/users/current`;
         return this.httpClient.get<User>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
