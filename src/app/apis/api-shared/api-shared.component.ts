@@ -44,6 +44,15 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.data = res;
+                    if (!this.data.bodyFields) {
+                        this.data.bodyFields = [];
+                    }
+                    if (!this.data.queryParams) {
+                        this.data.queryParams = [];
+                    }
+                    if (!this.data.headers) {
+                        this.data.headers = [];
+                    }
                     this.loading = false;
                 },
                 error: (err) => {
