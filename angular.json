@@ -16,12 +16,12 @@
             "i18n": {
                 "sourceLocale": {
                     "code": "en",
-                    "baseHref": ""
+                    "baseHref": "en/"
                 },
                 "locales": {
                     "ru": {
                         "translation": "src/locale/messages.ru.json",
-                        "baseHref": ""
+                        "baseHref": "ru/"
                     }
                 }
             },
@@ -48,6 +48,11 @@
                         ],
                         "scripts": [
                             "node_modules/apexcharts/dist/apexcharts.min.js"
+                        ],
+                        "allowedCommonJsDependencies": [
+                            "apexcharts",
+                            "ace-builds",
+                            "moment"
                         ]
                     },
                     "configurations": {
@@ -60,7 +65,6 @@
                         },
                         "production": {
                             "localize": ["en", "ru"],
-                            "deployUrl": "/static/",
                             "budgets": [
                                 {
                                     "type": "initial",

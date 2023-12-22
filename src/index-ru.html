@@ -22,11 +22,8 @@
     </div>
 </app-root>
 
-{% load i18n %}
-{% get_current_language as LANGUAGE_CODE %}
 <script>
     window.csrf_token = '{{ csrf_token }}';
-    window.app_language = '{{ LANGUAGE_CODE }}';
 </script>
 </body>
 </html>
