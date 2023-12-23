@@ -16,12 +16,12 @@
             "i18n": {
                 "sourceLocale": {
                     "code": "en",
-                    "baseHref": "en/"
+                    "baseHref": "static/en/"
                 },
                 "locales": {
                     "ru": {
                         "translation": "src/locale/messages.ru.json",
-                        "baseHref": "ru/"
+                        "baseHref": "static/ru/"
                     }
                 }
             },
@@ -65,7 +65,6 @@
                         },
                         "production": {
                             "localize": ["en", "ru"],
-                            "deployUrl": "static/",
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -87,7 +86,6 @@
                             ]
                         },
                         "development": {
-                            "deployUrl": "static/",
                             "buildOptimizer": false,
                             "optimization": false,
                             "vendorChunk": true,
