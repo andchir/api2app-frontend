@@ -121,7 +121,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
                 return name;
             });
         }
-        if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent) {
+        if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') {
             const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
             this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
         }

@@ -156,7 +156,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.stateLoadingUpdate(apiUuid, false);
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
                     this.loading = false;
                     this.submitted = false;
                     if (err?.error instanceof Blob) {
@@ -258,7 +258,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
                     return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
@@ -266,7 +266,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                 const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                 elements.forEach((element) => {
-                    this.blockElementValueApply(element, valuesObj, data);
+                    if (['input-textarea', 'text'].includes(element.type)) {
+                        this.blockElementValueApply(element, valuesObj, data);
+                    }
                 });
             })
             .catch((err) => {
