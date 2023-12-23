@@ -76,7 +76,15 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     this.errors = err;
-                    this.message = 'Please correct the errors.';
+                    if (this.errors && typeof this.errors === 'object') {
+                        let message = '';
+                        Object.keys(this.errors).forEach((key) => {
+                            message += (message ? '\n' : '') + `${key}: ` + this.errors[key].join(' ');
+                        });
+                        this.message = message;
+                    } else {
+                        this.message = 'Please correct the errors.';
+                    }
                     this.messageType = 'error';
                     this.loading = false;
                     this.submitted = false;

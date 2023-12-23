@@ -20,7 +20,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
     requestContentTypes = [
-        'json', 'xml'
+        'text', 'json', 'xml'
     ];
     requestMethods = [
         'GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE', 'PURGE', 'OPTIONS'

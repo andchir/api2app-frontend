@@ -130,9 +130,10 @@ export class ApiService extends DataService<ApiItem> {
 
         // Request body
         const formData = new FormData();
-        let body: any = data.bodyDataSource === 'raw'
+        const bodyRaw = data.bodyDataSource === 'raw'
             ? data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent
-            : {};
+            : null;
+        let body: any = null;
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
@@ -180,7 +181,8 @@ export class ApiService extends DataService<ApiItem> {
                 formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
             } else {
                 body = Object.assign({}, {
-                    data: body,
+                    body,
+                    bodyRaw,
                     headers: Object.assign({}, headersData),
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid,
@@ -200,7 +202,7 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         const headers = new HttpHeaders(requestHeaders);
-        const requestData = sendAsFormData ? formData : body;
+        const requestData = sendAsFormData ? formData : (body || bodyRaw);
         const responseType = 'blob';
         const params = this.createParams(queryParams);
 
