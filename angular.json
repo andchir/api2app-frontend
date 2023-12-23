@@ -65,6 +65,7 @@
                         },
                         "production": {
                             "localize": ["en", "ru"],
+                            "deployUrl": "/static/",
                             "budgets": [
                                 {
                                     "type": "initial",
@@ -86,6 +87,7 @@
                             ]
                         },
                         "development": {
+                            "deployUrl": "/static/",
                             "buildOptimizer": false,
                             "optimization": false,
                             "vendorChunk": true,

@@ -20,12 +20,14 @@ export class AuthService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
+    protected requestUrl = '';
+
     constructor(
         @Inject(LOCALE_ID) public locale: string,
         private router: Router,
         private httpClient: HttpClient
     ) {
-
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/auth/`;
     }
 
     getHeaders(): HttpHeaders {
@@ -38,14 +40,14 @@ export class AuthService {
     }
 
     login(username: string, password: string): Observable<{access: string, refresh: string}> {
-        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}${this.locale}/auth/jwt/create/`, {
+        return this.httpClient.post<{access: string, refresh: string}>(`${this.requestUrl}jwt/create/`, {
             username,
             password
         }, this.httpOptions);
     }
 
     register(username: string, email: string, password: string): Observable<any> {
-        return this.httpClient.post(`${BASE_URL}${this.locale}/auth/users/`, {
+        return this.httpClient.post(`${this.requestUrl}users/`, {
             username,
             email,
             password
@@ -53,7 +55,7 @@ export class AuthService {
     }
 
     refreshToken(token: string): Observable<{access: string}> {
-        return this.httpClient.post<{access: string}>(`${BASE_URL}${this.locale}/auth/jwt/refresh/`, {
+        return this.httpClient.post<{access: string}>(`${this.requestUrl}jwt/refresh/`, {
             refresh: token
         }, this.httpOptions);
     }
