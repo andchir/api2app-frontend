@@ -168,6 +168,7 @@ export class ApiService extends DataService<ApiItem> {
             queryParams[item.name] = item.value;
         });
 
+        const requestHeaders = {};
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__headers', Object.keys(headersData).join(','));
@@ -191,12 +192,14 @@ export class ApiService extends DataService<ApiItem> {
             }
             if (!isDevMode()) {
                 const csrfToken = this.getCookie('csrftoken');
-                headersData['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
-                headersData['Mode'] = 'same-origin';
+                requestHeaders['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
+                requestHeaders['Mode'] = 'same-origin';
             }
+        } else {
+            Object.assign(requestHeaders, headersData);
         }
 
-        const headers = new HttpHeaders(headersData);
+        const headers = new HttpHeaders(requestHeaders);
         const requestData = sendAsFormData ? formData : body;
         const responseType = 'blob';
         const params = this.createParams(queryParams);

@@ -27,7 +27,7 @@ export class AuthInterceptor implements HttpInterceptor {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
         const urlsWhitelist = [
-            `${BASE_URL}${this.locale}/api/v1/proxy`,
+            `${BASE_URL}api/v1/proxy`,
             `${BASE_URL}${this.locale}/api/v1/token`,
             `${BASE_URL}${this.locale}/api/v1/token/refresh`,
             `${BASE_URL}${this.locale}/api/v1/token/verify`,
