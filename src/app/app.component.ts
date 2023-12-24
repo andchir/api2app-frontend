@@ -18,6 +18,7 @@ export class AppComponent implements OnInit {
     userSubject$: BehaviorSubject<User>;
     isLoggedIn = false;
     isMobileMenuActive = false;
+    isSharedPageUrl = false;
     isSharedUrl = false;
     navigationLoading = false;
 
@@ -35,7 +36,7 @@ export class AppComponent implements OnInit {
                 }
                 if (e instanceof NavigationEnd) {
                     // initFlowbite();
-                    this.isSharedUrl = e.url.includes('/shared/');
+                    this.isSharedPageUrl = e.url.includes('/shared/');
                     this.navigationLoading = false;
                 }
             });

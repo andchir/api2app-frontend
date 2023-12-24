@@ -1,5 +1,5 @@
 <div class="min-h-full flex flex-col">
-    <nav class="bg-gray-800" *ngIf="!isSharedUrl">
+    <nav class="bg-gray-800" *ngIf="!isSharedPageUrl">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div class="flex h-16 items-center justify-between">
                 <div class="flex items-center">
@@ -202,7 +202,7 @@
 
     <router-outlet></router-outlet>
 
-    <footer class="bg-white mt-auto border-t border-gray-100" *ngIf="!isSharedUrl">
+    <footer class="bg-white mt-auto border-t border-gray-100" *ngIf="!isSharedPageUrl">
         <div class="mx-auto max-w-screen-xl px-4 pb-6 sm:px-6 lg:px-8">
             <div class="pt-6">
                 <div class="text-center sm:flex sm:justify-between sm:text-left">
