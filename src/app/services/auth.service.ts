@@ -54,6 +54,12 @@ export class AuthService {
         }, this.httpOptions);
     }
 
+    passwordReset(email: string): Observable<any> {
+        return this.httpClient.post(`${this.requestUrl}users/reset_password/`, {
+            email
+        }, this.httpOptions);
+    }
+
     refreshToken(token: string): Observable<{access: string}> {
         return this.httpClient.post<{access: string}>(`${this.requestUrl}jwt/refresh/`, {
             refresh: token

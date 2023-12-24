@@ -63,7 +63,7 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
                     this.messageType = 'error';
                     if (err?.error?.password) {
                         this.message = err?.error?.password.join(' ');

@@ -1,12 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthLoginComponent } from './auth/auth-login.component';
 import { AuthLogoutComponent } from './auth/auth-logout.component';
 import { AuthRegisterComponent } from './auth/auth-register.component';
-import { HomeComponent } from "./home/home.component";
+import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
 
 const routes: Routes = [
     {
@@ -25,6 +26,10 @@ const routes: Routes = [
     {
         path: 'auth/register',
         component: AuthRegisterComponent
+    },
+    {
+        path: 'auth/password_reset',
+        component: AuthPasswordResetComponent
     },
     {
         path: 'auth/logout',

@@ -8,6 +8,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthLoginComponent } from './auth/auth-login.component';
 import { AuthRegisterComponent } from './auth/auth-register.component';
+import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
 import { AuthLogoutComponent } from './auth/auth-logout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from "./home/home.component";
@@ -21,6 +22,7 @@ import { SharedModule } from './shared.module';
         AppComponent,
         AuthLoginComponent,
         AuthRegisterComponent,
+        AuthPasswordResetComponent,
         AuthLogoutComponent,
         HomeComponent,
         DashboardComponent,
