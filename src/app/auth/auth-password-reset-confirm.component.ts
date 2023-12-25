@@ -8,15 +8,17 @@ import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
 import { User } from '../apis/models/user.interface';
+import {matchValidator} from "../helpers/match-validator";
 
 @Component({
-    selector: 'app-user-activate',
-    templateUrl: './templates/auth-activate.component.html',
+    selector: 'app-password-reset-confirm',
+    templateUrl: './templates/auth-password-reset-confirm.component.html',
     providers: [UserService]
 })
-export class AuthUserActivateComponent implements OnInit, OnDestroy {
+export class AuthPasswordResetConfirmComponent implements OnDestroy {
 
     loading = true;
+    submitted = false;
     activated = false;
     message = '';
     messageType = 'error';
@@ -24,7 +26,16 @@ export class AuthUserActivateComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     form = this.formBuilder.group({
-        email: ['', [Validators.required, Validators.email]]
+        password: ['', [
+            Validators.required,
+            Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$'),
+            Validators.minLength(8),
+            Validators.maxLength(25),
+            matchValidator('confirmPassword', true)
+        ]],
+        confirmPassword: ['', [
+            matchValidator('password')
+        ]]
     });
 
     constructor(
@@ -37,29 +48,37 @@ export class AuthUserActivateComponent implements OnInit, OnDestroy {
     ) {
     }
 
-    ngOnInit(): void {
-        this.activateUser();
-    }
-
-    activateUser(): void {
+    onSubmit(): void {
+        if (!this.form.valid || this.submitted) {
+            return;
+        }
+        this.message = '';
+        this.submitted = true;
+        this.activated = false;
+        const { password } = this.form.value;
         const uid = this.route.snapshot.paramMap.get('uid');
         const token = this.route.snapshot.paramMap.get('token');
-        this.authService.activateUser(uid, token)
+        this.authService.changePassword(uid, token, password)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.loading = false;
+                    this.submitted = false;
                     this.activated = true;
+                    this.form.reset();
                 },
                 error: (err) => {
                     // console.log(err);
                     this.messageType = 'error';
-                    if (err?.error?.detail) {
+                    if (err?.error?.token) {
+                        this.message = err?.error?.token.join(' ');
+                    } else if (err?.error?.detail) {
                         this.message = err?.error?.detail;
                     } else {
-                        this.message = $localize `Error. Please try again later or contact support.`;
+                        this.message = 'Error. Please try again later or contact support.';
                     }
                     this.loading = false;
+                    this.submitted = false;
                 }
             });
     }

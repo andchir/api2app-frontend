@@ -58,12 +58,12 @@ export class AuthPasswordResetComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.messageType = 'success';
-                    this.message = 'Please follow the instructions from the letter sent to your email.';
+                    this.message = $localize `Please follow the instructions from the letter sent to your email.`;
                     this.form.reset();
                     this.submitted = false;
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
                     this.messageType = 'error';
                     this.message = err?.error?.detail;
                     this.submitted = false;
