@@ -8,11 +8,12 @@
     <div class="px-3 sm:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
 
         <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
-            <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+            <div class="mb-2 w-full whitespace-nowrap overflow-hidden text-ellipsis">
                 {{ item.name }}
             </div>
-            <div class="mb-3 text-xs w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-700">
-
+            <div class="mb-2 text-sm w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-700">
+                <i class="bi bi-person-circle"></i>
+                {{ item.user?.username }}
             </div>
             <div class="flex gap-2">
 

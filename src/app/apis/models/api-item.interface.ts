@@ -1,5 +1,6 @@
 import { RequestDataField } from './request-data-field.interface';
 import { NameValueStringObject } from './name-value-string-object.interface';
+import { User } from './user.interface';
 
 export interface ApiItem {
     id: number;
@@ -28,4 +29,6 @@ export interface ApiItem {
     hidden: boolean;
     url?: string;
     method?: string;
+
+    user?: User;
 }
