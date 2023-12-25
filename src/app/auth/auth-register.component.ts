@@ -59,7 +59,7 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     this.form.reset();
                     this.messageType = 'success';
-                    this.message = 'You have successfully registered.';
+                    this.message = $localize `You have successfully registered. An activation email has been sent to your email.`;
                     this.submitted = false;
                 },
                 error: (err) => {
@@ -72,7 +72,7 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
                     } else if (err?.error?.detail) {
                         this.message = err?.error?.detail;
                     } else {
-                        this.message = 'Error. The user already exists.';
+                        this.message = $localize `Error. The user already exists.`;
                     }
                     this.submitted = false;
                 }

@@ -9,6 +9,8 @@ export class AlertComponent implements OnInit {
 
     @Input() message = '';
     @Input() type = 'error';
+    @Input() closable = true;
+    @Input() position = 'fixed';
 
     ngOnInit(): void {
 

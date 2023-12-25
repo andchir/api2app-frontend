@@ -8,6 +8,7 @@ import { AuthLoginComponent } from './auth/auth-login.component';
 import { AuthLogoutComponent } from './auth/auth-logout.component';
 import { AuthRegisterComponent } from './auth/auth-register.component';
 import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
+import { AuthUserActivateComponent } from './auth/auth-activate.component';
 
 const routes: Routes = [
     {
@@ -30,6 +31,10 @@ const routes: Routes = [
     {
         path: 'auth/password_reset',
         component: AuthPasswordResetComponent
+    },
+    {
+        path: 'auth/activate/:uid/:token',
+        component: AuthUserActivateComponent
     },
     {
         path: 'auth/logout',

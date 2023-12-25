@@ -60,6 +60,12 @@ export class AuthService {
         }, this.httpOptions);
     }
 
+    activateUser(uid: string, token: string): Observable<any> {
+        return this.httpClient.post(`${this.requestUrl}users/activation/`, {
+            uid, token
+        }, this.httpOptions);
+    }
+
     refreshToken(token: string): Observable<{access: string}> {
         return this.httpClient.post<{access: string}>(`${this.requestUrl}jwt/refresh/`, {
             refresh: token
