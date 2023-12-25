@@ -52,8 +52,8 @@ export class AuthUserActivateComponent implements OnInit, OnDestroy {
                     this.activated = true;
                 },
                 error: (err) => {
+                    // console.log(err);
                     this.messageType = 'error';
-                    console.log(err);
                     if (err?.error?.detail) {
                         this.message = err?.error?.detail;
                     } else {
