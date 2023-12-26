@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Router } from "@angular/router";
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { debounceTime, Subject } from 'rxjs';
+import { debounceTime, delay, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 @Component({
     selector: 'app-apis-list',
@@ -11,17 +12,27 @@ import { debounceTime, Subject } from 'rxjs';
 })
 export class ListApisComponent implements OnInit {
 
+    @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
     searchWord$ = new Subject<string>();
 
     constructor(
+        protected route: ActivatedRoute,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {}
 
     ngOnInit(): void {
+        this.route.queryParams
+            .pipe(take(1), delay(300))
+            .subscribe((params) => {
+                if (params['search'] && this.searchField) {
+                    this.searchField.nativeElement.value = params['search'];
+                }
+            });
+
         this.searchWord$
             .pipe(debounceTime(700))
-            .subscribe((value) => this.onSearchUpdate(value));
+            .subscribe(this.onSearchUpdate.bind(this));
     }
 
     onSearchKeyUp(event: Event|KeyboardEvent): void {

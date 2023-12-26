@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
 import { AuthService } from '../../../services/auth.service';
 import { TokenStorageService } from '../../../services/token-storage.service';
 import { ListSharedComponent} from '../shared/shared.component';
+import {takeUntil} from "rxjs";
 
 @Component({
     selector: 'app-apis-list-personal',
@@ -16,18 +17,13 @@ import { ListSharedComponent} from '../shared/shared.component';
 export class ListPersonalComponent extends ListSharedComponent implements OnInit, OnDestroy {
 
     constructor(
+        route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApiService,
         private tokenStorageService: TokenStorageService
     ) {
-        super(router, authService, dataService);
-    }
-
-    override ngOnInit(): void {
-        if (this.userSubject$.getValue()) {
-            this.getData(false);
-        }
+        super(route, router, authService, dataService);
     }
 
     override getData(shared: boolean = false) {

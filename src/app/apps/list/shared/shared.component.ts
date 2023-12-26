@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { iif, takeUntil } from 'rxjs';
 import { AuthService } from '../../../services/auth.service';
@@ -15,16 +15,17 @@ import { ApplicationService } from '../../../services/application.service';
 export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
     constructor(
+        route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApplicationService
     ) {
-        super(router, authService, dataService);
+        super(route, router, authService, dataService);
     }
 
     getData(): void {
         this.loading = true;
-        this.dataService.getListShared(this.currentPage)
+        this.dataService.getListShared(this.currentPage, this.searchWord)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

@@ -1,12 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import {BehaviorSubject, Subject, takeUntil} from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
 import { DataService } from './services/data.service.abstract';
-import {PaginatorState} from "./apps/models/paginator-state.interface";
+import { PaginatorState } from './apps/models/paginator-state.interface';
 
 @Component({
     template: ''
@@ -18,6 +18,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     perPage = 16;
     totalRecords = 0;
     currentPage = 1;
+    searchWord: string;
     selectedId = 0;
     selectedItem: T;
     isDeleteAction = false;
@@ -26,6 +27,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        protected route: ActivatedRoute,
         protected router: Router,
         protected authService: AuthService,
         protected dataService: DataService<T>
@@ -38,7 +40,9 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     }
 
     ngOnInit(): void {
-        this.getData();
+        this.route.queryParams
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(this.onQueryParamsChange.bind(this));
     }
 
     abstract getData()
@@ -134,6 +138,11 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
 
     onPageChange(event: PaginatorState) {
         this.currentPage = event.page + 1;
+        this.getData();
+    }
+
+    onQueryParamsChange(params: Params): void {
+        this.searchWord = params['search'] || '';
         this.getData();
     }
 

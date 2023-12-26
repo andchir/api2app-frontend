@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {iif, Subject, takeUntil} from 'rxjs';
 
@@ -17,18 +17,19 @@ import { ListAbstractComponent } from '../../../list.component.abstract';
 export class ListSharedComponent extends ListAbstractComponent<ApiItem> implements OnInit, OnDestroy {
 
     constructor(
+        route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApiService
     ) {
-        super(router, authService, dataService);
+        super(route, router, authService, dataService);
     }
 
     getData(shared = true): void {
         this.loading = true;
         iif(() => shared,
-            this.dataService.getListShared(this.currentPage),
-            this.dataService.getList(this.currentPage)
+            this.dataService.getListShared(this.currentPage, this.searchWord),
+            this.dataService.getList(this.currentPage, this.searchWord)
         )
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
