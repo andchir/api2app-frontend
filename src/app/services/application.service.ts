@@ -671,7 +671,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static createBlockOptionsFields(options?: any): AppBlockElement[] {
+    static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
         const defaultValues = {
             gridColumnSpan: 1,
@@ -683,7 +683,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-number',
             min: 0,
             max: 100,
-            value: options?.orderIndex || defaultValues.orderIndex
+            value: index
         });
         output.push({
             name: 'gridColumnSpan',

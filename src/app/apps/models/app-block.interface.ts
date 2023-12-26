@@ -43,4 +43,5 @@ export interface AppBlock {
     elements: AppBlockElement[];
     options?: any;
     loading?: boolean;
+    orderIndex?: number;
 }

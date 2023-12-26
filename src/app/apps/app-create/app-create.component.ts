@@ -179,7 +179,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         // console.log('showElementOptions', element, this.selectedItemOptionsFields);
     }
 
-    showBlockOptions(block: AppBlock, event?: MouseEvent): void {
+    showBlockOptions(block: AppBlock, index: number, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
@@ -187,7 +187,8 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (!block.options) {
             block.options = {};
         }
-        this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options);
+        this.selectedBlockIndex = index;
+        this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options, index);
         this.selectedBlock = block;
         this.selectedElement = null;
         this.isOptionsActive = true;
@@ -205,13 +206,15 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     updateItemOptions(): void {
         if (this.selectedElement) {
             Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
-            // console.log('updateItemOptions', this.selectedItemOptionsFields, this.selectedElement);
             if (this.selectedElement.orderIndex !== this.selectedElementIndex) {
                 this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
             }
         }
         if (this.selectedBlock) {
             Object.assign(this.selectedBlock.options, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
+            if (this.selectedBlock?.options?.orderIndex !== this.selectedBlockIndex) {
+                this.updateBlockIndex(this.selectedBlockIndex, this.selectedBlock?.options?.orderIndex);
+            }
         }
         this.selectedItemOptionsFields = [];
         this.selectedElement = null;
@@ -233,6 +236,18 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         }
         const deletedItems = elements.splice(currentIndex, 1);
         elements.splice(nexIndex, 0, deletedItems[0]);
+    }
+
+    updateBlockIndex(currentIndex: number, nexIndex: number): void {
+        const blocks = this.data.blocks;
+        if (nexIndex > blocks.length - 1) {
+            nexIndex = blocks.length - 1;
+        }
+        if (currentIndex === nexIndex) {
+            return;
+        }
+        const deletedItems = blocks.splice(currentIndex, 1);
+        blocks.splice(nexIndex, 0, deletedItems[0]);
     }
 
     saveData(): void {
