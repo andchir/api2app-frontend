@@ -6,7 +6,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { authInterceptorProviders } from '../helpers/auth.interceptor';
 import { SharedModule } from '../shared.module';
 import { AppsRoutingModule } from './apps-routing.module';
-import { ListComponent } from './list/list.component';
+import { ListAppsComponent } from './list/list.component';
 import { ApplicationsListSharedComponent } from './list/shared/shared.component';
 import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
 import { ApplicationCreateComponent } from './app-create/app-create.component';
@@ -20,7 +20,7 @@ import { ModalService } from '../services/modal.service';
 
 @NgModule({
     declarations: [
-        ListComponent,
+        ListAppsComponent,
         ApplicationsListSharedComponent,
         ApplicationsListPersonalComponent,
         ApplicationCreateComponent,

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { ListComponent } from './list/list.component';
+import { ListAppsComponent } from './list/list.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { ApplicationsListSharedComponent } from './list/shared/shared.component';
 import { ApplicationsListPersonalComponent } from './list/personal/personal.component';
@@ -11,7 +11,7 @@ import { ApplicationSharedComponent } from './app-shared/app-shared.component';
 const routes: Routes = [
     {
         path: '',
-        component: ListComponent,
+        component: ListAppsComponent,
         children: [
             {
                 path: '',
