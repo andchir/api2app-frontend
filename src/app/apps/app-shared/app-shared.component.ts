@@ -149,7 +149,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         this.stateLoadingUpdate(apiUuid, true);
-        const apiItem = this.prepareApiItem(currentApi, actionType);
+        const apiItem = this.prepareApiItem(currentApi);
         this.apiService.apiRequest(apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -186,7 +186,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'output'): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input'): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
         const allElements = this.getAllElements();
         // Body data
@@ -198,8 +198,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return {...field};
             });
             bodyFields.forEach((bodyField) => {
-                const element = allElements.find((element) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                const element = allElements.find((item) => {
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
                         && fieldType === 'input';
@@ -263,7 +263,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .then((data) => {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-
                     elements.forEach((element) => {
                         if (['chart-line'].includes(element.type)) {
                             this.chartElementValueApply(element, data);
@@ -322,7 +321,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        const fieldName = element.options?.inputApiFieldName;
+        const fieldName = element.options?.outputApiFieldName;
         if (!fieldName) {
             return;
         }
