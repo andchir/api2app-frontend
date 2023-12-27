@@ -215,6 +215,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             apiItem.bodyFields = bodyFields;
         }
 
+        // Raw value
+        if (apiItem.bodyDataSource === 'raw') {
+            const element = allElements.find((item) => {
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                return apiUuid === apiItem.uuid
+                    && fieldName === 'value'
+                    && fieldType === 'input';
+            });
+            apiItem.bodyContent = ApplicationService.getElementValue(element) as string;
+        }
+
         // Query params
         if (!apiItem.queryParams) {
             apiItem.queryParams = [];
@@ -256,6 +267,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             header.value = ApplicationService.getElementValue(element) as string;
         });
         apiItem.headers = headers;
+
+
+
         return apiItem;
     }
 
