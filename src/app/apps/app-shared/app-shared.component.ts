@@ -69,16 +69,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const buttons = {};
         this.data.blocks.forEach((block) => {
             block.elements.forEach((element) => {
-                const uuid = element.options?.inputApiUuid;
-                if (uuid) {
-                    if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
-                        this.apiUuidsList.input.push(element.options.inputApiUuid);
+                if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
+                    this.apiUuidsList.input.push(element.options.inputApiUuid);
+                }
+                if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
+                    this.apiUuidsList.output.push(element.options.outputApiUuid);
+                }
+                if (element.type === 'button') {
+                    if (element.options?.inputApiUuid) {
+                        buttons[element.options?.inputApiUuid] = true;
                     }
-                    if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
-                        this.apiUuidsList.output.push(element.options.outputApiUuid);
-                    }
-                    if (element.type === 'button') {
-                        buttons[uuid] = true;
+                    if (element.options?.outputApiUuid) {
+                        buttons[element.options?.outputApiUuid] = true;
                     }
                 }
             });
@@ -111,7 +113,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     onElementClick(element: AppBlockElement): void {
         if (element.type === 'button') {
-            // this.appSubmit(element.options?.apiUuid);
+            this.appSubmit(element.options?.outputApiUuid, 'output');
         }
     }
 
@@ -152,7 +154,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    this.createAppResponse(currentApi, res, actionType);
+                    this.createAppResponse(currentApi, res);
                     this.loading = false;
                     this.submitted = false;
                     this.stateLoadingUpdate(apiUuid, false);
@@ -174,11 +176,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     stateLoadingUpdate(apiUuid: string, loading: boolean): void {
         const blocks = this.data.blocks.filter((item) => {
-            // const elements = item.elements.filter((el) => {
-            //     return el?.options?.apiUuid == apiUuid;
-            // });
-            // return elements.length > 0;
-            return true;
+            const elements = item.elements.filter((el) => {
+                return el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
+            });
+            return elements.length > 0;
         });
         blocks.forEach((block) => {
             block.loading = loading;
@@ -188,6 +189,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'output'): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
         const allElements = this.getAllElements();
+        // Body data
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
             if (!apiItem.bodyFields) {
                 apiItem.bodyFields = [];
@@ -196,18 +198,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return {...field};
             });
             bodyFields.forEach((bodyField) => {
-                // const element = allElements.find((element) => {
-                //     return element.options?.apiUuid === apiItem.uuid
-                //         && element.options?.fieldName === bodyField.name
-                //         && element.options?.fieldType === 'input';
-                // });
-                // if (!element) {
-                //     return;
-                // }
-                // bodyField.value = ApplicationService.getElementValue(element) as string;
-                // if (element.type === 'input-switch') {
-                //     bodyField.hidden = !element?.enabled;
-                // }
+                const element = allElements.find((element) => {
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                    return apiUuid === apiItem.uuid
+                        && fieldName === bodyField.name
+                        && fieldType === 'input';
+                });
+                if (!element) {
+                    return;
+                }
+                bodyField.value = ApplicationService.getElementValue(element) as string;
+                if (element.type === 'input-switch') {
+                    bodyField.hidden = !element?.enabled;
+                }
             });
             apiItem.bodyFields = bodyFields;
         }
@@ -220,33 +223,47 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return {...field};
         });
         queryParams.forEach((field) => {
-            // const element = allElements.find((element) => {
-            //     return element.options?.apiUuid === apiItem.uuid
-            //         && element.options?.fieldName === field.name
-            //         && element.options?.fieldType === 'params';
-            // });
-            // if (!element) {
-            //     return;
-            // }
-            // field.value = ApplicationService.getElementValue(element) as string;
+            const element = allElements.find((element) => {
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                return apiUuid === apiItem.uuid
+                    && fieldName === field.name
+                    && fieldType === 'params';
+            });
+            if (!element) {
+                return;
+            }
+            field.value = ApplicationService.getElementValue(element) as string;
         });
         apiItem.queryParams = queryParams;
         return apiItem;
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, actionType: 'input'|'output' = 'output'): void {
+    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output'): {apiUuid: string, fieldName: string, fieldType: string} {
+        return actionType === 'input'
+            ? {
+                apiUuid: element.options?.inputApiUuid,
+                fieldName: element.options?.inputApiFieldName,
+                fieldType: element.options?.inputApiFieldType
+            }
+            : {
+                apiUuid: element.options?.outputApiUuid,
+                fieldName: element.options?.outputApiFieldName,
+                fieldType: element.options?.outputApiFieldType
+            };
+    }
+
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
         if (response.body) {
             const allElements = this.getAllElements();
             const elements = allElements.filter((element) => {
-                const {apiUuid, fieldType} = actionType === 'input'
-                    ? {apiUuid: element.options?.inputApiUuid, fieldType: element.options?.inputApiFieldType}
-                    : {apiUuid: element.options?.outputApiUuid, fieldType: element.options?.outputApiFieldType};
+                const {apiUuid, fieldType} = this.getElementOptions(element, 'output');
                 return apiUuid === apiItem.uuid && fieldType === 'output';
             });
             this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
                 .then((data) => {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+
                     elements.forEach((element) => {
                         if (['chart-line'].includes(element.type)) {
                             this.chartElementValueApply(element, data);
@@ -262,47 +279,46 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
-        // this.apiService.getDataFromBlob(blob)
-        //     .then((data) => {
-        //         // console.log(data);
-        //         const allElements = this.getAllElements();
-        //         const elements = allElements.filter((element) => {
-        //             return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
-        //         });
-        //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-        //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-        //         elements.forEach((element) => {
-        //             if (['input-textarea', 'text'].includes(element.type)) {
-        //                 this.blockElementValueApply(element, valuesObj, data);
-        //             }
-        //         });
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        this.apiService.getDataFromBlob(blob)
+            .then((data) => {
+                const allElements = this.getAllElements();
+                const elements = allElements.filter((element) => {
+                    return element.options?.outputApiUuid === apiItem.uuid && element.options?.outputApiFieldType === 'output';
+                });
+                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+                elements.forEach((element) => {
+                    if (['input-textarea', 'text'].includes(element.type)) {
+                        this.blockElementValueApply(element, valuesObj, data);
+                    }
+                });
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
     chartElementValueApply(element: AppBlockElement, data: any): void {
-        // const fieldNameAxisX = element.fieldNameAxisX;
-        // const fieldNameAxisY = element.fieldNameAxisY;
-        // const dataKey = element.options?.fieldName;
-        // if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
-        //     return;
-        // }
-        // const dateFormat = element?.format;
-        // const outData = data[dataKey];
-        // const yAxisData = outData.map((item) => {
-        //     return parseFloat(item[fieldNameAxisY]);
-        // });
-        // const xAxisData = outData.map((item) => {
-        //     const value = item[fieldNameAxisX] || null;
-        //     if (element.isYAxisDate && dateFormat && value) {
-        //         const date = moment(String(value));
-        //         return date.format(dateFormat);
-        //     }
-        //     return value;
-        // });
-        // element.valueObj = {xAxisData, yAxisData};
+        const fieldNameAxisX = element.fieldNameAxisX;
+        const fieldNameAxisY = element.fieldNameAxisY;
+        const dataKey = element.options?.outputApiFieldName;
+        if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
+            return;
+        }
+        const dateFormat = element?.format;
+        const outData = data[dataKey];
+        const yAxisData = outData.map((item) => {
+            return parseFloat(item[fieldNameAxisY]);
+        });
+        const xAxisData = outData.map((item) => {
+            const value = item[fieldNameAxisX] || null;
+            if (element.isYAxisDate && dateFormat && value) {
+                const date = moment(String(value));
+                return date.format(dateFormat);
+            }
+            return value;
+        });
+        element.valueObj = {xAxisData, yAxisData};
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {

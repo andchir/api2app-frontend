@@ -38,6 +38,12 @@ export class AuthInterceptor implements HttpInterceptor {
             `${BASE_URL}${this.locale}/api/v1/auth/jwt/refresh/`,
             `${BASE_URL}${this.locale}/api/v1/auth/jwt/verify/`,
         ];
+        if (authReq.url.match(/\/api_items\/[^\/]+\/shared$/)) {
+            urlsWhitelist.push(authReq.url);
+        }
+        if (authReq.url.match(/\/applications\/[^\/]+\/shared$/)) {
+            urlsWhitelist.push(authReq.url);
+        }
         if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);
         }

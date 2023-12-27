@@ -52,37 +52,39 @@
 
         <div>
 
-            <div class="mb-5">
-                <label class="block mb-2" for="fieldName" i18n>Application name</label>
-                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                       id="fieldName"
-                       placeholder="Enter Application Name"
-                       i18n-placeholder
-                       [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': errors['name']}"
-                       [(ngModel)]="data.name"
-                       (ngModelChange)="deleteErrorMessages('name')">
-                <div *ngIf="errors['name']">
-                    <div class="mt-2 text-sm text-red-600" *ngFor="let errorMessage of errors['name']">{{ errorMessage }}</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+                <div>
+                    <label class="block mb-2" for="fieldName" i18n>Application name</label>
+                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                           id="fieldName"
+                           placeholder="Enter Application Name"
+                           i18n-placeholder
+                           [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': errors['name']}"
+                           [(ngModel)]="data.name"
+                           (ngModelChange)="deleteErrorMessages('name')">
+                    <div *ngIf="errors['name']">
+                        <div class="mt-2 text-sm text-red-600" *ngFor="let errorMessage of errors['name']">{{ errorMessage }}</div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="mb-5">
-                <div class="inline-flex rounded-md shadow-sm" role="group">
-                    <button type="button" class="px-4 py-2 text-sm font-medium border rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
-                        [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 1, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 1}"
-                        (click)="setValue('gridColumns', 1)">
-                        <span i18n>1 Column</span>
-                    </button>
-                    <button type="button" class="px-4 py-2 text-sm font-medium hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
-                        [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 border z-5': data.gridColumns === 2, 'border-t border-b bg-white text-gray-900 border-gray-200': data.gridColumns !== 2}"
-                        (click)="setValue('gridColumns', 2)">
-                        <span i18n>2 Columns</span>
-                    </button>
-                    <button type="button" class="px-4 py-2 text-sm font-medium border rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
-                        [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 3, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 3}"
-                        (click)="setValue('gridColumns', 3)">
-                        <span i18n>3 Columns</span>
-                    </button>
+                <div>
+                    <label class="block mb-2" i18n>Grid</label>
+                    <div class="inline-flex rounded-md shadow-sm" role="group">
+                        <button type="button" class="px-4 py-2 text-sm font-medium border rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
+                                [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 1, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 1}"
+                                (click)="setValue('gridColumns', 1)">
+                            <span i18n>1 Column</span>
+                        </button>
+                        <button type="button" class="px-4 py-2 text-sm font-medium hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
+                                [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 border z-5': data.gridColumns === 2, 'border-t border-b bg-white text-gray-900 border-gray-200': data.gridColumns !== 2}"
+                                (click)="setValue('gridColumns', 2)">
+                            <span i18n>2 Columns</span>
+                        </button>
+                        <button type="button" class="px-4 py-2 text-sm font-medium border rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700"
+                                [ngClass]="{'bg-gray-200 text-blue-700 border-blue-700 z-5': data.gridColumns === 3, 'bg-white text-gray-900 border-gray-200': data.gridColumns !== 3}"
+                                (click)="setValue('gridColumns', 3)">
+                            <span i18n>3 Columns</span>
+                        </button>
+                    </div>
                 </div>
             </div>
 

@@ -65,6 +65,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         this.items$ = concat(
             of([]),
             this.searchInput$.pipe(
+                takeUntil(this.destroyed$),
                 distinctUntilChanged(),
                 filter(input => !!input),
                 debounceTime(700),
@@ -113,7 +114,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
             return;
         }
-        if (this.actionType === 'output') {
+        if (this.actionType === 'input') {
             // Input fields
             if (this.selectedApi.bodyDataSource === 'fields') {
                 this.inputFields = this.selectedApi.bodyFields.map((item) => {
@@ -141,7 +142,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
             this.inputFields.unshift('value');
         }
 
-        if (this.actionType === 'input') {
+        if (this.actionType === 'output') {
             // Output fields
             if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
                 const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
@@ -164,6 +165,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     onSearchCleared(): void {
         this.selectedUuid = '';
         this.selectedApi = null;
+        this.loadItems();
     }
 
     ngOnDestroy(): void {
