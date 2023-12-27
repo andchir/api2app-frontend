@@ -113,38 +113,42 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
             return;
         }
-        // Input fields
-        if (this.selectedApi.bodyDataSource === 'fields') {
-            this.inputFields = this.selectedApi.bodyFields.map((item) => {
+        if (this.actionType === 'output') {
+            // Input fields
+            if (this.selectedApi.bodyDataSource === 'fields') {
+                this.inputFields = this.selectedApi.bodyFields.map((item) => {
+                    return !item.hidden ? item.name : '';
+                });
+                this.inputFields = this.inputFields.filter((name) => {
+                    return name;
+                });
+            }
+            if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') {
+                const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
+                this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
+            }
+
+            // Input params
+            if (!this.selectedApi.queryParams) {
+                this.selectedApi.queryParams = [];
+            }
+            this.inputParams = this.selectedApi.queryParams.map((item) => {
                 return !item.hidden ? item.name : '';
             });
-            this.inputFields = this.inputFields.filter((name) => {
+            this.inputParams = this.inputParams.filter((name) => {
                 return name;
             });
-        }
-        if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') {
-            const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
-            this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
+            this.inputFields.unshift('value');
         }
 
-        // Input params
-        if (!this.selectedApi.queryParams) {
-            this.selectedApi.queryParams = [];
+        if (this.actionType === 'input') {
+            // Output fields
+            if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
+                const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
+                this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;
+            }
+            this.outputFields.unshift('value');
         }
-        this.inputParams = this.selectedApi.queryParams.map((item) => {
-            return !item.hidden ? item.name : '';
-        });
-        this.inputParams = this.inputParams.filter((name) => {
-            return name;
-        });
-
-        // Output fields
-        if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
-            const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
-            this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;
-        }
-        this.inputFields.unshift('value');
-        this.outputFields.unshift('value');
     }
 
     selectField(fieldName: string, fieldType: string): void{
