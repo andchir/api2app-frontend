@@ -19,6 +19,7 @@
                         <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
                         <i class="bi bi-1-square mr-1 text-gray-400" *ngIf="item.name === 'input-number'"></i>
                         <i class="bi bi-textarea-resize mr-1 text-gray-400" *ngIf="item.name === 'input-textarea'"></i>
+                        <i class="bi bi-input-cursor mr-1 text-gray-400" *ngIf="item.name === 'input-hidden'"></i>
                         <i class="bi bi-toggle-off mr-1 text-gray-400" *ngIf="item.name === 'input-switch'"></i>
                         <i class="bi bi-menu-button mr-1 text-gray-400" *ngIf="item.name === 'input-select'"></i>
                         <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
@@ -102,6 +103,15 @@
                           [placeholder]="options?.placeholder || ''"
                           [readonly]="options?.readOnly"
                           [(ngModel)]="options.value"></textarea>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'input-hidden'">
+            <div [ngClass]="{'mb-3 rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <input [type]="editorMode ? 'text' : 'hidden'" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       [placeholder]="options?.placeholder || ''"
+                       [(ngModel)]="options.value">
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

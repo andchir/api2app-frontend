@@ -256,6 +256,40 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     enabled: options?.readOnly || false
                 });
                 break;
+            case 'input-hidden':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix Text`,
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
             case 'input-switch':
                 output.push({
                     name: 'name',
@@ -638,6 +672,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,
+                    value: ''
+                });
+                break;
+            case 'input-hidden':
+                Object.assign(output, {
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    prefixText: '',
+                    suffixText: '',
                     value: ''
                 });
                 break;
