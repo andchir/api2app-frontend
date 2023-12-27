@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
+import { DomSanitizer } from '@angular/platform-browser';
 
 import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
@@ -32,6 +33,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        protected sanitizer: DomSanitizer,
         protected route: ActivatedRoute,
         protected router: Router,
         protected dataService: ApplicationService,
@@ -356,6 +358,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
+        if (['image', 'audio'].includes(element.type) && rawData) {
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(rawData) as string;
+            return;
+        }
         const fieldName = element.options?.outputApiFieldName;
         if (!fieldName) {
             return;
