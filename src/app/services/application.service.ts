@@ -277,6 +277,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.label
                 });
                 output.push({
+                    name: 'itemFieldNameForTitle',
+                    label: $localize `Field name in the array - title`,
+                    type: 'input-text',
+                    value: options?.itemFieldNameForTitle
+                });
+                output.push({
+                    name: 'itemFieldNameForValue',
+                    label: $localize `Field name in the array - value`,
+                    type: 'input-text',
+                    value: options?.itemFieldNameForValue
+                });
+                output.push({
                     name: 'choices',
                     label: $localize `Choices`,
                     type: 'input-tags',

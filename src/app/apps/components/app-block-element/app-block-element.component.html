@@ -329,9 +329,17 @@
             <i class="bi bi-gear-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
-                title="Action"
+                title="Input Action"
                 i18n-title
-                (click)="elementActionSelect($event)">
+                (click)="elementActionSelect('input', $event)" *ngIf="type.includes('input-')">
+            <i class="bi bi-arrow-down text-base"></i>
+            <i class="bi bi-lightning-charge-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+                title="Output Action"
+                i18n-title
+                (click)="elementActionSelect('output', $event)">
+            <i class="bi bi-arrow-up text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"

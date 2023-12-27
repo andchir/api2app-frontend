@@ -102,7 +102,7 @@
                                                [editorMode]="true"
                                                (typeChange)="onElementUpdate(element, $event)"
                                                (showOptions)="showElementOptions(element, index, ind)"
-                                               (selectAction)="elementActionSelect(element)"
+                                               (selectAction)="elementActionSelect(element, index, $event)"
                                                (delete)="deleteElement(block, ind)"></app-block-element>
 
                         </ng-container>

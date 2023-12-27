@@ -284,24 +284,41 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         }
     }
 
-    elementActionSelect(element: AppBlockElement): void {
+    elementActionSelect(element: AppBlockElement, blockIndex: number, actionType: 'input'|'output' = 'input'): void {
         if (!element.options) {
             element.options = {};
         }
         const initialData = {
-            selectedUuid: element.options?.apiUuid,
-            selectedFieldName: element.options?.fieldName,
-            selectedFieldType: element.options?.fieldType,
-            elementType: element.type
+            selectedUuid: actionType === 'input' ? element.options?.inputApiUuid : element.options?.outputApiUuid,
+            selectedFieldName: actionType === 'input' ? element.options?.inputApiFieldName : element.options?.outputApiFieldName,
+            selectedFieldType: actionType === 'input' ? element.options?.inputApiFieldType : element.options?.outputApiFieldType,
+            elementType: element.type,
+            actionType
         };
+        if (!initialData.selectedUuid) {
+            const index = this.data.blocks[blockIndex].elements.findIndex((item) => {
+                return actionType === 'input' ? item.options?.inputApiUuid : item.options?.outputApiUuid;
+            });
+            if (index > -1) {
+                initialData.selectedUuid = actionType === 'input'
+                    ? this.data.blocks[blockIndex].elements[index].options.inputApiUuid
+                    : this.data.blocks[blockIndex].elements[index].options.outputApiUuid;
+            }
+        }
         this.modalService.showDynamicComponent(this.viewRef, AppActionComponent, initialData)
             .pipe(take(1))
             .subscribe({
                 next: (reason) => {
                     if (reason === 'submit') {
-                        element.options.apiUuid = this.modalService.content.selectedApi?.uuid;
-                        element.options.fieldName = this.modalService.content.selectedFieldName;
-                        element.options.fieldType = this.modalService.content.selectedFieldType;
+                        if (actionType === 'input') {
+                            element.options.inputApiUuid = this.modalService.content.selectedApi?.uuid;
+                            element.options.inputApiFieldName = this.modalService.content.selectedFieldName;
+                            element.options.inputApiFieldType = this.modalService.content.selectedFieldType;
+                        } else {
+                            element.options.outputApiUuid = this.modalService.content.selectedApi?.uuid;
+                            element.options.outputApiFieldName = this.modalService.content.selectedFieldName;
+                            element.options.outputApiFieldType = this.modalService.content.selectedFieldType;
+                        }
                     }
                 }
             });

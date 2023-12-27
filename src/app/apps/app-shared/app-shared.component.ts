@@ -69,17 +69,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const buttons = {};
         this.apiUuidsList = [];
         this.data.blocks.forEach((block) => {
-            block.elements.forEach((element) => {
-                const uuid = element.options?.apiUuid;
-                if (uuid) {
-                    if (!this.apiUuidsList.includes(uuid)) {
-                        this.apiUuidsList.push(uuid);
-                    }
-                    if (element.type === 'button') {
-                        buttons[uuid] = true;
-                    }
-                }
-            });
+            // block.elements.forEach((element) => {
+            //     const uuid = element.options?.apiUuid;
+            //     if (uuid) {
+            //         if (!this.apiUuidsList.includes(uuid)) {
+            //             this.apiUuidsList.push(uuid);
+            //         }
+            //         if (element.type === 'button') {
+            //             buttons[uuid] = true;
+            //         }
+            //     }
+            // });
         });
         // API auto submit
         this.apiUuidsList.forEach((apiUuid) => {
@@ -109,7 +109,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     onElementClick(element: AppBlockElement): void {
         if (element.type === 'button') {
-            this.appSubmit(element.options?.apiUuid);
+            // this.appSubmit(element.options?.apiUuid);
         }
     }
 
@@ -172,10 +172,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     stateLoadingUpdate(apiUuid: string, loading: boolean): void {
         const blocks = this.data.blocks.filter((item) => {
-            const elements = item.elements.filter((el) => {
-                return el?.options?.apiUuid == apiUuid;
-            });
-            return elements.length > 0;
+            // const elements = item.elements.filter((el) => {
+            //     return el?.options?.apiUuid == apiUuid;
+            // });
+            // return elements.length > 0;
+            return true;
         });
         blocks.forEach((block) => {
             block.loading = loading;
@@ -193,18 +194,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return {...field};
             });
             bodyFields.forEach((bodyField) => {
-                const element = allElements.find((element) => {
-                    return element.options?.apiUuid === apiItem.uuid
-                        && element.options?.fieldName === bodyField.name
-                        && element.options?.fieldType === 'input';
-                });
-                if (!element) {
-                    return;
-                }
-                bodyField.value = ApplicationService.getElementValue(element) as string;
-                if (element.type === 'input-switch') {
-                    bodyField.hidden = !element?.enabled;
-                }
+                // const element = allElements.find((element) => {
+                //     return element.options?.apiUuid === apiItem.uuid
+                //         && element.options?.fieldName === bodyField.name
+                //         && element.options?.fieldType === 'input';
+                // });
+                // if (!element) {
+                //     return;
+                // }
+                // bodyField.value = ApplicationService.getElementValue(element) as string;
+                // if (element.type === 'input-switch') {
+                //     bodyField.hidden = !element?.enabled;
+                // }
             });
             apiItem.bodyFields = bodyFields;
         }
@@ -217,15 +218,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return {...field};
         });
         queryParams.forEach((field) => {
-            const element = allElements.find((element) => {
-                return element.options?.apiUuid === apiItem.uuid
-                    && element.options?.fieldName === field.name
-                    && element.options?.fieldType === 'params';
-            });
-            if (!element) {
-                return;
-            }
-            field.value = ApplicationService.getElementValue(element) as string;
+            // const element = allElements.find((element) => {
+            //     return element.options?.apiUuid === apiItem.uuid
+            //         && element.options?.fieldName === field.name
+            //         && element.options?.fieldType === 'params';
+            // });
+            // if (!element) {
+            //     return;
+            // }
+            // field.value = ApplicationService.getElementValue(element) as string;
         });
         apiItem.queryParams = queryParams;
         return apiItem;
@@ -234,91 +235,91 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
         if (response.body) {
             const allElements = this.getAllElements();
-            const elements = allElements.filter((element) => {
-                return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
-            });
-            this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
-                .then((data) => {
-                    const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-                    const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-                    elements.forEach((element) => {
-                        if (['chart-line'].includes(element.type)) {
-                            this.chartElementValueApply(element, data);
-                        } else {
-                            this.blockElementValueApply(element, valuesObj, data);
-                        }
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            // const elements = allElements.filter((element) => {
+            //     return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
+            // });
+            // this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
+            //     .then((data) => {
+            //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+            //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+            //         elements.forEach((element) => {
+            //             if (['chart-line'].includes(element.type)) {
+            //                 this.chartElementValueApply(element, data);
+            //             } else {
+            //                 this.blockElementValueApply(element, valuesObj, data);
+            //             }
+            //         });
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     });
         }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
-        this.apiService.getDataFromBlob(blob)
-            .then((data) => {
-                // console.log(data);
-                const allElements = this.getAllElements();
-                const elements = allElements.filter((element) => {
-                    return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
-                });
-                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-                elements.forEach((element) => {
-                    if (['input-textarea', 'text'].includes(element.type)) {
-                        this.blockElementValueApply(element, valuesObj, data);
-                    }
-                });
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // this.apiService.getDataFromBlob(blob)
+        //     .then((data) => {
+        //         // console.log(data);
+        //         const allElements = this.getAllElements();
+        //         const elements = allElements.filter((element) => {
+        //             return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
+        //         });
+        //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+        //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+        //         elements.forEach((element) => {
+        //             if (['input-textarea', 'text'].includes(element.type)) {
+        //                 this.blockElementValueApply(element, valuesObj, data);
+        //             }
+        //         });
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
     }
 
     chartElementValueApply(element: AppBlockElement, data: any): void {
-        const fieldNameAxisX = element.fieldNameAxisX;
-        const fieldNameAxisY = element.fieldNameAxisY;
-        const dataKey = element.options?.fieldName;
-        if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
-            return;
-        }
-        const dateFormat = element?.format;
-        const outData = data[dataKey];
-        const yAxisData = outData.map((item) => {
-            return parseFloat(item[fieldNameAxisY]);
-        });
-        const xAxisData = outData.map((item) => {
-            const value = item[fieldNameAxisX] || null;
-            if (element.isYAxisDate && dateFormat && value) {
-                const date = moment(String(value));
-                return date.format(dateFormat);
-            }
-            return value;
-        });
-        element.valueObj = {xAxisData, yAxisData};
+        // const fieldNameAxisX = element.fieldNameAxisX;
+        // const fieldNameAxisY = element.fieldNameAxisY;
+        // const dataKey = element.options?.fieldName;
+        // if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
+        //     return;
+        // }
+        // const dateFormat = element?.format;
+        // const outData = data[dataKey];
+        // const yAxisData = outData.map((item) => {
+        //     return parseFloat(item[fieldNameAxisY]);
+        // });
+        // const xAxisData = outData.map((item) => {
+        //     const value = item[fieldNameAxisX] || null;
+        //     if (element.isYAxisDate && dateFormat && value) {
+        //         const date = moment(String(value));
+        //         return date.format(dateFormat);
+        //     }
+        //     return value;
+        // });
+        // element.valueObj = {xAxisData, yAxisData};
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        const fieldName = element.options?.fieldName;
-        if (!fieldName) {
-            return;
-        }
-        let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
-        if (!value) {
-            element.value = '';
-            return;
-        }
-        if (this.isJson(value)) {
-            value = JSON.parse(value);
-        }
-        if (Array.isArray(value)) {
-            element.valueArr = value;
-        } else {
-            element.value = (element.prefixText || '')
-                + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
-                + (element.suffixText || '');
-        }
+        // const fieldName = element.options?.fieldName;
+        // if (!fieldName) {
+        //     return;
+        // }
+        // let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
+        // if (!value) {
+        //     element.value = '';
+        //     return;
+        // }
+        // if (this.isJson(value)) {
+        //     value = JSON.parse(value);
+        // }
+        // if (Array.isArray(value)) {
+        //     element.valueArr = value;
+        // } else {
+        //     element.value = (element.prefixText || '')
+        //         + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
+        //         + (element.suffixText || '');
+        // }
     }
 
     isJson(str: string): boolean {

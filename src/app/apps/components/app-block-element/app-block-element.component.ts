@@ -21,7 +21,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() valueObj: any;
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
-    @Output() selectAction: EventEmitter<void> = new EventEmitter<void>();
+    @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
@@ -74,12 +74,12 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.showOptions.emit();
     }
 
-    elementActionSelect(event?: MouseEvent): void {
+    elementActionSelect(actionType: 'input'|'output', event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
             event.stopPropagation();
         }
-        this.selectAction.emit();
+        this.selectAction.emit(actionType);
     }
 
     elementDeleteInit(): void {

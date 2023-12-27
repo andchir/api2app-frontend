@@ -31,6 +31,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     selectedApi: ApiItem;
     selectedFieldName: string | null = null;
     selectedFieldType: string | null = null;
+    actionType: 'input'|'output';
     items$: Observable<ApiItem[]>;
     loading = false;
     submitted = false;

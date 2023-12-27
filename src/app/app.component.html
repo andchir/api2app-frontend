@@ -15,11 +15,11 @@
                                [routerLinkActiveOptions]="{exact: true}"
                                ariaCurrentWhenActive="page" i18n>Home Page</a>
                             <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                               routerLink="/apps"
+                               [routerLink]="isPersonalPageUrl ? '/apps/personal' : '/apps/shared'"
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
                                ariaCurrentWhenActive="page" i18n>Applications</a>
                             <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-                               routerLink="/apis"
+                               [routerLink]="isPersonalPageUrl ? '/apis/personal' : '/apis/shared'"
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
                                ariaCurrentWhenActive="page" i18n>APIs</a>
                         </div>

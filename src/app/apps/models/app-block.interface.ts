@@ -6,9 +6,12 @@ export interface AppOptions {
 }
 
 export interface AppBlockElementOptions {
-    apiUuid?: string;
-    fieldName?: string;
-    fieldType?: string;
+    inputApiUuid?: string;
+    inputApiFieldName?: string;
+    inputApiFieldType?: string;
+    outputApiUuid?: string;
+    outputApiFieldName?: string;
+    outputApiFieldType?: string;
 }
 
 export interface AppBlockElement {
