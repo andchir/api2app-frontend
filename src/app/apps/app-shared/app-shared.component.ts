@@ -25,8 +25,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     loading = false;
     submitted = false;
 
-    apiItems: ApiItem[];
-    apiUuidsList = [];
+    apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
+    apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     itemUuid: string;
     data: ApplicationItem;
     destroyed$: Subject<void> = new Subject();
@@ -67,24 +67,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         const buttons = {};
-        this.apiUuidsList = [];
         this.data.blocks.forEach((block) => {
-            // block.elements.forEach((element) => {
-            //     const uuid = element.options?.apiUuid;
-            //     if (uuid) {
-            //         if (!this.apiUuidsList.includes(uuid)) {
-            //             this.apiUuidsList.push(uuid);
-            //         }
-            //         if (element.type === 'button') {
-            //             buttons[uuid] = true;
-            //         }
-            //     }
-            // });
+            block.elements.forEach((element) => {
+                const uuid = element.options?.inputApiUuid;
+                if (uuid) {
+                    if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
+                        this.apiUuidsList.input.push(element.options.inputApiUuid);
+                    }
+                    if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
+                        this.apiUuidsList.output.push(element.options.outputApiUuid);
+                    }
+                    if (element.type === 'button') {
+                        buttons[uuid] = true;
+                    }
+                }
+            });
         });
         // API auto submit
-        this.apiUuidsList.forEach((apiUuid) => {
+        this.apiUuidsList.input.forEach((apiUuid) => {
             if (!buttons[apiUuid]) {
-                this.appSubmit(apiUuid);
+                this.appSubmit(apiUuid, 'input');
             }
         });
     }
@@ -113,30 +115,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    getApiList(): Promise<any> {
+    getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
-        this.apiUuidsList.forEach((uuid) => {
+        this.apiUuidsList[actionType].forEach((uuid) => {
             promises.push(firstValueFrom(this.apiService.getItemByUuidShared(uuid)));
         });
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid?: string): void {
+    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output'): void {
         if (!apiUuid) {
             return;
         }
         this.message = '';
         this.loading = true;
         this.submitted = true;
-        if (!this.apiItems && this.apiUuidsList.length > 0) {
-            this.apiItems = [];
-            this.getApiList().then((items) => {
-                this.apiItems = items;
-                this.appSubmit(apiUuid);
+        if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
+            this.apiItems[actionType] = [];
+            this.getApiList(actionType).then((items) => {
+                this.apiItems[actionType] = items;
+                this.appSubmit(apiUuid, actionType);
             });
             return;
         }
-        const currentApi = this.apiItems.find((apiItem) => {
+        const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
         if (!currentApi) {
@@ -145,12 +147,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         this.stateLoadingUpdate(apiUuid, true);
-        const apiItem = this.prepareApiItem(currentApi);
+        const apiItem = this.prepareApiItem(currentApi, actionType);
         this.apiService.apiRequest(apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    this.createAppResponse(currentApi, res);
+                    this.createAppResponse(currentApi, res, actionType);
                     this.loading = false;
                     this.submitted = false;
                     this.stateLoadingUpdate(apiUuid, false);
@@ -183,7 +185,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    prepareApiItem(inputApiItem: ApiItem): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'output'): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
         const allElements = this.getAllElements();
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
@@ -232,27 +234,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return apiItem;
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, actionType: 'input'|'output' = 'output'): void {
         if (response.body) {
             const allElements = this.getAllElements();
-            // const elements = allElements.filter((element) => {
-            //     return element.options?.apiUuid === apiItem.uuid && element.options?.fieldType === 'output';
-            // });
-            // this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
-            //     .then((data) => {
-            //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-            //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-            //         elements.forEach((element) => {
-            //             if (['chart-line'].includes(element.type)) {
-            //                 this.chartElementValueApply(element, data);
-            //             } else {
-            //                 this.blockElementValueApply(element, valuesObj, data);
-            //             }
-            //         });
-            //     })
-            //     .catch((err) => {
-            //         console.log(err);
-            //     });
+            const elements = allElements.filter((element) => {
+                const {apiUuid, fieldType} = actionType === 'input'
+                    ? {apiUuid: element.options?.inputApiUuid, fieldType: element.options?.inputApiFieldType}
+                    : {apiUuid: element.options?.outputApiUuid, fieldType: element.options?.outputApiFieldType};
+                return apiUuid === apiItem.uuid && fieldType === 'output';
+            });
+            this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
+                .then((data) => {
+                    const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                    const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+                    elements.forEach((element) => {
+                        if (['chart-line'].includes(element.type)) {
+                            this.chartElementValueApply(element, data);
+                        } else {
+                            this.blockElementValueApply(element, valuesObj, data);
+                        }
+                    });
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     }
 
@@ -301,25 +306,28 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        // const fieldName = element.options?.fieldName;
-        // if (!fieldName) {
-        //     return;
-        // }
-        // let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
-        // if (!value) {
-        //     element.value = '';
-        //     return;
-        // }
-        // if (this.isJson(value)) {
-        //     value = JSON.parse(value);
-        // }
-        // if (Array.isArray(value)) {
-        //     element.valueArr = value;
-        // } else {
-        //     element.value = (element.prefixText || '')
-        //         + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
-        //         + (element.suffixText || '');
-        // }
+        const fieldName = element.options?.inputApiFieldName;
+        if (!fieldName) {
+            return;
+        }
+        let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
+        if (!value) {
+            element.value = '';
+            return;
+        }
+        if (this.isJson(value)) {
+            value = JSON.parse(value);
+        }
+        if (Array.isArray(value)) {
+            element.valueArr = value;
+            if (element?.itemFieldNameForValue && element.valueArr.length > 0) {
+                element.value = element.valueArr[0][element?.itemFieldNameForValue];
+            }
+        } else {
+            element.value = (element.prefixText || '')
+                + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
+                + (element.suffixText || '');
+        }
     }
 
     isJson(str: string): boolean {

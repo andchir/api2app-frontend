@@ -32,6 +32,7 @@ export interface AppBlockElement {
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
     isYAxisDate?: boolean;
+    itemFieldNameForValue?: string;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | null;
     valueArr?: string[] | File[] | null;

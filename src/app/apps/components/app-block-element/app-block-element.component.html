@@ -129,19 +129,32 @@
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     {{ options?.label }}
                 </label>
-                <ng-select class="ng-select-custom"
-                    [items]="options.choices"
-                    [placeholder]="options.placeholder"
-                    [clearable]="false"
-                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                    [(ngModel)]="options.value">
-                    <ng-template ng-label-tmp let-item="item">
-                        <span class="capitalize">{{ item }}</span>
-                    </ng-template>
-                    <ng-template ng-option-tmp let-item="item">
-                        <span class="capitalize">{{ item }}</span>
-                    </ng-template>
-                </ng-select>
+                <ng-container *ngIf="options?.valueArr && options?.itemFieldNameForTitle; else templateSelectSimple">
+                    <ng-select class="ng-select-custom"
+                               [items]="options.valueArr"
+                               [bindLabel]="options?.itemFieldNameForTitle"
+                               [bindValue]="options?.itemFieldNameForValue"
+                               [placeholder]="options.placeholder"
+                               [clearable]="false"
+                               labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               [(ngModel)]="options.value">
+                    </ng-select>
+                </ng-container>
+                <ng-template #templateSelectSimple>
+                    <ng-select class="ng-select-custom"
+                               [items]="options.choices"
+                               [placeholder]="options.placeholder"
+                               [clearable]="false"
+                               labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               [(ngModel)]="options.value">
+                        <ng-template ng-label-tmp let-item="item">
+                            <span class="capitalize">{{ item }}</span>
+                        </ng-template>
+                        <ng-template ng-option-tmp let-item="item">
+                            <span class="capitalize">{{ item }}</span>
+                        </ng-template>
+                    </ng-select>
+                </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -270,7 +283,7 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options?.valueArr">
+                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options.valueArr">
                             <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
                                 <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]" alt="">
                             </a>
