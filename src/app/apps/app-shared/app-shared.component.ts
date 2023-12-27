@@ -222,19 +222,40 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const queryParams = apiItem.queryParams.map(field => {
             return {...field};
         });
-        queryParams.forEach((field) => {
+        queryParams.forEach((param) => {
             const element = allElements.find((element) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
                 return apiUuid === apiItem.uuid
-                    && fieldName === field.name
+                    && fieldName === param.name
                     && fieldType === 'params';
             });
             if (!element) {
                 return;
             }
-            field.value = ApplicationService.getElementValue(element) as string;
+            param.value = ApplicationService.getElementValue(element) as string;
         });
         apiItem.queryParams = queryParams;
+
+        // Headers
+        if (!apiItem.headers) {
+            apiItem.headers = [];
+        }
+        const headers = apiItem.headers.map(field => {
+            return {...field};
+        });
+        headers.forEach((header) => {
+            const element = allElements.find((element) => {
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                return apiUuid === apiItem.uuid
+                    && fieldName === header.name
+                    && fieldType === 'headers';
+            });
+            if (!element) {
+                return;
+            }
+            header.value = ApplicationService.getElementValue(element) as string;
+        });
+        apiItem.headers = headers;
         return apiItem;
     }
 
