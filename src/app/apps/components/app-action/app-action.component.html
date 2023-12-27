@@ -4,10 +4,13 @@
     <div class="relative p-4 w-full max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow">
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 class="text-xl font-semibold text-gray-900">
-                    <i class="bi bi-lightning-charge-fill me-1"></i>
-                    <span i18n>Element Action</span>
-                </h3>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        <i class="bi bi-lightning-charge-fill me-1"></i>
+                        <span *ngIf="actionType === 'output'" i18n>Output Action</span>
+                        <span *ngIf="actionType === 'input'" i18n>Input Action</span>
+                    </h3>
+                </div>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                         (click)="closeModal()">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
