@@ -38,6 +38,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     searchInput$ = new Subject<string>();
     inputFields: string[] = [];
     inputParams: string[] = [];
+    inputHeaders: string[] = [];
     outputFields: string[] = [];
     destroyed$: Subject<void> = new Subject();
 
@@ -117,29 +118,19 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (this.actionType === 'input') {
             // Input fields
             if (this.selectedApi.bodyDataSource === 'fields') {
-                this.inputFields = this.selectedApi.bodyFields.map((item) => {
-                    return !item.hidden ? item.name : '';
-                });
-                this.inputFields = this.inputFields.filter((name) => {
-                    return name;
-                });
+                this.inputFields = this.getArrayValues('bodyFields');
             }
             if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') {
                 const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
                 this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
             }
+            this.inputFields.unshift('value');
 
             // Input params
-            if (!this.selectedApi.queryParams) {
-                this.selectedApi.queryParams = [];
-            }
-            this.inputParams = this.selectedApi.queryParams.map((item) => {
-                return !item.hidden ? item.name : '';
-            });
-            this.inputParams = this.inputParams.filter((name) => {
-                return name;
-            });
-            this.inputFields.unshift('value');
+            this.inputParams = this.getArrayValues('queryParams');
+
+            // Input headers
+            this.inputHeaders = this.getArrayValues('headers');
         }
 
         if (this.actionType === 'output') {
@@ -160,6 +151,18 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
+    }
+
+    getArrayValues(inputKey: string, targetKey: string = 'name'): string[] {
+        if (!this.selectedApi[inputKey]) {
+            return [];
+        }
+        const output = this.selectedApi[inputKey].map((item) => {
+            return !item.hidden ? item[targetKey] : '';
+        });
+        return output.filter((name) => {
+            return name;
+        });
     }
 
     onSearchCleared(): void {

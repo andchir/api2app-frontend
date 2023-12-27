@@ -146,6 +146,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.placeholder
                 });
                 output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix Text`,
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -212,6 +224,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Placeholder`,
                     type: 'input-text',
                     value: options?.placeholder
+                });
+                output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix Text`,
+                    type: 'input-text',
+                    value: options?.suffixText
                 });
                 output.push({
                     name: 'value',
@@ -577,6 +601,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Name`,
                     type: 'input-text',
                     placeholder: $localize `Enter your name`,
+                    prefixText: '',
+                    suffixText: '',
                     value: ''
                 });
                 break;
@@ -596,6 +622,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Content`,
                     type: 'input-textarea',
                     placeholder: $localize `Enter your message here`,
+                    prefixText: '',
+                    suffixText: '',
                     value: ''
                 });
                 break;
@@ -615,6 +643,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-select',
                     value: 'Value1',
                     placeholder: $localize `Please Select`,
+                    itemFieldNameForTitle: '',
+                    itemFieldNameForValue: '',
                     choices: ['Value1', 'Value2', 'Value3']
                 });
                 break;
