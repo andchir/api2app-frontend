@@ -358,10 +358,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        if (['image', 'audio'].includes(element.type) && rawData) {
-            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(rawData) as string;
-            return;
-        }
         const fieldName = element.options?.outputApiFieldName;
         if (!fieldName) {
             return;
@@ -369,6 +365,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = '';
+            return;
+        }
+        if (['image', 'audio'].includes(element.type)) {
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value) as string;
             return;
         }
         if (this.isJson(value)) {
