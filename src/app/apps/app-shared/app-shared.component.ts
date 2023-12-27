@@ -86,9 +86,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
         });
         // API auto submit
-        this.apiUuidsList.input.forEach((apiUuid) => {
+        this.apiUuidsList.output.forEach((apiUuid) => {
             if (!buttons[apiUuid]) {
-                this.appSubmit(apiUuid, 'input');
+                this.appSubmit(apiUuid, 'output');
             }
         });
     }
