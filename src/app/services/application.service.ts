@@ -163,6 +163,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'readOnly',
+                    label: $localize `Read only`,
+                    type: 'input-switch',
+                    enabled: options?.readOnly || false
+                });
                 break;
             case 'input-number':
                 output.push({
@@ -242,6 +248,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Default Value`,
                     type: 'input-textarea',
                     value: options?.value
+                });
+                output.push({
+                    name: 'readOnly',
+                    label: $localize `Read only`,
+                    type: 'input-switch',
+                    enabled: options?.readOnly || false
                 });
                 break;
             case 'input-switch':
@@ -603,6 +615,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     placeholder: $localize `Enter your name`,
                     prefixText: '',
                     suffixText: '',
+                    readOnly: false,
                     value: ''
                 });
                 break;
@@ -624,6 +637,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     placeholder: $localize `Enter your message here`,
                     prefixText: '',
                     suffixText: '',
+                    readOnly: false,
                     value: ''
                 });
                 break;
