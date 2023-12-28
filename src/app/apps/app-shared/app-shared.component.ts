@@ -367,8 +367,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             element.value = '';
             return;
         }
-        if (['image', 'audio'].includes(element.type)) {
-            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value) as string;
+        if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value);
             return;
         }
         if (this.isJson(value)) {

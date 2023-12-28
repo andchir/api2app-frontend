@@ -1,9 +1,11 @@
+import { SafeResourceUrl } from '@angular/platform-browser';
+
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text' |'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
     |'audio'|'chart-line';
 
 export interface AppOptions {
-    [key: string]: string | number | boolean | string[] | File[];
+    [key: string]: string | number | boolean | string[] | SafeResourceUrl | File[];
 }
 
 export interface AppBlockElementOptions {
@@ -35,7 +37,7 @@ export interface AppBlockElement {
     isYAxisDate?: boolean;
     itemFieldNameForValue?: string;
     options?: AppBlockElementOptions;
-    value?: string | number | boolean | string[] | File[] | null;
+    value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;
     valueArr?: string[] | File[] | null;
     valueObj?: any | null;
 }
