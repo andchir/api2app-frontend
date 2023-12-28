@@ -317,6 +317,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
+                // console.log(data);
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
                     return element.options?.outputApiUuid === apiItem.uuid && element.options?.outputApiFieldType === 'output';
