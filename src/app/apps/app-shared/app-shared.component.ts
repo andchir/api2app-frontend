@@ -296,7 +296,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const {apiUuid, fieldType} = this.getElementOptions(element, 'output');
                 return apiUuid === apiItem.uuid && fieldType === 'output';
             });
-            this.apiService.getDataFromBlob(response.body, apiItem.responseContentType)
+            const responseContentType = response.headers.has('Content-type')
+                ? response.headers.get('Content-type')
+                : apiItem.responseContentType;
+            this.apiService.getDataFromBlob(response.body, responseContentType)
                 .then((data) => {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);

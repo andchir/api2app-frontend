@@ -299,8 +299,10 @@ export class ApiService extends DataService<ApiItem> {
                     resolve(fileLoadedEvent.target?.result || '');
                 }
             };
-            if (['image', 'audio'].includes(contentType)) {
-                fileReader.readAsDataURL(blob);
+            if (contentType.includes('audio/')
+                || contentType.includes('image/')
+                || ['image', 'audio'].includes(contentType)) {
+                    fileReader.readAsDataURL(blob);
             } else {
                 fileReader.readAsText(blob);
             }
