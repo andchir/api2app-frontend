@@ -146,7 +146,7 @@ export class ApiService extends DataService<ApiItem> {
                             } else {
                                 if (Array.isArray(item.value)) {
                                     item.value.forEach((file) => {
-                                        formData.append((item.value.length > 1 ? `${item.name}[]` : item.name), file);
+                                        formData.append(item.name, file);
                                     });
                                 } else {
                                     formData.append(item.name, item.value || '');
