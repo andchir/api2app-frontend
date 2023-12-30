@@ -223,6 +223,6 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     onFileChanged(event: Event, optionName: 'headers'|'bodyFields', index: number): void {
         const inputEl = event.target as HTMLInputElement;
         const files = inputEl.files || [];
-        this.apiItem[optionName][index].file = files.length > 0 ? files[0] : undefined;
+        this.apiItem[optionName][index].files = files.length > 0 ? Array.from(files) : undefined;
     }
 }

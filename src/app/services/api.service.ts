@@ -122,7 +122,7 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         if (sendAsFormData) {
-            headersData['Enctype'] = 'multipart/form-data';
+            // headersData['Enctype'] = 'multipart/form-data';
             delete headersData['Content-Type'];
             delete headersData['content-Type'];
             // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -137,12 +137,16 @@ export class ApiService extends DataService<ApiItem> {
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
-                if (item.name && (item.value || item.file) && !item.hidden) {
+                if (item.name && (item.value || item.files) && !item.hidden) {
                     body[item.name] = item.value || '';
                     if (data.sendAsFormData) {
                         if (item.isFile) {
-                            if (item.file) {
-                                formData.append(item.name, item.file || '');
+                            if (item.files) {
+                                if (Array.isArray(item.files)) {
+                                    item.files.forEach((file) => {
+                                        formData.append(item.name, file, file.name);
+                                    });
+                                }
                             } else {
                                 if (Array.isArray(item.value)) {
                                     item.value.forEach((file) => {
@@ -262,7 +266,7 @@ export class ApiService extends DataService<ApiItem> {
             if (typeof item.private === 'undefined') {
                 item.private = false;
             }
-            delete item.file;
+            delete item.files;
             return item;
         });
         apiItem.headers = apiItem.headers.map((item) => {

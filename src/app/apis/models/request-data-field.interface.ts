@@ -4,5 +4,5 @@ export interface RequestDataField {
     hidden?: boolean;
     private?: boolean;
     isFile?: boolean;
-    file?: File;
+    files?: File[];
 }
