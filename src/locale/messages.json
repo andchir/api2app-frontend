@@ -68,7 +68,8 @@
     "8432562579042371182": "Options",
     "2084229074767898241": "Element Options",
     "3143102993944263634": "Block Options",
-    "8591732444369713070": "Element Action",
+    "4277225938591407854": "Output Action",
+    "2935416504960439647": "Input Action",
     "9061282158263468923": "Close modal",
     "1492420415455399281": "Enter the name of the API to search",
     "2898462545400542398": "Type to search",
@@ -78,10 +79,9 @@
     "2159130950882492111": "Cancel",
     "9181071479652929778": "Please select an API.",
     "9080385249016877240": "Select Element Type",
+    "6446939415920921766": "Hidden text field",
     "347407180135731058": "Audio",
     "3012906865384504293": "Image",
-    "2935416504960439647": "Input Action",
-    "4277225938591407854": "Output Action",
     "2573119705636747814": "Text Header",
     "6162693758764653365": "Text",
     "7084378498770243742": "Button",
@@ -143,6 +143,7 @@
     "4077520913910941990": "Label",
     "3170046505893444934": "Placeholder",
     "267623237288545597": "Default Value",
+    "9215033217818992636": "Read only",
     "6770679633670931081": "Minimum Value",
     "7823539411343889280": "Maximum Value",
     "8437836627184184869": "Enabled By Default?",
@@ -158,7 +159,7 @@
     "7209065118368964503": "Name of the thumbnail field in the array",
     "5081992313472888692": "Field name for X axis",
     "7177439149252372661": "Field name for Y axis",
-    "3218142393142468299": "Y axis is date",
+    "4930526956479867068": "X axis is date",
     "1529349539862948972": "Item Title",
     "1619286606138760150": "Header Example Text",
     "3947668548463986066": "Example Text",
@@ -185,8 +186,6 @@
     "2743137463608069503": "Make Public",
     "4269595266849931090": "Make Private",
     "7819314041543176992": "Close",
-    "4467777780725200414": "The URL has been successfully copied to the clipboard.",
-    "9215033217818992636": "Read only",
-    "6446939415920921766": "Hidden text field"
+    "4467777780725200414": "The URL has been successfully copied to the clipboard."
   }
 }

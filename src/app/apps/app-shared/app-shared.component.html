@@ -30,7 +30,8 @@
                                                [options]="element"
                                                [valueObj]="element.valueObj"
                                                [editorMode]="false"
-                                               (elementClick)="onElementClick(element)"></app-block-element>
+                                               (elementClick)="onElementClick(element)"
+                                               (elementValueChange)="onElementValueChanged(element)"></app-block-element>
 
                         </ng-container>
                     </div>

@@ -116,7 +116,7 @@ export class ApiService extends DataService<ApiItem> {
                 headersData[item.name] = item.value;
             }
         });
-        if (data.basicAuth) {
+        if (data.basicAuth && data.authLogin && data.authPassword) {
             const authToken = btoa(`${data.authLogin}:${data.authPassword}`);
             headersData['Authorization'] = `Basic ${authToken}`;
         }

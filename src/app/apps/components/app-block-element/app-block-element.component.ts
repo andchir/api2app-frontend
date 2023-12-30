@@ -139,6 +139,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.elementClick.emit();
     }
 
+    onFieldValueChanged(): void {
+        this.elementValueChange.emit(this.options);
+    }
+
     onChange(optionName: string, isChecked: boolean) {
         this.options[optionName] = !isChecked;
     }

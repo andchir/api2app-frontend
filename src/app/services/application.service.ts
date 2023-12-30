@@ -587,10 +587,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.fieldNameAxisY
                 });
                 output.push({
-                    name: 'isYAxisDate',
-                    label: $localize `Y axis is date`,
+                    name: 'isXAxisDate',
+                    label: $localize `X axis is date`,
                     type: 'input-switch',
-                    enabled: options?.isYAxisDate
+                    enabled: options?.isXAxisDate
                 });
                 output.push({
                     name: 'format',
@@ -763,7 +763,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     itemTitle: $localize `Item Title`,
                     fieldNameAxisXL: '',
                     fieldNameAxisY: '',
-                    isYAxisDate: false,
+                    isXAxisDate: false,
                     format: 'MMM DD, HH:mm'
                 });
                 break;

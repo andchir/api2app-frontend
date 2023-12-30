@@ -34,7 +34,7 @@ export interface AppBlockElement {
     multiple?: boolean;
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
-    isYAxisDate?: boolean;
+    isXAxisDate?: boolean;
     itemFieldNameForValue?: string;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;

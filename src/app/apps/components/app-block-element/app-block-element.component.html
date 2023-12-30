@@ -149,14 +149,15 @@
                     <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                         {{ options?.label }}
                     </label>
-                    <ng-container *ngIf="options?.valueArr && options?.itemFieldNameForTitle; else templateSelectSimple">
+                    <ng-container *ngIf="options?.valueArr; else templateSelectSimple">
                         <ng-select class="ng-select-custom"
                                    [items]="options.valueArr"
                                    [bindLabel]="options?.itemFieldNameForTitle"
                                    [bindValue]="options?.itemFieldNameForValue"
                                    [placeholder]="options.placeholder"
-                                   [clearable]="false"
+                                   [clearable]="true"
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                                   (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
                         </ng-select>
                     </ng-container>
@@ -164,8 +165,9 @@
                         <ng-select class="ng-select-custom"
                                    [items]="options.choices"
                                    [placeholder]="options.placeholder"
-                                   [clearable]="false"
+                                   [clearable]="true"
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                                   (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
                             <ng-template ng-label-tmp let-item="item">
                                 <span class="capitalize">{{ item }}</span>

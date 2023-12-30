@@ -119,6 +119,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
+    onElementValueChanged(element: AppBlockElement): void {
+        const apiUuid = element.options?.inputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
+        const allElements = this.getAllElements();
+        const buttonElement = allElements.find((el) => {
+            return el.type === 'button' && (el.options?.inputApiUuid === apiUuid || el.options?.outputApiUuid === apiUuid);
+        });
+        if (!buttonElement) {
+            this.appSubmit(apiUuid, 'output');
+        }
+    }
+
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
@@ -245,7 +259,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            param.value = ApplicationService.getElementValue(element) as string;
+            param.value = element.value
+                ? ApplicationService.getElementValue(element) as string
+                : null;
         });
         apiItem.queryParams = queryParams;
 
@@ -269,8 +285,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             header.value = ApplicationService.getElementValue(element) as string;
         });
         apiItem.headers = headers;
-
-
 
         return apiItem;
     }
@@ -352,7 +366,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         const xAxisData = outData.map((item) => {
             const value = item[fieldNameAxisX] || null;
-            if (element.isYAxisDate && dateFormat && value) {
+            if (element.isXAxisDate && dateFormat && value) {
                 const date = moment(String(value));
                 return date.format(dateFormat);
             }
@@ -380,8 +394,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             element.valueArr = value;
-            if (element?.itemFieldNameForValue && element.valueArr.length > 0) {
-                element.value = element.valueArr[0][element?.itemFieldNameForValue];
+            if (element.valueArr.length > 0) {
+                element.value = element?.itemFieldNameForValue
+                    ? element.valueArr[0][element?.itemFieldNameForValue]
+                    : element.valueArr[0];
             }
         } else {
             element.value = (element.prefixText || '')
