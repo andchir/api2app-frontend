@@ -88,10 +88,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
         });
         // API auto submit
-        this.apiUuidsList.output.forEach((apiUuid) => {
-            if (!buttons[apiUuid]) {
-                this.appSubmit(apiUuid, 'output');
-            }
+        this.getApiList('output').then((items) => {
+            this.apiItems['output'] = items;
+            this.apiUuidsList.output.forEach((apiUuid) => {
+                if (!buttons[apiUuid]) {
+                    this.appSubmit(apiUuid, 'output');
+                }
+            });
         });
     }
 
@@ -407,7 +410,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     isJson(str: string): boolean {
-        if (typeof str !== 'string' || !str.match(/^[\[\{]/)) {
+        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
             return false;
         }
         try {
