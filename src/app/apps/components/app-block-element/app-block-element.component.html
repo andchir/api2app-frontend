@@ -4,34 +4,36 @@
 
         <ng-container *ngSwitchCase="null">
             <div class="min-h[15px] mb-3">
-                <ng-select class="ng-select-custom" [items]="inputTypes"
-                           bindLabel="title"
-                           bindValue="name"
-                           placeholder="Select Element Type"
-                           i18n-placeholder
-                           [clearable]="false"
-                           [(ngModel)]="type"
-                           (ngModelChange)="updateItemType()">
-                    <ng-template ng-option-tmp let-item="item">
-                        <i class="bi bi-type-h1 mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
-                        <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text'"></i>
-                        <i class="bi bi-app mr-1 text-gray-400" *ngIf="item.name === 'button'"></i>
-                        <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
-                        <i class="bi bi-1-square mr-1 text-gray-400" *ngIf="item.name === 'input-number'"></i>
-                        <i class="bi bi-textarea-resize mr-1 text-gray-400" *ngIf="item.name === 'input-textarea'"></i>
-                        <i class="bi bi-input-cursor mr-1 text-gray-400" *ngIf="item.name === 'input-hidden'"></i>
-                        <i class="bi bi-toggle-off mr-1 text-gray-400" *ngIf="item.name === 'input-switch'"></i>
-                        <i class="bi bi-menu-button mr-1 text-gray-400" *ngIf="item.name === 'input-select'"></i>
-                        <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
-                        <i class="bi bi-ui-radios mr-1 text-gray-400" *ngIf="item.name === 'input-radio'"></i>
-                        <i class="bi bi-calendar3 mr-1 text-gray-400" *ngIf="item.name === 'input-date'"></i>
-                        <i class="bi bi-upload mr-1 text-gray-400" *ngIf="item.name === 'input-file'"></i>
-                        <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
-                        <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
-                        <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'chart-line'"></i>
-                        {{ item.title }}
-                    </ng-template>
-                </ng-select>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <ng-select class="ng-select-custom" [items]="inputTypes"
+                               bindLabel="title"
+                               bindValue="name"
+                               placeholder="Select Element Type"
+                               i18n-placeholder
+                               [clearable]="false"
+                               [(ngModel)]="type"
+                               (ngModelChange)="updateItemType()">
+                        <ng-template ng-option-tmp let-item="item">
+                            <i class="bi bi-type-h1 mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
+                            <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text'"></i>
+                            <i class="bi bi-app mr-1 text-gray-400" *ngIf="item.name === 'button'"></i>
+                            <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
+                            <i class="bi bi-1-square mr-1 text-gray-400" *ngIf="item.name === 'input-number'"></i>
+                            <i class="bi bi-textarea-resize mr-1 text-gray-400" *ngIf="item.name === 'input-textarea'"></i>
+                            <i class="bi bi-input-cursor mr-1 text-gray-400" *ngIf="item.name === 'input-hidden'"></i>
+                            <i class="bi bi-toggle-off mr-1 text-gray-400" *ngIf="item.name === 'input-switch'"></i>
+                            <i class="bi bi-menu-button mr-1 text-gray-400" *ngIf="item.name === 'input-select'"></i>
+                            <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
+                            <i class="bi bi-ui-radios mr-1 text-gray-400" *ngIf="item.name === 'input-radio'"></i>
+                            <i class="bi bi-calendar3 mr-1 text-gray-400" *ngIf="item.name === 'input-date'"></i>
+                            <i class="bi bi-upload mr-1 text-gray-400" *ngIf="item.name === 'input-file'"></i>
+                            <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
+                            <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
+                            <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'chart-line'"></i>
+                            {{ item.title }}
+                        </ng-template>
+                    </ng-select>
+                </div>
             </div>
         </ng-container>
 
@@ -82,13 +84,15 @@
         <ng-container *ngSwitchCase="'input-text'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <input type="text" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                       [placeholder]="options?.placeholder || ''"
-                       [readonly]="options?.readOnly"
-                       [(ngModel)]="options.value">
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                        {{ options?.label }}
+                    </label>
+                    <input type="text" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           [placeholder]="options?.placeholder || ''"
+                           [readonly]="options?.readOnly"
+                           [(ngModel)]="options.value">
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -96,13 +100,15 @@
         <ng-container *ngSwitchCase="'input-textarea'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    {{ options?.label }}
-                </label>
-                <textarea id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                          [placeholder]="options?.placeholder || ''"
-                          [readonly]="options?.readOnly"
-                          [(ngModel)]="options.value"></textarea>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ options?.label }}
+                    </label>
+                    <textarea id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              [placeholder]="options?.placeholder || ''"
+                              [readonly]="options?.readOnly"
+                              [(ngModel)]="options.value"></textarea>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -139,35 +145,37 @@
         <ng-container *ngSwitchCase="'input-select'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    {{ options?.label }}
-                </label>
-                <ng-container *ngIf="options?.valueArr && options?.itemFieldNameForTitle; else templateSelectSimple">
-                    <ng-select class="ng-select-custom"
-                               [items]="options.valueArr"
-                               [bindLabel]="options?.itemFieldNameForTitle"
-                               [bindValue]="options?.itemFieldNameForValue"
-                               [placeholder]="options.placeholder"
-                               [clearable]="false"
-                               labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                               [(ngModel)]="options.value">
-                    </ng-select>
-                </ng-container>
-                <ng-template #templateSelectSimple>
-                    <ng-select class="ng-select-custom"
-                               [items]="options.choices"
-                               [placeholder]="options.placeholder"
-                               [clearable]="false"
-                               labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                               [(ngModel)]="options.value">
-                        <ng-template ng-label-tmp let-item="item">
-                            <span class="capitalize">{{ item }}</span>
-                        </ng-template>
-                        <ng-template ng-option-tmp let-item="item">
-                            <span class="capitalize">{{ item }}</span>
-                        </ng-template>
-                    </ng-select>
-                </ng-template>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ options?.label }}
+                    </label>
+                    <ng-container *ngIf="options?.valueArr && options?.itemFieldNameForTitle; else templateSelectSimple">
+                        <ng-select class="ng-select-custom"
+                                   [items]="options.valueArr"
+                                   [bindLabel]="options?.itemFieldNameForTitle"
+                                   [bindValue]="options?.itemFieldNameForValue"
+                                   [placeholder]="options.placeholder"
+                                   [clearable]="false"
+                                   labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                                   [(ngModel)]="options.value">
+                        </ng-select>
+                    </ng-container>
+                    <ng-template #templateSelectSimple>
+                        <ng-select class="ng-select-custom"
+                                   [items]="options.choices"
+                                   [placeholder]="options.placeholder"
+                                   [clearable]="false"
+                                   labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                                   [(ngModel)]="options.value">
+                            <ng-template ng-label-tmp let-item="item">
+                                <span class="capitalize">{{ item }}</span>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                <span class="capitalize">{{ item }}</span>
+                            </ng-template>
+                        </ng-select>
+                    </ng-template>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -175,19 +183,21 @@
         <ng-container *ngSwitchCase="'input-tags'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    {{ options?.label }}
-                </label>
-                <ng-select class="ng-select-custom"
-                    [items]="options.choices"
-                    [placeholder]="options.placeholder"
-                    [clearable]="false"
-                    [addTag]="true"
-                    [multiple]="true"
-                    [selectOnTab]="true"
-                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                    [(ngModel)]="options.value">
-                </ng-select>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ options?.label }}
+                    </label>
+                    <ng-select class="ng-select-custom"
+                               [items]="options.choices"
+                               [placeholder]="options.placeholder"
+                               [clearable]="false"
+                               [addTag]="true"
+                               [multiple]="true"
+                               [selectOnTab]="true"
+                               labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               [(ngModel)]="options.value">
+                    </ng-select>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -195,24 +205,26 @@
         <ng-container *ngSwitchCase="'input-radio'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                    {{ options?.label }}
-                </label>
-                <fieldset>
-                    <legend class="sr-only">Countries</legend>
-                    <div class="flex items-center mb-4" *ngFor="let option of options.choices; index as optIndex">
-                        <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
-                               type="radio"
-                               name="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                               class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
-                               [value]="option"
-                               [(ngModel)]="options.value">
-                        <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
-                               class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
-                            {{ option }}
-                        </label>
-                    </div>
-                </fieldset>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                        {{ options?.label }}
+                    </label>
+                    <fieldset>
+                        <legend class="sr-only">Countries</legend>
+                        <div class="flex items-center mb-4" *ngFor="let option of options.choices; index as optIndex">
+                            <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
+                                   type="radio"
+                                   name="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                                   class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                                   [value]="option"
+                                   [(ngModel)]="options.value">
+                            <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
+                                   class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
+                                {{ option }}
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -220,25 +232,27 @@
         <ng-container *ngSwitchCase="'input-number'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <div class="relative flex items-center w-full">
-                    <button type="button" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
-                            (click)="numberDecrease('value', options?.min)">
-                        <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
-                        </svg>
-                    </button>
-                    <input type="number" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                           class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5"
-                           [(ngModel)]="options.value">
-                    <button type="button" data-input-counter-increment="quantity-input" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
-                            (click)="numberIncrease('value', options?.max)">
-                        <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
-                        </svg>
-                    </button>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                        {{ options?.label }}
+                    </label>
+                    <div class="relative flex items-center w-full">
+                        <button type="button" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-s-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
+                                (click)="numberDecrease('value', options?.min)">
+                            <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16"/>
+                            </svg>
+                        </button>
+                        <input type="number" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5"
+                               [(ngModel)]="options.value">
+                        <button type="button" data-input-counter-increment="quantity-input" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
+                                (click)="numberIncrease('value', options?.max)">
+                            <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -265,14 +279,16 @@
         <ng-container *ngSwitchCase="'input-file'">
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <app-file-upload
-                    [multiple]="options?.multiple"
-                    [fileInputAccept]="options?.accept"
-                    [placeholder]="options?.placeholder"
-                    [(ngModel)]="options.value"></app-file-upload>
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                        {{ options?.label }}
+                    </label>
+                    <app-file-upload
+                        [multiple]="options?.multiple"
+                        [fileInputAccept]="options?.accept"
+                        [placeholder]="options?.placeholder"
+                        [(ngModel)]="options.value"></app-file-upload>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -308,7 +324,7 @@
                         <a [href]="options?.value" target="_blank" *ngIf="options?.value">
                             <img class="block w-full h-auto max-w-full" [src]="options?.value" alt="">
                         </a>
-                        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md"
+                        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
                              *ngIf="!options?.value && editorMode">
                             <i class="bi bi-image mr-2"></i>
                             <span i18n>Image</span>
