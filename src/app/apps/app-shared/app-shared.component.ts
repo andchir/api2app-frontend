@@ -170,15 +170,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             return;
         }
-        // if (!this.getIsValid(apiUuid, actionType, createErrorMessages)) {
-        //     if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
-        //         this.appsAutoStartPending.push(apiUuid);
-        //     } else {
-        //         this.message = $localize `Please correct errors in filling out the form.`;
-        //         this.messageType = 'error';
-        //     }
-        //     return;
-        // }
+        if (!this.getIsValid(apiUuid, actionType, createErrorMessages)) {
+            if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
+                this.appsAutoStartPending.push(apiUuid);
+            } else {
+                this.message = $localize `Please correct errors in filling out the form.`;
+                this.messageType = 'error';
+            }
+            return;
+        }
         const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
