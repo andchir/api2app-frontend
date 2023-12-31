@@ -9,7 +9,7 @@ moment.locale('ru');
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem } from '../models/application-item.interface';
-import { AppBlockElement } from '../models/app-block.interface';
+import {AppBlock, AppBlockElement} from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 
@@ -211,7 +211,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.messageType = 'error';
                         this.message = err.message || 'Error.';
                     }
-                    this.stateLoadingUpdate(apiUuid, false);
+                    this.stateLoadingUpdate(apiUuid, false, false);
                 }
             });
     }
@@ -254,7 +254,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Object.keys(errors).length === 0;
     }
 
-    stateLoadingUpdate(apiUuid: string, loading: boolean): void {
+    stateLoadingUpdate(apiUuid: string, loading: boolean, isSuccess = true): void {
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
                 return el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
@@ -262,7 +262,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return elements.length > 0;
         });
         blocks.forEach((block) => {
+            if (!loading && isSuccess) {
+                if (block.options?.messageSuccess) {
+                    this.message = block.options.messageSuccess;
+                    this.messageType = 'success';
+                }
+                if (block.options.autoClear) {
+                    this.clearElementsValues(block);
+                }
+            }
             block.loading = loading;
+        });
+    }
+
+    clearElementsValues(block: AppBlock): void {
+        block.elements.forEach((element) => {
+            if (['input-text', 'input-textarea'].includes(element.type)) {
+                element.value = '';
+            } else if (['input-file'].includes(element.type)) {
+                element.value = [];
+            }
         });
     }
 

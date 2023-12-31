@@ -1,5 +1,5 @@
 <div class="flex items-center p-4 text-red-800 border-t-4 border-red-300 bg-red-50 z-40" role="alert"
-     [ngClass]="{'fixed right-10 bottom-10 z-10': position === 'fixed'}"
+     [ngClass]="{'fixed right-0 bottom-0 md:right-10 md:bottom-10': position === 'fixed'}"
      *ngIf="message && type == 'error'">
     <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
@@ -12,8 +12,8 @@
     </button>
 </div>
 
-<div class="flex items-center p-4 text-green-800 border-t-4 border-green-300 bg-green-50 fixed right-10 bottom-10 z-40" role="alert"
-     [ngClass]="{'fixed right-10 bottom-10 z-10': position === 'fixed'}"
+<div class="flex items-center p-4 text-green-800 border-t-4 border-green-300 bg-green-50 z-40" role="alert"
+     [ngClass]="{'fixed right-0 bottom-0 md:right-10 md:bottom-10': position === 'fixed'}"
      *ngIf="message && type == 'success'">
     <svg class="flex-shrink-0 w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
         <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>

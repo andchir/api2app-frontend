@@ -113,7 +113,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         if (emptyItems.length >= gridColumns) {
             return;
         }
-        this.data.blocks.push({elements: []});
+        this.data.blocks.push(ApplicationService.getBlockDefaults());
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();

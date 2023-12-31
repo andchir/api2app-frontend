@@ -32,6 +32,9 @@ export class FileUploadComponent implements ControlValueAccessor {
     @Input()
     set value(val: File[]) {
         this._value = val;
+        if (!this._value || this._value.length === 0) {
+            this.files = [];
+        }
         this.onChange(this._value);
     }
 

@@ -46,12 +46,14 @@ export interface AppBlockElement {
 }
 
 export interface AppBlockOptions {
-    gridColumnSpan: number;
+    gridColumnSpan?: number;
+    orderIndex?: number;
+    autoClear?: boolean;
+    messageSuccess?: string;
 }
 
 export interface AppBlock {
     elements: AppBlockElement[];
-    options?: any;
+    options?: AppBlockOptions;
     loading?: boolean;
-    orderIndex?: number;
 }

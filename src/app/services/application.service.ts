@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import { AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
+import {AppBlock, AppBlockElement, AppBlockElementType, AppOptions} from '../apps/models/app-block.interface';
 
 const BASE_URL = environment.apiUrl;
 
@@ -822,10 +822,6 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
-        const defaultValues = {
-            gridColumnSpan: 1,
-            orderIndex: 0
-        };
         output.push({
             name: 'orderIndex',
             label: $localize `Order Index`,
@@ -840,9 +836,34 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-number',
             min: 1,
             max: 3,
-            value: options?.gridColumnSpan || defaultValues.gridColumnSpan
+            value: options?.gridColumnSpan || 1
+        });
+        output.push({
+            name: 'messageSuccess',
+            label: $localize `Success message`,
+            type: 'input-textarea',
+            value: options?.messageSuccess
+        });
+        output.push({
+            name: 'autoClear',
+            label: $localize `Clear after sending`,
+            type: 'input-switch',
+            enabled: options?.autoClear || false
         });
         return output;
+    }
+
+    static getBlockDefaults(): AppBlock {
+        return {
+            elements: [],
+            loading: false,
+            options: {
+                orderIndex: 0,
+                gridColumnSpan: 1,
+                messageSuccess: $localize `The form has been submitted successfully.`,
+                autoClear: false
+            }
+        };
     }
 
     static fieldsToOptionsObject(fields: AppBlockElement[]): any {
