@@ -155,7 +155,7 @@
                                    [bindLabel]="options?.itemFieldNameForTitle"
                                    [bindValue]="options?.itemFieldNameForValue"
                                    [placeholder]="options.placeholder"
-                                   [clearable]="true"
+                                   [clearable]="options.clearable"
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
@@ -165,7 +165,7 @@
                         <ng-select class="ng-select-custom"
                                    [items]="options.choices"
                                    [placeholder]="options.placeholder"
-                                   [clearable]="true"
+                                   [clearable]="options.clearable"
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">

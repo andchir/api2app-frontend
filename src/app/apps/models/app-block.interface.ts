@@ -31,6 +31,9 @@ export interface AppBlockElement {
     suffixText?: string;
     format?: string;
     enabled?: boolean;
+    required?: boolean;
+    readOnly?: boolean;
+    clearable?: boolean;
     multiple?: boolean;
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;

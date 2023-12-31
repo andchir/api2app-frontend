@@ -169,6 +169,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-switch',
                     enabled: options?.readOnly || false
                 });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
             case 'input-number':
                 output.push({
@@ -254,6 +260,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Read only`,
                     type: 'input-switch',
                     enabled: options?.readOnly || false
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 break;
             case 'input-hidden':
@@ -371,6 +383,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'clearable',
+                    label: $localize `Clearable`,
+                    type: 'input-switch',
+                    enabled: options?.clearable || false
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
             case 'input-tags':
                 output.push({
@@ -399,6 +423,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-tags',
                     value: options?.value || [],
                     choices: []
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 break;
             case 'input-radio':
@@ -482,6 +512,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: true,
                     enabled: options?.useDefault
                 });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
             case 'input-file':
                 output.push({
@@ -513,6 +549,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Multiple`,
                     type: 'input-switch',
                     enabled: options?.multiple
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 break;
             case 'audio':
@@ -650,6 +692,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,
+                    required: true,
                     value: ''
                 });
                 break;
@@ -672,6 +715,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,
+                    required: true,
                     value: ''
                 });
                 break;
@@ -699,11 +743,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'select',
                     label: $localize `Example Select`,
                     type: 'input-select',
-                    value: 'Value1',
                     placeholder: $localize `Please Select`,
                     itemFieldNameForTitle: '',
                     itemFieldNameForValue: '',
-                    choices: ['Value1', 'Value2', 'Value3']
+                    choices: ['Value1', 'Value2', 'Value3'],
+                    required: true,
+                    clearable: true,
+                    value: 'Value1'
                 });
                 break;
             case 'input-tags':
@@ -711,9 +757,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'tags',
                     label: $localize `Tags`,
                     type: 'input-select',
-                    value: ['Value1', 'Value2', 'Value3'],
                     placeholder: $localize `Please Add Tags`,
-                    choices: []
+                    required: true,
+                    choices: [],
+                    value: ['Value1', 'Value2', 'Value3']
                 });
                 break;
             case 'input-radio':
@@ -729,19 +776,21 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'date',
                     label: $localize `Date`,
                     format: 'YYYY-MM-DD HH:mm',
-                    value: '',
                     offset: 0,
-                    enabled: false
+                    useDefault: false,
+                    required: true,
+                    value: ''
                 });
                 break;
             case 'input-file':
                 Object.assign(output, {
                     name: 'file',
                     label: $localize `File`,
-                    value: [],
                     multiple: false,
                     accept: 'image/*',
-                    placeholder: $localize `Upload File`
+                    placeholder: $localize `Upload File`,
+                    required: true,
+                    value: []
                 });
                 break;
             case 'image':

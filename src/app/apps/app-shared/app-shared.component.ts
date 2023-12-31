@@ -8,7 +8,7 @@ import * as moment from 'moment';
 moment.locale('ru');
 
 import { ApplicationService } from '../../services/application.service';
-import { ApplicationItem } from '../models/application-item.interface';
+import { AppErrors, ApplicationItem } from '../models/application-item.interface';
 import { AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
@@ -20,12 +20,13 @@ import { ApiItem } from '../../apis/models/api-item.interface';
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
-    errors: {[name: string]: string[]} = {};
+    errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
 
+    appsAutoStarted: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     itemUuid: string;
@@ -48,6 +49,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     getData(): void {
+        this.errors[this.itemUuid] = {};
         this.loading = true;
         this.dataService.getItemByUuidShared(this.itemUuid)
             .pipe(takeUntil(this.destroyed$))
@@ -58,7 +60,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.createAppOptions();
                 },
                 error: (err) => {
-                    this.errors = err;
+                    this.errors[this.itemUuid] = err;
                     this.loading = false;
                 }
             });
@@ -92,10 +94,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.apiItems['output'] = items;
             this.apiUuidsList.output.forEach((apiUuid) => {
                 if (!buttons[apiUuid]) {
-                    this.appSubmit(apiUuid, 'output');
+                    this.appAutoStart(apiUuid);
                 }
             });
         });
+    }
+
+    appAutoStart(apiUuid: string): void {
+        if (!this.appsAutoStarted.includes(apiUuid)) {
+            this.appsAutoStarted.push(apiUuid);
+        }
+        this.appSubmit(apiUuid, 'output');
     }
 
     getAllElements(): AppBlockElement[] {
@@ -159,6 +168,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             return;
         }
+        if (!this.getIsValid(apiUuid, actionType)) {
+            return;
+        }
         const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
@@ -191,6 +203,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.stateLoadingUpdate(apiUuid, false);
                 }
             });
+    }
+
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output'): boolean {
+        const allElements = this.getAllElements();
+        this.errors[targetApiUuid] = {};
+        allElements.forEach((element) => {
+            const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
+            if (apiUuid !== targetApiUuid) {
+                return;
+            }
+            if (!element.value && element.required) {
+                this.errors[targetApiUuid][element.name] = $localize `This field is required.`;
+            }
+        });
+        return Object.keys(this.errors[targetApiUuid]).length === 0;
     }
 
     stateLoadingUpdate(apiUuid: string, loading: boolean): void {
