@@ -47,11 +47,11 @@
                         <div class="dropdown-menu absolute right-0 z-10 w-48 py-2 origin-top-right">
                             <div class="rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                                <a href="/ru/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-300" role="menuitem" tabindex="-1" *ngIf="locale != 'ru'">
+                                <a href="/ru/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100" role="menuitem" tabindex="-1" *ngIf="locale != 'ru'">
                                     <span i18n>Russian</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/ru.svg" alt="Russian">
                                 </a>
-                                <a href="/en/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-300" role="menuitem" tabindex="-1" *ngIf="locale != 'en'">
+                                <a href="/en/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100" role="menuitem" tabindex="-1" *ngIf="locale != 'en'">
                                     <span i18n>English</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/en.svg" alt="English">
                                 </a>
@@ -93,15 +93,15 @@
                                         class="rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                         role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
                                         tabindex="-1">
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-300" role="menuitem" tabindex="-1">
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100" role="menuitem" tabindex="-1">
                                             <span i18n>My Profile</span>
                                             <i class="bi bi-person-circle ms-2"></i>
                                         </a>
-                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-300" role="menuitem" tabindex="-1">
+                                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100" role="menuitem" tabindex="-1">
                                             <span i18n>Settings</span>
                                             <i class="bi bi-gear ms-2"></i>
                                         </a>
-                                        <a class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-300" role="menuitem" tabindex="-1"
+                                        <a class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100" role="menuitem" tabindex="-1"
                                            [routerLink]="['/auth', 'logout']">
                                             <span i18n>Sign Out</span>
                                             <i class="bi bi-box-arrow-in-left ms-2"></i>
