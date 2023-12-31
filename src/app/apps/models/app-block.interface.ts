@@ -2,7 +2,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text' |'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
-    |'audio'|'chart-line';
+    |'audio'|'input-chart-line';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[] | SafeResourceUrl | File[];

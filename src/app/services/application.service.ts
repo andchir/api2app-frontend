@@ -601,7 +601,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.itemThumbnailFieldName
                 });
                 break;
-            case 'chart-line':
+            case 'input-chart-line':
                 output.push({
                     name: 'name',
                     label: $localize `Name`,
@@ -805,7 +805,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     name: 'audio'
                 });
                 break;
-            case 'chart-line':
+            case 'input-chart-line':
                 Object.assign(output, {
                     name: 'chart',
                     label: $localize `Line Chart`,

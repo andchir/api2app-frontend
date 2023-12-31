@@ -31,7 +31,8 @@
                                                [valueObj]="element.valueObj"
                                                [editorMode]="false"
                                                (elementClick)="onElementClick(element)"
-                                               (elementValueChange)="onElementValueChanged(element)"></app-block-element>
+                                               (elementValueChange)="onElementValueChanged(element)"
+                                               (itemSelected)="onItemSelected(element, $event)"></app-block-element>
                             <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
                                 <div class="w-full max-w-[600px] mx-auto">
                                     <div class="relative -top-2 mb-3 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>

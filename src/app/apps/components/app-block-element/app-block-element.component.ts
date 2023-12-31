@@ -25,6 +25,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
 
     inputTypes: {name: AppBlockElementType, title: string}[] = [
         {name: 'text-header', title: $localize `Text Header`},
@@ -42,7 +43,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-file', title: $localize `Upload File`},
         {name: 'image', title: $localize `Image`},
         {name: 'audio', title: $localize `Audio`},
-        {name: 'chart-line', title: $localize `Line Chart`}
+        {name: 'input-chart-line', title: $localize `Line Chart`}
     ];
 
     public chartOptions: ChartOptions;
@@ -58,7 +59,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         // console.log('ngOnChanges', changes);
-        if (this.options.type === 'chart-line' && changes['valueObj']) {
+        if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             this.chartOptionsUpdate();
         }
     }
@@ -163,15 +164,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 type: 'area',
                 events: {
                     markerClick: (event, chartContext, config) => {
-                        console.log('markerClick', event, chartContext, config);
-                        const series = config?.series || config?.w?.config?.series;
-                        if (!series) {
-                            return;
-                        }
-                        const xAxis = config?.xaxis || config?.w?.config?.xaxis;
-                        const itemData = series[config.seriesIndex]?.data[config.dataPointIndex];
-                        // console.log(config.seriesIndex, config.dataPointIndex, xAxis, series, itemData);
-                        // console.log(this.options);
+                        this.onItemSelected(config.dataPointIndex);
+                    },
+                    dataPointSelection: (event, chartContext, config) => {
+                        this.onItemSelected(config.dataPointIndex);
                     }
                 }
             },
@@ -190,6 +186,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 }
             }
         };
+    }
+
+    onItemSelected(index: number): void {
+        this.itemSelected.emit(index);
     }
 
     isArray(obj: any ): boolean {

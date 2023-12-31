@@ -31,6 +31,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStartPending: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
+    apiResponse: {[uuid: string]: any} = {};
     itemUuid: string;
     data: ApplicationItem;
     destroyed$: Subject<void> = new Subject();
@@ -124,26 +125,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     deleteErrorMessages(name: string) {
         if (this.errors[name]) {
             delete this.errors[name];
-        }
-    }
-
-    onElementClick(element: AppBlockElement): void {
-        if (element.type === 'button') {
-            this.appSubmit(element.options?.outputApiUuid, 'output');
-        }
-    }
-
-    onElementValueChanged(element: AppBlockElement): void {
-        const apiUuid = element.options?.inputApiUuid;
-        if (!apiUuid) {
-            return;
-        }
-        const allElements = this.getAllElements();
-        const buttonElement = allElements.find((el) => {
-            return el.type === 'button' && (el.options?.inputApiUuid === apiUuid || el.options?.outputApiUuid === apiUuid);
-        });
-        if (!buttonElement) {
-            this.appSubmit(apiUuid, 'output');
         }
     }
 
@@ -401,7 +382,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                     elements.forEach((element) => {
-                        if (['chart-line'].includes(element.type)) {
+                        if (['input-chart-line'].includes(element.type)) {
                             this.chartElementValueApply(element, data);
                         } else {
                             this.blockElementValueApply(element, valuesObj, data);
@@ -451,6 +432,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
             return;
         }
+        if (element.options?.outputApiUuid) {
+            this.apiResponse[element.options.outputApiUuid] = data[dataKey];
+        }
         const dateFormat = element?.format;
         const outData = data[dataKey];
         const yAxisData = outData.map((item) => {
@@ -477,6 +461,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             element.value = '';
             return;
         }
+        if (element.options?.outputApiUuid) {
+            this.apiResponse[element.options.outputApiUuid] = value;
+        }
         if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
             element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value);
             return;
@@ -496,6 +483,36 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
                 + (element.suffixText || '');
         }
+    }
+
+    onElementClick(element: AppBlockElement): void {
+        if (element.type === 'button') {
+            this.appSubmit(element.options?.outputApiUuid, 'output');
+        }
+    }
+
+    onElementValueChanged(element: AppBlockElement): void {
+        const apiUuid = element.options?.inputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
+        const allElements = this.getAllElements();
+        const buttonElement = allElements.find((el) => {
+            return el.type === 'button' && (el.options?.inputApiUuid === apiUuid || el.options?.outputApiUuid === apiUuid);
+        });
+        if (!buttonElement) {
+            this.appSubmit(apiUuid, 'output');
+        }
+    }
+
+    onItemSelected(element: AppBlockElement, index: number): void {
+        const apiUuid = element.options?.outputApiUuid;
+        if (!apiUuid || !this.apiResponse[apiUuid]) {
+            return;
+        }
+        const data = this.apiResponse[apiUuid];
+        console.log('onItemSelected', index, apiUuid);
+        console.log(data[index]);
     }
 
     isJson(str: string): boolean {
