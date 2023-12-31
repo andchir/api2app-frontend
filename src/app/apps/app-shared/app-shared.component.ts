@@ -26,7 +26,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     loading = false;
     submitted = false;
 
+    timerAutoStart: any;
     appsAutoStarted: string[] = [];
+    appsAutoStartPending: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     itemUuid: string;
@@ -104,7 +106,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, 'output');
+        this.appSubmit(apiUuid, 'output', false);
     }
 
     getAllElements(): AppBlockElement[] {
@@ -153,7 +155,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output'): void {
+    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', createErrorMessages = true): void {
         if (!apiUuid) {
             return;
         }
@@ -164,13 +166,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType);
+                this.appSubmit(apiUuid, actionType, createErrorMessages);
             });
             return;
         }
-        if (!this.getIsValid(apiUuid, actionType)) {
-            return;
-        }
+        // if (!this.getIsValid(apiUuid, actionType, createErrorMessages)) {
+        //     if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
+        //         this.appsAutoStartPending.push(apiUuid);
+        //     } else {
+        //         this.message = $localize `Please correct errors in filling out the form.`;
+        //         this.messageType = 'error';
+        //     }
+        //     return;
+        // }
         const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
@@ -185,6 +193,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    if (this.appsAutoStarted.includes(apiUuid)) {
+                        this.afterAutoStarted(apiUuid);
+                    }
                     this.createAppResponse(currentApi, res);
                     this.loading = false;
                     this.submitted = false;
@@ -205,19 +216,42 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    getIsValid(targetApiUuid: string, actionType: 'input'|'output'): boolean {
+    afterAutoStarted(apiUuid: string): void {
+        if (this.appsAutoStarted.includes(apiUuid)) {
+            const index = this.appsAutoStarted.findIndex((val) => {
+                return val === apiUuid;
+            });
+            if (index > -1) {
+                this.appsAutoStarted.splice(index, 1);
+            }
+        }
+        clearTimeout(this.timerAutoStart);
+        this.timerAutoStart = setTimeout(() => {
+            // Re-launch the application if the fields did not pass validation the last time.
+            this.appsAutoStartPending.forEach((uuid) => {
+                this.appAutoStart(uuid);
+            });
+            this.appsAutoStarted = [];
+        }, 500);
+    }
+
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output', createErrorMessages = true): boolean {
         const allElements = this.getAllElements();
         this.errors[targetApiUuid] = {};
+        const errors = {};
         allElements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid) {
+            if (apiUuid !== targetApiUuid || !element.required) {
                 return;
             }
-            if (!element.value && element.required) {
-                this.errors[targetApiUuid][element.name] = $localize `This field is required.`;
+            if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
+                errors[element.name] = $localize `This field is required.`;
             }
         });
-        return Object.keys(this.errors[targetApiUuid]).length === 0;
+        if (createErrorMessages) {
+            this.errors[targetApiUuid] = errors;
+        }
+        return Object.keys(errors).length === 0;
     }
 
     stateLoadingUpdate(apiUuid: string, loading: boolean): void {
@@ -364,7 +398,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
-                // console.log(data);
+                this.errors[apiItem.uuid] = {};
+                if (typeof data === 'object' && !Array.isArray(data)) {
+                    const errorsObj = {};
+                    for (let key in data) {
+                        errorsObj[key] = Array.isArray(data[key]) ? data[key].join(' ') : data[key];
+                    }
+                    this.errors[apiItem.uuid] = errorsObj;
+                }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
                     return element.options?.outputApiUuid === apiItem.uuid && element.options?.outputApiFieldType === 'output';
@@ -376,6 +417,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.blockElementValueApply(element, valuesObj, data);
                     }
                 });
+                this.message = $localize `Error.`;
+                this.messageType = 'error';
             })
             .catch((err) => {
                 console.log(err);
