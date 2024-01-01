@@ -184,7 +184,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.createAppResponse(currentApi, res);
                     this.loading = false;
                     this.submitted = false;
-                    this.stateLoadingUpdate(apiUuid, false);
+                    this.stateLoadingUpdate(apiUuid, false, this.appsAutoStarted.length === 0);
                 },
                 error: (err) => {
                     // console.log(err);
@@ -292,7 +292,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
-                bodyField.value = ApplicationService.getElementValue(element) as string;
+                bodyField.value = element.value ? ApplicationService.getElementValue(element) as string : '';
                 if (element.type === 'input-switch') {
                     bodyField.hidden = !element?.enabled;
                 }

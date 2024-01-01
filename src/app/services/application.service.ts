@@ -906,7 +906,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[] {
+    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[]|null {
         switch (element.type) {
             case 'input-date':
                 const dateFormat = element?.format;
