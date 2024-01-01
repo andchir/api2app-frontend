@@ -314,10 +314,12 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md" *ngFor="let image of options.valueArr">
-                            <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
-                                <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]" alt="">
-                            </a>
+                        <div *ngFor="let image of options.valueArr">
+                            <div class="p-3 bg-gray-100 rounded border border-slate-300 shadow-md">
+                                <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
+                                    <img class="w-full h-auto max-w-full" [src]="image[options?.itemThumbnailFieldName]" alt="">
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </ng-container>
