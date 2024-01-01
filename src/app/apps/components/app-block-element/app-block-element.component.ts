@@ -19,6 +19,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() type: AppBlockElementType;
     @Input() options: any;
     @Input() valueObj: any;
+    @Input() valueArr: any[];
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
@@ -58,7 +59,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('ngOnChanges', this.options?.type, changes);
+        // console.log('ngOnChanges', this.options?.type, changes);
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             this.chartOptionsUpdate();
         }

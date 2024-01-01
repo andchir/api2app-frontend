@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -16,7 +16,8 @@ import { ApiItem } from '../../apis/models/api-item.interface';
 @Component({
     selector: 'app-item-shared',
     templateUrl: './app-shared.component.html',
-    providers: []
+    providers: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
@@ -36,6 +37,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        private cdr: ChangeDetectorRef,
         protected sanitizer: DomSanitizer,
         protected route: ActivatedRoute,
         protected router: Router,
@@ -60,6 +62,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.data = res;
                     this.loading = false;
                     this.createAppOptions();
+                    this.cdr.detectChanges();
                 },
                 error: (err) => {
                     this.errors[this.itemUuid] = err;
@@ -142,6 +145,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.message = '';
         this.loading = true;
         this.submitted = true;
+        this.cdr.detectChanges();
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
@@ -253,6 +257,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             block.loading = loading;
         });
+        this.cdr.detectChanges();
     }
 
     clearElementsValues(block: AppBlock): void {
@@ -414,7 +419,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         } else {
                             this.blockElementValueApply(element, valuesObj, data);
                         }
-                        console.log(element);
+                        this.cdr.detectChanges();
                     });
                 })
                 .catch((err) => {
@@ -447,6 +452,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
                 this.message = $localize `Error.`;
                 this.messageType = 'error';
+                this.cdr.detectChanges();
             })
             .catch((err) => {
                 console.log(err);
