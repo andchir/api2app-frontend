@@ -58,7 +58,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        // console.log('ngOnChanges', changes);
+        console.log('ngOnChanges', this.options?.type, changes);
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             this.chartOptionsUpdate();
         }

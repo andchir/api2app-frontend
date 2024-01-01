@@ -9,7 +9,7 @@ moment.locale('ru');
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem } from '../models/application-item.interface';
-import {AppBlock, AppBlockElement} from '../models/app-block.interface';
+import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 
@@ -237,7 +237,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     stateLoadingUpdate(apiUuid: string, loading: boolean, isSuccess = true): void {
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
-                return el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
+                return el?.options?.outputApiUuid == apiUuid;// el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
             });
             return elements.length > 0;
         });
@@ -414,6 +414,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         } else {
                             this.blockElementValueApply(element, valuesObj, data);
                         }
+                        console.log(element);
                     });
                 })
                 .catch((err) => {
@@ -494,7 +495,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             element.valueArr = value;
-            if (element.valueArr.length > 0) {
+            if (element.valueArr.length > 0 && !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
