@@ -378,6 +378,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     choices: []
                 });
                 output.push({
+                    name: 'placeholder',
+                    label: $localize `Placeholder`,
+                    type: 'input-text',
+                    value: options?.placeholder
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
