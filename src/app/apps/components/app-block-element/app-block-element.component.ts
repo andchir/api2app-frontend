@@ -48,6 +48,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     ];
 
     public chartOptions: ChartOptions;
+    timerSelectItem: any;
 
     constructor() {}
 
@@ -190,10 +191,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     onItemSelected(index: number): void {
-        if (this.options.valueObj?.data && this.options.valueObj.data[index] && this.options.itemFieldName) {
-            this.options.value = this.options.valueObj.data[index][this.options.itemFieldName] || '';
-        }
-        this.itemSelected.emit(index);
+        clearTimeout(this.timerSelectItem);
+        this.timerSelectItem = setTimeout(() => {
+            if (this.options.valueObj?.data && this.options.valueObj.data[index] && this.options.itemFieldName) {
+                this.options.value = this.options.valueObj.data[index][this.options.itemFieldName] || '';
+            }
+            this.itemSelected.emit(index);
+        }, 100);
     }
 
     isArray(obj: any ): boolean {

@@ -157,10 +157,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.getIsValid(apiUuid, actionType, createErrorMessages)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
                 this.appsAutoStartPending.push(apiUuid);
-            } else {
+            } else if (createErrorMessages) {
                 this.message = $localize `Please correct errors in filling out the form.`;
                 this.messageType = 'error';
             }
+            this.cdr.detectChanges();
             return;
         }
         const currentApi = this.apiItems[actionType].find((apiItem) => {
