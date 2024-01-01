@@ -502,10 +502,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             element.valueArr = value;
-            if (element.valueArr.length > 0 && !['image', 'audio'].includes(element.type)) {
+            if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
+            } else {
+                element.value = null;
             }
         } else {
             element.value = (element.prefixText || '')

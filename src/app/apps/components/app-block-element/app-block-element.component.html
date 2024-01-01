@@ -156,6 +156,11 @@
                                    [bindValue]="options?.itemFieldNameForValue"
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
+                                   [addTag]="options.addTag"
+                                   notFoundText="No items found"
+                                   i18n-notFoundText
+                                   addTagText="Add item"
+                                   i18n-addTagText
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">

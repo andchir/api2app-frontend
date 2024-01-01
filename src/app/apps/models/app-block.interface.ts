@@ -38,6 +38,7 @@ export interface AppBlockElement {
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
     isXAxisDate?: boolean;
+    selectDefaultFirst?: boolean;
     itemFieldNameForValue?: string;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;

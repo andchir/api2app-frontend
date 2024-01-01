@@ -390,6 +390,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     enabled: options?.clearable || false
                 });
                 output.push({
+                    name: 'addTag',
+                    label: $localize `Allow adding value`,
+                    type: 'input-switch',
+                    enabled: options?.addTag || false
+                });
+                output.push({
+                    name: 'selectDefaultFirst',
+                    label: $localize `Use first value as default`,
+                    type: 'input-switch',
+                    enabled: options?.selectDefaultFirst || false
+                });
+                output.push({
                     name: 'required',
                     label: $localize `Required`,
                     type: 'input-switch',
@@ -755,6 +767,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     choices: ['Value1', 'Value2', 'Value3'],
                     required: true,
                     clearable: true,
+                    addTag: false,
+                    selectDefaultFirst: true,
                     value: 'Value1'
                 });
                 break;
