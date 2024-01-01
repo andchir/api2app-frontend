@@ -29,17 +29,18 @@ export class AppActionComponent implements OnInit, OnDestroy {
     selectedUuid: string | null = null;
     elementType: AppBlockElementType;
     selectedApi: ApiItem;
-    selectedFieldName: string | null = null;
-    selectedFieldType: string | null = null;
+    selectedFieldName: string | number | null = null;
+    selectedFieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | number | null = null;
     actionType: 'input'|'output';
-    items$: Observable<ApiItem[]>;
     loading = false;
     submitted = false;
-    searchInput$ = new Subject<string>();
+    urlParts: string[] = [];
     inputFields: string[] = [];
     inputParams: string[] = [];
     inputHeaders: string[] = [];
     outputFields: string[] = [];
+    items$: Observable<ApiItem[]>;
+    searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -115,7 +116,15 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
             return;
         }
+        this.urlParts = [];
         if (this.actionType === 'input') {
+            if (this.selectedApi.requestUrl) {
+                const tmp = this.selectedApi.requestUrl.split('/');
+                this.urlParts.push(`${tmp[0]}//${tmp[2]}`);
+                tmp.splice(0, 3);
+                this.urlParts = [...this.urlParts, ...tmp];
+            }
+
             // Input fields
             if (this.selectedApi.bodyDataSource === 'fields') {
                 this.inputFields = this.getArrayValues('bodyFields');
@@ -143,7 +152,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
     }
 
-    selectField(fieldName: string, fieldType: string): void{
+    selectField(fieldName: string|number, fieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | null): void{
         if (this.selectedFieldName === fieldName && this.selectedFieldType === fieldType) {
             this.selectedFieldName = null;
             this.selectedFieldType = null;

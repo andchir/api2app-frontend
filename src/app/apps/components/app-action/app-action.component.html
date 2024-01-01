@@ -60,6 +60,21 @@
                     </div>
                 </div>
 
+                <div class="bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow mb-4" *ngIf="urlParts.length > 0">
+                    <span class="inline-block">{{ urlParts[0] }}</span>
+                    <ng-container *ngFor="let str of urlParts.slice(1); let index=index">
+                        <span class="inline-block mx-2">/</span>
+                        <button type="button" class="inline-block px-1"
+                                [ngClass]="{
+                                'bg-blue-500 text-white rounded': selectedFieldName === index && selectedFieldType === 'url',
+                                'text-blue-500 hover:text-blue-700 border-b border-b-blue-500 border-dashed': selectedFieldName !== index || selectedFieldType !== 'url'
+                                }"
+                                (click)="selectField(index, 'url')">
+                                {{ str }}
+                        </button>
+                    </ng-container>
+                </div>
+
                 <div class="grid grid-cols-2 gap-4" *ngIf="selectedApi">
                     <div *ngIf="inputFields.length > 0">
                         <h3 class="mb-2" i18n>API Input</h3>

@@ -31,7 +31,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStartPending: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
-    apiResponse: {[uuid: string]: any} = {};
     itemUuid: string;
     data: ApplicationItem;
     destroyed$: Subject<void> = new Subject();
@@ -222,7 +221,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         allElements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || !element.required) {
+            if (apiUuid !== targetApiUuid || (!element.required && element.type !== 'input-chart-line')) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -350,10 +349,38 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         apiItem.headers = headers;
 
+        // Api URL
+        const elements = allElements.filter((item) => {
+            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+            return apiUuid === apiItem.uuid && fieldType === 'url';
+        });
+        elements.forEach((el) => {
+            if (el.value && el.options?.inputApiFieldName) {
+                this.apiRequestUrlUpdate(apiItem, Number(el.options?.inputApiFieldName), String(el.value));
+            }
+        });
+
         return apiItem;
     }
 
-    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output'): {apiUuid: string, fieldName: string, fieldType: string} {
+    apiRequestUrlUpdate(apiItem: ApiItem, urlPartIndex: number, urlPartValue: string): void {
+        const requestUrl = apiItem.requestUrl;
+        if (!requestUrl) {
+            return;
+        }
+        let urlParts = [];
+        const tmp = requestUrl.split('/');
+        urlParts.push(`${tmp[0]}//${tmp[2]}`);
+        tmp.splice(0, 3);
+        urlParts = [...urlParts, ...tmp];
+        if (urlParts.length < urlPartIndex + 2) {
+            return;
+        }
+        urlParts[urlPartIndex + 1] = urlPartValue;
+        apiItem.requestUrl = urlParts.join('/');
+    }
+
+    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output'): {apiUuid: string, fieldName: string|number, fieldType: string} {
         return actionType === 'input'
             ? {
                 apiUuid: element.options?.inputApiUuid,
@@ -432,9 +459,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
             return;
         }
-        if (element.options?.outputApiUuid) {
-            this.apiResponse[element.options.outputApiUuid] = data[dataKey];
-        }
         const dateFormat = element?.format;
         const outData = data[dataKey];
         const yAxisData = outData.map((item) => {
@@ -448,7 +472,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             return value;
         });
-        element.valueObj = {xAxisData, yAxisData};
+        element.valueObj = {xAxisData, yAxisData, data: outData};
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
@@ -460,9 +484,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!value) {
             element.value = '';
             return;
-        }
-        if (element.options?.outputApiUuid) {
-            this.apiResponse[element.options.outputApiUuid] = value;
         }
         if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
             element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value);
@@ -506,13 +527,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {
-        const apiUuid = element.options?.outputApiUuid;
-        if (!apiUuid || !this.apiResponse[apiUuid]) {
+        const apiUuid = element.options?.inputApiUuid;
+        if (!apiUuid) {
             return;
         }
-        const data = this.apiResponse[apiUuid];
-        console.log('onItemSelected', index, apiUuid);
-        console.log(data[index]);
+        this.appSubmit(apiUuid, 'output');
     }
 
     isJson(str: string): boolean {

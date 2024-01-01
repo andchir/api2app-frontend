@@ -189,6 +189,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     onItemSelected(index: number): void {
+        if (this.options.valueObj?.data && this.options.valueObj.data[index] && this.options.itemFieldName) {
+            this.options.value = this.options.valueObj.data[index][this.options.itemFieldName] || '';
+        }
         this.itemSelected.emit(index);
     }
 

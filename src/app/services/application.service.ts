@@ -652,6 +652,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-text',
                     value: options?.itemTitle
                 });
+                output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Field name in the array`,
+                    type: 'input-text',
+                    value: options?.itemFieldName
+                });
                 break;
         }
         return output;
@@ -812,6 +818,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     itemTitle: $localize `Item Title`,
                     fieldNameAxisXL: '',
                     fieldNameAxisY: '',
+                    itemFieldName: 'id',
                     isXAxisDate: false,
                     format: 'MMM DD, HH:mm'
                 });

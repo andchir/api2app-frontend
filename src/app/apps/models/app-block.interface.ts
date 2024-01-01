@@ -10,10 +10,10 @@ export interface AppOptions {
 
 export interface AppBlockElementOptions {
     inputApiUuid?: string;
-    inputApiFieldName?: string;
+    inputApiFieldName?: string|number;
     inputApiFieldType?: string;
     outputApiUuid?: string;
-    outputApiFieldName?: string;
+    outputApiFieldName?: string|number;
     outputApiFieldType?: string;
 }
 
