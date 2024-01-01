@@ -5,6 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ToHtmlPipe implements PipeTransform {
     transform(text: string): any {
+        if (typeof text !== 'string') {
+            return text;
+        }
         const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig;
         const emailRegex = /[^\s]+@[^\s.]+\.[^\s]+/ig;
         text = text.replace(emailRegex, (value) => {
