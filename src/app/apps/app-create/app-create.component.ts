@@ -311,13 +311,13 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
                 next: (reason) => {
                     if (reason === 'submit') {
                         if (actionType === 'input') {
-                            element.options.inputApiUuid = element.options.inputApiFieldName
+                            element.options.inputApiUuid = this.modalService.content.selectedFieldName
                                 ? this.modalService.content.selectedApi?.uuid
                                 : null;
                             element.options.inputApiFieldName = this.modalService.content.selectedFieldName;
                             element.options.inputApiFieldType = this.modalService.content.selectedFieldType;
                         } else {
-                            element.options.outputApiUuid = element.options.outputApiFieldName
+                            element.options.outputApiUuid = this.modalService.content.selectedFieldName
                                 ? this.modalService.content.selectedApi?.uuid
                                 : null;
                             element.options.outputApiFieldName = this.modalService.content.selectedFieldName;

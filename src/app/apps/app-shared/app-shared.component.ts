@@ -517,8 +517,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onElementClick(element: AppBlockElement): void {
-        if (element.type === 'button') {
-            this.appSubmit(element.options?.outputApiUuid, 'output');
+        if (element.type === 'button' && element.options?.inputApiUuid) {
+            this.appSubmit(element.options.inputApiUuid, 'output');
         }
     }
 
