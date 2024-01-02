@@ -114,6 +114,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
 
     getApiOptions(): void {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
+            this.inputFields.push('submit');
             return;
         }
         this.urlParts = [];

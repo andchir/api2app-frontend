@@ -42,19 +42,24 @@
                     </ng-select>
                 </div>
 
-                <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow mb-4" *ngIf="selectedApi; else templateEmptyApi">
+                <div class="relative bg-white p-3 rounded border mb-4"
+                     [ngClass]="{'border-green-400 shadow-md': selectedUuid && selectedFieldName, 'border-gray-200 shadow': !selectedUuid || !selectedFieldName}"
+                     *ngIf="selectedApi; else templateEmptyApi">
                     <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
                         {{ selectedApi.name }}
                     </div>
                     <div class="mb-3 text-xs w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-700">
                         {{ selectedApi.requestUrl }}
                     </div>
-                    <div class="absolute right-2 -top-2">
-                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
+                    <div class="absolute right-2 -top-2 flex">
+                        <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
                               *ngIf="selectedApi.shared">
-                            <span i18n>Shared</span>
+                            <span class="flex w-2 h-2 me-1 rounded-full"
+                                  [ngClass]="{'bg-green-400': !selectedApi.hidden, 'bg-gray-400': selectedApi.hidden}"></span>
+                            <span [ngClass]="{'text-green-700': !selectedApi.hidden, 'text-gray-600': selectedApi.hidden}"
+                                  i18n="@@SharedItem">Shared</span>
                         </span>
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md ms-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400 shadow-md ms-2">
                             {{ selectedApi.requestMethod }}
                         </span>
                     </div>
@@ -88,7 +93,11 @@
                                 }"
                                 *ngFor="let fieldName of inputFields; let i = index"
                                 (click)="selectField(fieldName, 'input')">
-                                <span class="capitalize">{{ fieldName }}</span>
+                                <span *ngIf="['submit', 'value'].includes(fieldName); else templateDefaultText">
+                                    <span *ngIf="fieldName === 'submit'" i18n>Submit</span>
+                                    <span *ngIf="fieldName === 'value'" i18n>Value</span>
+                                </span>
+                                <ng-template #templateDefaultText><span class="capitalize">{{ fieldName }}</span></ng-template>
                             </button>
                         </div>
                     </div>
