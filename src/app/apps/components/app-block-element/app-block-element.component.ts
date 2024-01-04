@@ -34,6 +34,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'button', title: $localize `Button`},
         {name: 'input-text', title: $localize `Text Field`},
         {name: 'input-number', title: $localize `Number Field`},
+        {name: 'input-slider', title: $localize `Range Slider`},
         {name: 'input-textarea', title: $localize `Text Area`},
         {name: 'input-hidden', title: $localize `Hidden text field`},
         {name: 'input-switch', title: $localize `Switch`},

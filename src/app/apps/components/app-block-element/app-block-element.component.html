@@ -30,6 +30,7 @@
                             <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
                             <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
                             <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'input-chart-line'"></i>
+                            <i class="bi bi-sliders mr-1 text-gray-400" *ngIf="item.name === 'input-slider'"></i>
                             {{ item.title }}
                         </ng-template>
                     </ng-select>
@@ -259,6 +260,31 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16"/>
                             </svg>
                         </button>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'input-slider'">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                        {{ options?.label }}
+                    </label>
+                    <div class="relative pb-5">
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded absolute end-0 -top-6">
+                            {{ options?.value }}
+                        </span>
+                        <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" type="range"
+                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                               [min]="options?.min"
+                               [max]="options?.max"
+                               [step]="options?.step"
+                               [(ngModel)]="options.value">
+                        <span class="text-sm text-gray-500 absolute start-0 top-6">{{ options?.min }}</span>
+                        <span class="text-sm text-gray-500 absolute end-0 top-6">{{ options?.max }}</span>
                     </div>
                 </div>
             </div>

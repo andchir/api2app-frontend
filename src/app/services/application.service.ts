@@ -209,6 +209,61 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-number',
                     value: options?.max
                 });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
+            case 'input-slider':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'min',
+                    label: $localize `Minimum Value`,
+                    type: 'input-number',
+                    value: options?.min
+                });
+                output.push({
+                    name: 'max',
+                    label: $localize `Maximum Value`,
+                    type: 'input-number',
+                    value: options?.max
+                });
+                output.push({
+                    name: 'step',
+                    label: $localize `Step`,
+                    type: 'input-number',
+                    value: options?.step,
+                    min: 0,
+                    max: 100
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-number',
+                    value: options?.value,
+                    min: 0
+                });
                 break;
             case 'input-textarea':
                 output.push({
@@ -728,6 +783,17 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     min: 0,
                     max: 10,
                     value: 1
+                });
+                break;
+            case 'input-slider':
+                Object.assign(output, {
+                    name: 'range',
+                    label: $localize `Range`,
+                    type: 'input-slider',
+                    min: 0,
+                    max: 100,
+                    step: 1,
+                    value: 0
                 });
                 break;
             case 'input-textarea':
