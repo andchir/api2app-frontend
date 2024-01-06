@@ -27,6 +27,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
     loading = false;
     submitted = false;
     isOptionsActive = false;
+    previewMode = false;
 
     itemId: number = 0;
     data: ApplicationItem = ApplicationService.getDefault();
