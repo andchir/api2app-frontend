@@ -40,6 +40,7 @@ export interface AppBlockElement {
     isXAxisDate?: boolean;
     selectDefaultFirst?: boolean;
     itemFieldNameForValue?: string;
+    useDefault?: boolean;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;
     valueArr?: string[] | File[] | null;

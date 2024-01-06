@@ -63,7 +63,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges) {
         // console.log('ngOnChanges', this.options?.type, changes);
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
-            this.chartOptionsUpdate();
+            if (this.chartOptions) {
+                this.chartOptionsUpdate();
+            }
         }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
             this.updateStateByOptions();
@@ -111,7 +113,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     chartOptionsUpdate(): void {
-        if (!this.valueObj || !this.valueObj?.xAxisData || !this.valueObj?.yAxisData) {
+        if (!this.chartOptions || !this.valueObj || !this.valueObj?.xAxisData || !this.valueObj?.yAxisData) {
             return;
         }
         this.chartOptions.series = [

@@ -266,12 +266,35 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         blocks.splice(nexIndex, 0, deletedItems[0]);
     }
 
+    cloneBlock(block: AppBlock): AppBlock {
+        const options = Object.assign({}, block.options);
+        const elements = block.elements.map(obj => ({...obj}));
+        elements.forEach((element: AppBlockElement) => {
+            element.options = Object.assign({}, element.options);
+        });
+        return {elements, options};
+    }
+
     saveData(): void {
         const data = Object.assign({}, this.data);
-        data.blocks = this.data.blocks.filter((block) => {
+        let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
+        blocks = blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);
             return block.elements.length > emptyElements.length;
         });
+        blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                if (element.type === 'input-date' && element.useDefault) {
+                    element.value = null;
+                }
+                if (element.options.outputApiUuid && element.options.outputApiFieldName) {
+                    element.value = '';
+                    element.valueObj = null;
+                    element.valueArr = null;
+                }
+            });
+        });
+        data.blocks = blocks;
         this.message = '';
         this.errorsObj = {};
         this.loading = true;
