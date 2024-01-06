@@ -13,6 +13,7 @@ import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
+import { TokenStorageService } from '../../services/token-storage.service';
 
 @Component({
     selector: 'app-item-shared',
@@ -25,6 +26,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
+    isLoggedIn = false;
+    isShared = true;
     loading = false;
     submitted = false;
     previewMode = true;
@@ -42,12 +45,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected sanitizer: DomSanitizer,
         protected route: ActivatedRoute,
         protected router: Router,
+        protected tokenStorageService: TokenStorageService,
         protected dataService: ApplicationService,
         protected apiService: ApiService,
         protected modalService: ModalService
     ) {}
 
     ngOnInit(): void {
+        this.isLoggedIn = !!this.tokenStorageService.getToken();
         this.itemUuid = this.route.snapshot.paramMap.get('uuid');
         if (this.itemUuid) {
             this.getData();
@@ -129,7 +134,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
-            promises.push(firstValueFrom(this.apiService.getItemByUuidShared(uuid)));
+            if (!this.isShared && this.isLoggedIn) {
+                promises.push(firstValueFrom(this.apiService.getItemByUuid(uuid)));
+            } else {
+                promises.push(firstValueFrom(this.apiService.getItemByUuidShared(uuid)));
+            }
         });
         return Promise.all(promises);
     }

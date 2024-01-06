@@ -19,6 +19,7 @@ import { AppActionComponent } from '../components/app-action/app-action.componen
 import { ModalService } from '../../services/modal.service';
 import { ApplicationSharedComponent } from '../app-shared/app-shared.component';
 import { ApiService } from '../../services/api.service';
+import { TokenStorageService } from '../../services/token-storage.service';
 
 @Component({
     selector: 'app-application-create',
@@ -31,7 +32,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     @ViewChild('dynamic', { read: ViewContainerRef })
     private viewRef: ViewContainerRef;
-
+    override isShared = false;
     override previewMode = false;
     errorsObj: {[name: string]: string[]} = {};
     isOptionsActive = false;
@@ -48,11 +49,12 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         sanitizer: DomSanitizer,
         route: ActivatedRoute,
         router: Router,
+        tokenStorageService: TokenStorageService,
         dataService: ApplicationService,
         apiService: ApiService,
         modalService: ModalService
     ) {
-        super(cdr, sanitizer, route, router, dataService, apiService, modalService);
+        super(cdr, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService);
     }
 
     get optionsTitle(): string {
@@ -62,6 +64,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     override ngOnInit(): void {
+        this.isLoggedIn = !!this.tokenStorageService.getToken();
         this.itemId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.itemId) {
             this.getData();
