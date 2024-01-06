@@ -72,7 +72,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     this.loading = false;
                     this.submitted = false;
-                    this.router.navigate(['/apis', 'personal']);
+                    this.message = $localize `Saved successfully.`;
+                    this.messageType = 'success';
                 },
                 error: (err) => {
                     this.errors = err;
