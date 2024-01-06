@@ -65,6 +65,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             this.chartOptionsUpdate();
         }
+        if (changes['editorMode'] && !changes['editorMode'].currentValue) {
+            this.updateStateByOptions();
+        }
     }
 
     updateItemType(): void {
