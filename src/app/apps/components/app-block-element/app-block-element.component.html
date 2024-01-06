@@ -26,6 +26,7 @@
                             <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
                             <i class="bi bi-ui-radios mr-1 text-gray-400" *ngIf="item.name === 'input-radio'"></i>
                             <i class="bi bi-calendar3 mr-1 text-gray-400" *ngIf="item.name === 'input-date'"></i>
+                            <i class="bi bi-palette mr-1 text-gray-400" *ngIf="item.name === 'input-color'"></i>
                             <i class="bi bi-upload mr-1 text-gray-400" *ngIf="item.name === 'input-file'"></i>
                             <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
                             <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
@@ -304,6 +305,20 @@
                                id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                [(ngModel)]="options.value">
                     </div>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'input-color'">
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <div class="w-full max-w-[600px] mx-auto">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                        {{ options?.label }}
+                    </label>
+                    <input type="color" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block w-16 h-10 p-1 rounded-lg border border-gray-300 hover:border-blue-500"
+                           [(ngModel)]="options.value">
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

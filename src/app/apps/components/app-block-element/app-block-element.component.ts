@@ -41,6 +41,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-select', title: $localize `Select`},
         {name: 'input-tags', title: $localize `Tags`},
         {name: 'input-radio', title: $localize `Radio Buttons`},
+        {name: 'input-color', title: $localize `Color Picker`},
         {name: 'input-date', title: $localize `Calendar`},
         {name: 'input-file', title: $localize `Upload File`},
         {name: 'image', title: $localize `Image`},

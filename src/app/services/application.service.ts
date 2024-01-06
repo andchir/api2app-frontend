@@ -592,6 +592,34 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     enabled: options?.required || false
                 });
                 break;
+            case 'input-color':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
             case 'input-file':
                 output.push({
                     name: 'name',
@@ -871,6 +899,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     offset: 0,
                     useDefault: false,
                     required: true,
+                    value: ''
+                });
+                break;
+            case 'input-color':
+                Object.assign(output, {
+                    name: 'color',
+                    label: $localize `Color`,
+                    type: 'input-color',
                     value: ''
                 });
                 break;
