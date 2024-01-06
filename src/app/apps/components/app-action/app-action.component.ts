@@ -1,4 +1,12 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    OnDestroy,
+    OnInit,
+    Output
+} from '@angular/core';
 
 import {
     Observable,
@@ -21,7 +29,8 @@ import {AppBlockElementType} from "../../models/app-block.interface";
 
 @Component({
     selector: 'app-element-action',
-    templateUrl: './app-action.component.html'
+    templateUrl: './app-action.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppActionComponent implements OnInit, OnDestroy {
 
@@ -44,6 +53,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        protected cdr: ChangeDetectorRef,
         protected dataService: ApiService,
         protected applicationService: ApplicationService
     ) {}
@@ -75,7 +85,10 @@ export class AppActionComponent implements OnInit, OnDestroy {
                 switchMap(term => this.dataService.searchItems(term).pipe(
                     map(res => res.results),
                     catchError(() => of([])),
-                    tap(() => this.loading = false)
+                    tap(() => {
+                        this.loading = false;
+                        this.cdr.detectChanges();
+                    })
                 ))
             )
         );
@@ -88,6 +101,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         this.inputFields = [];
         this.outputFields = [];
         this.loading = true;
+        this.cdr.detectChanges();
         this.dataService.getItemByUuid(this.selectedUuid)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -103,6 +117,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
                             }
                         });
                     this.loading = false;
+                    this.cdr.detectChanges();
                     this.getApiOptions();
                 },
                 error: (err) => {
@@ -115,6 +130,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     getApiOptions(): void {
         if (!this.selectedApi || ['button'].includes(this.elementType)) {
             this.inputFields.push('submit');
+            this.cdr.detectChanges();
             return;
         }
         this.urlParts = [];
@@ -151,16 +167,19 @@ export class AppActionComponent implements OnInit, OnDestroy {
             }
             this.outputFields.unshift('value');
         }
+        this.cdr.detectChanges();
     }
 
     selectField(fieldName: string|number, fieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | null): void{
         if (this.selectedFieldName === fieldName && this.selectedFieldType === fieldType) {
             this.selectedFieldName = null;
             this.selectedFieldType = null;
+            this.cdr.detectChanges();
             return;
         }
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
+        this.cdr.detectChanges();
     }
 
     getArrayValues(inputKey: string, targetKey: string = 'name'): string[] {

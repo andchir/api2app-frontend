@@ -1,50 +1,58 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ViewContainerRef
+} from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ApplicationItem } from '../models/application-item.interface';
 import { ApplicationService } from '../../services/application.service';
 import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
 import { AppActionComponent } from '../components/app-action/app-action.component';
 import { ModalService } from '../../services/modal.service';
+import { ApplicationSharedComponent } from '../app-shared/app-shared.component';
+import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-application-create',
     templateUrl: './app-create.component.html',
     styleUrls: ['./app-create.component.css'],
-    providers: []
+    providers: [],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ApplicationCreateComponent implements OnInit, OnDestroy {
+export class ApplicationCreateComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
 
     @ViewChild('dynamic', { read: ViewContainerRef })
     private viewRef: ViewContainerRef;
 
-    errors: {[name: string]: string[]} = {};
-    message: string = '';
-    messageType: 'error'|'success' = 'error';
-    loading = false;
-    submitted = false;
+    override previewMode = false;
+    errorsObj: {[name: string]: string[]} = {};
     isOptionsActive = false;
-    previewMode = false;
-
+    saving = false;
     itemId: number = 0;
-    data: ApplicationItem = ApplicationService.getDefault();
     selectedElement: AppBlockElement;
     selectedBlock: AppBlock;
     selectedElementIndex: number;
     selectedBlockIndex: number;
     selectedItemOptionsFields: AppBlockElement[] = [];
-    destroyed$: Subject<void> = new Subject();
 
     constructor(
-        protected route: ActivatedRoute,
-        protected router: Router,
-        protected dataService: ApplicationService,
-        protected modalService: ModalService
+        cdr: ChangeDetectorRef,
+        sanitizer: DomSanitizer,
+        route: ActivatedRoute,
+        router: Router,
+        dataService: ApplicationService,
+        apiService: ApiService,
+        modalService: ModalService
     ) {
-
+        super(cdr, sanitizer, route, router, dataService, apiService, modalService);
     }
 
     get optionsTitle(): string {
@@ -53,14 +61,14 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             : $localize `Block Options`;
     }
 
-    ngOnInit(): void {
+    override ngOnInit(): void {
         this.itemId = Number(this.route.snapshot.paramMap.get('id'));
         if (this.itemId) {
             this.getData();
         }
     }
 
-    getData(): void {
+    override getData(): void {
         this.dataService.getItem(this.itemId)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -68,9 +76,10 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
                     this.data = res;
                     this.loading = false;
                     this.addEmptyBlockByGrid();
+                    this.cdr.detectChanges();
                 },
                 error: (err) => {
-                    this.errors = err;
+                    this.errorsObj = err;
                     this.loading = false;
                 }
             });
@@ -128,6 +137,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             this.deleteEmptyBlockByGrid();
             this.addEmptyBlockByGrid();
         }
+        this.cdr.detectChanges();
     }
 
     blockAddElement(block: AppBlock): void {
@@ -140,6 +150,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
+        this.cdr.detectChanges();
     }
 
     deleteEmptyElements(blockCurrent?: AppBlock): void {
@@ -176,8 +187,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         element.orderIndex = elementIndex;
         this.selectedItemOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
-
-        // console.log('showElementOptions', element, this.selectedItemOptionsFields);
+        this.cdr.detectChanges();
     }
 
     showBlockOptions(block: AppBlock, index: number, event?: MouseEvent): void {
@@ -193,6 +203,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         this.selectedBlock = block;
         this.selectedElement = null;
         this.isOptionsActive = true;
+        this.cdr.detectChanges();
     }
 
     deleteElement(block: AppBlock, elementIndex: number): void {
@@ -202,6 +213,7 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
         block.elements.splice(elementIndex, 1);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
+        this.cdr.detectChanges();
     }
 
     updateItemOptions(): void {
@@ -258,32 +270,29 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
             return block.elements.length > emptyElements.length;
         });
         this.message = '';
-        this.errors = {};
+        this.errorsObj = {};
         this.loading = true;
-        this.submitted = true;
+        this.saving = true;
+        this.cdr.detectChanges();
         this.dataService.updateItem(data)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     this.loading = false;
-                    this.submitted = false;
+                    this.saving = true;
                     this.message = $localize `Saved successfully.`;
                     this.messageType = 'success';
+                    this.cdr.detectChanges();
                 },
                 error: (err) => {
-                    this.errors = err;
-                    this.message = 'Please correct the errors.';
+                    this.errorsObj = err;
+                    this.message = $localize `Please correct the errors.`;
                     this.messageType = 'error';
                     this.loading = false;
-                    this.submitted = false;
+                    this.saving = true;
+                    this.cdr.detectChanges();
                 }
             });
-    }
-
-    deleteErrorMessages(name: string) {
-        if (this.errors[name]) {
-            delete this.errors[name];
-        }
     }
 
     elementActionSelect(element: AppBlockElement, blockIndex: number, actionType: 'input'|'output' = 'input'): void {
@@ -326,12 +335,23 @@ export class ApplicationCreateComponent implements OnInit, OnDestroy {
                             element.options.outputApiFieldType = this.modalService.content.selectedFieldType;
                         }
                     }
+                    this.cdr.detectChanges();
                 }
             });
+        this.cdr.detectChanges();
     }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
+    deleteErrorMessages(name: string) {
+        if (this.errorsObj[name]) {
+            delete this.errorsObj[name];
+        }
+        this.cdr.detectChanges();
+    }
+
+    onPreviewSwitch(): void {
+        if (!this.previewMode) {
+            return;
+        }
+        this.createAppOptions();
     }
 }

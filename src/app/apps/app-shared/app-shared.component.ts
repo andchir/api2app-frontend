@@ -12,6 +12,7 @@ import { AppErrors, ApplicationItem } from '../models/application-item.interface
 import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
     selector: 'app-item-shared',
@@ -26,23 +27,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
-
+    previewMode = true;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     itemUuid: string;
-    data: ApplicationItem;
+    data: ApplicationItem = ApplicationService.getDefault();
     destroyed$: Subject<void> = new Subject();
 
     constructor(
-        private cdr: ChangeDetectorRef,
+        protected cdr: ChangeDetectorRef,
         protected sanitizer: DomSanitizer,
         protected route: ActivatedRoute,
         protected router: Router,
         protected dataService: ApplicationService,
-        protected apiService: ApiService
+        protected apiService: ApiService,
+        protected modalService: ModalService
     ) {}
 
     ngOnInit(): void {
@@ -75,7 +77,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data) {
             return;
         }
-        const buttons = {};
+        const buttons = [];
         this.data.blocks.forEach((block) => {
             block.elements.forEach((element) => {
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
@@ -86,10 +88,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 if (element.type === 'button') {
                     if (element.options?.inputApiUuid) {
-                        buttons[element.options?.inputApiUuid] = true;
+                        buttons.push(element.options?.inputApiUuid);
                     }
                     if (element.options?.outputApiUuid) {
-                        buttons[element.options?.outputApiUuid] = true;
+                        buttons.push(element.options?.outputApiUuid);
                     }
                 }
             });
@@ -98,7 +100,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.getApiList('output').then((items) => {
             this.apiItems['output'] = items;
             this.apiUuidsList.output.forEach((apiUuid) => {
-                if (!buttons[apiUuid]) {
+                if (!buttons.includes(apiUuid)) {
                     this.appAutoStart(apiUuid);
                 }
             });
@@ -124,12 +126,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         );
     }
 
-    deleteErrorMessages(name: string) {
-        if (this.errors[name]) {
-            delete this.errors[name];
-        }
-    }
-
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
@@ -139,7 +135,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', createErrorMessages = true): void {
-        if (!apiUuid) {
+        if (!apiUuid || !this.previewMode) {
             return;
         }
         this.message = '';
@@ -517,12 +513,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onElementClick(element: AppBlockElement): void {
+        if (!this.previewMode) {
+            return;
+        }
         if (element.type === 'button' && element.options?.inputApiUuid) {
             this.appSubmit(element.options.inputApiUuid, 'output');
         }
     }
 
     onElementValueChanged(element: AppBlockElement): void {
+        if (!this.previewMode) {
+            return;
+        }
         const apiUuid = element.options?.inputApiUuid;
         if (!apiUuid) {
             return;
@@ -537,6 +539,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {
+        if (!this.previewMode) {
+            return;
+        }
         const apiUuid = element.options?.inputApiUuid;
         if (!apiUuid) {
             return;
