@@ -314,11 +314,13 @@
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                        {{ options?.label }}
-                    </label>
-                    <input type="color" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block w-16 h-10 p-1 rounded-lg border border-gray-300 hover:border-blue-500"
-                           [(ngModel)]="options.value">
+                    <div class="flex items-center justify-between p-1 rounded-lg border border-gray-300">
+                        <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="grow block px-2 text-sm font-medium text-gray-900">
+                            {{ options?.label }}
+                        </label>
+                        <input type="color" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block w-16 h-10 p-1 rounded border border-gray-300"
+                               [(ngModel)]="options.value">
+                    </div>
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
