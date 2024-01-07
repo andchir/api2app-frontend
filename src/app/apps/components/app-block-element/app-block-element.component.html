@@ -203,6 +203,10 @@
                                [addTag]="true"
                                [multiple]="true"
                                [selectOnTab]="true"
+                               notFoundText="No items found"
+                               i18n-notFoundText
+                               addTagText="Add item"
+                               i18n-addTagText
                                labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                [(ngModel)]="options.value">
                     </ng-select>
