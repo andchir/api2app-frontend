@@ -49,23 +49,42 @@
                 <!-- news -->
                 <h2 class="text-3xl tracking-tight text-gray-900 mb-4" i18n>News</h2>
 
-                <div class="mb-4 text-sm">
-                    <div class="mb-2 text-gray-400">
-                        25.12.2023
+                <ng-container *ngIf="locale === 'ru'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            25.12.2023
+                        </div>
+                        <div>
+                            Включена регистрация пользователей. Добавлена возможность выбора языка, пока доступны только английский и русский.
+                        </div>
                     </div>
-                    <div>
-                        Включена регистрация пользователей. Добавлена возможность выбора языка, пока доступны только английский и русский.
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            08.12.2023
+                        </div>
+                        <div>
+                            Вышла альфа версия приложения на домене "api2app.ru". Пока нет регистрации для пользователей. Тестируем минимальный функционал.
+                        </div>
                     </div>
-                </div>
-
-                <div class="mb-4 text-sm">
-                    <div class="mb-2 text-gray-400">
-                        08.12.2023
+                </ng-container>
+                <ng-container *ngIf="locale === 'en'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            12/25/2023
+                        </div>
+                        <div>
+                            User registration is enabled. Added the ability to select a language; currently only English and Russian are available.
+                        </div>
                     </div>
-                    <div>
-                        Вышла альфа версия приложения на домене "api2app.ru". Пока нет регистрации для пользователей. Тестируем минимальный функционал.
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            12/08/2023
+                        </div>
+                        <div>
+                            The alpha version of the application has been released on the "api2app.ru" domain. There is no registration for users yet. Testing minimal functionality.
+                        </div>
                     </div>
-                </div>
+                </ng-container>
                 <!-- /news -->
 
             </div>
