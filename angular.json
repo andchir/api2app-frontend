@@ -53,7 +53,9 @@
                             "apexcharts",
                             "ace-builds",
                             "moment"
-                        ]
+                        ],
+                        "localize": true,
+                        "i18nMissingTranslation": "error"
                     },
                     "configurations": {
                         "ru": {
