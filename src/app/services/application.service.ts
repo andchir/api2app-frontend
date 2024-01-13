@@ -659,6 +659,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 });
                 break;
             case 'audio':
+            case 'video':
                 output.push({
                     name: 'name',
                     label: $localize `Name`,
@@ -929,8 +930,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 });
                 break;
             case 'audio':
+            case 'video':
                 Object.assign(output, {
-                    name: 'audio'
+                    name: type
                 });
                 break;
             case 'input-chart-line':

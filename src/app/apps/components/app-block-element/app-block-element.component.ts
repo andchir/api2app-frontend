@@ -46,6 +46,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-file', title: $localize `Upload File`},
         {name: 'image', title: $localize `Image`},
         {name: 'audio', title: $localize `Audio`},
+        {name: 'video', title: $localize `Video`},
         {name: 'input-chart-line', title: $localize `Line Chart`}
     ];
 

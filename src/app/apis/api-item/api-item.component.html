@@ -318,7 +318,7 @@
             </ul>
         </div>
 
-        <div class="relative grow min-h-[300px]" [ngClass]="{'hidden': previewSate !== 'data' || ['image', 'audio'].includes(apiItem.responseContentType)}">
+        <div class="relative grow min-h-[300px]" [ngClass]="{'hidden': previewSate !== 'data' || ['image', 'audio', 'video'].includes(apiItem.responseContentType)}">
             <div class="app-ace-editor w-full h-full rounded-md border border-gray-200 shadow-sm" #editorResponse
                  [ngClass]="{'border-red-600': isResponseError, 'opacity-50': loading && submitted}"></div>
             <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2" *ngIf="loading && submitted">
@@ -328,11 +328,15 @@
         </div>
 
         <div *ngIf="previewSate == 'data' && apiItem.responseContentType === 'image'">
-            <img class="border border-slate-300 shadow-md" [src]="apiItem.responseBody" width="300" alt="Image" *ngIf="apiItem.responseBody; else templateEmptyImage">
+            <img class="border border-slate-300 shadow-md" [src]="apiItem.responseBody" width="300" alt="Image" *ngIf="apiItem.responseBody; else templateEmptyMedia">
         </div>
 
         <div *ngIf="previewSate == 'data' && apiItem.responseContentType === 'audio'">
-            <audio class="block w-full border border-slate-300 shadow-md" [src]="apiItem.responseBody" *ngIf="apiItem.responseBody; else templateEmptyImage" controls></audio>
+            <audio class="block w-full border border-slate-300 shadow-md" [src]="apiItem.responseBody" *ngIf="apiItem.responseBody; else templateEmptyMedia" controls></audio>
+        </div>
+
+        <div *ngIf="previewSate == 'data' && apiItem.responseContentType === 'video'">
+            <video class="block w-full border border-slate-300 shadow-md" [src]="apiItem.responseBody" *ngIf="apiItem.responseBody; else templateEmptyMedia" controls></video>
         </div>
 
         <div *ngIf="previewSate == 'headers'">
@@ -353,7 +357,7 @@
 
 </div>
 
-<ng-template #templateEmptyImage>
+<ng-template #templateEmptyMedia>
     <div class="p-4 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center">
         <div *ngIf="isResponseError">
             <span i18n>Error.</span>
@@ -361,6 +365,7 @@
         <div *ngIf="!isResponseError">
             <i class="bi bi-image mr-2" *ngIf="apiItem.responseContentType === 'image'"></i>
             <i class="bi bi-music-note-beamed mr-2" *ngIf="apiItem.responseContentType === 'audio'"></i>
+            <i class="bi bi-play-btn mr-2" *ngIf="apiItem.responseContentType === 'video'"></i>
             <span i18n>Empty.</span>
         </div>
     </div>

@@ -31,7 +31,8 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         'html',
         'text',
         'image',
-        'audio'
+        'audio',
+        'video'
     ];
     previewSate: 'data'|'headers' = 'data';
     isResponseError = false;
@@ -60,10 +61,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (changes['apiItem'] && this.aceEditor) {
-            if (!['audio', 'image'].includes(this.apiItem.responseContentType)) {
+            if (!this.getIsMediaType(this.apiItem.responseContentType)) {
                 this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
             }
-            if (!['audio', 'image'].includes(this.apiItem.requestContentType)) {
+            if (!this.getIsMediaType(this.apiItem.requestContentType)) {
                 this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
             }
             this.aceEditor.session.setValue(this.apiItem.responseBody);
@@ -76,7 +77,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
         this.aceEditor = ace.edit(this.editorResponse.nativeElement);
         this.aceEditor.setTheme('ace/theme/textmate');
-        if (!['audio', 'image'].includes(this.apiItem.responseContentType)) {
+        if (!this.getIsMediaType(this.apiItem.responseContentType)) {
             this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
         }
 
@@ -87,7 +88,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.aceEditorRequest = ace.edit(this.editorRequest.nativeElement);
         this.aceEditorRequest.setTheme('ace/theme/textmate');
-        if (!['audio', 'image'].includes(this.apiItem.requestContentType)) {
+        if (!this.getIsMediaType(this.apiItem.requestContentType)) {
             this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
         }
 
@@ -158,7 +159,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                                 } else {
                                     this.apiItem.responseBody = data;
                                 }
-                                if (!['image', 'audio'].includes(this.apiItem.responseContentType)) {
+                                if (!this.getIsMediaType(this.apiItem.responseContentType)) {
                                     this.aceEditor.session.setValue(this.apiItem.responseBody);
                                 }
                             })
@@ -198,6 +199,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
             });
     }
 
+    getIsMediaType(type: string): boolean {
+        return ['audio', 'image', 'video'].includes(type);
+    }
+
     requestMethodUpdate(method: string): void {
         this.apiItem.requestMethod = method;
     }
@@ -205,12 +210,18 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     responseContentTypeUpdate(contentType: string) {
         this.apiItem.responseContentType = contentType;
         const responseContentTypes = this.responseContentTypes.filter((item) => {
-            return !['image', 'audio'].includes(item);
+            return !this.getIsMediaType(item);
         });
         if (responseContentTypes.includes(contentType)) {
             this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
         }
         if (this.apiItem.responseContentType === 'image' && !this.apiItem.responseBody.includes('data:image/')) {
+            this.apiItem.responseBody = '';
+        }
+        if (this.apiItem.responseContentType === 'audio' && !this.apiItem.responseBody.includes('data:audio/')) {
+            this.apiItem.responseBody = '';
+        }
+        if (this.apiItem.responseContentType === 'video' && !this.apiItem.responseBody.includes('data:video/')) {
             this.apiItem.responseBody = '';
         }
     }
