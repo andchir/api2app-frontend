@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class ConfirmComponent implements OnInit {
 
-    @Input() message = 'Are you sure you want to delete this item?';
+    @Input() message = $localize `Are you sure you want to delete this item?`;
     @Input() type = 'confirm';
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();

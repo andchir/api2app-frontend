@@ -63,7 +63,11 @@
     </div>
 </ng-container>
 
-<app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
+<app-confirm
+    message="Are you sure you want to delete this application?"
+    i18n-message
+    [(isActive)]="isDeleteAction"
+    (confirmed)="deleteItemConfirmed()"></app-confirm>
 
 <app-share-item modalTitle="Share Application"
                 i18n-modalTitle

@@ -70,6 +70,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    this.itemId = res.id;
+                    this.data.id = this.itemId;
                     this.loading = false;
                     this.submitted = false;
                     this.message = $localize `Saved successfully.`;

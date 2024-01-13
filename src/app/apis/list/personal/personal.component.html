@@ -70,7 +70,11 @@
     </div>
 </ng-container>
 
-<app-confirm [(isActive)]="isDeleteAction" (confirmed)="deleteItemConfirmed()"></app-confirm>
+<app-confirm
+    message="Are you sure you want to delete this API?"
+    i18n-message
+    [(isActive)]="isDeleteAction"
+    (confirmed)="deleteItemConfirmed()"></app-confirm>
 
 <app-share-item modalTitle="Share API"
                 i18n-modalTitle

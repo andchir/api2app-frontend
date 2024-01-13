@@ -304,6 +304,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
+                    this.itemId = res.id;
+                    this.data.id = this.itemId;
                     this.loading = false;
                     this.saving = true;
                     this.message = $localize `Saved successfully.`;
