@@ -105,10 +105,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.orderIndex || 0
                 });
                 output.push({
-                    name: 'value',
+                    name: 'text',
                     label: $localize `Text`,
                     type: 'input-text',
-                    value: options?.value
+                    value: options?.text
                 });
                 output.push({
                     name: 'color',
@@ -116,6 +116,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-select',
                     value: options?.color,
                     choices: ['Green', 'Blue', 'Red']
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
                 });
                 break;
             case 'input-text':
@@ -174,6 +180,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Required`,
                     type: 'input-switch',
                     enabled: options?.required || false
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
                 });
                 break;
             case 'input-number':
@@ -467,6 +479,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     label: $localize `Required`,
                     type: 'input-switch',
                     enabled: options?.required || false
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
                 });
                 break;
             case 'input-tags':
@@ -781,14 +799,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     prefixText: '',
                     suffixText: '',
                     color: 'Black',
-                    whiteSpacePre: false
+                    whiteSpacePre: false,
+                    hiddenByDefault: false
                 });
                 break;
             case 'button':
                 Object.assign(output, {
                     name: 'submit',
-                    value: $localize `Submit`,
-                    color: 'Green'
+                    text: $localize `Submit`,
+                    color: 'Green',
+                    hiddenByDefault: false
                 });
                 break;
             case 'input-text':
@@ -801,6 +821,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     suffixText: '',
                     readOnly: false,
                     required: true,
+                    hiddenByDefault: false,
                     value: ''
                 });
                 break;
@@ -870,6 +891,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     clearable: true,
                     addTag: false,
                     selectDefaultFirst: true,
+                    hiddenByDefault: false,
                     value: 'Value1'
                 });
                 break;
@@ -880,6 +902,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-select',
                     placeholder: $localize `Please Add Tags`,
                     required: true,
+                    hiddenByDefault: false,
                     choices: [],
                     value: ['Value1', 'Value2', 'Value3']
                 });
@@ -926,13 +949,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 Object.assign(output, {
                     name: 'image',
                     itemFieldName: '',
-                    itemThumbnailFieldName: ''
+                    itemThumbnailFieldName: '',
+                    hiddenByDefault: false
                 });
                 break;
             case 'audio':
             case 'video':
                 Object.assign(output, {
-                    name: type
+                    name: type,
+                    hiddenByDefault: false
                 });
                 break;
             case 'input-chart-line':
@@ -944,7 +969,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     fieldNameAxisY: '',
                     itemFieldName: 'id',
                     isXAxisDate: false,
-                    format: 'MMM DD, HH:mm'
+                    format: 'MMM DD, HH:mm',
+                    hiddenByDefault: false
                 });
                 break;
         }

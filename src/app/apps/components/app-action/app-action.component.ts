@@ -128,7 +128,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     getApiOptions(): void {
-        if (!this.selectedApi || ['button'].includes(this.elementType)) {
+        if (!this.selectedApi || ['button'].includes(this.elementType) && this.actionType === 'input') {
             this.inputFields.push('submit');
             this.cdr.detectChanges();
             return;

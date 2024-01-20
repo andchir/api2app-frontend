@@ -70,7 +70,8 @@
 
         <ng-container *ngSwitchCase="'button'">
             <div class="mb-3"
-                 [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                 [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.value)">
                 <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center"
                     [ngClass]="{
                     'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color === 'Green',
@@ -78,7 +79,7 @@
                     'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color === 'Red'
                     }"
                     (click)="onClick()">
-                    {{ options?.value }}
+                    {{ options?.text }}
                 </button>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -147,7 +148,8 @@
 
         <ng-container *ngSwitchCase="'input-select'">
             <div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
                 <div class="w-full max-w-[600px] mx-auto">
                     <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                         {{ options?.label }}
@@ -454,8 +456,7 @@
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Output Action"
                 i18n-title
-                (click)="elementActionSelect('output', $event)"
-                *ngIf="type !== 'button'">
+                (click)="elementActionSelect('output', $event)">
             <i class="bi bi-arrow-up text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>

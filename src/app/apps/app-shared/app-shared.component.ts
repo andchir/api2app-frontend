@@ -525,8 +525,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.previewMode) {
             return;
         }
-        if (element.type === 'button' && element.options?.inputApiUuid) {
-            this.appSubmit(element.options.inputApiUuid, 'output');
+        if (element.type === 'button') {
+            if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
+                this.appSubmit(element.options.inputApiUuid, 'output');
+            } else if (element.value && String(element.value).match(/https?:\/\//)) {
+                window.open(String(element.value), '_blank').focus();
+            }
         }
     }
 
@@ -540,7 +544,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const allElements = this.getAllElements();
         const buttonElement = allElements.find((el) => {
-            return el.type === 'button' && (el.options?.inputApiUuid === apiUuid || el.options?.outputApiUuid === apiUuid);
+            return el.type === 'button' && el.options?.inputApiUuid === apiUuid;
         });
         if (!buttonElement) {
             this.appSubmit(apiUuid, 'output');
