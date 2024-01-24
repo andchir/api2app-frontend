@@ -67,6 +67,10 @@
                         },
                         "production": {
                             "localize": ["en", "ru"],
+                            "index": {
+                                "input": "src/index-ru.html",
+                                "output": "index.html"
+                            },
                             "budgets": [
                                 {
                                     "type": "initial",
