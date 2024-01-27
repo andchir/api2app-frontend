@@ -27,3 +27,9 @@
     min-height: 42px;
     border-radius: .5rem;
 }
+
+/* pagination */
+.app-pagination .ngx-pagination li,
+.app-pagination .ngx-pagination li > a {
+    border-radius: 6px;
+}

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
@@ -60,25 +61,23 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.createChartOptions();
-        this.updatePagesOptions();
         if (!this.editorMode) {
             this.updateStateByOptions();
+        }
+        if (this.options.type === 'input-pagination' && !this.options.valueObj) {
+            this.updatePagesOptions();
         }
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('ngOnChanges', this.options?.type, changes);
+        // console.log('ngOnChanges', this.options.type, changes);
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             if (this.chartOptions) {
                 this.chartOptionsUpdate();
             }
         }
-        if (this.options.type === 'input-pagination' && changes['value']) {
-            this.updatePagesOptions();
-        }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
             this.updateStateByOptions();
-            this.updatePagesOptions();
         }
     }
 
@@ -151,6 +150,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                     this.options.value = now.format('YYYY-MM-DD HH:mm');
                 }
                 break;
+            case 'input-pagination':
+                this.updatePagesOptions();
+                break;
         }
     }
 
@@ -207,18 +209,21 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     updatePagesOptions(): void {
-        console.log('updatePagesOptions', this.options?.value);
-        this.pagesOptions = {
+        this.options.valueObj = {
             id: this.options.name,
-            totalItems: this.editorMode ? 100 : (this.options?.value || 0),
+            totalItems: this.editorMode ? 100 : 0,
             itemsPerPage: this.options.perPage,
             currentPage: 1
         }
+        this.options.value = 1;
     }
 
     onPageChanged(pageNumber: number): void {
+        if (!this.options.valueObj) {
+            this.updatePagesOptions();
+        }
+        this.options.valueObj.currentPage = pageNumber;
         this.options.value = pageNumber;
-        this.pagesOptions.currentPage = pageNumber;
         this.onFieldValueChanged();
     }
 

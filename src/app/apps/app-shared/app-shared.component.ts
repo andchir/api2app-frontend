@@ -116,7 +116,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, 'output', false);
+        this.appSubmit(apiUuid, 'output', null, false);
     }
 
     getAllElements(): AppBlockElement[] {
@@ -143,7 +143,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', createErrorMessages = true): void {
+    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', element?: AppBlockElement, createErrorMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -155,7 +155,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType, createErrorMessages);
+                this.appSubmit(apiUuid, actionType, element, createErrorMessages);
             });
             return;
         }
@@ -176,6 +176,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.loading = false;
             this.submitted = false;
             return;
+        }
+        if (element?.type !== 'input-pagination') {
+            this.clearPagination(apiUuid);
         }
         this.stateLoadingUpdate(apiUuid, true);
         const apiItem = this.prepareApiItem(currentApi);
@@ -420,13 +423,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                     elements.forEach((element) => {
-                        if (['input-chart-line'].includes(element.type)) {
+                        if (element.type === 'input-chart-line') {
                             this.chartElementValueApply(element, data);
+                        } else if (element.type === 'input-pagination') {
+                            this.paginationValueApply(element, data);
                         } else {
                             this.blockElementValueApply(element, valuesObj, data);
                         }
-                        this.cdr.detectChanges();
                     });
+                    this.cdr.detectChanges();
                 })
                 .catch((err) => {
                     console.log(err);
@@ -488,6 +493,29 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = {xAxisData, yAxisData, data: outData};
     }
 
+    paginationValueApply(element: AppBlockElement, data: any): void {
+        const dataKey = element.options?.outputApiFieldName;
+        element.valueObj = {
+            id: element.name,
+            totalItems: data[dataKey] || 0,
+            itemsPerPage: element.perPage,
+            currentPage: element.value || 1
+        }
+    }
+
+    clearPagination(apiUuid: string): void {
+        const allElements = this.getAllElements();
+        const elements = allElements.filter((el) => {
+            return el.type === 'input-pagination' && el.options?.inputApiUuid === apiUuid;
+        });
+        elements.forEach((elements) => {
+            elements.value = 1;
+            if (elements.valueObj) {
+                elements.valueObj.currentPage = 1;
+            }
+        });
+    }
+
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
         const fieldName = element.options?.outputApiFieldName;
         if (!fieldName) {
@@ -496,10 +524,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = '';
+            this.cdr.detectChanges();
             return;
         }
         if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
             element.value = this.sanitizer.bypassSecurityTrustResourceUrl(value);
+            this.cdr.detectChanges();
             return;
         }
         if (this.isJson(value)) {
@@ -514,6 +544,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else {
                 element.value = null;
             }
+        } if (['input-switch', 'input-number', 'input-slider'].includes(element.type)) {
+            element.value = value;
         } else {
             element.value = (element.prefixText || '')
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
@@ -527,7 +559,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (element.type === 'button') {
             if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
-                this.appSubmit(element.options.inputApiUuid, 'output');
+                this.appSubmit(element.options.inputApiUuid, 'output', element);
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 window.open(String(element.value), '_blank').focus();
             }
@@ -547,7 +579,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return el.type === 'button' && el.options?.inputApiUuid === apiUuid;
         });
         if (!buttonElement || ['input-pagination'].includes(element.type)) {
-            this.appSubmit(apiUuid, 'output');
+            this.appSubmit(apiUuid, 'output', element);
         }
     }
 
@@ -559,7 +591,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(apiUuid, 'output');
+        this.appSubmit(apiUuid, 'output', element);
     }
 
     isJson(str: string): boolean {

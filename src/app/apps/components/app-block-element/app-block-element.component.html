@@ -431,20 +431,22 @@
         <ng-container *ngSwitchCase="'input-pagination'">
             <div class="mb-3 text-center"
                  [ngClass]="{'min-h-[20px] rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <span class="hidden" *ngFor="let item of [1,2,3,4] | paginate: pagesOptions">
+                <span class="hidden" *ngFor="let item of [1,2,3,4] | paginate: options.valueObj">
                     {{ item }}
                 </span>
-                <pagination-controls [id]="options?.name"
-                                     [maxSize]="9"
-                                     [directionLinks]="true"
-                                     [autoHide]="true"
-                                     [responsive]="true"
-                                     previousLabel="Previous"
-                                     i18n-previousLabel
-                                     nextLabel="Next"
-                                     i18n-nextLabel
-                                     (pageChange)="onPageChanged($event)">
-                </pagination-controls>
+                <div class="app-pagination">
+                    <pagination-controls [id]="options.valueObj?.id"
+                                         [maxSize]="9"
+                                         [directionLinks]="true"
+                                         [autoHide]="true"
+                                         [responsive]="true"
+                                         previousLabel="Previous"
+                                         i18n-previousLabel
+                                         nextLabel="Next"
+                                         i18n-nextLabel
+                                         (pageChange)="onPageChanged($event)">
+                    </pagination-controls>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

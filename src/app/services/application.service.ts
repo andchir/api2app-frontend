@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import {AppBlock, AppBlockElement, AppBlockElementType, AppOptions} from '../apps/models/app-block.interface';
+import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
 
 const BASE_URL = environment.apiUrl;
 
