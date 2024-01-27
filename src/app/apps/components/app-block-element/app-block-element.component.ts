@@ -76,6 +76,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 this.chartOptionsUpdate();
             }
         }
+        if (this.options.type === 'input-pagination' && changes['type']) {
+            if (this.options.type === 'input-pagination' && !this.options.valueObj) {
+                this.updatePagesOptions();
+            }
+        }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
             this.updateStateByOptions();
         }
