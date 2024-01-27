@@ -1,4 +1,9 @@
-# fastapp-frontend
+# api2app-frontend
+
+Run in development mode:
+~~~
+npm start
+~~~
 
 Build for production:
 ~~~

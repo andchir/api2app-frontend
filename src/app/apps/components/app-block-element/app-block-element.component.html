@@ -33,6 +33,7 @@
                             <i class="bi bi-play-btn mr-1 text-gray-400" *ngIf="item.name === 'video'"></i>
                             <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'input-chart-line'"></i>
                             <i class="bi bi-sliders mr-1 text-gray-400" *ngIf="item.name === 'input-slider'"></i>
+                            <i class="bi bi-three-dots mr-1 text-gray-400" *ngIf="item.name === 'input-pagination'"></i>
                             {{ item.title }}
                         </ng-template>
                     </ng-select>
@@ -423,6 +424,27 @@
                     [fill]="chartOptions?.fill"
                     [stroke]="{width: 2}"
                     [dataLabels]="{enabled: false}"></apx-chart>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'input-pagination'">
+            <div class="mb-3 text-center"
+                 [ngClass]="{'min-h-[20px] rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <span class="hidden" *ngFor="let item of [1,2,3,4] | paginate: pagesOptions">
+                    {{ item }}
+                </span>
+                <pagination-controls [id]="options?.name"
+                                     [maxSize]="9"
+                                     [directionLinks]="true"
+                                     [autoHide]="true"
+                                     [responsive]="true"
+                                     previousLabel="Previous"
+                                     i18n-previousLabel
+                                     nextLabel="Next"
+                                     i18n-nextLabel
+                                     (pageChange)="onPageChanged($event)">
+                </pagination-controls>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

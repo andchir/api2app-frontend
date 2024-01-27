@@ -779,6 +779,30 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     value: options?.itemFieldName
                 });
                 break;
+            case 'input-pagination':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'perPage',
+                    label: $localize `Items per page`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.perPage
+                });
+                break;
         }
         return output;
     }
@@ -971,6 +995,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     isXAxisDate: false,
                     format: 'MMM DD, HH:mm',
                     hiddenByDefault: false
+                });
+                break;
+            case 'input-pagination':
+                Object.assign(output, {
+                    name: 'pages',
+                    perPage: 20,
+                    value: 1
                 });
                 break;
         }

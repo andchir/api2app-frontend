@@ -546,7 +546,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const buttonElement = allElements.find((el) => {
             return el.type === 'button' && el.options?.inputApiUuid === apiUuid;
         });
-        if (!buttonElement) {
+        if (!buttonElement || ['input-pagination'].includes(element.type)) {
             this.appSubmit(apiUuid, 'output');
         }
     }
