@@ -506,7 +506,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
-            element.valueArr = value;
+            element.valueArr = this.flattenObjInArray(value);
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
@@ -572,6 +572,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return false;
         }
         return true;
+    }
+
+    flattenObjInArray(inputArr: any[]): any[] {
+        return inputArr.map((item) => {
+            return this.flattenObj(item);
+        });
+    }
+
+    flattenObj(obj: any, parent: string = '', res: any = {}): any {
+        for (let key in obj) {
+            if (!obj.hasOwnProperty(key)) continue;
+            let propName = parent ? parent + '.' + key : key;
+            if (typeof obj[key] == 'object' && !Array.isArray(obj[key])) {
+                this.flattenObj(obj[key], propName, res);
+            } else {
+                res[propName] = obj[key];
+            }
+        }
+        return res;
     }
 
     ngOnDestroy(): void {
