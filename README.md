@@ -1,5 +1,7 @@
 # api2app-frontend
 
+Service for quickly creating a graphical interface for an API. The created application can be made available to everyone or used via a private link.  
+
 Run in development mode:
 ~~~
 npm start
