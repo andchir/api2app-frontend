@@ -12,6 +12,7 @@ export interface ApplicationItem {
     shared: boolean;
     hidden: boolean;
     gridColumns: number;
+    language: string;
     blocks: AppBlock[];
     user?: User;
 }

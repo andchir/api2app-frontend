@@ -1098,6 +1098,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             shared: false,
             hidden: false,
             gridColumns: 3,
+            language: '',
             blocks: [{elements: []}, {elements: []}, {elements: []}]
         };
     }

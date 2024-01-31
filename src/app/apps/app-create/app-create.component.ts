@@ -1,7 +1,7 @@
 import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
-    Component,
+    Component, Inject, LOCALE_ID,
     OnDestroy,
     OnInit,
     ViewChild,
@@ -45,6 +45,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     selectedItemOptionsFields: AppBlockElement[] = [];
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         cdr: ChangeDetectorRef,
         sanitizer: DomSanitizer,
         route: ActivatedRoute,
@@ -276,7 +277,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     saveData(): void {
-        const data = Object.assign({}, this.data);
+        const data = Object.assign({}, this.data, {language: this.locale});
         let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
         blocks = blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);
