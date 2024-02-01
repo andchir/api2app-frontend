@@ -544,7 +544,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else {
                 element.value = null;
             }
-        } if (['input-switch', 'input-number', 'input-slider'].includes(element.type)) {
+        } else if (['input-switch', 'input-number', 'input-slider'].includes(element.type)) {
             element.value = value;
         } else {
             element.value = (element.prefixText || '')
@@ -613,6 +613,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     flattenObj(obj: any, parent: string = '', res: any = {}): any {
+        if (typeof obj !== 'object' || Array.isArray(obj)) {
+            return obj;
+        }
         for (let key in obj) {
             if (!obj.hasOwnProperty(key)) continue;
             let propName = parent ? parent + '.' + key : key;
