@@ -61,7 +61,7 @@
                         "ru": {
                             "localize": ["ru"],
                             "index": {
-                                "input": "src/index-ru.html",
+                                "input": "src/index-dev.html",
                                 "output": "index.html"
                             }
                         },
