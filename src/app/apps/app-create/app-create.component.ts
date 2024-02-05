@@ -7,7 +7,7 @@ import {
     ViewChild,
     ViewContainerRef
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { takeUntil } from 'rxjs';
@@ -20,6 +20,9 @@ import { ModalService } from '../../services/modal.service';
 import { ApplicationSharedComponent } from '../app-shared/app-shared.component';
 import { ApiService } from '../../services/api.service';
 import { TokenStorageService } from '../../services/token-storage.service';
+import { environment } from '../../../environments/environment';
+
+const APP_NAME = environment.appName;
 
 @Component({
     selector: 'app-application-create',
@@ -46,6 +49,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
+        titleService: Title,
         cdr: ChangeDetectorRef,
         sanitizer: DomSanitizer,
         route: ActivatedRoute,
@@ -55,7 +59,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         apiService: ApiService,
         modalService: ModalService
     ) {
-        super(cdr, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService);
     }
 
     get optionsTitle(): string {

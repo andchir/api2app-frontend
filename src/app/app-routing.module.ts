@@ -10,52 +10,72 @@ import { AuthRegisterComponent } from './auth/auth-register.component';
 import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
 import { AuthUserActivateComponent } from './auth/auth-activate.component';
 import { AuthPasswordResetConfirmComponent } from './auth/auth-password-reset-confirm.component';
+import {MyProfileComponent} from "./my-profile/my-profile.component";
 
 const routes: Routes = [
     {
         path: '',
-        component: HomeComponent
+        component: HomeComponent,
+        title: $localize `Home Page`
     },
     {
         path: 'auth',
-        redirectTo: 'auth/login',
-        pathMatch: 'full'
-    },
-    {
-        path: 'auth/login',
-        component: AuthLoginComponent
-    },
-    {
-        path: 'auth/register',
-        component: AuthRegisterComponent
-    },
-    {
-        path: 'auth/password_reset',
-        component: AuthPasswordResetComponent
-    },
-    {
-        path: 'auth/activate/:uid/:token',
-        component: AuthUserActivateComponent
-    },
-    {
-        path: 'auth/password_reset_confirm/:uid/:token',
-        component: AuthPasswordResetConfirmComponent
-    },
-    {
-        path: 'auth/logout',
-        component: AuthLogoutComponent
+        children: [
+            {
+                path: '',
+                redirectTo: 'login',
+                pathMatch: 'full'
+            },
+            {
+                path: 'login',
+                component: AuthLoginComponent,
+                title: $localize `Log in`
+            },
+            {
+                path: 'register',
+                component: AuthRegisterComponent,
+                title: $localize `Register`
+            },
+            {
+                path: 'password_reset',
+                component: AuthPasswordResetComponent,
+                title: $localize `Reset the password`
+            },
+            {
+                path: 'activate/:uid/:token',
+                component: AuthUserActivateComponent,
+                title: $localize `User Activation`
+            },
+            {
+                path: 'password_reset_confirm/:uid/:token',
+                component: AuthPasswordResetConfirmComponent,
+                title: $localize `Password Reset Confirmation`
+            },
+            {
+                path: 'logout',
+                component: AuthLogoutComponent,
+                title: $localize `Sign Out`
+            }
+        ]
     },
     {
         path: 'dashboard',
         component: DashboardComponent
     },
     {
+        path: 'my-profile',
+        component: MyProfileComponent,
+        title: $localize `My profile`
+    },
+    {
         path: 'apis',
         loadChildren: () => import('./apis/apis.module').then(m => m.ApisModule),
+        title: $localize `APIs`
     },
     {
         path: 'apps',
         loadChildren: () => import('./apps/apps.module').then(m => m.AppsModule),
+        title: $localize `Applications`
     },
     {
         path: '**',

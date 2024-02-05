@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -14,6 +15,9 @@ import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
 import { TokenStorageService } from '../../services/token-storage.service';
+import { environment } from '../../../environments/environment';
+
+const APP_NAME = environment.appName;
 
 @Component({
     selector: 'app-item-shared',
@@ -42,6 +46,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     constructor(
         protected cdr: ChangeDetectorRef,
+        protected titleService: Title,
         protected sanitizer: DomSanitizer,
         protected route: ActivatedRoute,
         protected router: Router,
@@ -67,6 +72,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.data = res;
+                    this.titleService.setTitle(`${this.data.name} - ${APP_NAME}`);
                     this.loading = false;
                     this.createAppOptions();
                     this.cdr.detectChanges();

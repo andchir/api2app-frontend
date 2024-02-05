@@ -70,8 +70,8 @@ export class AuthPasswordResetConfirmComponent implements OnDestroy {
                 error: (err) => {
                     // console.log(err);
                     this.messageType = 'error';
-                    if (err?.error?.token) {
-                        this.message = err?.error?.token.join(' ');
+                    if (err?.error?.token || err?.error?.uid) {
+                        this.message = err?.error?.token ? err?.error?.token.join(' ') : err?.error?.uid.join(' ');
                     } else if (err?.error?.detail) {
                         this.message = err?.error?.detail;
                     } else {
