@@ -215,6 +215,17 @@
         "8939587804990976924": "Items per page",
         "4452427314943113135": "Previous",
         "3885497195825665706": "Next",
-        "8258325324649507024": "My profile"
+        "8258325324649507024": "My profile",
+        "5663262086756525973": "Change Email",
+        "1846542227840529109": "Current Password",
+        "6247417597982098413": "Update user details",
+        "6309828574111583895": "Change password",
+        "1221596867309460035": "New Password",
+        "6111186413185119082": "The password has been successfully changed.",
+        "6028371114637047813": "First Name",
+        "4410595138621609690": "Enter your first name",
+        "4407559560004943843": "Last Name",
+        "6986696995596700053": "Enter your last name",
+        "2611908405327467060": "Your profile has been successfully changed."
     }
 }

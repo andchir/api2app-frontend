@@ -60,6 +60,22 @@ export class AuthService {
         }, this.httpOptions);
     }
 
+    passwordSet(current_password: string, new_password: string): Observable<any> {
+        return this.httpClient.post(`${this.requestUrl}users/set_password/`, {
+            current_password,
+            new_password
+        }, this.httpOptions);
+    }
+
+    updateProfile(email: string, username: string, first_name: string, last_name: string): Observable<any> {
+        return this.httpClient.put(`${this.requestUrl}users/me/`, {
+            email,
+            username,
+            first_name,
+            last_name
+        }, this.httpOptions);
+    }
+
     activateUser(uid: string, token: string): Observable<any> {
         return this.httpClient.post(`${this.requestUrl}users/activation/`, {
             uid, token
