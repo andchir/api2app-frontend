@@ -10,7 +10,7 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { AuthService } from '../services/auth.service';
 
 const TOKEN_HEADER_KEY = 'Authorization';
-const BASE_URL = environment.apiUrl;
+const BASE_URL = environment.apiUrl === '/' ? `${window.location.origin}/` : environment.apiUrl;
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
