@@ -3,10 +3,8 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 
 import { catchError, Observable, throwError } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 import { User } from '../apis/models/user.interface';
-
-const BASE_URL = environment.apiUrl;
 
 @Injectable()
 export class UserService {

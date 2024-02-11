@@ -1,14 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 
 import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
 import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
-
-const BASE_URL = environment.apiUrl;
 
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {

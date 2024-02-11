@@ -3,10 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 import { User } from '../apis/models/user.interface';
 
-const BASE_URL = environment.apiUrl;
 const NEXT_ROUTE_KEY = 'next-route';
 
 @Injectable({

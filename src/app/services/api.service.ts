@@ -1,14 +1,12 @@
 import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable, isDevMode, LOCALE_ID } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 
 import { catchError, iif, Observable } from 'rxjs';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
 import { DataService } from './data.service.abstract';
-
-const BASE_URL = environment.apiUrl;
 
 @Injectable()
 export class ApiService extends DataService<ApiItem> {

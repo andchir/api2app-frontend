@@ -4,13 +4,12 @@ import { HttpInterceptor, HttpHandler, HttpRequest } from '@angular/common/http'
 
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError, filter, switchMap, take } from 'rxjs/operators';
-import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 
 import { TokenStorageService } from '../services/token-storage.service';
 import { AuthService } from '../services/auth.service';
 
 const TOKEN_HEADER_KEY = 'Authorization';
-const BASE_URL = environment.apiUrl === '/' ? `${window.location.origin}/` : environment.apiUrl;
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -46,6 +45,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (authReq.url.match(/\/applications\/[^\/]+\/shared$/)) {
             urlsWhitelist.push(authReq.url);
         }
+        console.log(authReq.url);
         if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);
         }
