@@ -290,7 +290,7 @@ export class ApiService extends DataService<ApiItem> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.onload = (fileLoadedEvent) => {
-                if (((fileLoadedEvent.target?.result || '') as string).indexOf('{') === 0) {
+                if (['[', '{'].includes(((fileLoadedEvent.target?.result || '') as string).substring(0, 1))) {
                     try {
                         const errorData = JSON.parse((fileLoadedEvent.target?.result || '') as string);
                         resolve(errorData);
