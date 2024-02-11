@@ -45,7 +45,6 @@ export class AuthInterceptor implements HttpInterceptor {
         if (authReq.url.match(/\/applications\/[^\/]+\/shared$/)) {
             urlsWhitelist.push(authReq.url);
         }
-        console.log(authReq.url);
         if (token != null && !urlsWhitelist.includes(authReq.url) && authReq.url.includes(BASE_URL)) {
             authReq = this.addTokenHeader(req, token);
         }
