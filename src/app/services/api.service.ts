@@ -319,4 +319,12 @@ export class ApiService extends DataService<ApiItem> {
                 catchError(this.handleError)
             );
     }
+
+    importItem(inputString: string): Observable<ApiItem> {
+        const url = `${BASE_URL}api/v1/api_import_from_curl`;
+        return this.httpClient.post<string>(url, {inputString}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
 }

@@ -12,6 +12,8 @@ import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiItemComponent } from './api-item/api-item.component';
 import { ApiSharedComponent } from './api-shared/api-shared.component';
 import { ApiService } from '../services/api.service';
+import { ApiImportComponent } from './api-import/api-import.component';
+import { ModalService } from '../services/modal.service';
 
 @NgModule({
     declarations: [
@@ -20,7 +22,8 @@ import { ApiService } from '../services/api.service';
         ListSharedComponent,
         ApiCreateComponent,
         ApiItemComponent,
-        ApiSharedComponent
+        ApiSharedComponent,
+        ApiImportComponent
     ],
     imports: [
         CommonModule,
@@ -29,7 +32,7 @@ import { ApiService } from '../services/api.service';
         ApisRoutingModule,
         SharedModule
     ],
-    providers: [authInterceptorProviders, ApiService]
+    providers: [authInterceptorProviders, ApiService, ModalService]
 })
 export class ApisModule {
 }
