@@ -1,12 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import {Subject, takeUntil} from 'rxjs';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ApiService } from '../../services/api.service';
 
 @Component({
     selector: 'app-import-api',
-    templateUrl: './api-import.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    templateUrl: './api-import.component.html'
 })
 export class ApiImportComponent implements OnInit, OnDestroy {
 
