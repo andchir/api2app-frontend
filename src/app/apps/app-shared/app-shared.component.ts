@@ -101,9 +101,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (element.options?.inputApiUuid) {
                         buttons.push(element.options?.inputApiUuid);
                     }
-                    if (element.options?.outputApiUuid) {
-                        buttons.push(element.options?.outputApiUuid);
-                    }
+                    // if (element.options?.outputApiUuid) {
+                    //     buttons.push(element.options?.outputApiUuid);
+                    // }
                 }
             });
         });
