@@ -345,6 +345,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             param.value = element.value
                 ? ApplicationService.getElementValue(element) as string
                 : null;
+            if (element.type === 'input-switch') {
+                param.hidden = !element?.enabled;
+            }
         });
         apiItem.queryParams = queryParams;
 
