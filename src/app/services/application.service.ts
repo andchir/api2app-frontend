@@ -800,6 +800,20 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     max: 100,
                     value: options?.perPage
                 });
+                output.push({
+                    name: 'maxSize',
+                    label: $localize `Maximum number of page links`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 20,
+                    value: options?.maxSize
+                });
+                output.push({
+                    name: 'autoHide',
+                    label: $localize `Auto hide`,
+                    type: 'input-switch',
+                    enabled: options?.autoHide || false
+                });
                 break;
         }
         return output;
@@ -999,6 +1013,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 Object.assign(output, {
                     name: 'pages',
                     perPage: 20,
+                    maxSize: 9,
+                    autoHide: false,
                     value: 1
                 });
                 break;

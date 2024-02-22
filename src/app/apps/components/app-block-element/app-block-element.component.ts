@@ -169,8 +169,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.elementValueChange.emit(this.options);
     }
 
-    onChange(optionName: string, isChecked: boolean) {
+    onChange(optionName: string, isChecked: boolean, emitChange = false) {
         this.options[optionName] = !isChecked;
+        if (emitChange) {
+            this.onFieldValueChanged();
+        }
     }
 
     createChartOptions(): void {

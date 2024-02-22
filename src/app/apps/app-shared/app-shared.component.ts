@@ -432,7 +432,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         if (element.type === 'input-chart-line') {
                             this.chartElementValueApply(element, data);
                         } else if (element.type === 'input-pagination') {
-                            this.paginationValueApply(element, data);
+                            this.paginationValueApply(element, valuesObj, data);
                         } else {
                             this.blockElementValueApply(element, valuesObj, data);
                         }
@@ -499,11 +499,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = {xAxisData, yAxisData, data: outData};
     }
 
-    paginationValueApply(element: AppBlockElement, data: any): void {
-        const dataKey = element.options?.outputApiFieldName;
+    paginationValueApply(element: AppBlockElement, data: any, rawData: any): void {
+        const dataKey = String(element.options?.outputApiFieldName || '');
+        const endlessMode = dataKey.toLowerCase().includes('current') || dataKey.toLowerCase().includes('page');
         element.valueObj = {
             id: element.name,
-            totalItems: data[dataKey] || 0,
+            totalItems: endlessMode ? 9999 : (data[dataKey] || 0),
             itemsPerPage: element.perPage,
             currentPage: element.value || 1
         }

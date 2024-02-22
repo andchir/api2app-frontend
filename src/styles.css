@@ -33,3 +33,7 @@
 .app-pagination .ngx-pagination li > a {
     border-radius: 6px;
 }
+
+/* loading-bg-image */
+.loading-bg-image { background-image: url('/assets/img/loading.gif'); background-position: 50% 50%; background-repeat: no-repeat; }
+
