@@ -22,8 +22,8 @@ export class ApiImportComponent implements OnInit, OnDestroy {
 
     }
 
-    closeModal(): void {
-        this.close.emit('close');
+    closeModal(reason = 'close'): void {
+        this.close.emit(reason);
     }
 
     submit() {
@@ -35,8 +35,9 @@ export class ApiImportComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    console.log(res);
-
+                    if (res.success) {
+                        this.closeModal('submit');
+                    }
                     this.loading = false;
                 },
                 error: (err) => {

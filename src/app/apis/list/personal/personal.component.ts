@@ -42,14 +42,19 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
     }
 
     showImportApiModal():void {
-        console.log('showImportApiModal');
-
         const initialData = {};
-
         this.modalService.showDynamicComponent(this.viewRef, ApiImportComponent, initialData)
             .pipe(take(1))
+            .pipe(take(1))
             .subscribe({
+                next: (reason) => {
+                    if (reason === 'submit') {
+                        this.getData();
+                    }
+                },
+                error: (err) => {
 
+                }
             });
     }
 }
