@@ -17,6 +17,7 @@ import { AppActionComponent } from './components/app-action/app-action.component
 import { ApplicationService } from '../services/application.service';
 import { ApiService } from '../services/api.service';
 import { ModalService } from '../services/modal.service';
+import { ElementInputTextAreaComponent } from './components/elements/input-textarea.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,9 @@ import { ModalService } from '../services/modal.service';
         ApplicationCreateComponent,
         ApplicationSharedComponent,
         AppBlockElementComponent,
-        AppActionComponent
+        AppActionComponent,
+
+        ElementInputTextAreaComponent
     ],
     imports: [
         CommonModule,

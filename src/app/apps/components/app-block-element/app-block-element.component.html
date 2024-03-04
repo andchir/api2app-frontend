@@ -103,7 +103,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-textarea'">
-            <div class="mb-3"
+            <!--<div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
                     <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
@@ -114,6 +114,13 @@
                               [readonly]="options?.readOnly"
                               [(ngModel)]="options.value"></textarea>
                 </div>
+            </div>-->
+            <div class="mb-3"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <app-element-input-textarea
+                    [(options)]="options"
+                    [parentIndex]="parentIndex"
+                    [index]="index"></app-element-input-textarea>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
