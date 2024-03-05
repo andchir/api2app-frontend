@@ -332,6 +332,18 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     type: 'input-switch',
                     enabled: options?.required || false
                 });
+                output.push({
+                    name: 'speechRecognitionEnabled',
+                    label: $localize `Voice typing`,
+                    type: 'input-switch',
+                    enabled: options?.speechRecognitionEnabled || false
+                });
+                output.push({
+                    name: 'speechSynthesisEnabled',
+                    label: $localize `Voice the text`,
+                    type: 'input-switch',
+                    enabled: options?.speechSynthesisEnabled || false
+                });
                 break;
             case 'input-hidden':
                 output.push({
@@ -858,6 +870,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     readOnly: false,
                     required: true,
                     hiddenByDefault: false,
+                    speechRecognitionEnabled: false,
+                    speechSynthesisEnabled: false,
                     value: ''
                 });
                 break;
@@ -891,6 +905,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,
+                    speechRecognitionEnabled: false,
+                    speechSynthesisEnabled: false,
                     required: true,
                     value: ''
                 });

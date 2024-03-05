@@ -103,24 +103,19 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-textarea'">
-            <!--<div class="mb-3"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                        {{ options?.label }}
-                    </label>
-                    <textarea id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                              [placeholder]="options?.placeholder || ''"
-                              [readonly]="options?.readOnly"
-                              [(ngModel)]="options.value"></textarea>
-                </div>
-            </div>-->
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <app-element-input-textarea
-                    [(options)]="options"
+                <app-element-input-text
+                    [editorMode]="editorMode"
+                    [type]="options.type"
+                    [name]="options.name"
+                    [label]="options.label"
+                    [placeholder]="options.placeholder"
+                    [readOnly]="options.readOnly"
+                    [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
+                    [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
                     [parentIndex]="parentIndex"
-                    [index]="index"></app-element-input-textarea>
+                    [index]="index"></app-element-input-text>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
