@@ -66,6 +66,10 @@ export class ElementInputTextComponent {
             this.microphoneActive = false;
             return;
         }
+        if (!SpeechRecognition) {
+            alert($localize `Speech recognition is not supported in your browser. Try using a different browser.`);
+            return;
+        }
         this.microphoneActive = !this.microphoneActive;
         if (this.microphoneActive) {
             const currentValue = (this.value || '').trim();
