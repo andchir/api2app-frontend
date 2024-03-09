@@ -1,44 +1,30 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    EventEmitter,
+    forwardRef,
+    Input,
+    OnChanges,
+    Output,
+    SimpleChanges
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 // @ts-ignore
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 @Component({
     selector: 'app-element-input-text',
-    template: `
-        <div class="w-full max-w-[600px] mx-auto">
-            <label for="{{ name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                {{ label }}
-            </label>
-            <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                      [placeholder]="placeholder || ''"
-                      [readonly]="readOnly"
-                      [(ngModel)]="value"></textarea>
-            <div class="relative">
-                <div class="absolute bottom-1.5 right-1.5" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled">
-                    <button type="button" class="cursor-pointer text-xl"
-                            (click)="speechSynthesisPlayToggle()"
-                            title="Voice the text"
-                            i18n-title
-                            *ngIf="speechSynthesisEnabled">
-                        <i class="bi bi-volume-up-fill" [ngClass]="{'text-blue-700': speechSynthesisActive, 'text-gray-700': !speechSynthesisActive}"></i>
-                    </button>
-                    <button type="button" class="cursor-pointer text-xl ml-3"
-                            (click)="microphoneEnableToggle()"
-                            title="Voice typing"
-                            i18n-title
-                            *ngIf="speechRecognitionEnabled">
-                        <i class="bi bi-mic-fill text-red-700" *ngIf="microphoneActive"></i>
-                        <i class="bi bi-mic-mute-fill text-gray-700" *ngIf="!microphoneActive"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    `,
-    providers: [],
+    templateUrl: 'element-input-text.component.html',
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => ElementInputTextComponent),
+        multi: true
+    }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementInputTextComponent {
+export class ElementInputTextComponent implements ControlValueAccessor {
 
     @Input() editorMode = false;
     @Input() type: string;
@@ -50,12 +36,23 @@ export class ElementInputTextComponent {
     @Input() readOnly: boolean;
     @Input() speechRecognitionEnabled = false;
     @Input() speechSynthesisEnabled = false;
-    @Input() value: string;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+    private _value;
     microphoneActive = false;
     speechSynthesisActive = false;
     // @ts-ignore
     recognition: SpeechRecognition;
+
+    get value() {
+        return this._value;
+    }
+
+    @Input()
+    set value(val) {
+        this._value = val;
+        this.onChange(this._value);
+        this.cdr.detectChanges();
+    }
 
     constructor(
         private cdr: ChangeDetectorRef
@@ -81,6 +78,7 @@ export class ElementInputTextComponent {
                 const transcripts = Array.from(event.results).map((result) => {
                     return this.capitalize(result[0].transcript.trim());
                 });
+                // console.log('result', transcripts);
                 if (currentValue) {
                     transcripts.unshift(currentValue);
                 }
@@ -88,6 +86,7 @@ export class ElementInputTextComponent {
                 this.cdr.detectChanges();
             });
             this.recognition.addEventListener('end', (event) => {
+                // console.log('end', event);
                 if (this.recognition && this.microphoneActive) {
                     this.recognition.start();
                 }
@@ -124,4 +123,16 @@ export class ElementInputTextComponent {
     capitalize(word: string): string {
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
+
+    onChange(_: any) {}
+
+    writeValue(value: any) {
+        this.value = value;
+    }
+
+    registerOnChange(fn) {
+        this.onChange = fn;
+    }
+
+    registerOnTouched() {}
 }

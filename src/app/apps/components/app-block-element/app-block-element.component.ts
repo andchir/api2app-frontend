@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';

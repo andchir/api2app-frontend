@@ -85,14 +85,6 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return String(element.value);
     }
 
-    constructor(
-        @Inject(LOCALE_ID) public locale: string,
-        httpClient: HttpClient
-    ) {
-        super(httpClient);
-        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
-    }
-
     static getDefault(): ApplicationItem {
         return {
             id: 0,
@@ -104,5 +96,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
             language: '',
             blocks: [{elements: []}, {elements: []}, {elements: []}]
         };
+    }
+
+    constructor(
+        @Inject(LOCALE_ID) public locale: string,
+        httpClient: HttpClient
+    ) {
+        super(httpClient);
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 }

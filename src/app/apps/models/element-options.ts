@@ -176,6 +176,18 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
                 });
+                output.push({
+                    name: 'speechRecognitionEnabled',
+                    label: $localize `Voice typing`,
+                    type: 'input-switch',
+                    enabled: options?.speechRecognitionEnabled || false
+                });
+                output.push({
+                    name: 'speechSynthesisEnabled',
+                    label: $localize `Voice the text`,
+                    type: 'input-switch',
+                    enabled: options?.speechSynthesisEnabled || false
+                });
                 break;
             case 'input-number':
                 output.push({
@@ -866,6 +878,21 @@ export class ElementOptions {
                     value: ''
                 });
                 break;
+            case 'input-textarea':
+                Object.assign(output, {
+                    name: 'content',
+                    label: $localize `Content`,
+                    type: 'input-textarea',
+                    placeholder: $localize `Enter your message here`,
+                    prefixText: '',
+                    suffixText: '',
+                    readOnly: false,
+                    required: true,
+                    speechRecognitionEnabled: false,
+                    speechSynthesisEnabled: false,
+                    value: ''
+                });
+                break;
             case 'input-number':
                 Object.assign(output, {
                     name: 'number',
@@ -885,21 +912,6 @@ export class ElementOptions {
                     max: 100,
                     step: 1,
                     value: 0
-                });
-                break;
-            case 'input-textarea':
-                Object.assign(output, {
-                    name: 'content',
-                    label: $localize `Content`,
-                    type: 'input-textarea',
-                    placeholder: $localize `Enter your message here`,
-                    prefixText: '',
-                    suffixText: '',
-                    readOnly: false,
-                    speechRecognitionEnabled: false,
-                    speechSynthesisEnabled: false,
-                    required: true,
-                    value: ''
                 });
                 break;
             case 'input-hidden':
