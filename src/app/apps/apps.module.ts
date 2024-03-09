@@ -17,7 +17,7 @@ import { AppActionComponent } from './components/app-action/app-action.component
 import { ApplicationService } from '../services/application.service';
 import { ApiService } from '../services/api.service';
 import { ModalService } from '../services/modal.service';
-import { ElementInputTextComponent } from './components/elements/input-textarea.component';
+import { ElementInputTextComponent } from './components/elements/element-input-text.component';
 
 @NgModule({
     declarations: [

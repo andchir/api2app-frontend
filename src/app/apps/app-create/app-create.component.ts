@@ -20,6 +20,7 @@ import { ModalService } from '../../services/modal.service';
 import { ApplicationSharedComponent } from '../app-shared/app-shared.component';
 import { ApiService } from '../../services/api.service';
 import { TokenStorageService } from '../../services/token-storage.service';
+import { ElementOptions } from '../models/element-options';
 import { environment } from '../../../environments/environment';
 
 const APP_NAME = environment.appName;
@@ -180,7 +181,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     onElementUpdate(element: AppBlockElement, type: AppBlockElementType): void {
         if (!element.name) {
-            Object.assign(element, ApplicationService.getBlockElementDefault(type));
+            Object.assign(element, ElementOptions.getBlockElementDefault(type));
         }
         element.type = type;
         this.deleteEmptyBlockByGrid();
@@ -193,7 +194,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.selectedElement = element;
         this.selectedBlock = null;
         element.orderIndex = elementIndex;
-        this.selectedItemOptionsFields = ApplicationService.createElementOptionsFields(element.type, element);
+        this.selectedItemOptionsFields = ElementOptions.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
         this.cdr.detectChanges();
     }
