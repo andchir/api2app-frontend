@@ -106,11 +106,29 @@ export class ElementInputTextComponent implements ControlValueAccessor {
         }
         this.speechSynthesisActive = !this.speechSynthesisActive;
         if (this.speechSynthesisActive) {
-            const speechSynthesisUtterance = new SpeechSynthesisUtterance(this.value);
+            const sentences = this.getSentences(this.value);// Browser Chrome bug fix https://issues.chromium.org/issues/41346274
+            const speechSynthesisUtterance = new SpeechSynthesisUtterance(sentences[0]);
             speechSynthesisUtterance.addEventListener('end', () => {
-                window.speechSynthesis.cancel();
-                this.speechSynthesisActive = false;
-                this.cdr.detectChanges();
+                sentences.shift();
+                if (this.speechSynthesisActive && sentences.length > 0) {
+                    speechSynthesisUtterance.text = sentences[0];
+                    window.speechSynthesis.speak(speechSynthesisUtterance);
+                } else {
+                    window.speechSynthesis.cancel();
+                    this.speechSynthesisActive = false;
+                    this.cdr.detectChanges();
+                }
+            });
+            speechSynthesisUtterance.addEventListener('start', () => {
+                // console.log('start', speechSynthesisUtterance.text);
+            });
+            speechSynthesisUtterance.addEventListener('error', (e) => {
+                if (this.speechSynthesisActive) {
+                    console.log('error', e.error);
+                    window.speechSynthesis.cancel();
+                    this.speechSynthesisActive = false;
+                    this.cdr.detectChanges();
+                }
             });
             window.speechSynthesis.speak(speechSynthesisUtterance);
         } else {
@@ -118,6 +136,28 @@ export class ElementInputTextComponent implements ControlValueAccessor {
             window.speechSynthesis.cancel();
         }
         this.cdr.detectChanges();
+    }
+
+    getSentences(text: string, maxlength = 220): string[] {
+        const sentences = this.value.split('. ')
+            .filter((s: string) => {
+                return s.trim();
+            })
+            .map((s: string, index: number, array: string[]) => {
+                return s.trim() + (index + 1 < array.length ? '.' : '');
+            });
+
+        const sentencesOut = [];
+        sentences.forEach((s: string) => {
+            if (s.length > maxlength) {
+                const index = s.indexOf(' ', Math.floor(s.length / 2))
+                sentencesOut.push(s.substring(0, index).trim());
+                sentencesOut.push(s.substring(index).trim());
+                return;
+            }
+            sentencesOut.push(s);
+        });
+        return sentencesOut;
     }
 
     capitalize(word: string): string {
