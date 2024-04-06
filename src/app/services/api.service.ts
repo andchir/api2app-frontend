@@ -88,9 +88,9 @@ export class ApiService extends DataService<ApiItem> {
         const headersData: {[header: string]: string} = {};
         headers.forEach((item) => {
             if (item.name && item.value && !item.hidden) {
-                headersData[item.name] = item.value;
-                if (item.name.toLowerCase() === 'accept' && item.value.includes('/')) {
-                    responseTypeValue = item.value.split('/')[1];
+                headersData[item.name] = String(item.value);
+                if (item.name.toLowerCase() === 'accept' && String(item.value).includes('/')) {
+                    responseTypeValue = String(item.value).split('/')[1];
                 }
             }
         });
@@ -111,7 +111,7 @@ export class ApiService extends DataService<ApiItem> {
         const headersData: {[header: string]: string} = {};
         data.headers.forEach((item) => {
             if (item.name && item.value && !item.hidden) {
-                headersData[item.name] = item.value;
+                headersData[item.name] = String(item.value);
             }
         });
         if (data.basicAuth && data.authLogin && data.authPassword) {
@@ -135,8 +135,8 @@ export class ApiService extends DataService<ApiItem> {
         if (data.bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
-                if (item.name && (item.value || item.files) && !item.hidden) {
-                    body[item.name] = item.value || '';
+                if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
+                    body[item.name] = typeof item.value === 'string' ? (item.value || '') : item.value;
                     if (data.sendAsFormData) {
                         if (item.isFile) {
                             if (item.files) {
@@ -151,11 +151,11 @@ export class ApiService extends DataService<ApiItem> {
                                         formData.append(item.name, file);
                                     });
                                 } else {
-                                    formData.append(item.name, item.value || '');
+                                    formData.append(item.name, String(item.value) || '');
                                 }
                             }
                         } else {
-                            formData.append(item.name, item.value || '');
+                            formData.append(item.name, String(item.value) || '');
                         }
                     }
                 }

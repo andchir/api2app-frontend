@@ -81,6 +81,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     return null;
                 }
                 return element.multiple ? element.value : element.value[0];
+            case 'input-number':
+            case 'input-slider':
+                return parseInt(String(element.value));
         }
         return String(element.value);
     }

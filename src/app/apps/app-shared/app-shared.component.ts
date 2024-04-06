@@ -306,9 +306,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
-                bodyField.value = element.value ? ApplicationService.getElementValue(element) as string : '';
+                bodyField.value = ApplicationService.getElementValue(element);
                 if (element.type === 'input-switch') {
-                    bodyField.hidden = !element?.enabled;
+                    if (bodyField.value) {
+                        bodyField.hidden = !element?.enabled;
+                    } else {
+                        bodyField.value = element?.enabled;
+                        bodyField.hidden = false;
+                    }
                 }
             });
             apiItem.bodyFields = bodyFields;
@@ -322,7 +327,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     && fieldName === 'value'
                     && fieldType === 'input';
             });
-            apiItem.bodyContent = ApplicationService.getElementValue(element) as string;
+            if (element) {
+                apiItem.bodyContent = ApplicationService.getElementValue(element) as string;
+            } else if (apiItem.bodyContent) {
+                const inputData = JSON.parse(apiItem.bodyContent);
+                Object.keys(inputData).forEach((key) => {
+                    const element = allElements.find((item) => {
+                        const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                        return apiUuid === apiItem.uuid
+                            && fieldName === key
+                            && fieldType === 'input';
+                    });
+                    if (!element) {
+                        return;
+                    }
+                    const value = element.value ? ApplicationService.getElementValue(element) as string : '';
+                    const enabled = element.type !== 'input-switch' || element?.enabled;
+                    if (value && !enabled) {
+                        delete inputData[key];
+                        return;
+                    }
+                    inputData[key] = value || enabled;
+                });
+                apiItem.bodyContent = JSON.stringify(inputData);
+            }
         }
 
         // Query params
