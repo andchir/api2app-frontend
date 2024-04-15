@@ -331,7 +331,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 apiItem.bodyContent = ApplicationService.getElementValue(element) as string;
             } else if (apiItem.bodyContent) {
                 const inputData = JSON.parse(apiItem.bodyContent);
-                Object.keys(inputData).forEach((key) => {
+                const outputData = this.flattenObj(inputData);
+
+                Object.keys(outputData).forEach((key: string) => {
                     const element = allElements.find((item) => {
                         const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                         return apiUuid === apiItem.uuid
@@ -347,9 +349,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         delete inputData[key];
                         return;
                     }
-                    inputData[key] = value || enabled;
+                    outputData[key] = value || enabled;
                 });
-                apiItem.bodyContent = JSON.stringify(inputData);
+
+                apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
             }
         }
 
@@ -664,6 +667,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         }
         return res;
+    }
+
+    unFlattenObject(obj: any): any {
+        const result = {};
+        for (const i in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, i)) {
+                const keys = i.match(/(?:^\.+)?(?:\.{2,}|[^.])+(?:\.+$)?/g);
+                keys.reduce((r, e, j) => {
+                    return r[e] || (r[e] = isNaN(Number(keys[j + 1])) ? (keys.length - 1 === j ? obj[i] : {}) : []);
+                }, result);
+            }
+        }
+        return result;
     }
 
     ngOnDestroy(): void {
