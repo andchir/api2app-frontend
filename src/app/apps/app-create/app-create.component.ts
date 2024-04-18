@@ -294,7 +294,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     element.value = null;
                 }
                 if (element.options.outputApiUuid && element.options.outputApiFieldName) {
-                    element.value = null;
+                    // element.value = null;
                     element.valueObj = null;
                     element.valueArr = null;
                 }

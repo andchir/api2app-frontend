@@ -705,6 +705,12 @@ export class ElementOptions {
                     max: 100,
                     value: options?.orderIndex || 0
                 });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
                 break;
             case 'image':
                 output.push({
@@ -732,6 +738,12 @@ export class ElementOptions {
                     label: $localize `Name of the thumbnail field in the array`,
                     type: 'input-text',
                     value: options?.itemThumbnailFieldName
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
                 });
                 break;
             case 'input-chart-line':
@@ -1005,6 +1017,7 @@ export class ElementOptions {
                     name: 'image',
                     itemFieldName: '',
                     itemThumbnailFieldName: '',
+                    value: '',
                     hiddenByDefault: false
                 });
                 break;
@@ -1012,6 +1025,7 @@ export class ElementOptions {
             case 'video':
                 Object.assign(output, {
                     name: type,
+                    value: '',
                     hiddenByDefault: false
                 });
                 break;
