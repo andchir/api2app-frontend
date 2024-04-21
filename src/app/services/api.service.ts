@@ -56,15 +56,20 @@ export class ApiService extends DataService<ApiItem> {
 
     static getPropertiesRecursively(data: any, string: string = '', outputKeys = [], values = []): {outputKeys: string[], values: string|number|boolean[]} {
         if (typeof data === 'object') {
-            if (!Array.isArray(data)) {
+            if (Array.isArray(data)) {
+                data.forEach((item, index) => {
+                    outputKeys.push(string + (string ? '.' : '') + index);
+                    values.push(item);
+                    this.getPropertiesRecursively(item, string + (string ? '.' : '') + index, outputKeys, values);
+                });
+            } else {
                 for (let prop in data) {
                     if (typeof data[prop] === 'object') {
                         if (Array.isArray(data[prop])) {
                             outputKeys.push(string + (string ? '.' : '') + prop);
                             values.push(data[prop]);
-                        } else {
-                            this.getPropertiesRecursively(data[prop], string + (string ? '.' : '') + prop, outputKeys, values);
                         }
+                        this.getPropertiesRecursively(data[prop], string + (string ? '.' : '') + prop, outputKeys, values);
                     } else {
                         outputKeys.push(string + (string ? '.' : '') + prop);
                         values.push(data[prop]);
