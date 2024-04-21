@@ -583,7 +583,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
             } else {
-                element.value = null;
+                // element.value = null;
             }
         } else if (['input-switch', 'input-number', 'input-slider'].includes(element.type)) {
             element.value = value;

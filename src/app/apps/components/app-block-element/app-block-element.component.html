@@ -176,6 +176,12 @@
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
+                            <ng-template ng-label-tmp let-item="item">
+                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
+                            </ng-template>
+                            <ng-template ng-option-tmp let-item="item">
+                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
+                            </ng-template>
                         </ng-select>
                     </ng-container>
                     <ng-template #templateSelectSimple>
