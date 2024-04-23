@@ -301,7 +301,8 @@
                             {{ options?.value }}
                         </span>
                         <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" type="range"
-                               class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                               [ngStyle]="{backgroundSize: options?.value / options?.max * 100 + '%, 100%'}"
+                               class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                                [min]="options?.min"
                                [max]="options?.max"
                                [step]="options?.step"
