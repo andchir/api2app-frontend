@@ -77,6 +77,13 @@ export class ElementOptions {
                     value: true,
                     enabled: options?.whiteSpacePre
                 });
+                output.push({
+                    name: 'border',
+                    label: $localize `Border`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.border
+                });
                 break;
             case 'button':
                 output.push({
@@ -863,7 +870,8 @@ export class ElementOptions {
                     suffixText: '',
                     color: 'Black',
                     whiteSpacePre: false,
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    border: false
                 });
                 break;
             case 'button':
