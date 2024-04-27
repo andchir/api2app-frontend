@@ -655,12 +655,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     flattenObj(obj: any, parent: string = '', res: any = {}): any {
         if (typeof obj !== 'object' || Array.isArray(obj)) {
-            return obj;
+            obj.forEach((item, index) => {
+                let propName = parent ? parent + '.' + index : index;
+                this.flattenObj(item, propName, res);
+            });
+            return res;
         }
         for (let key in obj) {
             if (!obj.hasOwnProperty(key)) continue;
             let propName = parent ? parent + '.' + key : key;
-            if (typeof obj[key] == 'object' && !Array.isArray(obj[key])) {
+            if (typeof obj[key] == 'object') {
                 this.flattenObj(obj[key], propName, res);
             } else {
                 res[propName] = obj[key];
