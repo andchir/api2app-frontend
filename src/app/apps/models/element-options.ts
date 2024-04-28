@@ -78,6 +78,13 @@ export class ElementOptions {
                     enabled: options?.whiteSpacePre
                 });
                 output.push({
+                    name: 'markdown',
+                    label: 'Markdown',
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.markdown
+                });
+                output.push({
                     name: 'border',
                     label: $localize `Border`,
                     type: 'input-switch',
@@ -870,6 +877,7 @@ export class ElementOptions {
                     suffixText: '',
                     color: 'Black',
                     whiteSpacePre: false,
+                    markdown: false,
                     hiddenByDefault: false,
                     border: false
                 });

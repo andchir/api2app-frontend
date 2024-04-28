@@ -27,9 +27,12 @@
     "apexcharts": "^3.48.0",
     "bootstrap-icons": "^1.11.1",
     "flowbite": "^1.8.1",
+    "marked": "^12.0.2",
     "moment": "^2.29.4",
     "ng-apexcharts": "^1.10.0",
+    "ngx-markdown": "^17.2.1",
     "ngx-pagination": "^6.0.3",
+    "prismjs": "^1.29.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.0"

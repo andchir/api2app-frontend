@@ -54,7 +54,8 @@
                  'text-red-500': options?.color === 'Red'
                  }">
                 <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
-                <span *ngIf="options?.value" [innerHTML]="options?.value | toHtml"></span>
+                <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
+                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
                 <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
                 <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
             </div>

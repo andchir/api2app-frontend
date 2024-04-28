@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { MarkdownModule } from 'ngx-markdown';
 
 import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.component';
 import { AlertComponent } from './shared/alert/alert.component';
@@ -21,7 +22,8 @@ import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
         CommonModule,
         RouterModule,
         NgSelectModule,
-        NgxPaginationModule
+        NgxPaginationModule,
+        MarkdownModule.forRoot()
     ],
     declarations: [
         AlertComponent,
@@ -47,6 +49,7 @@ import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
         RouterModule,
         NgSelectModule,
         NgxPaginationModule,
+        MarkdownModule,
 
         ToHtmlPipe
     ]
