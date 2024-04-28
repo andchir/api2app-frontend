@@ -112,13 +112,13 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "api2app-frontend:build:production"
+                          "buildTarget": "api2app-frontend:build:production"
                         },
                         "development": {
-                            "browserTarget": "api2app-frontend:build:development"
+                          "buildTarget": "api2app-frontend:build:development"
                         },
                         "ru": {
-                            "browserTarget": "api2app-frontend:build:development,ru"
+                          "buildTarget": "api2app-frontend:build:development,ru"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -126,7 +126,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "api2app-frontend:build"
+                      "buildTarget": "api2app-frontend:build"
                     }
                 },
                 "test": {
