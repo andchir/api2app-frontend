@@ -176,7 +176,7 @@ export class ApiService extends DataService<ApiItem> {
             queryParams[item.name] = item.value;
         });
 
-        const requestHeaders = {};
+        const requestHeaders = Object.assign({}, headersData);
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__headers', Object.keys(headersData).join(','));
@@ -204,8 +204,6 @@ export class ApiService extends DataService<ApiItem> {
                 requestHeaders['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 requestHeaders['Mode'] = 'same-origin';
             }
-        } else {
-            Object.assign(requestHeaders, headersData);
         }
 
         const headers = new HttpHeaders(requestHeaders);
