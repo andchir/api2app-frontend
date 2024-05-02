@@ -126,9 +126,9 @@ export class ApiService extends DataService<ApiItem> {
 
         if (sendAsFormData) {
             // headersData['Enctype'] = 'multipart/form-data';
+            // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
             delete headersData['Content-Type'];
             delete headersData['content-Type'];
-            // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
         }
 
         // Request body
@@ -156,7 +156,11 @@ export class ApiService extends DataService<ApiItem> {
                                         formData.append(item.name, file);
                                     });
                                 } else {
-                                    formData.append(item.name, String(item.value) || '');
+                                    if ((item.value as any) instanceof File) {
+                                        formData.append(item.name, (item.value as any));
+                                    } else {
+                                        formData.append(item.name, String(item.value) || '');
+                                    }
                                 }
                             }
                         } else {
