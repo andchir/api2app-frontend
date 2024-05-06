@@ -20,6 +20,8 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     currentPage = 1;
     searchWord: string;
     selectedId = 0;
+    message: string = '';
+    messageType: 'error'|'success' = 'error';
     selectedItem: T;
     isDeleteAction = false;
     isShareActive = false;
@@ -142,6 +144,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     }
 
     onQueryParamsChange(params: Params): void {
+        this.currentPage = 1;
         this.searchWord = params['search'] || '';
         this.getData();
     }

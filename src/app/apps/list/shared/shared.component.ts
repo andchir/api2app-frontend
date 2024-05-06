@@ -34,7 +34,11 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
                     this.onDataLoaded();
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
+                    if (err.detail) {
+                        this.message = err.detail;
+                        this.messageType = 'error';
+                    }
                     this.loading = false;
                 }
             });
