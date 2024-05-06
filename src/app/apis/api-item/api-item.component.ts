@@ -172,11 +172,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                     this.submitted = false;
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
                     if (err.error instanceof Blob) {
                         this.apiService.getDataFromBlob(err.error)
                             .then((errorData) => {
-                                console.log(errorData);
+                                // console.log(errorData);
                                 if (typeof errorData === 'object') {
                                     this.apiItem.responseBody = JSON.stringify(errorData, null, 4);
                                     this.aceEditor.session.setValue(this.apiItem.responseBody);
