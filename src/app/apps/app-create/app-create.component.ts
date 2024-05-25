@@ -401,7 +401,15 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     onFileChange(event: Event, imageEl: HTMLImageElement) {
         const inputEl = event.target as HTMLInputElement;
         const fieldName = inputEl.dataset['name'] || 'image';
-        const files = inputEl.files;
+        const files = Array.from(inputEl.files);
+        this.onAddFiles(files, fieldName, imageEl);
+    }
+
+    buttonFileHandle(fileInput: HTMLInputElement) {
+        fileInput.click();
+    }
+
+    onAddFiles(files: File[], fieldName, imageEl: HTMLImageElement): void {
         if (files.length === 0 || !['png', 'jpg', 'jpeg'].includes(this.getFileExtension(files[0].name))) {
             return;
         }
@@ -412,7 +420,33 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.data[fieldName] = '';
     }
 
-    buttonFileHandle(fileInput: HTMLInputElement) {
-        fileInput.click();
+    dropHandler(event: DragEvent, imageEl: HTMLImageElement): void {
+        event.preventDefault();
+        event.stopPropagation();
+        const files = this.getTransferedFiles(event.dataTransfer);
+        this.onAddFiles(files, 'image', imageEl);
+        (event.target as HTMLElement).classList.remove('border-green-500');
+    }
+
+    dragOverHandler(event: DragEvent): void {
+        event.preventDefault();
+    }
+
+    dragEnter(event: DragEvent): void {
+        (event.target as HTMLElement).classList.add('border-green-500');
+    }
+
+    dragLeave(event: DragEvent): void {
+        (event.target as HTMLElement).classList.remove('border-green-500');
+    }
+
+    getTransferedFiles(dataTransfer: DataTransfer): File[] {
+        const files = [];
+        if (dataTransfer.items) {
+            for (let i = 0; i < dataTransfer.items.length; i++) {
+                files.push(dataTransfer.items[i].getAsFile());
+            }
+        }
+        return files;
     }
 }
