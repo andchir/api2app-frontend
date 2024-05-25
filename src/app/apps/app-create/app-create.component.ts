@@ -414,7 +414,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             return;
         }
         const mediaUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
-        imageEl.src = '/assets/img/transp.gif';
+        imageEl.src = 'assets/img/transp.gif';
         imageEl.style.backgroundImage = `url(${mediaUrl})`;
         this.files[fieldName] = files[0];
         this.data[fieldName] = '';
