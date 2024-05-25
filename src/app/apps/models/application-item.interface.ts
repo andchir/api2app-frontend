@@ -15,4 +15,5 @@ export interface ApplicationItem {
     language: string;
     blocks: AppBlock[];
     user?: User;
+    image?: string;
 }

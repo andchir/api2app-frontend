@@ -44,6 +44,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     itemId: number = 0;
     selectedElement: AppBlockElement;
     selectedBlock: AppBlock;
+    files: {[key: string]: File} = {image: null};
     selectedElementIndex: number;
     selectedBlockIndex: number;
     selectedItemOptionsFields: AppBlockElement[] = [];
@@ -306,7 +307,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.loading = true;
         this.saving = true;
         this.cdr.detectChanges();
-        this.dataService.updateItem(data)
+
+        const formData = this.dataService.creteFormData(data, this.files);
+        const itemId = data.id || 0;
+
+        this.dataService.updateItem(formData, itemId)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -387,5 +392,27 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             return;
         }
         this.createAppOptions();
+    }
+
+    getFileExtension(fileName: string): string {
+        return fileName.split('.').pop().toLowerCase();
+    }
+
+    onFileChange(event: Event, imageEl: HTMLImageElement) {
+        const inputEl = event.target as HTMLInputElement;
+        const fieldName = inputEl.dataset['name'] || 'image';
+        const files = inputEl.files;
+        if (files.length === 0 || !['png', 'jpg', 'jpeg'].includes(this.getFileExtension(files[0].name))) {
+            return;
+        }
+        const mediaUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
+        imageEl.src = '/assets/img/transp.gif';
+        imageEl.style.backgroundImage = `url(${mediaUrl})`;
+        this.files[fieldName] = files[0];
+        this.data[fieldName] = '';
+    }
+
+    buttonFileHandle(fileInput: HTMLInputElement) {
+        fileInput.click();
     }
 }

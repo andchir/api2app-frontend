@@ -5,7 +5,15 @@ export abstract class DataService<T extends {id: number}> {
 
     httpOptions = {
         headers: new HttpHeaders({
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        })
+    };
+
+    httpOptionsFormData = {
+        headers: new HttpHeaders({
+            'enctype': 'multipart/form-data',
+            'Accept': 'application/json'
         })
     };
 
@@ -73,25 +81,48 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
-    updateItem(item: T): Observable<T> {
+    updateItem(item: T|FormData, itemId?: number): Observable<T> {
         return iif(
-            () => !!item.id,
-            this.putItem(item),
+            () => !!itemId,
+            this.putItem(item, itemId),
             this.postItem(item)
         )
     }
 
-    postItem(item: T): Observable<T> {
+    creteFormData(data: any, files?: {[key: string]: File}): FormData {
+        const formData = new FormData();
+        Object.keys(data).forEach((key) => {
+            if (Object.keys(files).includes(key)) {
+                return;
+            }
+            if (typeof data[key] === 'object') {
+                formData.append(key, JSON.stringify(data[key]));
+            } else {
+                formData.append(key, String(data[key]));
+            }
+        });
+        Object.keys(files).forEach((key) => {
+            if (!(files[key] instanceof File)) {
+                return;
+            }
+            formData.append(key, files[key], files[key].name);
+        });
+        return formData;
+    }
+
+    postItem(item: T|FormData): Observable<T> {
         const url = this.requestUrl;
-        return this.httpClient.post<T>(url, item, this.httpOptions)
+        const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
+        return this.httpClient.post<T>(url, item, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
-    putItem(item: T): Observable<T> {
-        const url = `${this.requestUrl}/${item.id}`;
-        return this.httpClient.put<T>(url, item, this.httpOptions)
+    putItem(item: T|FormData, itemId: number = 0): Observable<T> {
+        const url = `${this.requestUrl}/${itemId}`;
+        const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
+        return this.httpClient.put<T>(url, item, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
