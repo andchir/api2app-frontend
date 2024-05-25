@@ -288,7 +288,7 @@ export class ApiService extends DataService<ApiItem> {
         }
         return iif(
             () => !!apiItem.id,
-            this.putItem(apiItem),
+            this.putItem(apiItem, apiItem.id),
             this.postItem(apiItem)
         )
     }

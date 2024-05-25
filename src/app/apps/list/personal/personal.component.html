@@ -14,37 +14,45 @@
 <ng-container *ngIf="items.length > 0; else templateEmpty">
     <div class="px-3 sm:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
 
-        <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
-            <div class="mb-3 w-full pt-2 whitespace-nowrap overflow-hidden text-ellipsis">
-                {{ item.name }}
-            </div>
-            <div class="flex gap-2">
-                <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
-                        (click)="viewItem(item)">
+        <div *ngFor="let item of items">
+            <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow">
+                <div class="flex gap-3 mb-3 items-center">
+                    <div *ngIf="item.image">
+                        <div class="w-24 h-24 border rounded-full border-gray-400">
+                            <img class="w-24 h-24 rounded-full no-pointer-events" [src]="item.image" [alt]="item.name">
+                        </div>
+                    </div>
+                    <div>
+                        {{ item.name }}
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
+                            (click)="viewItem(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" i18n>
                         Edit
                     </span>
-                </button>
+                    </button>
 
-                <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-                        title="Share"
-                        i18n-title
-                        (click)="shareItem(item)">
+                    <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
+                            title="Share"
+                            i18n-title
+                            (click)="shareItem(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                         <i class="bi bi-share-fill"></i>
                     </span>
-                </button>
+                    </button>
 
-                <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
-                        title="Delete"
-                        i18n-title
-                        (click)="deleteItem(item)">
+                    <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
+                            title="Delete"
+                            i18n-title
+                            (click)="deleteItem(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                         <i class="bi bi-trash3"></i>
                     </span>
-                </button>
-            </div>
-            <div class="absolute right-2 -top-2 flex">
+                    </button>
+                </div>
+                <div class="absolute right-2 -top-2 flex">
                 <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
                       *ngIf="item.shared">
                     <span class="flex w-2 h-2 me-1 rounded-full"
@@ -52,6 +60,7 @@
                     <span [ngClass]="{'text-green-700': !item.hidden, 'text-gray-600': item.hidden}"
                           i18n="@@SharedItem">Shared</span>
                 </span>
+                </div>
             </div>
         </div>
 

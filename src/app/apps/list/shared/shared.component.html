@@ -7,32 +7,45 @@
 <ng-container *ngIf="items.length > 0; else templateEmpty">
     <div class="px-3 sm:px-0 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-5">
 
-        <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngFor="let item of items">
-            <div class="mb-2 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                {{ item.name }}
-            </div>
-            <div class="mb-2 text-sm text-gray-700">
-                <i class="bi bi-person-circle"></i>
-                {{ item.user?.username }}
-            </div>
-            <div class="flex gap-2">
+        <div *ngFor="let item of items">
+            <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" >
+                <div class="flex gap-3 mb-3">
+                    <div *ngIf="item.image">
+                        <div class="w-24 h-24 border rounded-full border-gray-400">
+                            <img class="w-24 h-24 rounded-full no-pointer-events" [src]="item.image" [alt]="item.name">
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between">
+                        <div class="mb-2 flex-grow flex items-center">
+                            <div>
+                                {{ item.name }}
+                            </div>
+                        </div>
+                        <div class="text-sm text-gray-700">
+                            <i class="bi bi-person-circle"></i>
+                            {{ item.user?.username }}
+                        </div>
+                    </div>
+                </div>
+                <div class="flex gap-2">
 
-                <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
-                        (click)="viewItem(item)">
+                    <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
+                            (click)="viewItem(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0" i18n>
                         View
                     </span>
-                </button>
+                    </button>
 
-                <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-                        title="Get Shared URL"
-                        i18n-title
-                        (click)="viewSharedUrl(item)">
+                    <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
+                            title="Get Shared URL"
+                            i18n-title
+                            (click)="viewSharedUrl(item)">
                     <span class="flex-grow relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                         <i class="bi bi-share-fill"></i>
                     </span>
-                </button>
+                    </button>
 
+                </div>
             </div>
         </div>
 
