@@ -16,7 +16,7 @@ const routes: Routes = [
     {
         path: '',
         component: HomeComponent,
-        title: $localize `Home Page`
+        title: $localize `Create an application simply online`
     },
     {
         path: 'auth',

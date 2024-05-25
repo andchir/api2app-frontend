@@ -1,6 +1,6 @@
 export const environment = {
     production: false,
-    appName: 'api2app',
+    appName: 'Api2App',
     apiUrl: 'http://localhost:8000/'
     // apiUrl: 'https://api2app.ru/'
 };
