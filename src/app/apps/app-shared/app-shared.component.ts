@@ -654,9 +654,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     flattenObj(obj: any, parent: string = '', res: any = {}): any {
-        if (typeof obj !== 'object' || Array.isArray(obj)) {
+        if (typeof obj !== 'object') {
+            return res;
+        }
+        if (Array.isArray(obj)) {
             obj.forEach((item, index) => {
-                let propName = parent ? parent + '.' + index : index;
+                let propName = parent ? parent + '.' + index : String(index);
                 this.flattenObj(item, propName, res);
             });
             return res;
