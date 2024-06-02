@@ -7,7 +7,7 @@
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">
                         <i class="bi bi-file-earmark-arrow-up me-2"></i>
-                        <span i18n>Import API form Curl</span>
+                        <span i18n>Import API</span>
                     </h3>
                 </div>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -21,12 +21,39 @@
             </div>
             <div class="p-4 md:p-5">
 
+                <div class="mb-3">
+                    <label for="formFieldLink" class="block mb-2 text-sm font-medium text-gray-900" i18n>Link to your openapi.json</label>
+                    <input type="text" id="formFieldLink"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           placeholder="Paste link here"
+                           i18n-placeholder
+                           [disabled]="loading"
+                           [(ngModel)]="inputLinkString">
+                </div>
+
+                <div class="inline-flex items-center justify-center w-full">
+                    <hr class="w-64 h-px my-5 bg-gray-200 border-0">
+                    <span class="absolute px-3 font-medium text-gray-900 -translate-x-1/2 bg-white left-1/2" i18n>or</span>
+                </div>
+
                 <label for="import-curl-string-field" class="block mb-2 text-sm font-medium text-gray-900" i18n>Curl command string</label>
                 <textarea id="import-curl-string-field" rows="7" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                           placeholder="Enter Curl command here"
                           i18n-placeholder
                           [disabled]="loading"
                           [(ngModel)]="inputString"></textarea>
+
+                <div class="pt-3" *ngIf="errorMessage">
+                    <div class="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800" role="alert">
+                        <svg class="bi bi-exclamation-triangle flex-shrink-0 inline w-4 h-4 me-3" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.15.15 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.2.2 0 0 1-.054.06.1.1 0 0 1-.066.017H1.146a.1.1 0 0 1-.066-.017.2.2 0 0 1-.054-.06.18.18 0 0 1 .002-.183L7.884 2.073a.15.15 0 0 1 .054-.057m1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767z"/>
+                            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
+                        </svg>
+                        <div>
+                            {{ errorMessage }}
+                        </div>
+                    </div>
+                </div>
 
             </div>
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">

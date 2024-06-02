@@ -238,6 +238,10 @@
         "8208200568267332545": "Speech recognition is not supported in your browser. Try using a different browser.",
         "8124302167693754862": "Border",
         "2501989539336327542": "Upload image",
-        "9215914151014464056": "Create an application simply online"
+        "9215914151014464056": "Create an application simply online",
+        "8108342058935617876": "Import API",
+        "970314324246939979": "Link to your openapi.json",
+        "8768149153748097279": "Paste link here",
+        "6627551976444260400": "or"
     }
 }

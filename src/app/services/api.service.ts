@@ -327,9 +327,9 @@ export class ApiService extends DataService<ApiItem> {
             );
     }
 
-    importItem(inputString: string): Observable<{success: boolean}> {
+    importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
         const url = `${BASE_URL}api/v1/api_import_from_curl`;
-        return this.httpClient.post<{success: boolean}>(url, {inputString}, this.httpOptions)
+        return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

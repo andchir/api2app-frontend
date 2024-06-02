@@ -11,6 +11,8 @@ export class ApiImportComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
     inputString: string;
+    inputLinkString: string;
+    errorMessage = '';
     loading: boolean;
     destroyed$: Subject<void> = new Subject();
 
@@ -27,11 +29,12 @@ export class ApiImportComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        if (!this.inputString) {
+        if (!this.inputString && !this.inputLinkString) {
             return;
         }
+        this.errorMessage = '';
         this.loading = true;
-        this.dataService.importItem(this.inputString)
+        this.dataService.importItem(this.inputString, this.inputLinkString)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -41,6 +44,9 @@ export class ApiImportComponent implements OnInit, OnDestroy {
                     this.loading = false;
                 },
                 error: (err) => {
+                    if (err.error) {
+                        this.errorMessage = err.error;
+                    }
                     this.loading = false;
                 }
             });
