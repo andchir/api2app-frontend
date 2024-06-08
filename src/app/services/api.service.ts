@@ -181,9 +181,7 @@ export class ApiService extends DataService<ApiItem> {
         });
 
         const requestHeaders = data.sender === 'server'
-            ? {
-                'Content-Type': headersData['Content-Type'] || 'application/json'
-            }
+            ? (headersData['Content-Type'] ? {'Content-Type': headersData['Content-Type']} : {})
             : Object.assign({}, headersData);
         if (data.sender === 'server') {
             if (sendAsFormData) {
