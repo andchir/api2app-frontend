@@ -180,7 +180,11 @@ export class ApiService extends DataService<ApiItem> {
             queryParams[item.name] = item.value;
         });
 
-        const requestHeaders = Object.assign({}, headersData);
+        const requestHeaders = data.sender === 'server'
+            ? {
+                'Content-Type': headersData['Content-Type'] || 'application/json'
+            }
+            : Object.assign({}, headersData);
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__headers', Object.keys(headersData).join(','));
