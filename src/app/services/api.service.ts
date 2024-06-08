@@ -186,6 +186,7 @@ export class ApiService extends DataService<ApiItem> {
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__headers_values', Object.values(headersData).join(','));
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
                 formData.append('opt__uuid', data.uuid || '');
                 formData.append('opt__requestUrl', data.requestUrl || '');
