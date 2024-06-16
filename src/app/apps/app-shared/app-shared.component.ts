@@ -105,6 +105,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     //     buttons.push(element.options?.outputApiUuid);
                     // }
                 }
+                ApplicationService.applyLocalStoredValue(element);
             });
         });
         // API auto submit
@@ -306,6 +307,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
+                ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
                 if (element.type === 'input-switch') {
                     if (bodyField.value) {
@@ -343,6 +345,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (!element) {
                         return;
                     }
+                    ApplicationService.localStoreValue(element);
                     const value = element.value ? ApplicationService.getElementValue(element) as string : '';
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {

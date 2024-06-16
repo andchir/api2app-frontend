@@ -2,12 +2,12 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     EventEmitter,
     forwardRef,
     Input,
-    OnChanges,
     Output,
-    SimpleChanges
+    ViewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -26,6 +26,7 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
 })
 export class ElementInputTextComponent implements ControlValueAccessor {
 
+    @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
     @Input() editorMode = false;
     @Input() type: string;
     @Input() name: string;
@@ -34,10 +35,12 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() readOnly: boolean;
+    @Input() storeValue: boolean;
     @Input() speechRecognitionEnabled = false;
     @Input() speechSynthesisEnabled = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     private _value;
+    isChanged = false;
     microphoneActive = false;
     speechSynthesisActive = false;
     // @ts-ignore
@@ -166,13 +169,25 @@ export class ElementInputTextComponent implements ControlValueAccessor {
 
     onChange(_: any) {}
 
+    onTouched(_: any) {}
+
     writeValue(value: any) {
         this.value = value;
+        if (this.inputControl.nativeElement) {
+            this.inputControl.nativeElement.value = value;
+        }
     }
 
-    registerOnChange(fn) {
+    registerOnChange(fn: (_: any) => void) {
         this.onChange = fn;
     }
 
-    registerOnTouched() {}
+    registerOnTouched(fn: (_: any) => void) {
+        this.onTouched = fn;
+    }
+
+    onKeyUp(event: KeyboardEvent) {
+        this.value = (event.target as HTMLInputElement).value;
+        this.isChanged = true;
+    }
 }

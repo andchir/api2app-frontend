@@ -88,6 +88,30 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return String(element.value);
     }
 
+    static localStoreValue(element: AppBlockElement): void {
+        if (!element['storeValue']) {
+            return;
+        }
+        const value = ApplicationService.getElementValue(element);
+        const inputApiUuid = element.options?.inputApiUuid;
+        const key = `${element.type}-${element.name}`;
+        const obj = JSON.parse(window.localStorage.getItem(inputApiUuid) || '{}');
+        obj[key] = value;
+        window.localStorage.setItem(inputApiUuid, JSON.stringify(obj));
+    }
+
+    static applyLocalStoredValue(element: AppBlockElement): void {
+        if (!element['storeValue']) {
+            return;
+        }
+        const inputApiUuid = element.options?.inputApiUuid;
+        const key = `${element.type}-${element.name}`;
+        const obj = JSON.parse(window.localStorage.getItem(inputApiUuid) || '{}');
+        if (obj[key]) {
+            element.value = obj[key];
+        }
+    }
+
     static getDefault(): ApplicationItem {
         return {
             id: 0,

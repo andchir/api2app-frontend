@@ -202,6 +202,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.speechSynthesisEnabled || false
                 });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
+                });
                 break;
             case 'input-number':
                 output.push({
@@ -360,6 +366,12 @@ export class ElementOptions {
                     label: $localize `Voice the text`,
                     type: 'input-switch',
                     enabled: options?.speechSynthesisEnabled || false
+                });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
                 });
                 break;
             case 'input-hidden':
@@ -903,6 +915,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    storeValue: false,
                     value: ''
                 });
                 break;
@@ -918,6 +931,7 @@ export class ElementOptions {
                     required: true,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    storeValue: false,
                     value: ''
                 });
                 break;
