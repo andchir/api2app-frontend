@@ -595,6 +595,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
                 + (element.suffixText || '');
         }
+        ApplicationService.localStoreValue(element);
     }
 
     onElementClick(element: AppBlockElement): void {

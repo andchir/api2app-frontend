@@ -93,20 +93,26 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const value = ApplicationService.getElementValue(element);
-        const inputApiUuid = element.options?.inputApiUuid;
+        const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(inputApiUuid) || '{}');
+        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
         obj[key] = value;
-        window.localStorage.setItem(inputApiUuid, JSON.stringify(obj));
+        window.localStorage.setItem(apiUuid, JSON.stringify(obj));
     }
 
     static applyLocalStoredValue(element: AppBlockElement): void {
         if (!element['storeValue']) {
             return;
         }
-        const inputApiUuid = element.options?.inputApiUuid;
+        const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(inputApiUuid) || '{}');
+        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
         if (obj[key]) {
             element.value = obj[key];
         }

@@ -8,7 +8,7 @@
                    [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                    [placeholder]="placeholder || ''"
                    (keyup)="onKeyUp($event)"
-                   (focus)="onTouched($event)"
+                   (focus)="onFocus($event)"
                    [readonly]="readOnly" #inputControl>
         </ng-container>
         <ng-container *ngSwitchCase="'input-textarea'">
@@ -16,7 +16,7 @@
                       [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                       [placeholder]="placeholder || ''"
                       (keyup)="onKeyUp($event)"
-                      (focus)="onTouched($event)"
+                      (focus)="onFocus($event)"
                       [readonly]="readOnly" #inputControl></textarea>
         </ng-container>
     </ng-container>

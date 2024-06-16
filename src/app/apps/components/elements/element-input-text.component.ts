@@ -41,6 +41,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     private _value;
     isChanged = false;
+    isTouched = false;
     microphoneActive = false;
     speechSynthesisActive = false;
     // @ts-ignore
@@ -172,6 +173,9 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     onTouched(_: any) {}
 
     writeValue(value: any) {
+        if (this.value && value && this.value !== value) {
+            this.isChanged = true;
+        }
         this.value = value;
         if (this.inputControl.nativeElement) {
             this.inputControl.nativeElement.value = value;
@@ -189,5 +193,10 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     onKeyUp(event: KeyboardEvent) {
         this.value = (event.target as HTMLInputElement).value;
         this.isChanged = true;
+    }
+
+    onFocus(event: FocusEvent) {
+        this.onTouched(event);
+        this.isTouched = true;
     }
 }
