@@ -376,6 +376,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
+            ApplicationService.localStoreValue(element);
             param.value = element.value
                 ? ApplicationService.getElementValue(element) as string
                 : null;
