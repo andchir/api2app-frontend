@@ -732,6 +732,12 @@ export class ElementOptions {
                     value: options?.orderIndex || 0
                 });
                 output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -764,6 +770,12 @@ export class ElementOptions {
                     label: $localize `Name of the thumbnail field in the array`,
                     type: 'input-text',
                     value: options?.itemThumbnailFieldName
+                });
+                output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText || ''
                 });
                 output.push({
                     name: 'value',
@@ -1047,6 +1059,7 @@ export class ElementOptions {
                     name: 'image',
                     itemFieldName: '',
                     itemThumbnailFieldName: '',
+                    prefixText: '',
                     value: '',
                     hiddenByDefault: false
                 });
@@ -1055,6 +1068,7 @@ export class ElementOptions {
             case 'video':
                 Object.assign(output, {
                     name: type,
+                    prefixText: '',
                     value: '',
                     hiddenByDefault: false
                 });
