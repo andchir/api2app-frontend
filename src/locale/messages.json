@@ -80,7 +80,7 @@
         "2159130950882492111": "Cancel",
         "9181071479652929778": "Please select an API.",
         "9080385249016877240": "Select Element Type",
-        "6446939415920921766": "Hidden text field",
+        "1957229994878907331": "Hidden Text Field",
         "347407180135731058": "Audio",
         "3012906865384504293": "Image",
         "2573119705636747814": "Text Header",
@@ -243,6 +243,7 @@
         "970314324246939979": "Link to your openapi.json",
         "8768149153748097279": "Paste link here",
         "6627551976444260400": "or",
-        "2019354063534805153": "Store field value"
+        "2019354063534805153": "Store field value",
+        "6792573469684838802": "Status Indicator"
     }
 }
