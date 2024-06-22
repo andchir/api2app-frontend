@@ -244,6 +244,15 @@
         "8768149153748097279": "Paste link here",
         "6627551976444260400": "or",
         "2019354063534805153": "Store field value",
-        "6792573469684838802": "Status Indicator"
+        "6792573469684838802": "Status Indicator",
+        "1519954996184640001": "Error",
+        "1161299114153631702": "Completed",
+        "593955748310655938": "Performing an operation...",
+        "3923305728200436084": "Completed Status Value",
+        "8200820842258472590": "Error Status Value",
+        "8459070725086107409": "Completed Status Text",
+        "5380758074849416105": "Processing Status Text",
+        "5710793086333825335": "Error Status Text",
+        "87508574155167029": "Boolean Value (true/false)"
     }
 }

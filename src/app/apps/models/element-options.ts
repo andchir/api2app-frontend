@@ -880,6 +880,47 @@ export class ElementOptions {
                     enabled: options?.autoHide || false
                 });
                 break;
+            case 'status':
+                output.push({
+                    name: 'statusCompleted',
+                    label: $localize `Completed Status Value`,
+                    type: 'input-text',
+                    value: options?.statusCompleted || ''
+                });
+                output.push({
+                    name: 'statusError',
+                    label: $localize `Error Status Value`,
+                    type: 'input-text',
+                    value: options?.statusError || ''
+                });
+                output.push({
+                    name: 'statusCompletedText',
+                    label: $localize `Completed Status Text`,
+                    type: 'input-text',
+                    required: true,
+                    value: options?.statusCompletedText || ''
+                });
+                output.push({
+                    name: 'statusProcessingText',
+                    label: $localize `Processing Status Text`,
+                    type: 'input-text',
+                    required: true,
+                    value: options?.statusProcessingText || ''
+                });
+                output.push({
+                    name: 'statusErrorText',
+                    label: $localize `Error Status Text`,
+                    type: 'input-text',
+                    required: true,
+                    value: options?.statusErrorText || ''
+                });
+                output.push({
+                    name: 'isBoolean',
+                    label: $localize `Boolean Value (true/false)`,
+                    type: 'input-switch',
+                    enabled: options?.isBoolean || false
+                });
+                break;
         }
         return output;
     }
@@ -1095,6 +1136,15 @@ export class ElementOptions {
                     value: 1
                 });
                 break;
+            case 'status':
+                Object.assign(output, {
+                    statusCompleted: 'completed',
+                    statusError: 'error',
+                    statusCompletedText: $localize `Completed`,
+                    statusProcessingText: $localize `Performing an operation...`,
+                    statusErrorText: $localize `Error`,
+                    isBoolean: false
+                });
         }
         return output;
     }
