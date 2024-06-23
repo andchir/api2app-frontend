@@ -209,6 +209,88 @@ export class ElementOptions {
                     enabled: options?.storeValue || false
                 });
                 break;
+            case 'input-textarea':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'placeholder',
+                    label: $localize `Placeholder`,
+                    type: 'input-text',
+                    value: options?.placeholder
+                });
+                output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix Text`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix Text`,
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-textarea',
+                    value: options?.value
+                });
+                output.push({
+                    name: 'readOnly',
+                    label: $localize `Read only`,
+                    type: 'input-switch',
+                    enabled: options?.readOnly || false
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
+                output.push({
+                    name: 'speechRecognitionEnabled',
+                    label: $localize `Voice typing`,
+                    type: 'input-switch',
+                    enabled: options?.speechRecognitionEnabled || false
+                });
+                output.push({
+                    name: 'speechSynthesisEnabled',
+                    label: $localize `Voice the text`,
+                    type: 'input-switch',
+                    enabled: options?.speechSynthesisEnabled || false
+                });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
+                });
+                break;
             case 'input-number':
                 output.push({
                     name: 'name',
@@ -296,82 +378,6 @@ export class ElementOptions {
                     type: 'input-number',
                     value: options?.value,
                     min: 0
-                });
-                break;
-            case 'input-textarea':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
-                    name: 'label',
-                    label: $localize `Label`,
-                    type: 'input-text',
-                    value: options?.label
-                });
-                output.push({
-                    name: 'placeholder',
-                    label: $localize `Placeholder`,
-                    type: 'input-text',
-                    value: options?.placeholder
-                });
-                output.push({
-                    name: 'prefixText',
-                    label: $localize `Prefix Text`,
-                    type: 'input-text',
-                    value: options?.prefixText
-                });
-                output.push({
-                    name: 'suffixText',
-                    label: $localize `Suffix Text`,
-                    type: 'input-text',
-                    value: options?.suffixText
-                });
-                output.push({
-                    name: 'value',
-                    label: $localize `Default Value`,
-                    type: 'input-textarea',
-                    value: options?.value
-                });
-                output.push({
-                    name: 'readOnly',
-                    label: $localize `Read only`,
-                    type: 'input-switch',
-                    enabled: options?.readOnly || false
-                });
-                output.push({
-                    name: 'required',
-                    label: $localize `Required`,
-                    type: 'input-switch',
-                    enabled: options?.required || false
-                });
-                output.push({
-                    name: 'speechRecognitionEnabled',
-                    label: $localize `Voice typing`,
-                    type: 'input-switch',
-                    enabled: options?.speechRecognitionEnabled || false
-                });
-                output.push({
-                    name: 'speechSynthesisEnabled',
-                    label: $localize `Voice the text`,
-                    type: 'input-switch',
-                    enabled: options?.speechSynthesisEnabled || false
-                });
-                output.push({
-                    name: 'storeValue',
-                    label: $localize `Store field value`,
-                    type: 'input-switch',
-                    enabled: options?.storeValue || false
                 });
                 break;
             case 'input-hidden':
@@ -982,10 +988,11 @@ export class ElementOptions {
                     suffixText: '',
                     readOnly: false,
                     required: true,
+                    hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
                     storeValue: false,
-                    value: ''
+                    value: null
                 });
                 break;
             case 'input-number':
@@ -1143,7 +1150,8 @@ export class ElementOptions {
                     statusCompletedText: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
-                    isBoolean: false
+                    isBoolean: false,
+                    value: null
                 });
         }
         return output;

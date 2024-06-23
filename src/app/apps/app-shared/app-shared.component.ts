@@ -211,6 +211,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.messageType = 'error';
                         this.message = err.message || 'Error.';
                     }
+                    this.onError(apiUuid);
                     this.stateLoadingUpdate(apiUuid, false, false);
                 }
             });
@@ -274,6 +275,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.loading = loading;
         });
         this.cdr.detectChanges();
+    }
+
+    onError(apiUuid: string): void {
+        console.log('onError', apiUuid);
+        const blocks = this.data.blocks.filter((item) => {
+            const elements = item.elements.filter((el) => {
+                return el?.options?.outputApiUuid == apiUuid;
+            });
+            return elements.length > 0;
+        });
+        blocks.forEach((block) => {
+            block.elements.filter((el) => {
+                return el.type === 'status';
+            }).forEach((element) => {
+                element.value = element?.statusError;
+            });
+        });
     }
 
     clearElementsValues(block: AppBlock): void {

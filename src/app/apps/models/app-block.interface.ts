@@ -42,6 +42,8 @@ export interface AppBlockElement {
     itemFieldNameForValue?: string;
     useDefault?: boolean;
     perPage?: number,
+    statusCompleted?: string;
+    statusError?: string;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;
     valueArr?: string[] | File[] | null;
