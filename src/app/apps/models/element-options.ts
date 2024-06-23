@@ -888,6 +888,14 @@ export class ElementOptions {
                 break;
             case 'status':
                 output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'statusCompleted',
                     label: $localize `Completed Status Value`,
                     type: 'input-text',
