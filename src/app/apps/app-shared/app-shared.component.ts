@@ -196,9 +196,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.appsAutoStarted.includes(apiUuid)) {
                         this.afterAutoStarted(apiUuid);
                     }
-                    this.createAppResponse(currentApi, res);
                     this.loading = false;
                     this.submitted = false;
+                    this.createAppResponse(currentApi, res);
                     this.stateLoadingUpdate(apiUuid, false, this.appsAutoStarted.length === 0);
                 },
                 error: (err) => {
@@ -278,7 +278,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onError(apiUuid: string): void {
-        console.log('onError', apiUuid);
+        // console.log('onError', apiUuid);
+        const currentApiUuid = apiUuid;
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
                 return el?.options?.outputApiUuid == apiUuid;
@@ -289,6 +290,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.elements.filter((el) => {
                 return el.type === 'status';
             }).forEach((element) => {
+                if (element?.options?.outputApiUuid !== currentApiUuid) {
+                    element.value = null;
+                    return;
+                }
                 element.value = element?.statusError;
             });
         });
@@ -472,10 +477,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
         if (response.body) {
-            const allElements = this.getAllElements();
-            const elements = allElements.filter((element) => {
-                const {apiUuid, fieldType} = this.getElementOptions(element, 'output');
-                return apiUuid === apiItem.uuid && fieldType === 'output';
+            const currentApiUuid = apiItem.uuid;
+            const blocks = this.data.blocks.filter((item) => {
+                const elements = item.elements.filter((el) => {
+                    return el?.options?.outputApiUuid == currentApiUuid;
+                });
+                return elements.length > 0;
             });
             const responseContentType = response.headers.has('Content-type')
                 ? response.headers.get('Content-type')
@@ -484,14 +491,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .then((data) => {
                     const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                     const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-                    elements.forEach((element) => {
-                        if (element.type === 'input-chart-line') {
-                            this.chartElementValueApply(element, data);
-                        } else if (element.type === 'input-pagination') {
-                            this.paginationValueApply(element, valuesObj, data);
-                        } else {
-                            this.blockElementValueApply(element, valuesObj, data);
-                        }
+
+                    blocks.forEach((block) => {
+                        block.elements.forEach((element) => {
+                            const {apiUuid, fieldType} = this.getElementOptions(element, 'output');
+                            if (apiUuid !== currentApiUuid) {
+                                if (['image', 'audio', 'video', 'status'].includes(element.type)) {
+                                    element.value = null;
+                                    element.valueArr = null;
+                                    element.valueObj = null;
+                                }
+                                return;
+                            }
+                            if (element.type === 'input-chart-line') {
+                                this.chartElementValueApply(element, data);
+                            } else if (element.type === 'input-pagination') {
+                                this.paginationValueApply(element, valuesObj, data);
+                            } else {
+                                this.blockElementValueApply(element, valuesObj, data);
+                            }
+                        });
                     });
                     this.cdr.detectChanges();
                 })
@@ -607,7 +626,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else {
                 // element.value = null;
             }
-        } else if (['input-switch', 'input-number', 'input-slider'].includes(element.type)) {
+        } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
         } else {
             element.value = (element.prefixText || '')

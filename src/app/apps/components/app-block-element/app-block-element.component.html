@@ -477,7 +477,7 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                  *ngIf="options?.value !== null || editorMode">
                 <div class="px-3 py-2 text-green-500 border border-green-500 rounded-[0.7rem] bg-green-50"
-                    *ngIf="(options?.isBoolean && options?.value) || (!options?.isBoolean && options?.value === options.statusCompleted) else templateStatusProcessing">
+                    *ngIf="(options?.isBoolean && options?.value === true) || (!options?.isBoolean && options?.value === options.statusCompleted) else templateStatusProcessing">
                     <div class="flex gap-2 items-center">
                         <div>
                             <i class="bi bi-check-circle"></i>
