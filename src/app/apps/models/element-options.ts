@@ -888,6 +888,12 @@ export class ElementOptions {
                 break;
             case 'status':
                 output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name
+                });
+                output.push({
                     name: 'orderIndex',
                     label: $localize `Order Index`,
                     type: 'input-number',
@@ -1153,6 +1159,7 @@ export class ElementOptions {
                 break;
             case 'status':
                 Object.assign(output, {
+                    name: 'status',
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusCompletedText: $localize `Completed`,
