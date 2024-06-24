@@ -24,6 +24,13 @@ export class ElementOptions {
                     value: options?.orderIndex || 0
                 });
                 output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -44,6 +51,13 @@ export class ElementOptions {
                     min: 0,
                     max: 100,
                     value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
                 });
                 output.push({
                     name: 'value',
@@ -114,6 +128,13 @@ export class ElementOptions {
                     value: options?.text
                 });
                 output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
+                });
+                output.push({
                     name: 'color',
                     label: $localize `Color`,
                     type: 'input-select',
@@ -153,6 +174,13 @@ export class ElementOptions {
                     label: $localize `Placeholder`,
                     type: 'input-text',
                     value: options?.placeholder
+                });
+                output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
                 });
                 output.push({
                     name: 'prefixText',
@@ -981,7 +1009,8 @@ export class ElementOptions {
             case 'text-header':
                 Object.assign(output, {
                     name: 'header',
-                    value: $localize `Header Example Text`
+                    value: $localize `Header Example Text`,
+                    icon: ''
                 });
                 break;
             case 'text':
@@ -991,6 +1020,7 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     color: 'Black',
+                    icon: '',
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,
@@ -1001,6 +1031,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'submit',
                     text: $localize `Submit`,
+                    icon: '',
                     color: 'Green',
                     hiddenByDefault: false
                 });
@@ -1011,6 +1042,7 @@ export class ElementOptions {
                     label: $localize `Name`,
                     type: 'input-text',
                     placeholder: $localize `Enter your name`,
+                    icon: '',
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,

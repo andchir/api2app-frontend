@@ -34,11 +34,16 @@
                  'text-blue-500': options?.color === 'Blue',
                  'text-red-500': options?.color === 'Red'
                  }">
-                <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
-                <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
-                <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
-                <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
+                <div class="flex gap-2 items-center">
+                    <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
+                    <div>
+                        <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
+                        <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
+                        <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                        <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
+                        <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
+                    </div>
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -46,8 +51,13 @@
         <ng-container *ngSwitchCase="'text-header'">
             <h4 class="text-2xl font-bold mb-3 min-h-[20px]"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <span *ngIf="options?.value">{{ options?.value }}</span>
-                <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
+                <span class="flex gap-2 items-center">
+                    <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
+                    <span>
+                        <span *ngIf="options?.value">{{ options?.value }}</span>
+                        <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
+                    </span>
+                </span>
             </h4>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -63,7 +73,12 @@
                     'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color === 'Red'
                     }"
                     (click)="onClick()">
-                    {{ options?.text }}
+                    <span class="flex gap-2 w-full justify-center items-center">
+                        <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
+                        <span>
+                            {{ options?.text }}
+                        </span>
+                    </span>
                 </button>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -75,11 +90,12 @@
                  *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.value)">
                 <app-element-input-text
                     [editorMode]="editorMode"
-                    [type]="options.type"
-                    [name]="options.name"
-                    [label]="options.label"
-                    [placeholder]="options.placeholder"
-                    [readOnly]="options.readOnly"
+                    [type]="options?.type"
+                    [name]="options?.name"
+                    [label]="options?.label"
+                    [icon]="options?.icon"
+                    [placeholder]="options?.placeholder"
+                    [readOnly]="options?.readOnly"
                     [storeValue]="options?.storeValue"
                     [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
                     [speechSynthesisEnabled]="options?.speechSynthesisEnabled"

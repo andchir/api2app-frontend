@@ -4,8 +4,16 @@
     </label>
     <ng-container [ngSwitch]="type">
         <ng-container *ngSwitchCase="'input-text'">
+            <div class="relative" *ngIf="icon">
+                <div class="absolute left-3 top-2">
+                    <i class="bi" [ngClass]="icon"></i>
+                </div>
+            </div>
             <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                   [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
+                   [ngClass]="{
+                   'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
+                   'pl-9': icon
+                   }"
                    [placeholder]="placeholder || ''"
                    (keyup)="onKeyUp($event)"
                    (focus)="onFocus($event)"

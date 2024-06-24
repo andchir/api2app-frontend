@@ -31,6 +31,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() type: string;
     @Input() name: string;
     @Input() label: string;
+    @Input() icon: string;
     @Input() placeholder: string;
     @Input() parentIndex: number;
     @Input() index: number;
