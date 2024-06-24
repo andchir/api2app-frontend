@@ -14,27 +14,7 @@
                                [(ngModel)]="type"
                                (ngModelChange)="updateItemType()">
                         <ng-template ng-option-tmp let-item="item">
-                            <i class="bi bi-type-h1 mr-1 text-gray-400" *ngIf="item.name === 'text-header'"></i>
-                            <i class="bi bi-fonts mr-1 text-gray-400" *ngIf="item.name === 'text'"></i>
-                            <i class="bi bi-app mr-1 text-gray-400" *ngIf="item.name === 'button'"></i>
-                            <i class="bi bi-input-cursor-text mr-1 text-gray-400" *ngIf="item.name === 'input-text'"></i>
-                            <i class="bi bi-1-square mr-1 text-gray-400" *ngIf="item.name === 'input-number'"></i>
-                            <i class="bi bi-sliders mr-1 text-gray-400" *ngIf="item.name === 'input-slider'"></i>
-                            <i class="bi bi-textarea-resize mr-1 text-gray-400" *ngIf="item.name === 'input-textarea'"></i>
-                            <i class="bi bi-input-cursor mr-1 text-gray-400" *ngIf="item.name === 'input-hidden'"></i>
-                            <i class="bi bi-toggle-off mr-1 text-gray-400" *ngIf="item.name === 'input-switch'"></i>
-                            <i class="bi bi-menu-button mr-1 text-gray-400" *ngIf="item.name === 'input-select'"></i>
-                            <i class="bi bi-tag mr-1 text-gray-400" *ngIf="item.name === 'input-tags'"></i>
-                            <i class="bi bi-ui-radios mr-1 text-gray-400" *ngIf="item.name === 'input-radio'"></i>
-                            <i class="bi bi-calendar3 mr-1 text-gray-400" *ngIf="item.name === 'input-date'"></i>
-                            <i class="bi bi-palette mr-1 text-gray-400" *ngIf="item.name === 'input-color'"></i>
-                            <i class="bi bi-upload mr-1 text-gray-400" *ngIf="item.name === 'input-file'"></i>
-                            <i class="bi bi-image mr-1 text-gray-400" *ngIf="item.name === 'image'"></i>
-                            <i class="bi bi-music-note-beamed mr-1 text-gray-400" *ngIf="item.name === 'audio'"></i>
-                            <i class="bi bi-play-btn mr-1 text-gray-400" *ngIf="item.name === 'video'"></i>
-                            <i class="bi bi-graph-up mr-1 text-gray-400" *ngIf="item.name === 'input-chart-line'"></i>
-                            <i class="bi bi-segmented-nav mr-1 text-gray-400" *ngIf="item.name === 'input-pagination'"></i>
-                            <i class="bi bi-check-circle mr-1 text-gray-400" *ngIf="item.name === 'status'"></i>
+                            <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
                             {{ item.title }}
                         </ng-template>
                     </ng-select>
@@ -507,6 +487,43 @@
                     </div>
                 </ng-template>
             </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'table'">
+            <h4 class="mb-3 min-h-[20px]"
+                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <table class="border border-gray-300 w-full">
+                    <thead>
+                        <tr class="border-b-2 border-gray-300 bg-gray-100">
+                            <td class="py-2 px-3 border border-gray-300 font-bold" *ngFor="let headerText of options.headers">
+                                {{ headerText }}
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody *ngIf="!editorMode">
+                        <ng-container *ngIf="options.valueArr && options.valueArr.length > 0; else templateTableEmpty">
+                            <tr *ngFor="let item of options.valueArr">
+                                <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
+                                    {{ item[key] }}
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                    <tbody *ngIf="editorMode">
+                        <tr *ngFor="let item of [1, 2, 3]">
+                            <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
+                                {{ key }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ng-template #templateTableEmpty>
+                    <tr>
+                        <td class="p-3 text-center" [colSpan]="options.headers.length" i18n>Empty.</td>
+                    </tr>
+                </ng-template>
+            </h4>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 

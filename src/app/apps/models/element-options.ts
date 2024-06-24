@@ -941,6 +941,36 @@ export class ElementOptions {
                     enabled: options?.isBoolean || false
                 });
                 break;
+            case 'table':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name || ''
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
+                    name: 'headers',
+                    label: $localize `Columns headers`,
+                    type: 'input-tags',
+                    value: options?.headers || [],
+                    choices: []
+                });
+                output.push({
+                    name: 'keys',
+                    label: $localize `Columns values keys`,
+                    type: 'input-tags',
+                    value: options?.keys || [],
+                    choices: []
+                });
+                break;
         }
         return output;
     }
@@ -1168,6 +1198,14 @@ export class ElementOptions {
                     isBoolean: false,
                     value: null
                 });
+                break;
+            case 'table':
+                Object.assign(output, {
+                    name: 'table',
+                    headers: ['Column1', 'Column2', 'Column3'],
+                    keys: ['key1', 'key2', 'key3']
+                });
+                break;
         }
         return output;
     }

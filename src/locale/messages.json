@@ -253,6 +253,9 @@
         "8459070725086107409": "Completed Status Text",
         "5380758074849416105": "Processing Status Text",
         "5710793086333825335": "Error Status Text",
-        "87508574155167029": "Boolean Value (true/false)"
+        "87508574155167029": "Boolean Value (true/false)",
+        "1358239534403218079": "Table",
+        "6510063013870816675": "Columns headers",
+        "7808980770609551504": "Columns values keys"
     }
 }
