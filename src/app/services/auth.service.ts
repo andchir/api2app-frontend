@@ -80,7 +80,7 @@ export class AuthService {
         formData.append('first_name', first_name);
         formData.append('last_name', last_name);
         if (avatar_file) {
-            formData.append('avatar', avatar_file, avatar_file.name);
+            formData.append('userprofile.avatar', avatar_file, avatar_file.name);
         }
         return this.httpClient.put(`${this.requestUrl}users/me/`, formData, this.httpOptionsFormData);
     }
