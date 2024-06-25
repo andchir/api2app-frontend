@@ -19,6 +19,13 @@ export class AuthService {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     };
 
+    httpOptionsFormData = {
+        headers: new HttpHeaders({
+            'enctype': 'multipart/form-data',
+            'Accept': 'application/json'
+        })
+    };
+
     protected requestUrl = '';
 
     constructor(
@@ -66,13 +73,16 @@ export class AuthService {
         }, this.httpOptions);
     }
 
-    updateProfile(email: string, username: string, first_name: string, last_name: string): Observable<any> {
-        return this.httpClient.put(`${this.requestUrl}users/me/`, {
-            email,
-            username,
-            first_name,
-            last_name
-        }, this.httpOptions);
+    updateProfile(email: string, username: string, first_name: string, last_name: string, avatar_file?: File): Observable<any> {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('username', username);
+        formData.append('first_name', first_name);
+        formData.append('last_name', last_name);
+        if (avatar_file) {
+            formData.append('avatar', avatar_file, avatar_file.name);
+        }
+        return this.httpClient.put(`${this.requestUrl}users/me/`, formData, this.httpOptionsFormData);
     }
 
     activateUser(uid: string, token: string): Observable<any> {

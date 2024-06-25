@@ -26,6 +26,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     user: User;
     action: 'update_profile'|'change_password' = 'update_profile';
     destroyed$: Subject<void> = new Subject();
+    imageFile: File;
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -85,7 +86,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
         const {email, firstName, lastName} = this.form.value;
 
-        this.authService.updateProfile(email, this.user.username, firstName, lastName)
+        this.authService.updateProfile(email, this.user.username, firstName, lastName, this.imageFile)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

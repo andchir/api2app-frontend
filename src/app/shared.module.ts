@@ -13,6 +13,7 @@ import { ConfirmComponent } from './shared/confirm/confirm.component';
 import { DrawerComponent } from './shared/drawer/drawer.component';
 import { ShareItemComponent } from './shared/share-item/share-item.component';
 import { FileUploadComponent } from './shared/file-upload/file-upload.component';
+import { ImageUploadCircleComponent } from './apps/components/app-image-upload-circle/app-image-upload-circle.component';
 import { PaginationComponent } from './shared/pagination/pagination.component';
 
 import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
@@ -32,6 +33,7 @@ import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
         ShareItemComponent,
         NotAuthorizedComponent,
         FileUploadComponent,
+        ImageUploadCircleComponent,
         PaginationComponent,
 
         ToHtmlPipe
@@ -43,6 +45,7 @@ import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
         ShareItemComponent,
         NotAuthorizedComponent,
         FileUploadComponent,
+        ImageUploadCircleComponent,
         PaginationComponent,
         CommonModule,
         FormsModule,

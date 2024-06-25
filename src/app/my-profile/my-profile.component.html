@@ -16,20 +16,39 @@
                             <ul class="flex flex-wrap -mb-px">
                                 <li class="me-2">
                                     <a href="#" class="inline-block p-4 border-b-2 rounded-t-lg"
-                                       [ngClass]="{'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300': action !== 'update_profile', 'border-blue-600 text-blue-600 active': action === 'update_profile'}"
-                                       (click)="updateAction('update_profile', $event)"
-                                       i18n>Update user details</a>
+                                        [ngClass]="{
+                                        'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300': action !== 'update_profile',
+                                        'border-blue-600 text-blue-600 active': action === 'update_profile'
+                                        }"
+                                        (click)="updateAction('update_profile', $event)">
+                                        <i class="bi bi-person mr-2"></i>
+                                        <span class="hidden xl:inline" i18n>Update user details</span>
+                                    </a>
                                 </li>
                                 <li class="me-2">
                                     <a href="#" class="inline-block p-4 border-b-2 rounded-t-lg"
-                                       [ngClass]="{'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300': action !== 'change_password', 'border-blue-600 text-blue-600 active': action === 'change_password'}"
-                                       (click)="updateAction('change_password', $event)"
-                                       i18n>Change password</a>
+                                        [ngClass]="{
+                                        'border-transparent text-gray-500 hover:text-gray-600 hover:border-gray-300': action !== 'change_password',
+                                        'border-blue-600 text-blue-600 active': action === 'change_password'
+                                        }"
+                                        (click)="updateAction('change_password', $event)">
+                                        <i class="bi bi-lock mr-2"></i>
+                                        <span class="hidden xl:inline" i18n>Change password</span>
+                                    </a>
                                 </li>
                             </ul>
                         </div>
 
                         <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="action == 'update_profile'">
+
+                            <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Update user details</h4>
+
+                            <div class="flex justify-center mb-3">
+                                <app-upload-image-circle
+                                    [(ngModel)]="imageFile"
+                                    [ngModelOptions]="{standalone: true}"></app-upload-image-circle>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="formFieldEmail" class="block mb-2 text-sm font-medium text-gray-900" i18n>Change Email</label>
                                 <input type="email" id="formFieldEmail"
@@ -76,6 +95,9 @@
                         </form>
 
                         <form [formGroup]="formChangePassword" (ngSubmit)="onSubmitPassword()" *ngIf="action == 'change_password'">
+
+                            <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Change password</h4>
+
                             <div class="mb-3">
                                 <label for="formFieldCurrentPassword" class="block mb-2 text-sm font-medium text-gray-900" i18n>Current Password</label>
                                 <input type="password" id="formFieldCurrentPassword"
