@@ -11,9 +11,9 @@ import { User } from '../apis/models/user.interface';
 import { matchValidator } from '../helpers/match-validator';
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './my-profile.component.html',
-  styleUrls: [],
+    selector: 'app-dashboard',
+    templateUrl: './my-profile.component.html',
+    styleUrls: [],
     providers: [UserService]
 })
 export class MyProfileComponent implements OnInit, OnDestroy {

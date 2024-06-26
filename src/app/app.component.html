@@ -111,7 +111,7 @@
                                         <span class="absolute -inset-1.5"></span>
                                         <span class="sr-only">Open user menu</span>
                                         <img class="h-8 w-8 rounded-full"
-                                             src="assets/img/icon-user.png"
+                                             [src]="(userSubject$ | async)?.userprofile?.avatar || 'assets/img/icon-user.png'"
                                              alt="">
                                     </button>
                                 </div>

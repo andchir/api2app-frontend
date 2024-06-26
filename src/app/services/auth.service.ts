@@ -82,7 +82,8 @@ export class AuthService {
         if (avatar_file) {
             formData.append('userprofile.avatar', avatar_file, avatar_file.name);
         }
-        return this.httpClient.put(`${this.requestUrl}users/me/`, formData, this.httpOptionsFormData);
+        const url = `${this.requestUrl}users/me/`
+        return this.httpClient.put(url, formData, this.httpOptionsFormData);
     }
 
     activateUser(uid: string, token: string): Observable<any> {

@@ -45,6 +45,7 @@
 
                             <div class="flex justify-center mb-3">
                                 <app-upload-image-circle
+                                    [imageUrl]="user?.userprofile?.avatar"
                                     [(ngModel)]="imageFile"
                                     [ngModelOptions]="{standalone: true}"></app-upload-image-circle>
                             </div>
