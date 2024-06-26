@@ -44,10 +44,13 @@
                             <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Update user details</h4>
 
                             <div class="flex justify-center mb-3">
-                                <app-upload-image-circle
-                                    [imageUrl]="user?.userprofile?.avatar"
-                                    [(ngModel)]="imageFile"
-                                    [ngModelOptions]="{standalone: true}"></app-upload-image-circle>
+                                <div class="w-24">
+                                    <app-upload-image-circle
+                                        [imageUrl]="user?.userprofile?.avatar"
+                                        [(ngModel)]="imageFile"
+                                        [ngModelOptions]="{standalone: true}"></app-upload-image-circle>
+                                    <div class="text-sm text-red-600 text-center" *ngIf="errors['userprofile']">{{ errors['userprofile'] }}</div>
+                                </div>
                             </div>
 
                             <div class="mb-3">

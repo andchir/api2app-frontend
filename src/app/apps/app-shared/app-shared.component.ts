@@ -78,6 +78,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
+                    this.data.name = $localize `Page not found`;
                     this.errors[this.itemUuid] = err;
                     this.loading = false;
                 }

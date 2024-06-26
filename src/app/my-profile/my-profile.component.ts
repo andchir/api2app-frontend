@@ -93,13 +93,17 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     this.messageType = 'success';
                     this.message = $localize `Your profile has been successfully changed.`;
                     this.tokenStorageService.saveUser(Object.assign({}, this.user, res));
+                    this.authService.userSubject.next(res);
                     this.submitted = false;
                 },
                 error: (err) => {
                     this.messageType = 'error';
                     this.message = err?.error?.detail;
                     if (err?.error?.email) {
-                        this.errors['email'] = err?.error?.email.join(' ');
+                        this.errors['email'] = err?.error.email.join(' ');
+                    }
+                    if (err?.error?.userprofile) {
+                        this.errors['userprofile'] = err?.error.userprofile.join(' ');
                     }
                     this.submitted = false;
                 }
