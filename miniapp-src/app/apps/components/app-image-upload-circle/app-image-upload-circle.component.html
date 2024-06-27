@@ -1,0 +1,21 @@
+<input class="hidden no-pointer-events" type="file" accept="image/*" data-name="image"
+       (change)="onFileChange($event, imagePreview)"
+       #fileInput>
+<div class="group relative w-24 h-24 border border-gray-300 rounded-full cursor-pointer hover:border-gray-400 overflow-hidden"
+     title="Upload image"
+     i18n-title
+     (drop)="dropHandler($event, imagePreview)"
+     (dragover)="dragOverHandler($event)"
+     (dragenter)="dragEnter($event)"
+     (dragleave)="dragLeave($event)"
+     (click)="buttonFileHandle(fileInput)">
+    <img class="w-24 h-24 rounded-full no-pointer-events" [src]="imageUrl" alt="" *ngIf="imageUrl">
+    <img class="w-24 h-24 rounded-full no-pointer-events bg-cover bg-center"
+         [ngClass]="{'hidden': imageUrl}"
+         src="assets/img/icon-image.png"
+         alt=""
+         #imagePreview>
+    <div class="w-full h-full absolute left-0 top-0 flex items-center justify-center text-gray-600 bg-white bg-opacity-80 text-3xl opacity-0 transition-opacity no-pointer-events group-hover:opacity-100">
+        <i class="bi bi-upload"></i>
+    </div>
+</div>

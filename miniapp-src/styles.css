@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.no-pointer-events { pointer-events: none; }
+.dropdown {
+    position: relative;
+}
+.hover-parent .hover-element,
+.dropdown .dropdown-menu {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms;
+}
+.hover-parent:hover .hover-element,
+.dropdown:hover .dropdown-menu {
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* ng-select.ng-select-custom */
+.ng-select.ng-select-custom {
+    min-height: 0;
+    border-radius: .5rem;
+}
+.ng-select.ng-select-custom .ng-select-container  {
+    min-height: 42px;
+    border-radius: .5rem;
+}
+
+/* pagination */
+.app-pagination .ngx-pagination li,
+.app-pagination .ngx-pagination li > a {
+    border-radius: 6px;
+}
+
+/* loading-bg-image */
+.loading-bg-image { background-image: url('assets/img/loading.gif'); background-position: 50% 50%; background-repeat: no-repeat; }
+
+/* input range */
+input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); background-repeat: no-repeat; background-size: 0% 100%; }
+

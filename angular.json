@@ -156,6 +156,160 @@
                     }
                 }
             }
+        },
+        "miniapp": {
+            "projectType": "application",
+            "schematics": {
+                "@schematics/angular:component": {
+                    "style": "css"
+                }
+            },
+            "root": "",
+            "sourceRoot": "miniapp-src",
+            "prefix": "app",
+            "i18n": {
+                "sourceLocale": {
+                    "code": "en",
+                    "baseHref": "en/"
+                },
+                "locales": {
+                    "ru": {
+                        "translation": "miniapp-src/locale/messages.ru.json",
+                        "baseHref": "ru/"
+                    }
+                }
+            },
+            "architect": {
+                "build": {
+                    "builder": "@angular-devkit/build-angular:browser",
+                    "options": {
+                        "outputPath": "dist/miniapp",
+                        "index": "miniapp-src/index.html",
+                        "main": "miniapp-src/main.ts",
+                        "polyfills": [
+                            "zone.js"
+                        ],
+                        "tsConfig": "tsconfig.app.json",
+                        "inlineStyleLanguage": "css",
+                        "assets": [
+                            "miniapp-src/favicon.ico",
+                            "miniapp-src/assets"
+                        ],
+                        "styles": [
+                            "node_modules/bootstrap-icons/font/bootstrap-icons.scss",
+                            "node_modules/@ng-select/ng-select/themes/default.theme.css",
+                            "node_modules/prismjs/themes/prism.css",
+                            "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
+                            "miniapp-src/styles.css"
+                        ],
+                        "scripts": [
+                            "node_modules/apexcharts/dist/apexcharts.min.js",
+                            "node_modules/prismjs/prism.js",
+                            "node_modules/prismjs/components/prism-json.js",
+                            "node_modules/prismjs/components/prism-javascript.js",
+                            "node_modules/prismjs/components/prism-python.js",
+                            "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.js"
+                        ],
+                        "allowedCommonJsDependencies": [
+                            "apexcharts",
+                            "ace-builds",
+                            "moment"
+                        ],
+                        "localize": true,
+                        "i18nMissingTranslation": "error"
+                    },
+                    "configurations": {
+                        "ru": {
+                            "localize": ["ru"],
+                            "index": {
+                                "input": "miniapp-src/index-dev.html",
+                                "output": "index.html"
+                            }
+                        },
+                        "production": {
+                            "localize": ["en", "ru"],
+                            "index": {
+                                "input": "miniapp-src/index-ru.html",
+                                "output": "index.html"
+                            },
+                            "budgets": [
+                                {
+                                    "type": "initial",
+                                    "maximumWarning": "2mb",
+                                    "maximumError": "2mb"
+                                },
+                                {
+                                    "type": "anyComponentStyle",
+                                    "maximumWarning": "2kb",
+                                    "maximumError": "4kb"
+                                }
+                            ],
+                            "outputHashing": "all",
+                            "fileReplacements": [
+                                {
+                                    "replace": "miniapp-src/environments/environment.ts",
+                                    "with": "miniapp-src/environments/environment.production.ts"
+                                }
+                            ]
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true,
+                            "fileReplacements": [
+                                {
+                                    "replace": "miniapp-src/environments/environment.ts",
+                                    "with": "miniapp-src/environments/environment.development.ts"
+                                }
+                            ]
+                        }
+                    },
+                    "defaultConfiguration": "production"
+                },
+                "serve": {
+                    "builder": "@angular-devkit/build-angular:dev-server",
+                    "configurations": {
+                        "production": {
+                            "buildTarget": "miniapp:build:production"
+                        },
+                        "development": {
+                            "buildTarget": "miniapp:build:development"
+                        },
+                        "ru": {
+                            "buildTarget": "miniapp:build:development,ru"
+                        }
+                    },
+                    "defaultConfiguration": "development"
+                },
+                "extract-i18n": {
+                    "builder": "@angular-devkit/build-angular:extract-i18n",
+                    "options": {
+                        "buildTarget": "miniapp:build"
+                    }
+                },
+                "test": {
+                    "builder": "@angular-devkit/build-angular:karma",
+                    "options": {
+                        "polyfills": [
+                            "zone.js",
+                            "zone.js/testing"
+                        ],
+                        "tsConfig": "tsconfig.spec.json",
+                        "inlineStyleLanguage": "css",
+                        "assets": [
+                            "miniapp-src/favicon.ico",
+                            "miniapp-src/assets"
+                        ],
+                        "styles": [
+                            "miniapp-src/styles.css"
+                        ],
+                        "scripts": []
+                    }
+                }
+            }
         }
     },
     "cli": {

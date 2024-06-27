@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start-": "ng serve",
-    "start": "ng serve --configuration=ru",
+    "start": "ng serve api2app-frontend --configuration=ru",
+    "start-miniapp": "ng serve miniapp --configuration=ru",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
