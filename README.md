@@ -13,7 +13,8 @@ npm start
 
 Build for production:
 ~~~
-./node_modules/.bin/ng build --configuration production
+./node_modules/.bin/ng build api2app-frontend --configuration=production
+./node_modules/.bin/ng build miniapp --configuration=production
 ~~~
 
 https://angular.io/guide/i18n-common-deploy  

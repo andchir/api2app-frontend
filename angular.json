@@ -81,8 +81,8 @@
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "2mb",
-                                    "maximumError": "2mb"
+                                    "maximumWarning": "3mb",
+                                    "maximumError": "3mb"
                                 },
                                 {
                                     "type": "anyComponentStyle",
@@ -170,12 +170,12 @@
             "i18n": {
                 "sourceLocale": {
                     "code": "en",
-                    "baseHref": "en/"
+                    "baseHref": ""
                 },
                 "locales": {
                     "ru": {
                         "translation": "miniapp-src/locale/messages.ru.json",
-                        "baseHref": "ru/"
+                        "baseHref": ""
                     }
                 }
             },
@@ -235,8 +235,8 @@
                             "budgets": [
                                 {
                                     "type": "initial",
-                                    "maximumWarning": "2mb",
-                                    "maximumError": "2mb"
+                                    "maximumWarning": "3mb",
+                                    "maximumError": "3mb"
                                 },
                                 {
                                     "type": "anyComponentStyle",
