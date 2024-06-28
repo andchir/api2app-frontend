@@ -49,4 +49,8 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
         this.selectItem(item);
         this.isShareActive = true;
     }
+
+    downloadItem(item: ApplicationItem): void {
+        console.log('downloadItem', item);
+    }
 }
