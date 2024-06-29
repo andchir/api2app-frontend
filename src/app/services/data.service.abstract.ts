@@ -23,6 +23,10 @@ export abstract class DataService<T extends {id: number}> {
         protected httpClient: HttpClient
     ) {}
 
+    public getRequestUrl(): string {
+        return this.requestUrl;
+    }
+
     getList(page = 1, search?: string): Observable<{count: number, results: T[]}> {
         const url = this.requestUrl;
         const params = this.createParams({page, search});

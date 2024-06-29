@@ -51,6 +51,7 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     }
 
     downloadItem(item: ApplicationItem): void {
-        console.log('downloadItem', item);
+        const requestUrl = this.dataService.getRequestUrl();
+        window.open(`${requestUrl}/${item.uuid}/download`, '_blank');
     }
 }
