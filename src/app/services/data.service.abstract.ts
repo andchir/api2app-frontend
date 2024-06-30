@@ -129,9 +129,9 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
-    downloadItem(uuid: string): Observable<{success: boolean, url?: string}> {
+    downloadItem(uuid: string): Observable<{success: boolean, file_name?: string}> {
         const url = `${this.requestUrl}/${uuid}/download`
-        return this.httpClient.post<{success: boolean, url?: string}>(url, {}, this.httpOptions)
+        return this.httpClient.post<{success: boolean, file_name?: string}>(url, {}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
