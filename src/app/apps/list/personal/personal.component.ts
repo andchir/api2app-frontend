@@ -1,12 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { take } from 'rxjs/operators';
 import { takeUntil } from 'rxjs';
 
 import { AuthService } from '../../../services/auth.service';
 import { ApplicationItem } from '../../models/application-item.interface';
 import { ListAbstractComponent } from '../../../list.component.abstract';
 import { ApplicationService } from '../../../services/application.service';
+import { ModalService } from '../../../services/modal.service';
+import { ApplicationImportComponent } from '../../app-import/app-import.component';
 
 @Component({
     selector: 'app-apps-list-personal',
@@ -15,11 +18,15 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationsListPersonalComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
+    @ViewChild('dynamic', { read: ViewContainerRef })
+    private viewRef: ViewContainerRef;
+
     constructor(
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
-        dataService: ApplicationService
+        dataService: ApplicationService,
+        private modalService: ModalService
     ) {
         super(route, router, authService, dataService);
     }
@@ -64,6 +71,23 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
                 error: (err) => {
                     console.log(err);
                     this.loading = false;
+                }
+            });
+    }
+
+    showImportApiModal():void {
+        const initialData = {};
+        this.modalService.showDynamicComponent(this.viewRef, ApplicationImportComponent, initialData)
+            .pipe(take(1))
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'submit') {
+                        this.getData();
+                    }
+                },
+                error: (err) => {
+
                 }
             });
     }

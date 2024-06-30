@@ -20,6 +20,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
         this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 
+    importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
+        const url = `${BASE_URL}api/v1/application_import_from_json`;
+        return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
         output.push({

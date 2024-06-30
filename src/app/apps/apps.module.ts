@@ -18,6 +18,7 @@ import { ApplicationService } from '../services/application.service';
 import { ApiService } from '../services/api.service';
 import { ModalService } from '../services/modal.service';
 import { ElementInputTextComponent } from './components/elements/element-input-text.component';
+import { ApplicationImportComponent } from './app-import/app-import.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { ElementInputTextComponent } from './components/elements/element-input-t
         ApplicationSharedComponent,
         AppBlockElementComponent,
         AppActionComponent,
+        ApplicationImportComponent,
 
         ElementInputTextComponent
     ],

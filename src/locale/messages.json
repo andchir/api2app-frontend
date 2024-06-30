@@ -259,6 +259,10 @@
         "7808980770609551504": "Columns values keys",
         "3074987902485823708": "Icon",
         "2384026219516877038": "Example",
-        "3099741642167775297": "Download"
+        "3099741642167775297": "Download",
+        "5903783591137382265": "Import Application",
+        "8681493267390976151": "JSON of Your Application",
+        "5460948135938634794": "Copy and paste the JSON here",
+        "6641444710734159340": "If you have previously downloaded your application, the JSON is in the file \"assets/app_data.json\"."
     }
 }
