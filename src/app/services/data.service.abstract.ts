@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, iif, Observable, throwError } from "rxjs";
+import {ApplicationItem} from "../apps/models/application-item.interface";
 
 export abstract class DataService<T extends {id: number}> {
 
@@ -22,10 +23,6 @@ export abstract class DataService<T extends {id: number}> {
     constructor(
         protected httpClient: HttpClient
     ) {}
-
-    public getRequestUrl(): string {
-        return this.requestUrl;
-    }
 
     getList(page = 1, search?: string): Observable<{count: number, results: T[]}> {
         const url = this.requestUrl;
@@ -127,6 +124,14 @@ export abstract class DataService<T extends {id: number}> {
         const url = `${this.requestUrl}/${itemId}`;
         const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
         return this.httpClient.put<T>(url, item, httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    downloadItem(uuid: string): Observable<{success: boolean, url?: string}> {
+        const url = `${this.requestUrl}/${uuid}/download`
+        return this.httpClient.post<{success: boolean, url?: string}>(url, {}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

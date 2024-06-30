@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
 
+import { catchError, Observable } from 'rxjs';
 import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
@@ -10,6 +11,14 @@ import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../a
 
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {
+
+    constructor(
+        @Inject(LOCALE_ID) public locale: string,
+        httpClient: HttpClient
+    ) {
+        super(httpClient);
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
+    }
 
     static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
@@ -130,13 +139,5 @@ export class ApplicationService extends DataService<ApplicationItem> {
             image: '',
             blocks: [{elements: []}, {elements: []}, {elements: []}]
         };
-    }
-
-    constructor(
-        @Inject(LOCALE_ID) public locale: string,
-        httpClient: HttpClient
-    ) {
-        super(httpClient);
-        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 }

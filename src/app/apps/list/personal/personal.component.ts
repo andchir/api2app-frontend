@@ -51,7 +51,19 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     }
 
     downloadItem(item: ApplicationItem): void {
-        const requestUrl = this.dataService.getRequestUrl();
-        window.open(`${requestUrl}/${item.uuid}/download`, '_blank');
+        // const requestUrl = this.dataService.getRequestUrl();
+        // window.open(`${requestUrl}/${item.uuid}/download`, '_blank');
+        this.loading = true;
+        this.dataService.downloadItem(item.uuid)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    console.log(res);
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loading = false;
+                }
+            });
     }
 }
