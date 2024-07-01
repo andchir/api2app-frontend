@@ -69,7 +69,7 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
                     }
                 },
                 error: (err) => {
-                    console.log(err);
+                    // console.log(err);
                     this.loading = false;
                 }
             });
