@@ -33,7 +33,7 @@
                  'text-green-500': options?.color === 'Green',
                  'text-blue-500': options?.color === 'Blue',
                  'text-red-500': options?.color === 'Red'
-                 }">
+                 }" *ngIf="options?.value || editorMode">
                 <div class="flex gap-2 items-center">
                     <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
                     <div>
