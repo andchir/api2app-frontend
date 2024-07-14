@@ -50,6 +50,7 @@ export interface AppBlockElement {
     valueObj?: any | null;
     markdown?: boolean;
     icon?: string;
+    useAsOffset?: boolean;
 }
 
 export interface AppBlockOptions {

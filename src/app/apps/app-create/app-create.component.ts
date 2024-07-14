@@ -239,6 +239,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 this.updateBlockIndex(this.selectedBlockIndex, this.selectedBlock?.options?.orderIndex);
             }
         }
+        if (this.selectedElement.type === 'input-pagination') {
+            this.selectedElement.value = this.selectedElement.useAsOffset ? 0 : 1;
+        }
         this.selectedItemOptionsFields = [];
         this.selectedElement = null;
         this.selectedBlock = null;

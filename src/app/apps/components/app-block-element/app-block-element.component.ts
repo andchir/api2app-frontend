@@ -220,11 +220,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     updatePagesOptions(): void {
         this.options.valueObj = {
             id: this.options.name,
-            totalItems: this.editorMode ? 100 : 0,
+            totalItems: this.editorMode ? (this.options.perPage * 5) : 0,
             itemsPerPage: this.options.perPage,
             currentPage: 1
         }
-        this.options.value = 1;
+        this.options.value = this.options.useAsOffset ? 0 : 1;
     }
 
     onPageChanged(pageNumber: number): void {
@@ -232,7 +232,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             this.updatePagesOptions();
         }
         this.options.valueObj.currentPage = pageNumber;
-        this.options.value = pageNumber;
+        this.options.value = this.options.useAsOffset
+            ? this.options.perPage * (pageNumber - 1)
+            : pageNumber;
         this.onFieldValueChanged();
     }
 

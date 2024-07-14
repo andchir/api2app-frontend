@@ -578,11 +578,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     paginationValueApply(element: AppBlockElement, data: any, rawData: any): void {
         const dataKey = String(element.options?.outputApiFieldName || '');
         const endlessMode = dataKey.toLowerCase().includes('current') || dataKey.toLowerCase().includes('page');
+        const value = parseInt(element.value as string);
+        const currentPage = element.useAsOffset
+            ? (value ? (value / element.perPage) + 1 : 1)
+            : value;
+        const totalItems = endlessMode ? 9999 : (data[dataKey] || 0);
         element.valueObj = {
             id: element.name,
-            totalItems: endlessMode ? 9999 : (data[dataKey] || 0),
+            totalItems,
             itemsPerPage: element.perPage,
-            currentPage: element.value || 1
+            currentPage
         }
     }
 
@@ -592,7 +597,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return el.type === 'input-pagination' && el.options?.inputApiUuid === apiUuid;
         });
         elements.forEach((elements) => {
-            elements.value = 1;
+            elements.value = elements.useAsOffset ? 0 : 1;
             if (elements.valueObj) {
                 elements.valueObj.currentPage = 1;
             }
