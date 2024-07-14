@@ -232,15 +232,15 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             if (this.selectedElement.orderIndex !== this.selectedElementIndex) {
                 this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
             }
+            if (this.selectedElement.type === 'input-pagination') {
+                this.selectedElement.value = this.selectedElement.useAsOffset ? 0 : 1;
+            }
         }
         if (this.selectedBlock) {
             Object.assign(this.selectedBlock.options, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
             if (this.selectedBlock?.options?.orderIndex !== this.selectedBlockIndex) {
                 this.updateBlockIndex(this.selectedBlockIndex, this.selectedBlock?.options?.orderIndex);
             }
-        }
-        if (this.selectedElement.type === 'input-pagination') {
-            this.selectedElement.value = this.selectedElement.useAsOffset ? 0 : 1;
         }
         this.selectedItemOptionsFields = [];
         this.selectedElement = null;
