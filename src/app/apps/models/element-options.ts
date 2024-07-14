@@ -1036,6 +1036,12 @@ export class ElementOptions {
                     value: options?.keys || [],
                     choices: []
                 });
+                output.push({
+                    name: 'isHTML',
+                    label: $localize `Value as HTML code`,
+                    type: 'input-switch',
+                    enabled: options?.isHTML || false
+                });
                 break;
         }
         return output;
@@ -1274,7 +1280,8 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'table',
                     headers: ['Column1', 'Column2', 'Column3'],
-                    keys: ['key1', 'key2', 'key3']
+                    keys: ['key1', 'key2', 'key3'],
+                    isHTML: false
                 });
                 break;
         }

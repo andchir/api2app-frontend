@@ -264,6 +264,7 @@
         "8681493267390976151": "JSON of Your Application",
         "5460948135938634794": "Copy and paste the JSON here",
         "6641444710734159340": "If you have previously downloaded your application, the JSON is in the file \"assets/app_data.json\".",
-        "5282855083954432569": "Use as offset"
+        "5282855083954432569": "Use as offset",
+        "6075283261859654364": "Value as HTML code"
     }
 }

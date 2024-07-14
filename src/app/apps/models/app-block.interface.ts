@@ -51,6 +51,7 @@ export interface AppBlockElement {
     markdown?: boolean;
     icon?: string;
     useAsOffset?: boolean;
+    isHTML?: boolean;
 }
 
 export interface AppBlockOptions {

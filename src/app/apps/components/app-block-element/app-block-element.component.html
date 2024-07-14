@@ -526,7 +526,8 @@
                         <ng-container *ngIf="options.valueArr && options.valueArr.length > 0; else templateTableEmpty">
                             <tr *ngFor="let item of options.valueArr">
                                 <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
-                                    <div>{{ item[key] }}</div>
+                                    <div *ngIf="options.isHTML" [innerHTML]="item[key]"></div>
+                                    <div *ngIf="!options.isHTML">{{ item[key] }}</div>
                                 </td>
                             </tr>
                         </ng-container>
