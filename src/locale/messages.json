@@ -263,6 +263,7 @@
         "5903783591137382265": "Import Application",
         "8681493267390976151": "JSON of Your Application",
         "5460948135938634794": "Copy and paste the JSON here",
-        "6641444710734159340": "If you have previously downloaded your application, the JSON is in the file \"assets/app_data.json\"."
+        "6641444710734159340": "If you have previously downloaded your application, the JSON is in the file \"assets/app_data.json\".",
+        "5282855083954432569": "Use as offset"
     }
 }

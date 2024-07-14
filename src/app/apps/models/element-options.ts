@@ -31,6 +31,14 @@ export class ElementOptions {
                     value: options?.icon || ''
                 });
                 output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -58,6 +66,14 @@ export class ElementOptions {
                     type: 'input-text',
                     placeholder: ($localize `Example`) + ': bi-info-circle',
                     value: options?.icon || ''
+                });
+                output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
                 });
                 output.push({
                     name: 'value',
@@ -135,6 +151,14 @@ export class ElementOptions {
                     value: options?.icon || ''
                 });
                 output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
                     name: 'color',
                     label: $localize `Color`,
                     type: 'input-select',
@@ -181,6 +205,14 @@ export class ElementOptions {
                     type: 'input-text',
                     placeholder: ($localize `Example`) + ': bi-info-circle',
                     value: options?.icon || ''
+                });
+                output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
                 });
                 output.push({
                     name: 'prefixText',
@@ -913,6 +945,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.autoHide || false
                 });
+                output.push({
+                    name: 'useAsOffset',
+                    label: $localize `Use as offset`,
+                    type: 'input-switch',
+                    enabled: options?.useAsOffset || false
+                });
                 break;
             case 'status':
                 output.push({
@@ -1216,6 +1254,7 @@ export class ElementOptions {
                     perPage: 20,
                     maxSize: 9,
                     autoHide: false,
+                    useAsOffset: false,
                     value: 1
                 });
                 break;

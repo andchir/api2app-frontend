@@ -48,6 +48,8 @@ export interface AppBlockElement {
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;
     valueArr?: string[] | File[] | null;
     valueObj?: any | null;
+    markdown?: boolean;
+    icon?: string;
 }
 
 export interface AppBlockOptions {

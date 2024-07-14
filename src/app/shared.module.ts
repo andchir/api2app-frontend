@@ -5,7 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule, MarkedOptions, MARKED_OPTIONS, MarkedRenderer } from 'ngx-markdown';
 
 import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.component';
 import { AlertComponent } from './shared/alert/alert.component';
@@ -17,6 +17,28 @@ import { ImageUploadCircleComponent } from './apps/components/app-image-upload-c
 import { PaginationComponent } from './shared/pagination/pagination.component';
 
 import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
+import {HttpClient} from "@angular/common/http";
+
+export function markedOptionsFactory(): MarkedOptions {
+    const renderer = new MarkedRenderer();
+
+    renderer.blockquote = (text: string) => {
+        return '<blockquote class="blockquote"><p>' + text + '</p></blockquote>';
+    };
+
+    const linkRenderer = renderer.link;
+    renderer.link = (href, title, text) => {
+        const html = linkRenderer.call(renderer, href, title, text);
+        return html.replace(/^<a /, '<a class="whitespace-nowrap text-blue-500 underline hover:text-blue-700" target="_blank" rel="nofollow" ');
+    };
+
+    return {
+        renderer: renderer,
+        gfm: true,
+        breaks: false,
+        pedantic: false
+    };
+}
 
 @NgModule({
     imports: [
@@ -24,7 +46,13 @@ import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
         RouterModule,
         NgSelectModule,
         NgxPaginationModule,
-        MarkdownModule.forRoot()
+        MarkdownModule.forRoot({
+            loader: HttpClient,
+            markedOptions: {
+                provide: MARKED_OPTIONS,
+                useFactory: markedOptionsFactory,
+            },
+        })
     ],
     declarations: [
         AlertComponent,
