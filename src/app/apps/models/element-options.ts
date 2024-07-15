@@ -869,13 +869,13 @@ export class ElementOptions {
                     name: 'fieldNameAxisX',
                     label: $localize `Field name for X axis`,
                     type: 'input-text',
-                    value: options?.fieldNameAxisX
+                    value: options?.fieldNameAxisX || ''
                 });
                 output.push({
                     name: 'fieldNameAxisY',
                     label: $localize `Field name for Y axis`,
                     type: 'input-text',
-                    value: options?.fieldNameAxisY
+                    value: options?.fieldNameAxisY || ''
                 });
                 output.push({
                     name: 'isXAxisDate',
@@ -1246,7 +1246,7 @@ export class ElementOptions {
                     name: 'chart',
                     label: $localize `Line Chart`,
                     itemTitle: $localize `Item Title`,
-                    fieldNameAxisXL: '',
+                    fieldNameAxisX: '',
                     fieldNameAxisY: '',
                     itemFieldName: 'id',
                     isXAxisDate: false,

@@ -302,8 +302,8 @@ export class ApiService extends DataService<ApiItem> {
             fileReader.onload = (fileLoadedEvent) => {
                 if (['[', '{'].includes(((fileLoadedEvent.target?.result || '') as string).substring(0, 1))) {
                     try {
-                        const errorData = JSON.parse((fileLoadedEvent.target?.result || '') as string);
-                        resolve(errorData);
+                        const responseData = JSON.parse((fileLoadedEvent.target?.result || '[]') as string);
+                        resolve(responseData);
                     } catch (e) {
                         reject(e);
                     }

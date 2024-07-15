@@ -556,16 +556,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const fieldNameAxisX = element.fieldNameAxisX;
         const fieldNameAxisY = element.fieldNameAxisY;
         const dataKey = element.options?.outputApiFieldName;
-        if (!fieldNameAxisX || !fieldNameAxisY || !data[dataKey]) {
+        if (!fieldNameAxisX || !fieldNameAxisY || (!data[dataKey] && !data)) {
             return;
         }
         const dateFormat = element?.format;
-        const outData = data[dataKey];
+        const outData = data[dataKey] || data;
         const yAxisData = outData.map((item) => {
             return parseFloat(item[fieldNameAxisY]);
         });
         const xAxisData = outData.map((item) => {
-            const value = item[fieldNameAxisX] || null;
+            const value = item[fieldNameAxisX] || '';
             if (element.isXAxisDate && dateFormat && value) {
                 const date = moment(String(value));
                 return date.format(dateFormat);
