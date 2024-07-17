@@ -751,6 +751,14 @@ export class ElementOptions {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
