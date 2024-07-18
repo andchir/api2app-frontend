@@ -21,6 +21,7 @@ export class AppComponent implements OnInit {
     isSharedPageUrl = false;
     isPersonalPageUrl = false;
     navigationLoading = false;
+    currentUrl = '';
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
@@ -29,6 +30,7 @@ export class AppComponent implements OnInit {
         private authService: AuthService
     ) {
         this.userSubject$ = this.authService.userSubject;
+        this.isSharedPageUrl = window.location.href.includes('/shared/');
         router.events
             .subscribe((e) => {
                 if (e instanceof NavigationStart) {
@@ -36,6 +38,7 @@ export class AppComponent implements OnInit {
                 }
                 if (e instanceof NavigationEnd) {
                     // initFlowbite();
+                    this.currentUrl = e.url;
                     this.isSharedPageUrl = e.url.includes('/shared/');
                     this.isPersonalPageUrl = e.url.includes('/apps/personal') || e.url.includes('/apis/personal');
                     this.navigationLoading = false;
@@ -64,5 +67,16 @@ export class AppComponent implements OnInit {
             event.preventDefault();
         }
         this.isMobileMenuActive = !this.isMobileMenuActive;
+    }
+
+    navigateBack(event?: MouseEvent) {
+        if (event) {
+            event.preventDefault();
+        }
+        if (this.currentUrl.includes('/apps/')) {
+            this.router.navigate(['apps']);
+        } else {
+            this.router.navigate(['apis']);
+        }
     }
 }
