@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
     isLoggedIn = false;
     isMobileMenuActive = false;
     isSharedPageUrl = false;
+    needBackButton = false;
     isPersonalPageUrl = false;
     navigationLoading = false;
     currentUrl = '';
@@ -38,8 +39,9 @@ export class AppComponent implements OnInit {
                 }
                 if (e instanceof NavigationEnd) {
                     // initFlowbite();
-                    this.currentUrl = e.url;
                     this.isSharedPageUrl = e.url.includes('/shared/');
+                    this.needBackButton = this.isSharedPageUrl && !!this.currentUrl;
+                    this.currentUrl = e.url;
                     this.isPersonalPageUrl = e.url.includes('/apps/personal') || e.url.includes('/apis/personal');
                     this.navigationLoading = false;
                 }

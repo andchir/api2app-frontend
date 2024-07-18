@@ -236,7 +236,7 @@
 
     <router-outlet></router-outlet>
 
-    <div class="fixed top-2 left-2 lg:top-4 lg:left-4" *ngIf="isSharedPageUrl">
+    <div class="fixed top-2 left-2 lg:top-4 lg:left-4" *ngIf="needBackButton">
         <button type="button"
                 class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg px-2 py-1 lg:px-4 lg:py-2 text-2xl"
                 title="Back"
