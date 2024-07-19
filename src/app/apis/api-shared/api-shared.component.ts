@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { ApiItem } from '../models/api-item.interface';
 import { ApiService } from '../../services/api.service';
+import { RouterEventsService } from '../../services/router-events.service';
 
 @Component({
     selector: 'app-api-shared',
@@ -19,6 +20,7 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
+    needBackButton = false;
 
     itemUuid: string;
     data: ApiItem = ApiService.getDefault();
@@ -27,11 +29,13 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
     constructor(
         protected route: ActivatedRoute,
         protected router: Router,
-        protected apiService: ApiService
+        protected apiService: ApiService,
+        protected routerEventsService: RouterEventsService
     ) {}
 
     ngOnInit(): void {
         this.itemUuid = this.route.snapshot.paramMap.get('uuid');
+        this.needBackButton = !!this.routerEventsService.getPreviousUrl();
         if (this.itemUuid) {
             this.getData();
         }
@@ -66,6 +70,13 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
         if (this.errors[name]) {
             delete this.errors[name];
         }
+    }
+
+    navigateBack(event?: MouseEvent) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.router.navigate([this.routerEventsService.getPreviousUrl()]);
     }
 
     ngOnDestroy(): void {

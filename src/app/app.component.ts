@@ -19,10 +19,8 @@ export class AppComponent implements OnInit {
     isLoggedIn = false;
     isMobileMenuActive = false;
     isSharedPageUrl = false;
-    needBackButton = false;
     isPersonalPageUrl = false;
     navigationLoading = false;
-    currentUrl = '';
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
@@ -40,8 +38,6 @@ export class AppComponent implements OnInit {
                 if (e instanceof NavigationEnd) {
                     // initFlowbite();
                     this.isSharedPageUrl = e.url.includes('/shared/');
-                    this.needBackButton = this.isSharedPageUrl && !!this.currentUrl;
-                    this.currentUrl = e.url;
                     this.isPersonalPageUrl = e.url.includes('/apps/personal') || e.url.includes('/apis/personal');
                     this.navigationLoading = false;
                 }
@@ -69,16 +65,5 @@ export class AppComponent implements OnInit {
             event.preventDefault();
         }
         this.isMobileMenuActive = !this.isMobileMenuActive;
-    }
-
-    navigateBack(event?: MouseEvent) {
-        if (event) {
-            event.preventDefault();
-        }
-        if (this.currentUrl.includes('/apps/')) {
-            this.router.navigate(['apps']);
-        } else {
-            this.router.navigate(['apis']);
-        }
     }
 }

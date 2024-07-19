@@ -4,6 +4,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { debounceTime, delay, Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
+import { RouterEventsService } from '../../services/router-events.service';
+
 @Component({
     selector: 'app-apis-list',
     templateUrl: './list.component.html',
@@ -16,9 +18,9 @@ export class ListApisComponent implements OnInit {
     searchWord$ = new Subject<string>();
 
     constructor(
+        protected routerEventsService: RouterEventsService,
         protected route: ActivatedRoute,
-        private router: Router,
-        private activatedRoute: ActivatedRoute
+        protected router: Router
     ) {}
 
     ngOnInit(): void {
@@ -44,7 +46,7 @@ export class ListApisComponent implements OnInit {
         this.router.navigate(
             [],
             {
-                relativeTo: this.activatedRoute,
+                relativeTo: this.route,
                 queryParams,
                 queryParamsHandling: 'merge'
             }

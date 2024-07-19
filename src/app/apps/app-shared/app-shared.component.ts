@@ -16,6 +16,7 @@ import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { environment } from '../../../environments/environment';
+import { RouterEventsService } from '../../services/router-events.service';
 
 const APP_NAME = environment.appName;
 
@@ -35,6 +36,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     loading = false;
     submitted = false;
     previewMode = true;
+    needBackButton = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
@@ -53,12 +55,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected tokenStorageService: TokenStorageService,
         protected dataService: ApplicationService,
         protected apiService: ApiService,
-        protected modalService: ModalService
+        protected modalService: ModalService,
+        protected routerEventsService: RouterEventsService
     ) {}
 
     ngOnInit(): void {
         this.isLoggedIn = !!this.tokenStorageService.getToken();
         this.itemUuid = this.route.snapshot.paramMap.get('uuid');
+        this.needBackButton = !!this.routerEventsService.getPreviousUrl();
+
         if (this.itemUuid) {
             this.getData();
         }
@@ -739,6 +744,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         }
         return result;
+    }
+
+    navigateBack(event?: MouseEvent) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.router.navigate([this.routerEventsService.getPreviousUrl()]);
     }
 
     ngOnDestroy(): void {

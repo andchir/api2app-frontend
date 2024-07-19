@@ -19,6 +19,7 @@ import { AppActionComponent } from '../components/app-action/app-action.componen
 import { ModalService } from '../../services/modal.service';
 import { ApplicationSharedComponent } from '../app-shared/app-shared.component';
 import { ApiService } from '../../services/api.service';
+import { RouterEventsService } from '../../services/router-events.service';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ElementOptions } from '../models/element-options';
 import { environment } from '../../../environments/environment';
@@ -59,9 +60,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         tokenStorageService: TokenStorageService,
         dataService: ApplicationService,
         apiService: ApiService,
-        modalService: ModalService
+        modalService: ModalService,
+        routerEventsService: RouterEventsService
     ) {
-        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService);
     }
 
     get optionsTitle(): string {

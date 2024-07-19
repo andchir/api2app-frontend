@@ -1,6 +1,7 @@
 <header class="bg-white shadow">
     <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-        <div class="flex gap-3 items-center pl-8 xl:pl-0">
+        <div class="flex gap-3 items-center"
+            [ngClass]="{'pl-8 xl:pl-0': needBackButton}">
             <div *ngIf="data?.image">
                 <div class="w-24 h-24 border rounded-full border-gray-400 overflow-hidden">
                     <img class="w-24 h-24 rounded-full no-pointer-events" [src]="data.image" [alt]="data?.name">
@@ -62,5 +63,15 @@
 
     </div>
 </main>
+
+<div class="fixed top-2 left-2 lg:top-4 lg:left-4" *ngIf="needBackButton">
+    <button type="button"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg px-2 py-1 lg:px-4 lg:py-2 text-2xl"
+            title="Back"
+            i18n-title
+            (click)="navigateBack($event)">
+        <i class="bi bi-chevron-left"></i>
+    </button>
+</div>
 
 <app-alert [(message)]="message" [type]="messageType"></app-alert>
