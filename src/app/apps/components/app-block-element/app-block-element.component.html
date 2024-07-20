@@ -36,7 +36,7 @@
                  }" *ngIf="options?.value || editorMode">
                 <div class="flex gap-2 items-center">
                     <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                    <div>
+                    <div class="max-w-full">
                         <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
                         <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
                         <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>

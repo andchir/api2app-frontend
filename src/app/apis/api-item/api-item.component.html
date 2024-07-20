@@ -43,7 +43,7 @@
         <ul class="flex gap-1 flex-wrap bg-gray-300 text-xs font-medium text-center text-gray-500 dark:text-gray-400 p-1 rounded-md border">
             <li>
                 <button type="button"
-                        class="inline-block px-3 py-2 rounded-md"
+                        class="inline-block px-3 py-2 rounded-md min-w-[94px]"
                         [ngClass]="{'text-black bg-white shadow': apiItem.sender === 'browser', 'hover:text-gray-900 hover:bg-gray-200': apiItem.sender !== 'browser'}"
                         (click)="apiItem.sender = 'browser'">
                     <span i18n>Browser</span>
@@ -51,7 +51,7 @@
             </li>
             <li>
                 <button type="button"
-                        class="inline-block px-3 py-2 rounded-md active hover:text-gray-900 hover:bg-gray-200"
+                        class="inline-block px-3 py-2 rounded-md active hover:text-gray-900 hover:bg-gray-200 min-w-[94px]"
                         [ngClass]="{'text-black bg-white shadow': apiItem.sender === 'server', 'hover:text-gray-900 hover:bg-gray-200': apiItem.sender !== 'server'}"
                         (click)="apiItem.sender = 'server'">
                     <span i18n>Server</span>
