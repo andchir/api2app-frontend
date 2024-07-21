@@ -14,6 +14,8 @@ export interface ApiItem {
     authLogin: string;
     authPassword: string;
     sendAsFormData: boolean;
+    dailyLimitUsage: number;
+    dailyLimitForUniqueUsers: boolean;
 
     bodyFields: RequestDataField[];
     bodyContent: string;

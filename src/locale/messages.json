@@ -266,6 +266,8 @@
         "6641444710734159340": "If you have previously downloaded your application, the JSON is in the file \"assets/app_data.json\".",
         "5282855083954432569": "Use as offset",
         "6075283261859654364": "Value as HTML code",
-        "8890553633144307762": "Back"
+        "8890553633144307762": "Back",
+        "6906278544162433895": "Maximum daily use",
+        "3917829355745145909": "Only for unique IPs"
     }
 }
