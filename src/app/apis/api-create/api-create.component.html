@@ -67,7 +67,8 @@
                     </div>
                 </div>
                 <!-- Settings -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-3">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-3"
+                    [ngClass]="{'opacity-50 pointer-events-none': data.sender !== 'server'}">
                     <div>
                         <label class="block mb-2" for="fieldSettingsMaximumDailyUse" i18n>Maximum daily use</label>
                     </div>
@@ -88,7 +89,7 @@
                 <!-- /Settings -->
             </div>
 
-            <app-api-item [apiItem]="data"></app-api-item>
+            <app-api-item [apiItem]="data" (senderChange)="onSenderChange($event)"></app-api-item>
 
         </div>
 

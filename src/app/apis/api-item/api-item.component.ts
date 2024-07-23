@@ -1,4 +1,14 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import {
+    AfterViewInit,
+    Component,
+    ElementRef, EventEmitter,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild
+} from '@angular/core';
 
 import { Subject, takeUntil } from 'rxjs';
 import * as ace from 'ace-builds';
@@ -16,6 +26,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     @Input() apiItem: ApiItem;
     @Input() authorized = true;
+    @Output() senderChange: EventEmitter<string> = new EventEmitter<string>();
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
@@ -235,5 +246,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         const inputEl = event.target as HTMLInputElement;
         const files = inputEl.files || [];
         this.apiItem[optionName][index].files = files.length > 0 ? Array.from(files) : undefined;
+    }
+
+    senderUpdate(sender: 'browser'|'server'): void {
+        this.apiItem.sender = sender;
+        this.senderChange.emit(sender);
     }
 }

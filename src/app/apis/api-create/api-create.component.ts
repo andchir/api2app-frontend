@@ -101,6 +101,10 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         }
     }
 
+    onSenderChange(sender: string) {
+        console.log('onSenderChange', sender);
+    }
+
     ngOnDestroy(): void {
         this.destroyed$.next();
         this.destroyed$.complete();
