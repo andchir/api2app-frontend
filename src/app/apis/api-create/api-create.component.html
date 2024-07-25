@@ -68,7 +68,7 @@
                 </div>
                 <!-- Settings -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-3"
-                    [ngClass]="{'opacity-50 pointer-events-none': data.sender !== 'server'}">
+                    [ngClass]="{'opacity-50 pointer-events-none': senderValue !== 'server'}">
                     <div>
                         <label class="block mb-2" for="fieldSettingsMaximumDailyUse" i18n>Maximum daily use</label>
                     </div>

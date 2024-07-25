@@ -19,6 +19,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
+    senderValue = 'browser';
 
     itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
@@ -51,6 +52,9 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     }
                     if (!this.data.headers || this.data.headers.length === 0) {
                         this.data.headers = [{name: '', value: ''}];
+                    }
+                    if (res.sender) {
+                        this.senderValue = res.sender;
                     }
                     this.loading = false;
                 },
@@ -102,7 +106,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     }
 
     onSenderChange(sender: string) {
-        console.log('onSenderChange', sender);
+        this.senderValue = sender;
     }
 
     ngOnDestroy(): void {
