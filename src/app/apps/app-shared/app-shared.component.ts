@@ -529,6 +529,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
+                let errorMessage = data.detail ? data.detail : $localize `Error.`;
                 this.errors[apiItem.uuid] = {};
                 if (typeof data === 'object' && !Array.isArray(data)) {
                     const errorsObj = {};
@@ -536,6 +537,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         errorsObj[key] = Array.isArray(data[key]) ? data[key].join(' ') : data[key];
                     }
                     this.errors[apiItem.uuid] = errorsObj;
+                    if (data.detail) {
+                        errorMessage = data.detail;
+                    }
                 }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
@@ -548,7 +552,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.blockElementValueApply(element, valuesObj, data);
                     }
                 });
-                this.message = $localize `Error.`;
+                if (errorMessage === 'Daily usage limit exceeded.') {
+                    errorMessage = $localize `Daily usage limit exceeded.`;
+                }
+                this.message = errorMessage;
                 this.messageType = 'error';
                 this.cdr.detectChanges();
             })
