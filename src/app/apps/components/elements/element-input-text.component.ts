@@ -39,7 +39,9 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() storeValue: boolean;
     @Input() speechRecognitionEnabled = false;
     @Input() speechSynthesisEnabled = false;
+    @Input() copyToClipboardEnabled = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     private _value;
     isChanged = false;
     isTouched = false;
@@ -103,6 +105,17 @@ export class ElementInputTextComponent implements ControlValueAccessor {
             this.recognition = null;
         }
         this.cdr.detectChanges();
+    }
+
+    copyToClipboard(inputEl: HTMLInputElement): void {
+        if (this.editorMode || !this.value) {
+            return;
+        }
+        inputEl.select();
+        inputEl.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(inputEl.value);
+        const message = $localize `The value has been successfully copied to the clipboard.`;
+        this.message.emit([message, 'success']);
     }
 
     speechSynthesisPlayToggle(): void {

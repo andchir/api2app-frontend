@@ -28,6 +28,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
+    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
         {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
@@ -246,6 +247,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             }
             this.itemSelected.emit(index);
         }, 100);
+    }
+
+    onMessage(msg: string[]) {
+        this.message.emit(msg);
     }
 
     isArray(obj: any ): boolean {

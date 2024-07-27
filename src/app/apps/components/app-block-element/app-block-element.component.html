@@ -99,8 +99,10 @@
                     [storeValue]="options?.storeValue"
                     [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
                     [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
+                    [copyToClipboardEnabled]="options?.copyToClipboardEnabled"
                     [parentIndex]="parentIndex"
                     [index]="index"
+                    (message)="onMessage($event)"
                     [(ngModel)]="options.value"></app-element-input-text>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -122,6 +124,7 @@
                     [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
                     [parentIndex]="parentIndex"
                     [index]="index"
+                    (message)="onMessage($event)"
                     [(ngModel)]="options.value"></app-element-input-text>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

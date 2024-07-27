@@ -263,6 +263,12 @@ export class ElementOptions {
                     enabled: options?.speechSynthesisEnabled || false
                 });
                 output.push({
+                    name: 'copyToClipboardEnabled',
+                    label: $localize `Copy to clipboard`,
+                    type: 'input-switch',
+                    enabled: options?.copyToClipboardEnabled || false
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
@@ -343,6 +349,12 @@ export class ElementOptions {
                     label: $localize `Voice the text`,
                     type: 'input-switch',
                     enabled: options?.speechSynthesisEnabled || false
+                });
+                output.push({
+                    name: 'copyToClipboardEnabled',
+                    label: $localize `Copy to clipboard`,
+                    type: 'input-switch',
+                    enabled: options?.copyToClipboardEnabled || false
                 });
                 output.push({
                     name: 'storeValue',
@@ -1102,6 +1114,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    copyToClipboardEnabled: false,
                     storeValue: false,
                     value: ''
                 });
@@ -1119,6 +1132,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    copyToClipboardEnabled: false,
                     storeValue: false,
                     value: null
                 });

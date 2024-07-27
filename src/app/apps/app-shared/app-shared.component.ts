@@ -753,6 +753,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return result;
     }
 
+    onMessage(msg: string[]) {
+        this.message = msg[0];
+        this.messageType = msg[1] as 'error'|'success';
+    }
+
     navigateBack(event?: MouseEvent) {
         if (event) {
             event.preventDefault();

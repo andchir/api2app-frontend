@@ -269,6 +269,8 @@
         "8890553633144307762": "Back",
         "6906278544162433895": "Maximum daily use",
         "3917829355745145909": "Only for unique IPs",
-        "2188795211171706390": "Daily usage limit exceeded. Please come back tomorrow."
+        "2188795211171706390": "Daily usage limit exceeded. Please come back tomorrow.",
+        "8738732372986673558": "Copy to clipboard",
+        "3482704764275115745": "The value has been successfully copied to the clipboard."
     }
 }
