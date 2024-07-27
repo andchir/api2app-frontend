@@ -32,7 +32,7 @@
         <div class="absolute bottom-1.5 right-1.5" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled">
             <button type="button" class="cursor-pointer text-xl ml-3"
                     (click)="copyToClipboard(inputControl.nativeElement)"
-                    title="Voice typing"
+                    title="Copy to clipboard"
                     i18n-title
                     *ngIf="copyToClipboardEnabled">
                 <i class="bi bi-copy"></i>
