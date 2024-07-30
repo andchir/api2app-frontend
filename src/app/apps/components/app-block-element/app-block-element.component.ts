@@ -249,6 +249,31 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }, 100);
     }
 
+    download(url: any, filename = '', event?: MouseEvent): void {
+        if (typeof url === 'string' && url.match(/^https?:\/\//)) {
+            return;
+        }
+        if (event) {
+            event.preventDefault();
+        }
+        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
+            url = url.changingThisBreaksApplicationSecurity;
+        }
+        if (!filename) {
+            const matches = url.match(/data:image\/([^;]+)/);
+            filename = (new Date().valueOf()) + '.' + matches[1];
+        }
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            })
+            .catch(console.error);
+    }
+
     onMessage(msg: string[]) {
         this.message.emit(msg);
     }

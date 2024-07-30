@@ -409,7 +409,7 @@
                 <ng-template #templateImageItem>
                     <div class="block w-full max-w-[600px] mx-auto"
                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value}">
-                        <a [href]="options?.value" target="_blank" *ngIf="options?.value">
+                        <a [href]="options?.value" target="_blank" (click)="download(options?.value, '', $event)" *ngIf="options?.value">
                             <img class="block w-full h-auto max-w-full" loading="lazy" [src]="options?.value" alt="">
                         </a>
                         <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
