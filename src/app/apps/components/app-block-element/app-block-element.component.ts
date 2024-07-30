@@ -250,14 +250,14 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     download(url: any, filename = '', event?: MouseEvent): void {
+        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
+            url = url.changingThisBreaksApplicationSecurity;
+        }
         if (typeof url === 'string' && url.match(/^https?:\/\//)) {
             return;
         }
         if (event) {
             event.preventDefault();
-        }
-        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
-            url = url.changingThisBreaksApplicationSecurity;
         }
         if (!filename) {
             const matches = url.match(/data:image\/([^;]+)/);
