@@ -134,12 +134,12 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         // Request body
+        const bodyDataSource = data.bodyDataSource;
+        const bodyContent = data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent;
         const formData = new FormData();
-        const bodyRaw = data.bodyDataSource === 'raw'
-            ? data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent
-            : null;
+        const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
         let body: any = null;
-        if (data.bodyDataSource === 'fields') {
+        if (bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
                 if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
@@ -166,6 +166,9 @@ export class ApiService extends DataService<ApiItem> {
                                 }
                             }
                         } else {
+                            if (item.value === '[RAW]') {
+                                formData.append('opt__body', JSON.stringify(bodyContent));
+                            }
                             formData.append(item.name, String(item.value) || '');
                         }
                     }
