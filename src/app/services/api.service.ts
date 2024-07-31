@@ -107,7 +107,8 @@ export class ApiService extends DataService<ApiItem> {
     apiRequest(data: ApiItem): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
-        const sendAsFormData = data?.sendAsFormData || false;
+        const bodyDataSource = data.bodyDataSource;
+        const sendAsFormData = (data?.sendAsFormData || false) && bodyDataSource === 'fields';
 
         if (data.sender === 'server') {
             requestUrl = `${BASE_URL}api/v1/proxy`;
@@ -134,7 +135,6 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         // Request body
-        const bodyDataSource = data.bodyDataSource;
         const bodyContent = data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent;
         const formData = new FormData();
         const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
