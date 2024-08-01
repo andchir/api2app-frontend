@@ -88,17 +88,17 @@
                             <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg mb-3">
                                 <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
                                         [ngClass]="{
-                                'rounded-t-lg': i === 0,
-                                'rounded-b-lg': i === inputFields.length - 1,
-                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
-                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
-                                }"
+                                        'rounded-t-lg': i === 0,
+                                        'rounded-b-lg': i === inputFields.length - 1,
+                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
+                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
+                                        }"
                                         *ngFor="let fieldName of inputFields; let i = index"
                                         (click)="selectField(fieldName, 'input')">
-                                <span *ngIf="['submit', 'value'].includes(fieldName); else templateDefaultText">
-                                    <span *ngIf="fieldName === 'submit'" i18n>Submit</span>
-                                    <span *ngIf="fieldName === 'value'" i18n>Value</span>
-                                </span>
+                                            <span *ngIf="['submit', 'value'].includes(fieldName); else templateDefaultText">
+                                                <span *ngIf="fieldName === 'submit'" i18n>Submit</span>
+                                                <span *ngIf="fieldName === 'value'" i18n>Value</span>
+                                            </span>
                                     <ng-template #templateDefaultText><span class="capitalize">{{ fieldName }}</span></ng-template>
                                 </button>
                             </div>
@@ -140,11 +140,11 @@
                             <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                                 <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none"
                                         [ngClass]="{
-                                    'rounded-t-lg': i === 0,
-                                    'rounded-b-lg': i === outputFields.length - 1,
-                                    'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
-                                    'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
-                                    }"
+                                        'rounded-t-lg': i === 0,
+                                        'rounded-b-lg': i === outputFields.length - 1,
+                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
+                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
+                                        }"
                                         *ngFor="let fieldName of outputFields; let i = index"
                                         (click)="selectField(fieldName, 'output')">
                                     <span class="capitalize">{{ fieldName }}</span>

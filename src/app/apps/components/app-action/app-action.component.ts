@@ -128,6 +128,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     getApiOptions(): void {
+        this.inputFields = [];
         if (!this.selectedApi || ['button'].includes(this.elementType) && this.actionType === 'input') {
             this.inputFields.push('submit');
             this.cdr.detectChanges();
@@ -146,9 +147,11 @@ export class AppActionComponent implements OnInit, OnDestroy {
             if (this.selectedApi.bodyDataSource === 'fields') {
                 this.inputFields = this.getArrayValues('bodyFields');
             }
-            if (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') {
+            const rawFields = this.dataService.getRawDataFields(this.selectedApi);
+            let isRawData = (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') || rawFields.length > 0;
+            if (isRawData) {
                 const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
-                this.inputFields = ApiService.getPropertiesRecursively(bodyContent).outputKeys;
+                this.inputFields = [...this.inputFields, ...ApiService.getPropertiesRecursively(bodyContent).outputKeys];
             }
             this.inputFields.unshift('value');
 
@@ -188,6 +191,18 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
         const output = this.selectedApi[inputKey].map((item) => {
             return !item.hidden ? item[targetKey] : '';
+        });
+        return output.filter((name) => {
+            return name;
+        });
+    }
+
+    getRawDataFields(inputKey: string): string[] {
+        if (!this.selectedApi[inputKey]) {
+            return [];
+        }
+        const output = this.selectedApi[inputKey].map((item) => {
+            return !item.hidden && item.value === '[RAW]' ? item['name'] : '';
         });
         return output.filter((name) => {
             return name;

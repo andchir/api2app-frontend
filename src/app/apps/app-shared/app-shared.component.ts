@@ -349,9 +349,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             apiItem.bodyFields = bodyFields;
         }
+        const rawFields = this.apiService.getRawDataFields(apiItem);
 
         // Raw value
-        if (apiItem.bodyDataSource === 'raw') {
+        if (apiItem.bodyDataSource === 'raw' || rawFields.length > 0) {
             const element = allElements.find((item) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                 return apiUuid === apiItem.uuid
@@ -529,7 +530,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
-                let errorMessage = data.detail ? data.detail : $localize `Error.`;
+                let errorMessage = data.detail || data.message || $localize `Error.`;
                 this.errors[apiItem.uuid] = {};
                 if (typeof data === 'object' && !Array.isArray(data)) {
                     const errorsObj = {};

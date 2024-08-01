@@ -301,6 +301,18 @@ export class ApiService extends DataService<ApiItem> {
         )
     }
 
+    getRawDataFields(apiItem: ApiItem): string[] {
+        if (!apiItem) {
+            return [];
+        }
+        const output = apiItem.bodyFields.map((item) => {
+            return !item.hidden && item.value === '[RAW]' ? item['name'] : '';
+        });
+        return output.filter((name) => {
+            return name;
+        });
+    }
+
     getDataFromBlob(blob: Blob, contentType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
