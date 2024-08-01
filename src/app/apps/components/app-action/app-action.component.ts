@@ -197,18 +197,6 @@ export class AppActionComponent implements OnInit, OnDestroy {
         });
     }
 
-    getRawDataFields(inputKey: string): string[] {
-        if (!this.selectedApi[inputKey]) {
-            return [];
-        }
-        const output = this.selectedApi[inputKey].map((item) => {
-            return !item.hidden && item.value === '[RAW]' ? item['name'] : '';
-        });
-        return output.filter((name) => {
-            return name;
-        });
-    }
-
     onSearchCleared(): void {
         this.selectedUuid = '';
         this.selectedApi = null;
