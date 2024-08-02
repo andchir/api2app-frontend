@@ -24,17 +24,18 @@
 
         <ng-container *ngSwitchCase="'text'">
             <div class="mb-3"
-                 [ngClass]="{
-                 'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode,
-                 'whitespace-pre-line': options?.whiteSpacePre,
-                 'min-h-[20px]': editorMode,
-                 'border border-gray-300 rounded-[1rem] p-3 shadow-md': options?.border && options?.value,
-                 'text-gray-500': options?.color === 'Gray',
-                 'text-green-500': options?.color === 'Green',
-                 'text-blue-500': options?.color === 'Blue',
-                 'text-red-500': options?.color === 'Red'
-                 }" *ngIf="options?.value || editorMode">
-                <div class="flex gap-2 items-center">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="options?.value || editorMode">
+                <div class="flex gap-2 items-center w-full max-w-[600px] mx-auto"
+                    [ngClass]="{
+                        'whitespace-pre-line': options?.whiteSpacePre,
+                        'min-h-[20px]': editorMode,
+                        'border border-gray-300 rounded-[1rem] p-3 shadow-md': options?.border && (options?.value || editorMode),
+                        'text-gray-500': options?.color === 'Gray',
+                        'text-green-500': options?.color === 'Green',
+                        'text-blue-500': options?.color === 'Blue',
+                        'text-red-500': options?.color === 'Red'
+                    }">
                     <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
                     <div class="max-w-full">
                         <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
@@ -132,10 +133,12 @@
 
         <ng-container *ngSwitchCase="'input-hidden'">
             <div [ngClass]="{'mb-3 rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <input [type]="editorMode ? 'text' : 'hidden'" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                       placeholder="Hidden Text Field"
-                       i18n-placeholder
-                       [(ngModel)]="options.value">
+                <div class="w-full max-w-[600px] mx-auto">
+                    <input [type]="editorMode ? 'text' : 'hidden'" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           placeholder="Hidden Text Field"
+                           i18n-placeholder
+                           [(ngModel)]="options.value">
+                </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
@@ -183,10 +186,10 @@
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
                             <ng-template ng-label-tmp let-item="item">
-                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] || item }}</span>
+                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">
-                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] || item }}</span>
+                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
                             </ng-template>
                         </ng-select>
                     </ng-container>

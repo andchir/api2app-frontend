@@ -111,6 +111,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     //     buttons.push(element.options?.outputApiUuid);
                     // }
                 }
+                if (element.type === 'input-select') {
+                    element.value = element.value || null;
+                }
                 ApplicationService.applyLocalStoredValue(element);
             });
         });
