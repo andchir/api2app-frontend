@@ -29,7 +29,7 @@ export class AppComponent implements OnInit {
         private authService: AuthService
     ) {
         this.userSubject$ = this.authService.userSubject;
-        this.isSharedPageUrl = window.location.href.includes('/shared/');
+        this.isSharedPageUrl = window.location.href.includes('/shared/') || window.location.href.includes('/embed/');
         router.events
             .subscribe((e) => {
                 if (e instanceof NavigationStart) {
@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
                 }
                 if (e instanceof NavigationEnd) {
                     // initFlowbite();
-                    this.isSharedPageUrl = e.url.includes('/shared/');
+                    this.isSharedPageUrl = e.url.includes('/shared/') || e.url.includes('/embed/');
                     this.isPersonalPageUrl = e.url.includes('/apps/personal') || e.url.includes('/apis/personal');
                     this.navigationLoading = false;
                 }

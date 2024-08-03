@@ -271,6 +271,8 @@
         "3917829355745145909": "Only for unique IPs",
         "2188795211171706390": "Daily usage limit exceeded. Please come back tomorrow.",
         "8738732372986673558": "Copy to clipboard",
-        "3482704764275115745": "The value has been successfully copied to the clipboard."
+        "3482704764275115745": "The value has been successfully copied to the clipboard.",
+        "9118928885179196531": "Public URL",
+        "3564068501527272413": "URL for embedding"
     }
 }

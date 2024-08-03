@@ -66,6 +66,14 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
+    getItemByUuidEmbedded(itemUuid: string): Observable<T> {
+        const url = `${this.requestUrl}/${itemUuid}/embedded`;
+        return this.httpClient.get<T>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     deleteItem(itemId: number): Observable<any> {
         const url = `${this.requestUrl}/${itemId}`;
         return this.httpClient.delete<any>(url, this.httpOptions)

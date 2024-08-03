@@ -19,19 +19,45 @@
                     {{ modalTitle }}
                 </h3>
                 <div class="relative">
-                    <div class="flex" [ngClass]="{'opacity-50': loading}" *ngIf="isShared">
-                        <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
-                               placeholder="Share URL"
-                               i18n-placeholder
-                               value="{{ shareUrl }}{{ itemUuid }}"
-                               readonly #sharedUrl>
-                        <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
-                            title="Copy To Clipboard"
-                            i18n-title
-                            (click)="copyUrl(sharedUrl)">
-                            <i class="bi bi-clipboard text-lg"></i>
-                        </button>
+
+                    <div class="p-3 border border-gray-300 bg-gray-100 rounded-md" *ngIf="isShared">
+                        <label class="text-gray-500 text-sm" for="sharedUrlField" i18n>Public URL</label>
+                        <div class="flex" [ngClass]="{'opacity-50': loading}">
+                            <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+                                   id="sharedUrlField"
+                                   placeholder="Share URL"
+                                   i18n-placeholder
+                                   value="{{ shareUrl }}{{ itemUuid }}"
+                                   readonly #sharedUrlField>
+                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
+                                    title="Copy To Clipboard"
+                                    i18n-title
+                                    (click)="copyUrl(sharedUrlField)">
+                                <i class="bi bi-clipboard text-lg"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <div class="pt-3" *ngIf="isShared && itemEmbedUuid">
+                        <div class="border p-3 border-gray-300 bg-gray-100 rounded-md">
+                            <label class="text-gray-500 text-sm" for="embedUrlField" i18n>URL for embedding</label>
+                            <div class="flex" [ngClass]="{'opacity-50': loading}">
+                                <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+                                       id="embedUrlField"
+                                       placeholder="Share URL"
+                                       i18n-placeholder
+                                       value="{{ embedUrl }}{{ itemEmbedUuid }}"
+                                       readonly #embedUrlField>
+                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
+                                        title="Copy To Clipboard"
+                                        i18n-title
+                                        (click)="copyUrl(embedUrlField)">
+                                    <i class="bi bi-clipboard text-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="h-8 mb-4" *ngIf="!isShared && loading"></div>
                         <div role="status" class="absolute -translate-x-1/2 -translate-y-1/2 top-2/4 left-1/2"
                              *ngIf="loading">
@@ -47,6 +73,7 @@
                     </div>
                 </div>
                 <div class="sm:flex gap-4 items-center justify-center pt-4" *ngIf="!readOnly">
+
                     <div class="mb-2 sm:mb-0" *ngIf="isShared">
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" value="hidden" class="sr-only peer"
@@ -56,6 +83,7 @@
                             <span class="ms-3 text-sm font-medium text-gray-900" i18n>Hidden</span>
                         </label>
                     </div>
+
                     <div class="flex gap-4 items-center justify-center">
                         <div *ngIf="!isShared">
                             <button type="button" class="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5"

@@ -12,6 +12,7 @@ import { ApplicationsListPersonalComponent } from './list/personal/personal.comp
 import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { AppBlockElementComponent } from './components/app-block-element/app-block-element.component';
 import { ApplicationSharedComponent } from './app-shared/app-shared.component';
+import { ApplicationEmbeddedComponent } from './app-shared/app-embedded.component';
 import { AppActionComponent } from './components/app-action/app-action.component';
 
 import { ApplicationService } from '../services/application.service';
@@ -27,6 +28,7 @@ import { ApplicationImportComponent } from './app-import/app-import.component';
         ApplicationsListPersonalComponent,
         ApplicationCreateComponent,
         ApplicationSharedComponent,
+        ApplicationEmbeddedComponent,
         AppBlockElementComponent,
         AppActionComponent,
         ApplicationImportComponent,

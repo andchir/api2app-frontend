@@ -1,10 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
     selector: 'app-share-item',
     templateUrl: './share-item.component.html',
 })
-export class ShareItemComponent {
+export class ShareItemComponent implements OnInit {
 
     @Input() modalTitle: string = 'Share Item';
     @Input() loading: boolean = false;
@@ -13,12 +13,18 @@ export class ShareItemComponent {
     @Input() isHidden: boolean = false;
     @Input() readOnly: boolean = false;
     @Input() itemUuid: string = '';
+    @Input() itemEmbedUuid: string = '';
     @Input() shareUrl: string = 'https://example.com/item/shared/';
     @Output() isActiveChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() isSharedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() isHiddenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() confirmed: EventEmitter<boolean> = new EventEmitter<boolean>();
+    embedUrl: string = '';
     message = '';
+
+    ngOnInit(): void {
+        this.embedUrl = this.shareUrl.replace('/shared/', '/embed/');
+    }
 
     closeModal(): void {
         this.message = '';
