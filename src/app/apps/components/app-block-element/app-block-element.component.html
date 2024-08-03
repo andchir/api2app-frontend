@@ -186,10 +186,14 @@
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
                             <ng-template ng-label-tmp let-item="item">
-                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
+                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
+                                <span class="capitalize" *ngIf="options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
+                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">
-                                <span class="capitalize">{{ item[options?.itemFieldNameForTitle] || item[options?.itemFieldNameForValue] }}</span>
+                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
+                                <span class="capitalize" *ngIf="options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
+                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
                             </ng-template>
                         </ng-select>
                     </ng-container>
