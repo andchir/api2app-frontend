@@ -212,7 +212,7 @@ export class ApiService extends DataService<ApiItem> {
                 });
             }
             if (!isDevMode()) {
-                const csrfToken = this.getCookie('csrftoken');
+                const csrfToken = '';// this.getCookie('csrftoken');
                 requestHeaders['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 requestHeaders['Mode'] = 'same-origin';
             }
@@ -251,7 +251,7 @@ export class ApiService extends DataService<ApiItem> {
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}api/v1/proxy`;
-        const csrfToken = this.getCookie('csrftoken');
+        const csrfToken = '';// this.getCookie('csrftoken');
         // console.log('csrfToken', csrfToken);
         // console.log('window.csrf_token', window['csrf_token']);
         let headers;

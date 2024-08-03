@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     getHeaders(): HttpHeaders {
-        const csrfToken = this.getCookie('csrftoken');
+        const csrfToken = '';// this.getCookie('csrftoken');
         return new HttpHeaders({
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken || window['csrf_token'] || '',
