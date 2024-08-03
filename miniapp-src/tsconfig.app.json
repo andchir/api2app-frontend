@@ -11,11 +11,9 @@
         "moduleResolution": "node"
     },
     "files": [
-        "src/main.ts",
-        "miniapp-src/main.ts"
+        "main.ts"
     ],
     "include": [
-        "src/**/*.d.ts",
-        "miniapp-src/**/*.d.ts"
+        "./**/*.d.ts"
     ]
 }

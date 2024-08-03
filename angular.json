@@ -35,7 +35,7 @@
                         "polyfills": [
                             "zone.js"
                         ],
-                        "tsConfig": "tsconfig.app.json",
+                        "tsConfig": "src/tsconfig.app.json",
                         "inlineStyleLanguage": "css",
                         "assets": [
                             "src/favicon.ico",
@@ -143,7 +143,7 @@
                             "zone.js",
                             "zone.js/testing"
                         ],
-                        "tsConfig": "tsconfig.spec.json",
+                        "tsConfig": "src/tsconfig.spec.json",
                         "inlineStyleLanguage": "css",
                         "assets": [
                             "src/favicon.ico",
@@ -189,7 +189,7 @@
                         "polyfills": [
                             "zone.js"
                         ],
-                        "tsConfig": "tsconfig.app.json",
+                        "tsConfig": "miniapp-src/tsconfig.app.json",
                         "inlineStyleLanguage": "css",
                         "assets": [
                             "miniapp-src/favicon.ico",
@@ -297,7 +297,7 @@
                             "zone.js",
                             "zone.js/testing"
                         ],
-                        "tsConfig": "tsconfig.spec.json",
+                        "tsConfig": "miniapp-src/tsconfig.spec.json",
                         "inlineStyleLanguage": "css",
                         "assets": [
                             "miniapp-src/favicon.ico",

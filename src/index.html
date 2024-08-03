@@ -50,5 +50,12 @@
 <noscript><div><img src="https://mc.yandex.ru/watch/96354323" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 
+{% if is_shared_app %}
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script>
+    vkBridge.send('VKWebAppInit');
+</script>
+{% endif %}
+
 </body>
 </html>
