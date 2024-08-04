@@ -505,7 +505,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     blocks.forEach((block) => {
                         block.elements.forEach((element) => {
                             const {apiUuid, fieldType} = this.getElementOptions(element, 'output');
-                            if (apiUuid !== currentApiUuid) {
+                            if (apiUuid !== currentApiUuid && apiUuid) {
                                 if (['image', 'audio', 'video', 'status'].includes(element.type)) {
                                     element.value = null;
                                     element.valueArr = null;
