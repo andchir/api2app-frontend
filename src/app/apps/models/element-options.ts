@@ -163,7 +163,12 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Green', 'Blue', 'Red']
+                    choices: [
+                        $localize `Green`,
+                        $localize `Blue`,
+                        $localize `Violet`,
+                        $localize `Red`
+                    ]
                 });
                 output.push({
                     name: 'hiddenByDefault',
@@ -1096,7 +1101,7 @@ export class ElementOptions {
                     name: 'submit',
                     text: $localize `Submit`,
                     icon: '',
-                    color: 'Green',
+                    color: $localize `Green`,
                     hiddenByDefault: false
                 });
                 break;

@@ -69,9 +69,10 @@
                  *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.value)">
                 <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center"
                     [ngClass]="{
-                    'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color === 'Green',
-                    'bg-blue-500 hover:bg-blue-700 focus:ring-blue-300': options?.color === 'Blue',
-                    'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color === 'Red'
+                    'bg-green-500 hover:bg-green-700 focus:ring-green-300': [translatedGreen, 'Green'].includes(options?.color),
+                    'bg-blue-500 hover:bg-blue-700 focus:ring-blue-300': [translatedBlue, 'Blue'].includes(options?.color),
+                    'bg-red-500 hover:bg-red-700 focus:ring-red-300': [translatedRed, 'Red'].includes(options?.color),
+                    'bg-violet-600 hover:bg-violet-800 focus:ring-violet-400': [translatedViolet, 'Violet'].includes(options?.color),
                     }"
                     (click)="onClick()">
                     <span class="flex gap-2 w-full justify-center items-center">

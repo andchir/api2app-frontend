@@ -55,8 +55,12 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'table', title: $localize `Table`, icon: 'bi-table'}
     ];
 
-    public chartOptions: ChartOptions;
-    public pagesOptions: PaginationInstance;
+    chartOptions: ChartOptions;
+    pagesOptions: PaginationInstance;
+    translatedGreen = $localize `Green`;
+    translatedBlue = $localize `Blue`;
+    translatedViolet = $localize `Violet`;
+    translatedRed = $localize `Red`;
     timerSelectItem: any;
 
     constructor() {}
