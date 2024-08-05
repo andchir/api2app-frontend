@@ -100,7 +100,7 @@
                 [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
                 [(isShared)]="selectedItem.shared"
-                shareUrl="{{ baseUrl }}/apps/shared/"
+                shareUrl="{{ baseUrl }}/{{ locale }}/apps/shared/"
                 [itemUuid]="selectedItem.uuid"
                 [itemEmbedUuid]="selectedItem.uuid_embed"
                 (isHiddenChange)="makeHiddenConfirmed($event)"

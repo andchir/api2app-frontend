@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { take} from 'rxjs/operators';
@@ -23,6 +23,7 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
     private viewRef: ViewContainerRef;
 
     constructor(
+        @Inject(LOCALE_ID) locale: string,
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
@@ -30,7 +31,7 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
         private tokenStorageService: TokenStorageService,
         private modalService: ModalService
     ) {
-        super(route, router, authService, dataService);
+        super(locale, route, router, authService, dataService);
     }
 
     override getData(shared: boolean = false) {

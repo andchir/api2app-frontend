@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { iif, takeUntil } from 'rxjs';
@@ -15,12 +15,13 @@ import { ApplicationService } from '../../../services/application.service';
 export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
     constructor(
+        @Inject(LOCALE_ID) locale: string,
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApplicationService
     ) {
-        super(route, router, authService, dataService);
+        super(locale, route, router, authService, dataService);
     }
 
     getData(): void {

@@ -1,7 +1,7 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router} from '@angular/router' ;
 
-import {iif, Subject, takeUntil} from 'rxjs';
+import { iif, Subject, takeUntil } from 'rxjs';
 
 import { ApiService } from '../../../services/api.service';
 import { ApiItem } from '../../models/api-item.interface';
@@ -17,12 +17,13 @@ import { ListAbstractComponent } from '../../../list.component.abstract';
 export class ListSharedComponent extends ListAbstractComponent<ApiItem> implements OnInit, OnDestroy {
 
     constructor(
+        @Inject(LOCALE_ID) locale: string,
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApiService
     ) {
-        super(route, router, authService, dataService);
+        super(locale, route, router, authService, dataService);
     }
 
     getData(shared = true): void {

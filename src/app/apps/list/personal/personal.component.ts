@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { take } from 'rxjs/operators';
@@ -22,13 +22,14 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     private viewRef: ViewContainerRef;
 
     constructor(
+        @Inject(LOCALE_ID) locale: string,
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
         dataService: ApplicationService,
         private modalService: ModalService
     ) {
-        super(route, router, authService, dataService);
+        super(locale, route, router, authService, dataService);
     }
 
     getData(): void {

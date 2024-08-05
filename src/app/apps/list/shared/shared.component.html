@@ -63,7 +63,7 @@
                 i18n-modalTitle
                 [loading]="loading"
                 [(isActive)]="isShareActive"
-                shareUrl="{{ baseUrl }}/apps/shared/"
+                shareUrl="{{ baseUrl }}/{{ locale }}/apps/shared/"
                 [itemUuid]="selectedItem.uuid"
                 [readOnly]="true"
                 [isShared]="true" *ngIf="selectedItem"></app-share-item>

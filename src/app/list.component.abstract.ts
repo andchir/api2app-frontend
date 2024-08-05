@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
@@ -29,6 +29,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         protected route: ActivatedRoute,
         protected router: Router,
         protected authService: AuthService,
