@@ -98,7 +98,13 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Black', 'Gray', 'Green', 'Blue', 'Red']
+                    choices: [
+                        $localize `Black`,
+                        $localize `Gray`,
+                        $localize `Green`,
+                        $localize `Blue`,
+                        $localize `Red`
+                    ]
                 });
                 output.push({
                     name: 'whiteSpacePre',
@@ -166,8 +172,10 @@ export class ElementOptions {
                     choices: [
                         $localize `Green`,
                         $localize `Blue`,
+                        $localize `Cyan`,
                         $localize `Violet`,
-                        $localize `Red`
+                        $localize `Red`,
+                        $localize `Gray`
                     ]
                 });
                 output.push({
@@ -1088,7 +1096,7 @@ export class ElementOptions {
                     value: $localize `Example Text`,
                     prefixText: '',
                     suffixText: '',
-                    color: 'Black',
+                    color: $localize `Black`,
                     icon: '',
                     whiteSpacePre: false,
                     markdown: false,

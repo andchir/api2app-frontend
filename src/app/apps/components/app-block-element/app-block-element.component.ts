@@ -59,8 +59,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     pagesOptions: PaginationInstance;
     translatedGreen = $localize `Green`;
     translatedBlue = $localize `Blue`;
+    translatedCyan = $localize `Cyan`;
     translatedViolet = $localize `Violet`;
     translatedRed = $localize `Red`;
+    translatedGray = $localize `Gray`;
+    translatedBlack = $localize `Black`;
     timerSelectItem: any;
 
     constructor() {}
