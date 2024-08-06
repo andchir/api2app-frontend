@@ -98,13 +98,7 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: [
-                        $localize `Black`,
-                        $localize `Gray`,
-                        $localize `Green`,
-                        $localize `Blue`,
-                        $localize `Red`
-                    ]
+                    choices: ['Black', 'Gray', 'Green', 'Blue', 'Red']
                 });
                 output.push({
                     name: 'whiteSpacePre',
@@ -169,14 +163,7 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: [
-                        $localize `Green`,
-                        $localize `Blue`,
-                        $localize `Cyan`,
-                        $localize `Violet`,
-                        $localize `Red`,
-                        $localize `Gray`
-                    ]
+                    choices: ['Green', 'Blue', 'Cyan', 'Violet', 'Red', 'Gray']
                 });
                 output.push({
                     name: 'hiddenByDefault',
@@ -1096,7 +1083,7 @@ export class ElementOptions {
                     value: $localize `Example Text`,
                     prefixText: '',
                     suffixText: '',
-                    color: $localize `Black`,
+                    color: 'Black',
                     icon: '',
                     whiteSpacePre: false,
                     markdown: false,
@@ -1109,7 +1096,7 @@ export class ElementOptions {
                     name: 'submit',
                     text: $localize `Submit`,
                     icon: '',
-                    color: $localize `Green`,
+                    color: 'Green',
                     hiddenByDefault: false
                 });
                 break;
