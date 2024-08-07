@@ -117,7 +117,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        if (vkBridge && window['isVKApp']) {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
             vkBridge.send('VKWebAppStorageSet', {key, value})
                 .then((data) => {
                     // console.log('VKWebAppStorageSet', data);
@@ -141,9 +141,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        if (vkBridge && window['isVKApp']) {
-            vkBridge.send('VKWebAppStorageGet', {
-                keys: [key]})
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            vkBridge.send('VKWebAppStorageGet', {keys: [key]})
                 .then((data) => {
                     if (data.keys && data.keys.length > 0) {
                         element.value = data.keys[0].value;
