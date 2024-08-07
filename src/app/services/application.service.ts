@@ -120,7 +120,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (vkBridge && window['isVKApp']) {
             vkBridge.send('VKWebAppStorageSet', {key, value})
                 .then((data) => {
-                    console.log('VKWebAppStorageSet', data);
+                    // console.log('VKWebAppStorageSet', data);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -145,7 +145,6 @@ export class ApplicationService extends DataService<ApplicationItem> {
             vkBridge.send('VKWebAppStorageGet', {
                 keys: [key]})
                 .then((data) => {
-                    console.log('VKWebAppStorageGet', data);
                     if (data.keys && data.keys.length > 0) {
                         element.value = data.keys[0].value;
                     }
