@@ -56,15 +56,8 @@
     vkBridge.send('VKWebAppInit')
         .then((data) => {
             if (data.result) {
-                // Приложение инициализировано
-            } else {
-                // Ошибка
+                window.isVKApp = true;
             }
-            console.log(data);
-        })
-        .catch((error) => {
-            // Ошибка
-            console.log(error);
         });
 </script>
 {% endif %}

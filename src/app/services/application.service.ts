@@ -9,6 +9,8 @@ import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
 import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
 
+declare const vkBridge: any;
+
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {
 
@@ -115,9 +117,19 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        obj[key] = value;
-        window.localStorage.setItem(apiUuid, JSON.stringify(obj));
+        if (vkBridge && window['isVKApp']) {
+            vkBridge.send('VKWebAppStorageSet', {key, value})
+                .then((data) => {
+                    console.log('VKWebAppStorageSet', data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+            obj[key] = value;
+            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
+        }
     }
 
     static applyLocalStoredValue(element: AppBlockElement): void {
@@ -129,9 +141,23 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        if (obj[key]) {
-            element.value = obj[key];
+        if (vkBridge && window['isVKApp']) {
+            vkBridge.send('VKWebAppStorageGet', {
+                keys: [key]})
+                .then((data) => {
+                    console.log('VKWebAppStorageGet', data);
+                    if (data.keys && data.keys.length > 0) {
+                        element.value = data.keys[0].value;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+            if (obj[key]) {
+                element.value = obj[key];
+            }
         }
     }
 

@@ -33,5 +33,17 @@
     window.csrf_token = '{{ csrf_token }}';
 </script>
 
+{% if is_iframe_app %}
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script>
+    vkBridge.send('VKWebAppInit')
+        .then((data) => {
+            if (data.result) {
+                window.isVKApp = true;
+            }
+        });
+</script>
+{% endif %}
+
 </body>
 </html>

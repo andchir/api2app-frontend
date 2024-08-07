@@ -48,38 +48,6 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
         super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService);
     }
 
-    override ngOnInit(): void {
-        if (vkBridge) {
-            // vkBridge.send('VKWebAppInit')
-            //     .then((data) => {
-            //         if (data.result) {
-            //             // Приложение инициализировано
-            //         } else {
-            //             // Ошибка
-            //         }
-            //         console.log(data);
-            //     })
-            //     .catch((error) => {
-            //         // Ошибка
-            //         console.log(error);
-            //     });
-
-            vkBridge.send('VKWebAppGetLaunchParams')
-                .then((data) => {
-                    if (data.vk_app_id) {
-                        // Параметры запуска получены
-                    }
-                    console.log(data);
-                })
-                .catch((error) => {
-                    // Ошибка
-                    console.log(error);
-                });
-        }
-
-        super.ngOnInit();
-    }
-
     override getData(): void {
         this.errors[this.itemUuid] = {};
         this.loading = true;

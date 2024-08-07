@@ -19,6 +19,7 @@ import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
 
 const APP_NAME = environment.appName;
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-item-shared',
