@@ -53,7 +53,19 @@
 {% if is_iframe_app %}
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <script>
-    vkBridge.send('VKWebAppInit');
+    vkBridge.send('VKWebAppInit')
+        .then((data) => {
+            if (data.result) {
+                // Приложение инициализировано
+            } else {
+                // Ошибка
+            }
+            console.log(data);
+        })
+        .catch((error) => {
+            // Ошибка
+            console.log(error);
+        });
 </script>
 {% endif %}
 

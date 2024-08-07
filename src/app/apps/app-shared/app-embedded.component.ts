@@ -22,6 +22,7 @@ import { RouterEventsService } from '../../services/router-events.service';
 import { ApplicationSharedComponent } from './app-shared.component';
 
 const APP_NAME = environment.appName;
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-item-embedded',
@@ -45,6 +46,38 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
         routerEventsService: RouterEventsService
     ) {
         super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService);
+    }
+
+    override ngOnInit(): void {
+        if (vkBridge) {
+            // vkBridge.send('VKWebAppInit')
+            //     .then((data) => {
+            //         if (data.result) {
+            //             // Приложение инициализировано
+            //         } else {
+            //             // Ошибка
+            //         }
+            //         console.log(data);
+            //     })
+            //     .catch((error) => {
+            //         // Ошибка
+            //         console.log(error);
+            //     });
+
+            vkBridge.send('VKWebAppGetLaunchParams')
+                .then((data) => {
+                    if (data.vk_app_id) {
+                        // Параметры запуска получены
+                    }
+                    console.log(data);
+                })
+                .catch((error) => {
+                    // Ошибка
+                    console.log(error);
+                });
+        }
+
+        super.ngOnInit();
     }
 
     override getData(): void {
