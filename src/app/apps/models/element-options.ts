@@ -98,7 +98,30 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Black', 'Gray', 'Green', 'Blue', 'Red']
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Black`, value: 'Black'},
+                        {label: $localize `Gray`, value: 'Gray'},
+                        {label: $localize `Green`, value: 'Green'},
+                        {label: $localize `Blue`, value: 'Blue'},
+                        {label: $localize `Cyan`, value: 'Cyan'},
+                        {label: $localize `Violet`, value: 'Violet'},
+                        {label: $localize `Red`, value: 'Red'}
+                    ]
+                });
+                output.push({
+                    name: 'fontSize',
+                    label: $localize `Font Size`,
+                    type: 'input-select',
+                    value: options?.fontSize,
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Small`, value: 'Small'},
+                        {label: $localize `Medium`, value: 'Medium'},
+                        {label: $localize `Large`, value: 'Large'}
+                    ]
                 });
                 output.push({
                     name: 'whiteSpacePre',
@@ -163,7 +186,16 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Green', 'Blue', 'Cyan', 'Violet', 'Red', 'Gray']
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Green`, value: 'Green'},
+                        {label: $localize `Blue`, value: 'Blue'},
+                        {label: $localize `Cyan`, value: 'Cyan'},
+                        {label: $localize `Violet`, value: 'Violet'},
+                        {label: $localize `Red`, value: 'Red'},
+                        {label: $localize `Gray`, value: 'Gray'}
+                    ]
                 });
                 output.push({
                     name: 'hiddenByDefault',
@@ -1084,6 +1116,7 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     color: 'Black',
+                    fontSize: 'Medium',
                     icon: '',
                     whiteSpacePre: false,
                     markdown: false,

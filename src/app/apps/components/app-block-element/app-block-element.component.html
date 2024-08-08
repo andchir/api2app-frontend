@@ -38,7 +38,9 @@
                         'text-gray-500': options?.color == 'Gray',
                         'text-green-500': options?.color == 'Green',
                         'text-blue-500': options?.color == 'Blue',
-                        'text-red-500': options?.color == 'Red'
+                        'text-red-500': options?.color == 'Red',
+                        'text-xs': options?.fontSize == 'Small',
+                        'text-xl': options?.fontSize == 'Large'
                     }">
                     <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
                     <div class="max-w-full">
@@ -78,7 +80,7 @@
                     'bg-cyan-500 hover:bg-cyan-700 focus:ring-cyan-300': options?.color == 'Cyan',
                     'bg-violet-600 hover:bg-violet-800 focus:ring-violet-400': options?.color == 'Violet',
                     'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color == 'Red',
-                    'bg-gray-400 hover:bg-gray-600 focus:ring-gray-200': options?.color == 'Gray'
+                    'border border-gray-500 bg-gray-400 hover:bg-gray-600 focus:ring-gray-200': options?.color == 'Gray'
                     }"
                     (click)="onClick()">
                     <span class="flex gap-2 w-full justify-center items-center">
@@ -194,12 +196,12 @@
                                    [(ngModel)]="options.value">
                             <ng-template ng-label-tmp let-item="item">
                                 <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
+                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
                                 <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">
                                 <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
+                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
                                 <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
                             </ng-template>
                         </ng-select>
