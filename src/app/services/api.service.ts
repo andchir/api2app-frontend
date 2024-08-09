@@ -193,9 +193,9 @@ export class ApiService extends DataService<ApiItem> {
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__uuid', data.uuid || '');
-                formData.append('opt__headers_values', Object.values(headersData).join(','));
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
                 formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__headers_values', Object.values(headersData).join(','));
                 if (isApiTesting) {
                     formData.append('opt__requestUrl', data.requestUrl || '');
                     formData.append('opt__requestMethod', data.requestMethod || 'GET');
@@ -207,11 +207,11 @@ export class ApiService extends DataService<ApiItem> {
                     body,
                     bodyRaw,
                     queryParams: Object.assign({}, queryParams),
-                    opt__uuid: data?.uuid,
-                    headers: Object.assign({}, headersData),
+                    opt__uuid: data?.uuid
                 });
                 if (isApiTesting) {
                     Object.assign(body, {
+                        headers: Object.assign({}, headersData),
                         opt__requestUrl: data?.requestUrl,
                         opt__requestMethod: data?.requestMethod,
                         opt__responseContentType: data?.responseContentType,
