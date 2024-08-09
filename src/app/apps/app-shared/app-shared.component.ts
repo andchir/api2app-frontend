@@ -268,7 +268,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     stateLoadingUpdate(apiUuid: string, loading: boolean, isSuccess = true): void {
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
-                return el?.options?.outputApiUuid == apiUuid;// el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
+                // return el?.options?.outputApiUuid == apiUuid;// el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
+                return el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
             });
             return elements.length > 0;
         });
