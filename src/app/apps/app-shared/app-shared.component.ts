@@ -199,7 +199,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         this.stateLoadingUpdate(apiUuid, true);
         const apiItem = this.prepareApiItem(currentApi);
-        this.apiService.apiRequest(apiItem)
+        this.apiService.apiRequest(apiItem, false)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

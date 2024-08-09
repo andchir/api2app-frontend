@@ -104,14 +104,16 @@ export class ApiService extends DataService<ApiItem> {
         return responseTypeValue;
     }
 
-    apiRequest(data: ApiItem): Observable<HttpResponse<any>> {
+    apiRequest(data: ApiItem, isApiTesting = true): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
         const bodyDataSource = data.bodyDataSource;
         const sendAsFormData = (data?.sendAsFormData || false) && bodyDataSource === 'fields';
 
         if (data.sender === 'server') {
-            requestUrl = `${BASE_URL}api/v1/proxy`;
+            requestUrl = isApiTesting
+                ? `${BASE_URL}api/v1/proxy`
+                : `${BASE_URL}api/v1/inference`;
             requestMethod = 'POST';
         }
 
@@ -190,26 +192,32 @@ export class ApiService extends DataService<ApiItem> {
             : Object.assign({}, headersData);
         if (data.sender === 'server') {
             if (sendAsFormData) {
-                formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__uuid', data.uuid || '');
                 formData.append('opt__headers_values', Object.values(headersData).join(','));
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
-                formData.append('opt__uuid', data.uuid || '');
-                formData.append('opt__requestUrl', data.requestUrl || '');
-                formData.append('opt__requestMethod', data.requestMethod || 'GET');
-                formData.append('opt__responseContentType', data.responseContentType || '');
-                formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
+                formData.append('opt__headers', Object.keys(headersData).join(','));
+                if (isApiTesting) {
+                    formData.append('opt__requestUrl', data.requestUrl || '');
+                    formData.append('opt__requestMethod', data.requestMethod || 'GET');
+                    formData.append('opt__responseContentType', data.responseContentType || '');
+                    formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
+                }
             } else {
                 body = Object.assign({}, {
                     body,
                     bodyRaw,
-                    headers: Object.assign({}, headersData),
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid,
-                    opt__requestUrl: data?.requestUrl,
-                    opt__requestMethod: data?.requestMethod,
-                    opt__responseContentType: data?.responseContentType,
-                    opt__sendAsFormData: data?.sendAsFormData
+                    headers: Object.assign({}, headersData),
                 });
+                if (isApiTesting) {
+                    Object.assign(body, {
+                        opt__requestUrl: data?.requestUrl,
+                        opt__requestMethod: data?.requestMethod,
+                        opt__responseContentType: data?.responseContentType,
+                        opt__sendAsFormData: data?.sendAsFormData
+                    });
+                }
             }
             if (!isDevMode()) {
                 const csrfToken = '';// this.getCookie('csrftoken');
