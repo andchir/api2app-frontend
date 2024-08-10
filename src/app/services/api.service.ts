@@ -196,11 +196,22 @@ export class ApiService extends DataService<ApiItem> {
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
                 formData.append('opt__headers', Object.keys(headersData).join(','));
                 formData.append('opt__headers_values', Object.values(headersData).join(','));
+
+                if (data?.urlPartIndex && data?.urlPartValue) {
+                    formData.append('opt__urlPartIndex', String(data.urlPartIndex));
+                    formData.append('opt__urlPartValue', String(data.urlPartValue));
+                }
+
+                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
+                    formData.append('opt__basicAuth', data.basicAuth ? '1' : '0');
+                    formData.append('opt__authLogin', data.authLogin);
+                    formData.append('opt__authPassword', data.authPassword);
+                }
                 if (isApiTesting) {
-                    formData.append('opt__requestUrl', data.requestUrl || '');
-                    formData.append('opt__requestMethod', data.requestMethod || 'GET');
-                    formData.append('opt__responseContentType', data.responseContentType || '');
-                    formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
+                    formData.append('opt__requestUrl', data?.requestUrl || '');
+                    formData.append('opt__requestMethod', data?.requestMethod || 'GET');
+                    formData.append('opt__responseContentType', data?.responseContentType || '');
+                    formData.append('opt__sendAsFormData', data?.sendAsFormData ? '1' : '0');
                 }
             } else {
                 body = Object.assign({}, {
@@ -209,6 +220,19 @@ export class ApiService extends DataService<ApiItem> {
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid
                 });
+                if (data?.urlPartIndex && data?.urlPartValue) {
+                    Object.assign(body, {
+                        opt__urlPartIndex: data.urlPartIndex,
+                        opt__urlPartValue: data.urlPartValue
+                    });
+                }
+                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
+                    Object.assign(body, {
+                        opt__basicAuth: true,
+                        opt__authLogin: data.authLogin,
+                        opt__authPassword: data.authPassword
+                    });
+                }
                 if (isApiTesting) {
                     Object.assign(body, {
                         headers: Object.assign({}, headersData),
