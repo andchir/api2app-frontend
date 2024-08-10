@@ -447,8 +447,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
             return apiUuid === apiItem.uuid && fieldType === 'url';
         });
+        apiItem.urlPartIndex = 0;
+        apiItem.urlPartValue = null;
         elements.forEach((el) => {
             if (el.value && el.options?.inputApiFieldName) {
+                apiItem.urlPartIndex = Number(el.options?.inputApiFieldName);
+                apiItem.urlPartValue = String(el.value);
                 this.apiRequestUrlUpdate(apiItem, Number(el.options?.inputApiFieldName), String(el.value));
             }
         });
