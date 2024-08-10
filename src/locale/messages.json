@@ -284,6 +284,13 @@
         "7618778783437222241": "Font Size",
         "7131377065256068978": "Small",
         "5982496808088686844": "Medium",
-        "3905533329051691155": "Large"
+        "3905533329051691155": "Large",
+        "148389968432135849": "File not found.",
+        "4758130123051786199": "Unable to determine file type.",
+        "4419274685677180389": "Unsupported image file type.",
+        "723923091638762041": "Unsupported video file type.",
+        "1866400817432586466": "The file is too large.",
+        "6483262884635381378": "Please upload image file.",
+        "3080467041701190659": "Processing error. Please try again later."
     }
 }

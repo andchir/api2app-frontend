@@ -558,16 +558,41 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.blockElementValueApply(element, valuesObj, data);
                     }
                 });
-                if (errorMessage === 'Daily usage limit exceeded.') {
-                    errorMessage = $localize `Daily usage limit exceeded.`;
-                }
-                this.message = errorMessage;
+                this.message = this.localizeServerMessages(errorMessage);
                 this.messageType = 'error';
                 this.cdr.detectChanges();
             })
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    localizeServerMessages(errorMessage: string): string {
+        if (errorMessage === 'Daily usage limit exceeded.') {
+            errorMessage = $localize `Daily usage limit exceeded.`;
+        }
+        if (errorMessage === 'File not found.') {
+            errorMessage = $localize `File not found.`;
+        }
+        if (errorMessage === 'Unable to determine file type.') {
+            errorMessage = $localize `Unable to determine file type.`;
+        }
+        if (errorMessage === 'Unsupported image file type.') {
+            errorMessage = $localize `Unsupported image file type.`;
+        }
+        if (errorMessage === 'Unsupported video file type.') {
+            errorMessage = $localize `Unsupported video file type.`;
+        }
+        if (errorMessage === 'The file is too large.') {
+            errorMessage = $localize `The file is too large.`;
+        }
+        if (errorMessage === 'Please upload image file.') {
+            errorMessage = $localize `Please upload image file.`;
+        }
+        if (errorMessage === 'Processing error. Please try again later.') {
+            errorMessage = $localize `Processing error. Please try again later.`;
+        }
+        return errorMessage;
     }
 
     chartElementValueApply(element: AppBlockElement, data: any): void {
