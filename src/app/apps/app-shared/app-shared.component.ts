@@ -596,6 +596,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (errorMessage === 'Processing error. Please try again later.') {
             errorMessage = $localize `Processing error. Please try again later.`;
         }
+        if (errorMessage === 'Task not found.') {
+            errorMessage = $localize `Task not found.`;
+        }
         return errorMessage;
     }
 

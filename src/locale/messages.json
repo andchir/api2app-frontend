@@ -291,6 +291,7 @@
         "723923091638762041": "Unsupported video file type.",
         "1866400817432586466": "The file is too large.",
         "6483262884635381378": "Please upload image file.",
-        "3080467041701190659": "Processing error. Please try again later."
+        "3080467041701190659": "Processing error. Please try again later.",
+        "1608178043475736027": "Task not found."
     }
 }
