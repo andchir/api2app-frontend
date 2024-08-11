@@ -132,7 +132,8 @@ export class ElementInputTextComponent implements ControlValueAccessor {
         try {
             await navigator.clipboard.writeText(text);
         } catch (error) {
-            console.error(error.message);
+            console.log(error.message);
+            return Promise.reject(error.message);
         }
     }
 
