@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { noop } from 'rxjs';
 
@@ -16,6 +16,7 @@ import { noop } from 'rxjs';
 export class FileUploadComponent implements ControlValueAccessor {
 
     private _value: File[];
+    @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
     @Input() fileInputAccept: string;
     @Input() multiple = true;
     @Input() placeholder = 'Upload File';
@@ -34,6 +35,7 @@ export class FileUploadComponent implements ControlValueAccessor {
         this._value = val;
         if (!this._value || this._value.length === 0) {
             this.files = [];
+            this.clearFileInput();
         }
         this.onChange(this._value);
     }
@@ -104,7 +106,16 @@ export class FileUploadComponent implements ControlValueAccessor {
             return;
         }
         this.files.splice(index, 1);
+        if (this.files.length === 0) {
+            this.clearFileInput();
+        }
         this.writeValue(this.files);
+    }
+
+    clearFileInput(): void {
+        if (this.fileInput && this.fileInput.nativeElement) {
+            this.fileInput.nativeElement.value = null;
+        }
     }
 
     onChange: (value: File[]) => void = noop;

@@ -7,7 +7,7 @@
     <input type="file" style="display:none;"
            [accept]="fileInputAccept"
            [multiple]="multiple"
-           (change)="onFileChange($event)">
+           (change)="onFileChange($event)" #fileInput>
     <button type="button" class="px-5 py-2 mb-0 text-gray-500"
             [disabled]="loadingUpload"
             (click)="buttonHandler($event)">
