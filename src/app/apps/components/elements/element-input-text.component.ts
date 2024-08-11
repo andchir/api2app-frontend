@@ -108,14 +108,32 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     }
 
     copyToClipboard(inputEl: HTMLInputElement): void {
-        if (this.editorMode || !this.value) {
+        if (this.editorMode || !this.value || !navigator.clipboard) {
+            if (!navigator.clipboard) {
+                console.log('Clipboard API is not supported by the browser.');
+            }
             return;
         }
         inputEl.select();
         inputEl.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(inputEl.value);
-        const message = $localize `The value has been successfully copied to the clipboard.`;
-        this.message.emit([message, 'success']);
+
+        this.writeClipboardText(inputEl.value)
+            .then(() => {
+                const message = $localize `The value has been successfully copied to the clipboard.`;
+                this.message.emit([message, 'success']);
+            })
+            .catch(() => {
+                const message = $localize `Error: Copying to clipboard is not allowed.`;
+                this.message.emit([message, 'error']);
+            });
+    }
+
+    async writeClipboardText(text: string): Promise<void> {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (error) {
+            console.error(error.message);
+        }
     }
 
     speechSynthesisPlayToggle(): void {

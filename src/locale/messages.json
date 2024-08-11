@@ -293,6 +293,7 @@
         "6483262884635381378": "Please upload image file.",
         "3080467041701190659": "Processing error. Please try again later.",
         "1608178043475736027": "Task not found.",
-        "7286375793403967490": "Use link"
+        "7286375793403967490": "Use link",
+        "4244027853454575615": "Error: Copying to clipboard is not allowed."
     }
 }
