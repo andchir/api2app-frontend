@@ -901,6 +901,13 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'useLink',
+                    label: $localize `Use link`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useLink
+                });
                 break;
             case 'input-chart-line':
                 output.push({
@@ -1284,7 +1291,8 @@ export class ElementOptions {
                     itemThumbnailFieldName: '',
                     prefixText: '',
                     value: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    useLink: true
                 });
                 break;
             case 'audio':

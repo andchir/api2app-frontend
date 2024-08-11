@@ -412,7 +412,10 @@
                             <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md"
                                  *ngIf="image[options?.itemFieldName]"
                                  #imageContainer>
-                                <a class="block" [href]="image[options?.itemFieldName]" target="_blank">
+                                <a class="block"
+                                   [ngClass]="{'pointer-events-none': !options?.useLink}"
+                                   [href]="image[options?.itemFieldName]"
+                                   target="_blank">
                                     <img class="w-full h-auto max-w-full" loading="lazy"
                                          (load)="imageContainer.classList.remove('loading-bg-image')"
                                          [src]="image[options?.itemThumbnailFieldName]"
@@ -425,7 +428,12 @@
                 <ng-template #templateImageItem>
                     <div class="block w-full max-w-[600px] mx-auto text-center"
                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value}" #imageContainer>
-                        <a class="inline-block" [href]="options?.value" target="_blank" (click)="download(options?.value, '', $event)" *ngIf="options?.value">
+                        <a class="inline-block"
+                           [ngClass]="{'pointer-events-none': !options?.useLink}"
+                           (click)="download(options?.value, '', $event)"
+                           [href]="options?.value"
+                           target="_blank"
+                           *ngIf="options?.value">
                             <img class="inline-block max-w-full" loading="lazy"
                                  (load)="imageContainer.classList.remove('loading-bg-image')"
                                  [src]="options?.value" alt="">
