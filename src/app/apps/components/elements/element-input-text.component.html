@@ -34,7 +34,7 @@
                     (click)="copyToClipboard(inputControl.nativeElement)"
                     title="Copy to clipboard"
                     i18n-title
-                    *ngIf="copyToClipboardEnabled">
+                    *ngIf="copyToClipboardEnabled && (value || editorMode)">
                 <i class="bi bi-copy"></i>
             </button>
             <button type="button" class="cursor-pointer text-xl ml-3"
