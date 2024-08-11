@@ -123,7 +123,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
                 this.message.emit([message, 'success']);
             })
             .catch(() => {
-                const message = $localize `Error: Copying to clipboard is not allowed.`;
+                const message = $localize `Sorry, copying to clipboard is not allowed.`;
                 this.message.emit([message, 'error']);
             });
     }
