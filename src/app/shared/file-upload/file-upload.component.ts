@@ -55,7 +55,7 @@ export class FileUploadComponent implements ControlValueAccessor {
         event.preventDefault();
         event.stopPropagation();
 
-        (event.target as HTMLElement).classList.remove('border-green-400');
+        this.dragLeave(null, event.target as HTMLElement);
 
         const files = this.getTransferredFiles(event.dataTransfer);
         this.files = [...files, ...this.files];
@@ -69,12 +69,24 @@ export class FileUploadComponent implements ControlValueAccessor {
         event.preventDefault();
     }
 
-    dragEnter(event: DragEvent): void {
-        (event.target as HTMLElement).classList.add('border-green-400');
+    dragEnter(event: DragEvent, element?: HTMLElement): void {
+        element = element || event.target as HTMLElement;
+        if (element.tagName !== 'DIV') {
+            this.dragEnter(null, element.parentElement);
+            return;
+        }
+        element.classList.add('border-green-400');
+        element.querySelector('button').classList.add('pointer-events-none');
     }
 
-    dragLeave(event: DragEvent): void {
-        (event.target as HTMLElement).classList.remove('border-green-400');
+    dragLeave(event: DragEvent, element?: HTMLElement): void {
+        element = element || event.target as HTMLElement;
+        if (element.tagName !== 'DIV') {
+            this.dragLeave(null, element.parentElement);
+            return;
+        }
+        element.classList.remove('border-green-400');
+        element.querySelector('button').classList.remove('pointer-events-none');
     }
 
     buttonHandler(event?: MouseEvent): void {

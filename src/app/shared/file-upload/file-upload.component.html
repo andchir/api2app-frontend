@@ -10,10 +10,12 @@
            (change)="onFileChange($event)" #fileInput>
     <button type="button" class="px-5 py-2 mb-0 text-gray-500"
             [disabled]="loadingUpload"
+            (dragenter)="dragEnter($event)"
+            (dragleave)="dragLeave($event)"
             (click)="buttonHandler($event)">
-        <i class="bi bi-file-earmark mr-2" *ngIf="files.length === 0"></i>
-        <i class="bi bi-file-earmark-check text-green-500 mr-2" *ngIf="files.length > 0"></i>
-        <span>{{ placeholder }}</span>
+        <i class="bi bi-file-earmark mr-2 pointer-events-none" *ngIf="files.length === 0"></i>
+        <i class="bi bi-file-earmark-check text-green-500 mr-2 pointer-events-none" *ngIf="files.length > 0"></i>
+        <span class="pointer-events-none">{{ placeholder }}</span>
     </button>
 </div>
 <div class="flex gap-3 flex-wrap items-start pt-2" *ngIf="files.length > 0">
