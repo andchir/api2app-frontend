@@ -1,4 +1,4 @@
-<div class="border-2 border-dashed p-2 text-center border-gray-300 rounded-md group"
+<div class="border-2 border-dashed p-2 text-center border-gray-400 rounded-md group"
      [ngClass]="{'pointer-events-none': loadingUpload}"
      (drop)="dropHandler($event)"
      (dragover)="dragOverHandler($event)"
@@ -12,19 +12,26 @@
             [disabled]="loadingUpload"
             (click)="buttonHandler($event)">
         <i class="bi bi-file-earmark mr-2" *ngIf="files.length === 0"></i>
-        <i class="bi bi-file-earmark-check mr-2" *ngIf="files.length > 0"></i>
+        <i class="bi bi-file-earmark-check text-green-500 mr-2" *ngIf="files.length > 0"></i>
         <span>{{ placeholder }}</span>
     </button>
 </div>
-<div class="pt-2" *ngIf="files.length > 0">
-    <span class="inline-block px-1 text-gray-500 text-xs rounded ring-gray-400 ring-offset-2 hover:ring-1 mr-3"
-          *ngFor="let file of files; let index=index">
-        <span class="inline-block mr-2">{{ file.name }}</span>
-        <button type="button" class="p-0 text-red-500 hover:text-red-700"
-                title="Remove File"
-                i18n-title
-                (click)="deleteFile(index)">
-            <i class="bi bi-x-square-fill"></i>
-        </button>
-    </span>
+<div class="flex gap-3 flex-wrap items-start pt-2" *ngIf="files.length > 0">
+    <div class="p-1 inline-flex flex-col px-1 text-gray-500 text-xs rounded ring-gray-400 hover:ring-gray-500 ring-1 max-w-[130px] cursor-default"
+         *ngFor="let file of files; let index=index">
+        <div class="flex gap-1 items-center">
+            <div class="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+                {{ file.name }}
+            </div>
+            <button type="button" class="p-0 text-lg leading-3 align-middle text-red-500 hover:text-red-700"
+                    title="Remove File"
+                    i18n-title
+                    (click)="deleteFile(index)">
+                <i class="bi bi-x-square-fill"></i>
+            </button>
+        </div>
+        <img class="max-w-full mt-1" [src]="imageBlobsUrls[index]"
+             (load)="onImageLoaded($event)"
+             *ngIf="imageBlobsUrls[index]">
+    </div>
 </div>

@@ -22,6 +22,7 @@ export class FileUploadComponent implements ControlValueAccessor {
     @Input() placeholder = 'Upload File';
     disabled = false;
     files: File[] = [];
+    imageBlobsUrls: string[] = [];
     loadingUpload = false;
 
     constructor() {}
@@ -35,6 +36,7 @@ export class FileUploadComponent implements ControlValueAccessor {
         this._value = val;
         if (!this._value || this._value.length === 0) {
             this.files = [];
+            this.imageBlobsUrls = [];
             this.clearFileInput();
         }
         this.onChange(this._value);
@@ -136,5 +138,30 @@ export class FileUploadComponent implements ControlValueAccessor {
 
     writeValue(value: File[]): void {
         this.value = value;
+        this.imageBlobsUrls = [];
+        if (value) {
+            value.forEach((file, index) => {
+                this.imageBlobsUrls[index] = this.createImageUrl(file);
+            });
+        }
+    }
+
+    createImageUrl(file: File, imageEl?: HTMLImageElement): string {
+        if (!file.type.includes('image/') && !file.type.includes('djvu')) {
+            return null;
+        }
+        if (imageEl && !imageEl.src) {
+            imageEl.onload = () => {
+                URL.revokeObjectURL(imageEl.src);
+            };
+        }
+        return URL.createObjectURL(file);
+    }
+
+    onImageLoaded(event: Event) {
+        const imageEl = event.target as HTMLImageElement;
+        if (imageEl.src) {
+            URL.revokeObjectURL(imageEl.src);
+        }
     }
 }
