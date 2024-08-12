@@ -109,7 +109,10 @@ export class FileUploadComponent implements ControlValueAccessor {
         const files = [];
         if (dataTransfer.items) {
             for (let i = 0; i < dataTransfer.items.length; i++) {
-                files.push(dataTransfer.items[i].getAsFile());
+                const file = dataTransfer.items[i].getAsFile();
+                if (file) {
+                    files.push(file);
+                }
             }
         }
         return files;
