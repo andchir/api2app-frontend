@@ -528,10 +528,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             }
                         });
                     });
+                    this.showAds();
                     this.cdr.detectChanges();
                 })
                 .catch((err) => {
                     console.log(err);
+                });
+        }
+    }
+
+    showAds(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            // Advertising by VK
+            vkBridge.send('interstitial', { ad_format: 'reward' })
+                .then((data: any) => {
+                    console.log(data);
+                    if (data.result) {
+                        console.log('Advertisement shown');
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
                 });
         }
     }
