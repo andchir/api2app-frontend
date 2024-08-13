@@ -545,20 +545,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             console.log(now - this.adsShownAt);
             return;
         }
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            // Advertising by VK
-            vkBridge.send('interstitial', { ad_format: 'reward' })
-                .then((data: any) => {
-                    console.log(data);
-                    if (data.result) {
-                        this.adsShownAt = Date.now();
-                        console.log('Advertisement shown');
-                    }
-                })
-                .catch((error: any) => {
-                    console.log(error);
-                });
-        }
+        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+        //     // Advertising by VK
+        //     vkBridge.send('interstitial', { ad_format: 'reward' })
+        //         .then((data: any) => {
+        //             console.log(data);
+        //             if (data.result) {
+        //                 this.adsShownAt = Date.now();
+        //                 console.log('Advertisement shown');
+        //             }
+        //         })
+        //         .catch((error: any) => {
+        //             console.log(error);
+        //         });
+        // }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {

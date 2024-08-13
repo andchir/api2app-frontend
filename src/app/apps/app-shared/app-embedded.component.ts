@@ -67,5 +67,24 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
                     this.loading = false;
                 }
             });
+        this.showBannerAd();
+    }
+
+    showBannerAd(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            vkBridge.send('VKWebAppShowBannerAd', {
+                banner_location: 'top'
+            })
+                .then((data) => {
+                    console.log(data);
+                    if (data.result) {
+                        // Баннерная реклама отобразилась
+                    }
+                })
+                .catch((error) => {
+                    // Ошибка
+                    console.log(error);
+                });
+        }
     }
 }
