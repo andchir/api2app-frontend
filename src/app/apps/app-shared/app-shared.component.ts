@@ -44,6 +44,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     itemUuid: string;
+    adsShownAt = 0;
+    adsShowIntervalSeconds = 3 * 60; // 3 minutes
     data: ApplicationItem = ApplicationService.getDefault();
     destroyed$: Subject<void> = new Subject();
 
@@ -538,12 +540,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     showAds(): void {
+        const now = Date.now();
+        if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
+            console.log(now - this.adsShownAt);
+            return;
+        }
         if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
             // Advertising by VK
             vkBridge.send('interstitial', { ad_format: 'reward' })
                 .then((data: any) => {
                     console.log(data);
                     if (data.result) {
+                        this.adsShownAt = Date.now();
                         console.log('Advertisement shown');
                     }
                 })
