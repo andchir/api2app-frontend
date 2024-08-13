@@ -76,13 +76,11 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
                 banner_location: 'top'
             })
                 .then((data) => {
-                    console.log(data);
                     if (data.result) {
-                        // Баннерная реклама отобразилась
+                        // Banner ad displayed
                     }
                 })
                 .catch((error) => {
-                    // Ошибка
                     console.log(error);
                 });
         }

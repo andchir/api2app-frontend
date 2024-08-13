@@ -542,7 +542,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     showAds(): void {
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            console.log(now - this.adsShownAt);
+            // console.log(now - this.adsShownAt);
             return;
         }
         // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
