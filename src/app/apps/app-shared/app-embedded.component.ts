@@ -78,6 +78,8 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
                 .then((data) => {
                     if (data.result) {
                         // Banner ad displayed
+                    } else {
+                        console.log(data);
                     }
                 })
                 .catch((error) => {
