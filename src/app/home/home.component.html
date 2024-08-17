@@ -82,6 +82,45 @@
                         </div>
                     </div>
                 </ng-container>
+
+                <ng-container *ngIf="locale === 'fr'">
+                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+                        <div class="relative">
+                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+                        </div>
+                        <div class="text-center lg:text-left px-3 text-cyan-700">
+                            <h4 class="text-2xl mb-3">Tester l'API</h4>
+                            <div>
+                                Ici, vous pouvez tester vos API et les partager avec d'autres membres de la communauté.
+                                <br>
+                                Ne vous inquiétez pas des données privées, elles ne peuvent être utilisées que côté serveur.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+                        <div class="">
+                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+                        </div>
+                        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+                            <h4 class="text-2xl mb-3">Choisissez parmi une variété d'éléments d'interface utilisateur</h4>
+                            <div>
+                                Lors de la création d'applications, vous pouvez utiliser une large sélection d'éléments d'interface.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+                        <div class="">
+                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+                        </div>
+                        <div class="text-center lg:text-left px-3 text-cyan-700">
+                            <h4 class="text-2xl mb-3">Créer des applications modernes</h4>
+                            <div>
+                                Créez des applications avec une interface agréable et moderne en quelques minutes seulement.
+                                Utilisez vos paramètres de confidentialité.
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
                 <!-- /main page content -->
 
             </div>
@@ -184,6 +223,20 @@
                         </div>
                         <div>
                             The alpha version of the application has been released on the "api2app.ru" domain. There is no registration for users yet. Testing minimal functionality.
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="locale === 'fr'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            08/03/2024
+                        </div>
+                        <div>
+                            Désormais, les applications Api2App peuvent être utilisées pour créer des <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://dev.vk.com/ru/mini-apps/overview" target="_blank" rel="nofollow">applications VK</a>
+                            et des <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://core.telegram.org/bots/webapps" target="_blank" rel="nofollow">mini-applications de bot Telegram</a>.
+                            <br>
+                            Utilisez simplement <b>l'URL pour intégrer</b> votre application.
                         </div>
                     </div>
                 </ng-container>

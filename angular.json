@@ -22,6 +22,10 @@
                     "ru": {
                         "translation": "src/locale/messages.ru.json",
                         "baseHref": "ru/"
+                    },
+                    "fr": {
+                        "translation": "src/locale/messages.fr.json",
+                        "baseHref": "fr/"
                     }
                 }
             },
@@ -73,7 +77,7 @@
                             }
                         },
                         "production": {
-                            "localize": ["en", "ru"],
+                            "localize": ["en", "ru", "fr"],
                             "index": {
                                 "input": "src/index-ru.html",
                                 "output": "index.html"
@@ -227,7 +231,7 @@
                             }
                         },
                         "production": {
-                            "localize": ["en", "ru"],
+                            "localize": ["en", "ru", "fr"],
                             "index": {
                                 "input": "miniapp-src/index-ru.html",
                                 "output": "index.html"
