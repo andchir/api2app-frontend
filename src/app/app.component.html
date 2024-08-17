@@ -72,21 +72,21 @@
                                 <a href="/ru/" class="block px-4 py-2 text-sm text-right hover:bg-gray-100"
                                     role="menuitem"
                                     tabindex="-1" *ngIf="locale != 'ru'">
-                                    <span i18n>Russian</span>
+                                    <span>Русский</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/ru.svg" alt="Russian">
                                 </a>
                                 <a href="/en/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
                                     [ngClass]="{'text-gray-700': locale != 'en', 'text-blue-700 pointer-events-none opacity-50': locale == 'en'}"
                                     role="menuitem"
                                     tabindex="-1" *ngIf="locale != 'en'">
-                                    <span i18n>English</span>
+                                    <span>English</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/en.svg" alt="English">
                                 </a>
                                 <a href="/fr/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
                                    [ngClass]="{'text-gray-700': locale != 'fr', 'text-blue-700 pointer-events-none opacity-50': locale == 'fr'}"
                                    role="menuitem"
                                    tabindex="-1" *ngIf="locale != 'fr'">
-                                    <span i18n>French</span>
+                                    <span>Français</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/fr.svg" alt="French">
                                 </a>
                             </div>
