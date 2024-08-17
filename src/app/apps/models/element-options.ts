@@ -76,6 +76,12 @@ export class ElementOptions {
                     value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
                 });
                 output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Field name in the array`,
+                    type: 'input-text',
+                    value: options?.itemFieldName
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -1124,6 +1130,7 @@ export class ElementOptions {
                     suffixText: '',
                     color: 'Black',
                     fontSize: 'Medium',
+                    itemFieldName: '',
                     icon: '',
                     whiteSpacePre: false,
                     markdown: false,

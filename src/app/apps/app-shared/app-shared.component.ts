@@ -318,6 +318,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = '';
             } else if (['input-file'].includes(element.type)) {
                 element.value = [];
+            } else {
+                element.value = null;
+                element.valueArr = null;
+                element.valueObj = null;
             }
         });
     }
@@ -700,6 +704,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             element.valueArr = this.flattenObjInArray(value);
+            if (element?.itemFieldName) { // Filter array values
+                element.valueArr = this.filterArrayValues(element.valueArr, element.itemFieldName);
+            }
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
@@ -774,6 +781,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return inputArr.map((item) => {
             return this.flattenObj(item);
         });
+    }
+
+    filterArrayValues(valueArr: any[], itemFieldName: string): any[] {
+        if (!itemFieldName) {
+            return valueArr;
+        }
+        valueArr = valueArr.filter((item) => {
+            const value = item[itemFieldName] || '';
+            return !!value && !this.isJson(value);
+        });
+        return valueArr;
     }
 
     flattenObj(obj: any, parent: string = '', res: any = {}): any {

@@ -394,6 +394,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     onPreviewSwitch(): void {
         if (!this.previewMode) {
+            this.data.blocks.forEach((block) => {
+                this.clearElementsValues(block);
+            });
+            this.cdr.detectChanges();
             return;
         }
         this.createAppOptions();

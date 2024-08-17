@@ -23,14 +23,22 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text'">
-            <div class="mb-3"
+            <div class="mb-3 flex flex-col gap-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
-                 *ngIf="options?.value || editorMode">
-                <div class="flex gap-2 items-center w-full max-w-[600px] mx-auto"
-                    [ngClass]="{
+                 *ngIf="options?.value || options?.valueArr || editorMode">
+
+                <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
+                    <ng-container *ngFor="let item of options.valueArr">
+                        <ng-container *ngTemplateOutlet="templateImageItem; context: {$implicit: item}"></ng-container>
+                    </ng-container>
+                </ng-container>
+
+                <ng-template let-item #templateImageItem>
+                    <div class="flex gap-2 items-center w-full max-w-[600px] mx-auto"
+                         [ngClass]="{
                         'whitespace-pre-line': options?.whiteSpacePre,
                         'min-h-[20px]': editorMode,
-                        'border rounded-[1rem] p-3 shadow-md': options?.border && (options?.value || editorMode),
+                        'border rounded-[1rem] p-3 shadow-md': options?.border && (options?.value || options?.valueArr || editorMode),
                         'border-gray-300': options?.border && options?.color == 'Black',
                         'border-green-300': options?.border && options?.color == 'Green',
                         'border-blue-300': options?.border && options?.color == 'Blue',
@@ -42,21 +50,30 @@
                         'text-sm': options?.fontSize == 'Small',
                         'text-lg': options?.fontSize == 'Large'
                     }">
-                    <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                    <div class="max-w-full">
-                        <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
-                        <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                        <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
-                        <span class="text-gray-400" *ngIf="!options?.value && editorMode">{{ options?.name }}</span>
-                        <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
+                        <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
+                        <div class="max-w-full overflow-hidden">
+                            <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
+
+                            <ng-container *ngIf="options?.itemFieldName && item">
+                                <span *ngIf="item[options.itemFieldName] && !options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
+                                <span *ngIf="item[options.itemFieldName] && options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
+                            </ng-container>
+                            <ng-container *ngIf="!options?.itemFieldName || !item">
+                                <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
+                                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                            </ng-container>
+
+                            <span class="text-gray-400" *ngIf="!options?.value && !options?.valueArr && editorMode">{{ options?.name }}</span>
+                            <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
+                        </div>
                     </div>
-                </div>
+                </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
-            <h4 class="text-2xl font-bold mb-3 min-h-[20px]"
+            <h4 class="text-2xl font-bold mb-3 min-h-[20px] mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <span class="flex gap-2 items-center">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
@@ -545,7 +562,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'table'">
-            <h4 class="mb-3 min-h-[20px]"
+            <h4 class="min-h-[20px] mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <table class="border border-gray-300 w-full">
                     <thead>

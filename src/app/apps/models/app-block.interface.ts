@@ -53,6 +53,7 @@ export interface AppBlockElement {
     icon?: string;
     useAsOffset?: boolean;
     isHTML?: boolean;
+    itemFieldName?: string;
 }
 
 export interface AppBlockOptions {
