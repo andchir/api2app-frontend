@@ -318,7 +318,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = '';
             } else if (['input-file'].includes(element.type)) {
                 element.value = [];
-            } else {
+            } else if (['image', 'video', 'audio'].includes(element.type)) {
                 element.value = null;
                 element.valueArr = null;
                 element.valueObj = null;
