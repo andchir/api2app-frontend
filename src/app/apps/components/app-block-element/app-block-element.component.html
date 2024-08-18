@@ -563,7 +563,8 @@
 
         <ng-container *ngSwitchCase="'table'">
             <h4 class="min-h-[20px] mb-3"
-                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
                 <table class="border border-gray-300 w-full">
                     <thead>
                         <tr class="border-b-2 border-gray-300 bg-gray-100">
@@ -576,8 +577,8 @@
                         <ng-container *ngIf="options.valueArr && options.valueArr.length > 0; else templateTableEmpty">
                             <tr *ngFor="let item of options.valueArr">
                                 <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
-                                    <div *ngIf="options.isHTML" [innerHTML]="item[key]"></div>
-                                    <div *ngIf="!options.isHTML">{{ item[key] }}</div>
+                                    <div class="max-w-[300px] overflow-auto" *ngIf="options.isHTML" [innerHTML]="item[key]"></div>
+                                    <div class="max-w-[300px] overflow-auto" *ngIf="!options.isHTML">{{ item[key] }}</div>
                                 </td>
                             </tr>
                         </ng-container>

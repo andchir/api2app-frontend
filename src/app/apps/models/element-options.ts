@@ -1107,6 +1107,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.isHTML || false
                 });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
                 break;
         }
         return output;
@@ -1351,7 +1357,8 @@ export class ElementOptions {
                     name: 'table',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
-                    isHTML: false
+                    isHTML: false,
+                    hiddenByDefault: false
                 });
                 break;
         }
