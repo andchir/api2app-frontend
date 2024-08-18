@@ -314,11 +314,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     clearElementsValues(block: AppBlock): void {
         block.elements.forEach((element) => {
-            if (['input-text', 'input-textarea'].includes(element.type)) {
-                element.value = '';
-            } else if (['input-file'].includes(element.type)) {
+            const inputApiUuid = element.options?.inputApiUuid;
+            const outputApiUuid = element.options?.outputApiUuid;
+            if (!inputApiUuid && !outputApiUuid) {
+                return;
+            }
+            if (['input-file'].includes(element.type)) {
                 element.value = [];
-            } else if (['image', 'video', 'audio'].includes(element.type)) {
+            } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button'].includes(element.type)) {
                 element.value = null;
                 element.valueArr = null;
                 element.valueObj = null;
