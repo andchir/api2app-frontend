@@ -120,6 +120,24 @@
                 </div>
             </div>
 
+            <ul class="flex flex-wrap text-sm font-medium text-center border-b border-b-gray-300 mb-4" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+                <li class="me-2" *ngFor="let tabName of data.tabs; index as index">
+                    <button type="button"
+                            class="relative z-10 top-[1px] inline-block px-4 py-3 rounded-t-lg border"
+                            [ngClass]="{'border-gray-300 text-blue-700 border-b-gray-100': tabIndex == index, 'border-gray-100 border-b-gray-300 text-gray-500 hover:text-gray-700 bg-gray-200 hover:border-gray-300': tabIndex !== index}"
+                            (click)="switchTab(index)">
+                        {{ tabName }}
+                    </button>
+                </li>
+                <li class="me-2">
+                    <button type="button"
+                            class="relative z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-300 hover:border-gray-400 text-xl leading-3"
+                            (click)="addTab()" *ngIf="!previewMode">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </li>
+            </ul>
+
             <div class="grid grid-cols-1 gap-4"
                 [ngClass]="{'md:grid-cols-2 lg:grid-cols-3': data.gridColumns === 3, 'md:grid-cols-2': data.gridColumns === 2}">
 

@@ -59,6 +59,7 @@ export interface AppBlockElement {
 export interface AppBlockOptions {
     gridColumnSpan?: number;
     orderIndex?: number;
+    tabIndex?: number;
     autoClear?: boolean;
     messageSuccess?: string;
 }

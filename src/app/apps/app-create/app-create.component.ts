@@ -140,6 +140,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();
         }
+        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
+            this.addTab();
+        }
     }
 
     setValue(key: string, value: number): void {

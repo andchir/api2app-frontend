@@ -47,6 +47,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     adsShownAt = 0;
     adsShowIntervalSeconds = 3 * 60; // 3 minutes
     data: ApplicationItem = ApplicationService.getDefault();
+    tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -94,6 +95,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppOptions(): void {
+        console.log('createAppOptions', this.data);
         if (!this.data) {
             return;
         }
@@ -129,6 +131,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
             });
         });
+        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
+            this.addTab();
+        }
     }
 
     appAutoStart(apiUuid: string): void {
@@ -766,6 +771,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         this.appSubmit(apiUuid, 'output', element);
+    }
+
+    switchTab(tabIndex: number): void {
+        console.log('switchTab', tabIndex);
+        this.tabIndex = tabIndex;
+    }
+
+    addTab(): void {
+        console.log('addTab', this.data.tabs);
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
+        this.data.tabs.push(($localize `Tab`) + ' ' + (this.data.tabs.length + 1));
     }
 
     isJson(str: string): boolean {
