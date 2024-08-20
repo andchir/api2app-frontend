@@ -95,7 +95,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppOptions(): void {
-        console.log('createAppOptions', this.data);
         if (!this.data) {
             return;
         }
@@ -774,12 +773,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     switchTab(tabIndex: number): void {
-        console.log('switchTab', tabIndex);
         this.tabIndex = tabIndex;
     }
 
     addTab(): void {
-        console.log('addTab', this.data.tabs);
         if (!this.data.tabs) {
             this.data.tabs = [];
         }
