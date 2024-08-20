@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <ul class="flex flex-wrap text-sm font-medium text-center border-b border-b-gray-300 mb-4" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+            <ul class="flex flex-wrap text-sm font-medium text-center border-b border-b-gray-300 mb-4 hidden" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
                 <li class="me-2" *ngFor="let tabName of data.tabs; index as index">
                     <button type="button"
                             class="relative z-10 top-[1px] inline-block px-4 py-3 rounded-t-lg border"
