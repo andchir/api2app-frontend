@@ -55,6 +55,7 @@
 <script>
     vkBridge.send('VKWebAppInit')
         .then((data) => {
+            console.log(data);
             if (data.result) {
                 window.isVKApp = true;
                 // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
