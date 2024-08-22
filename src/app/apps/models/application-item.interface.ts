@@ -18,4 +18,5 @@ export interface ApplicationItem {
     image?: string;
     uuid_embed?: string;
     tabs?: string[];
+    maintenance?: boolean;
 }

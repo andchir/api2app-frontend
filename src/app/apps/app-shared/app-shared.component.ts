@@ -38,6 +38,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     submitted = false;
     previewMode = true;
     needBackButton = false;
+    maintenanceModalActive = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
@@ -83,6 +84,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.data = res;
                     this.titleService.setTitle(`${this.data.name} - ${APP_NAME}`);
                     this.loading = false;
+                    if (this.data.maintenance) {
+                        this.maintenanceModalToggle();
+                    }
                     this.createAppOptions();
                     this.cdr.detectChanges();
                 },
@@ -850,6 +854,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         }
         return result;
+    }
+
+    maintenanceModalToggle(): void {
+        this.maintenanceModalActive = !this.maintenanceModalActive;
     }
 
     onMessage(msg: string[]) {
