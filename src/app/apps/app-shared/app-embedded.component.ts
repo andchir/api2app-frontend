@@ -58,6 +58,9 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
                     this.data = res;
                     this.titleService.setTitle(`${this.data.name} - ${APP_NAME}`);
                     this.loading = false;
+                    if (this.data.maintenance) {
+                        this.maintenanceModalToggle();
+                    }
                     this.createAppOptions();
                     this.cdr.detectChanges();
                 },
