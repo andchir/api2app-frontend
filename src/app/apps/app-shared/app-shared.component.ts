@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import {firstValueFrom, retry, Subject, takeUntil} from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 
@@ -158,6 +158,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         );
     }
 
+    getBlocksElements(blocks: AppBlock[]): AppBlockElement [] {
+        return blocks.reduce(
+            (accumulator, currentBlock) => {
+                accumulator.push(...currentBlock.elements);
+                return accumulator;
+            }, []
+        );
+    }
+
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
@@ -170,7 +179,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', element?: AppBlockElement, createErrorMessages = true): void {
+    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', currentElement?: AppBlockElement, createErrorMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -182,11 +191,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType, element, createErrorMessages);
+                this.appSubmit(apiUuid, actionType, currentElement, createErrorMessages);
             });
             return;
         }
-        if (!this.getIsValid(apiUuid, actionType, element, createErrorMessages)) {
+        const blocks = this.findCurrentBlocks(apiUuid, actionType, currentElement);
+
+        if (!this.getIsValid(apiUuid, actionType, blocks)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
                 this.appsAutoStartPending.push(apiUuid);
             } else if (createErrorMessages) {
@@ -204,12 +215,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.submitted = false;
             return;
         }
-        if (element?.type !== 'input-pagination') {
+        if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, actionType, element);
+        const apiItem = this.prepareApiItem(currentApi, actionType, currentElement);
 
-        this.stateLoadingUpdate(apiUuid, true);
+        console.log(apiItem);
+
+        this.stateLoadingUpdate(blocks, true);
 
         this.apiService.apiRequest(apiItem, false)
             .pipe(takeUntil(this.destroyed$))
@@ -221,7 +234,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.loading = false;
                     this.submitted = false;
                     this.createAppResponse(currentApi, res);
-                    this.stateLoadingUpdate(apiUuid, false, this.appsAutoStarted.length === 0);
+                    this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
                 },
                 error: (err) => {
                     // console.log(err);
@@ -234,7 +247,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.message = err.message || 'Error.';
                     }
                     this.onError(apiUuid);
-                    this.stateLoadingUpdate(apiUuid, false, false);
+                    this.stateLoadingUpdate(blocks, false, false);
                 }
             });
     }
@@ -267,6 +280,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    findCurrentBlocks(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement): AppBlock[] {
+        if (currentElement) {
+            const block = this.findBlock(currentElement);
+            if (block) {
+                return [block];
+            }
+        }
+        return this.data.blocks.filter((item) => {
+            const elements = item.elements.filter((el) => {
+                return el?.options?.inputApiUuid == targetApiUuid || el?.options?.outputApiUuid == targetApiUuid;
+            });
+            return elements.length > 0;
+        });
+    }
+
     findCurrentElements(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement) {
         let elements = [];
         if (currentElement) {
@@ -284,8 +312,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return elements;
     }
 
-    getIsValid(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement, createErrorMessages = true): boolean {
-        let elements = this.findCurrentElements(targetApiUuid, actionType, currentElement);
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output', blocks: AppBlock[], createErrorMessages = true): boolean {
+        let elements = this.getBlocksElements(blocks);
         this.errors[targetApiUuid] = {};
         const errors = {};
         elements.forEach((element) => {
@@ -303,14 +331,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Object.keys(errors).length === 0;
     }
 
-    stateLoadingUpdate(apiUuid: string, loading: boolean, isSuccess = true): void {
-        const blocks = this.data.blocks.filter((item) => {
-            const elements = item.elements.filter((el) => {
-                // return el?.options?.outputApiUuid == apiUuid;// el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
-                return el?.options?.inputApiUuid == apiUuid || el?.options?.outputApiUuid == apiUuid;
-            });
-            return elements.length > 0;
-        });
+    stateLoadingUpdate(blocks: AppBlock[], loading: boolean, isSuccess = true): void {
         blocks.forEach((block) => {
             if (!loading && isSuccess) {
                 if (block.options?.messageSuccess) {
@@ -382,10 +403,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             bodyFields.forEach((bodyField) => {
                 const element = currentElements.find((item) => {
                     const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                    console.log(apiUuid, fieldName, fieldType);
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
                         && fieldType === 'input';
                 });
+                console.log(actionType, bodyField.name, element);
                 if (!element) {
                     return;
                 }
