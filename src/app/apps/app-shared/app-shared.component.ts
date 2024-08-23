@@ -207,8 +207,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (element?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
+        const apiItem = this.prepareApiItem(currentApi, actionType, element);
+
         this.stateLoadingUpdate(apiUuid, true);
-        const apiItem = this.prepareApiItem(currentApi);
+
         this.apiService.apiRequest(apiItem, false)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -363,9 +365,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input'): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElement?: AppBlockElement): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
-        const allElements = this.getAllElements();
+        const currentElements = this.findCurrentElements(apiItem.uuid, actionType, currentElement);
+        // const allElements = this.getAllElements();
+        console.log(currentElements);
+
         // Body data
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
             if (!apiItem.bodyFields) {
@@ -375,7 +380,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return {...field};
             });
             bodyFields.forEach((bodyField) => {
-                const element = allElements.find((item) => {
+                const element = currentElements.find((item) => {
                     const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
@@ -401,7 +406,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         // Raw value
         if (apiItem.bodyDataSource === 'raw' || rawFields.length > 0) {
-            const element = allElements.find((item) => {
+            const element = currentElements.find((item) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                 return apiUuid === apiItem.uuid
                     && fieldName === 'value'
@@ -414,7 +419,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const outputData = this.flattenObj(inputData);
 
                 Object.keys(outputData).forEach((key: string) => {
-                    const element = allElements.find((item) => {
+                    const element = currentElements.find((item) => {
                         const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
                         return apiUuid === apiItem.uuid
                             && fieldName === key
@@ -445,7 +450,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return {...field};
         });
         queryParams.forEach((param) => {
-            const element = allElements.find((element) => {
+            const element = currentElements.find((element) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
                 return apiUuid === apiItem.uuid
                     && fieldName === param.name
@@ -472,7 +477,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return {...field};
         });
         headers.forEach((header) => {
-            const element = allElements.find((element) => {
+            const element = currentElements.find((element) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
                 return apiUuid === apiItem.uuid
                     && fieldName === header.name
@@ -486,7 +491,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         apiItem.headers = headers;
 
         // Api URL
-        const elements = allElements.filter((item) => {
+        const elements = currentElements.filter((item) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
             return apiUuid === apiItem.uuid && fieldType === 'url';
         });
