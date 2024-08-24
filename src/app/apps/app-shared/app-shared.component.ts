@@ -820,7 +820,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return el.type === 'button' && el.options?.inputApiUuid === apiUuid;
         });
         if (!buttonElement || ['input-pagination'].includes(element.type)) {
-            this.appSubmit(apiUuid, 'output', element);
+            this.appSubmit(apiUuid, 'input', element);
         }
     }
 
@@ -832,7 +832,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(apiUuid, 'output', element);
+        this.appSubmit(apiUuid, 'input', element);
     }
 
     switchTab(tabIndex: number): void {
