@@ -310,30 +310,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return blocks;
     }
 
-    findCurrentElements(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement) {
-        let elements = [];
-        if (currentElement) {
-            const block = this.findBlock(currentElement);
-            if (block) {
-                elements = block.elements.filter((elem) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, 'input');
-                    return apiUuid === targetApiUuid;
-                });
-            }
-        }
-        if (elements.length === 0) {
-            elements = this.getAllElements();
-        }
-        return elements;
-    }
-
     getIsValid(targetApiUuid: string, actionType: 'input'|'output', blocks: AppBlock[], createErrorMessages = true): boolean {
         let elements = this.getBlocksElements(blocks);
         this.errors[targetApiUuid] = {};
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || (!element.required && element.type !== 'input-chart-line')) {
+            if (apiUuid !== targetApiUuid || !element.required || ['input-chart-line'].includes(element.type)) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
