@@ -86,8 +86,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.loading = false;
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
+                    } else {
+                        this.createAppOptions();
                     }
-                    this.createAppOptions();
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
@@ -143,7 +144,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, 'input', null, false);
+        this.appSubmit(apiUuid, 'output', null, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -303,7 +304,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (blocks.length === 0) {
             blocks = this.filterBlocks(this.data.blocks, targetApiUuid, actionType);
         }
-        if (includeCurrent) {
+        if (includeCurrent && currentBlock) {
             blocks.push(currentBlock);
         }
         return blocks;
