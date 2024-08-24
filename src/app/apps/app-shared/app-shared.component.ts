@@ -174,7 +174,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             return;
         }
-        const blocks = this.findCurrentBlocks(apiUuid, actionType, currentElement);
+        const blocks = this.findCurrentBlocks(apiUuid, actionType, currentElement, true);
 
         if (!this.getIsValid(apiUuid, actionType, blocks)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
@@ -294,20 +294,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    findCurrentBlocks(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement): AppBlock[] {
-        if (currentElement) {
-            const block = this.findBlock(currentElement);
-            const blocks = this.filterBlocks([block], targetApiUuid, 'input');
-            if (blocks.length > 0) {
-                return blocks;
-            }
+    findCurrentBlocks(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement, includeCurrent = true): AppBlock[] {
+        const currentBlock = currentElement ? this.findBlock(currentElement) : null;
+        let blocks = [];
+        if (currentBlock) {
+            blocks = this.filterBlocks([currentBlock], targetApiUuid, actionType);
         }
-        return this.data.blocks.filter((item) => {
-            const elements = item.elements.filter((el) => {
-                return el?.options?.inputApiUuid == targetApiUuid || el?.options?.outputApiUuid == targetApiUuid;
-            });
-            return elements.length > 0;
-        });
+        if (blocks.length === 0) {
+            blocks = this.filterBlocks(this.data.blocks, targetApiUuid, actionType);
+        }
+        if (includeCurrent) {
+            blocks.push(currentBlock);
+        }
+        return blocks;
     }
 
     findCurrentElements(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement) {
