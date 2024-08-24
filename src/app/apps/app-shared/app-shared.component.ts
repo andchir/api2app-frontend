@@ -143,28 +143,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, 'output', null, false);
-    }
-
-    getAllElements(): AppBlockElement[] {
-        if (!this.data?.blocks) {
-            return [];
-        }
-        return this.data.blocks.reduce(
-            (accumulator, currentBlock) => {
-                accumulator.push(...currentBlock.elements);
-                return accumulator;
-            }, []
-        );
-    }
-
-    getBlocksElements(blocks: AppBlock[]): AppBlockElement [] {
-        return blocks.reduce(
-            (accumulator, currentBlock) => {
-                accumulator.push(...currentBlock.elements);
-                return accumulator;
-            }, []
-        );
+        this.appSubmit(apiUuid, 'input', null, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -179,7 +158,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'output', currentElement?: AppBlockElement, createErrorMessages = true): void {
+    appSubmit(apiUuid?: string, actionType: 'input'|'output' = 'input', currentElement?: AppBlockElement, createErrorMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -218,9 +197,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, actionType, currentElement);
-
-        console.log(apiItem);
+        const apiItem = this.prepareApiItem(currentApi, actionType, blocks);
 
         this.stateLoadingUpdate(blocks, true);
 
@@ -233,7 +210,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                     this.loading = false;
                     this.submitted = false;
-                    this.createAppResponse(currentApi, res);
+                    this.createAppResponse(currentApi, res, blocks);
                     this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
                 },
                 error: (err) => {
@@ -271,6 +248,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }, 500);
     }
 
+    getAllElements(): AppBlockElement[] {
+        if (!this.data?.blocks) {
+            return [];
+        }
+        return this.data.blocks.reduce(
+            (accumulator, currentBlock) => {
+                accumulator.push(...currentBlock.elements);
+                return accumulator;
+            }, []
+        );
+    }
+
+    getBlocksElements(blocks: AppBlock[]): AppBlockElement [] {
+        return blocks.reduce(
+            (accumulator, currentBlock) => {
+                accumulator.push(...currentBlock.elements);
+                return accumulator;
+            }, []
+        );
+    }
+
     findBlock(element: AppBlockElement): AppBlock {
         return this.data.blocks.find((block) => {
             const elem = block.elements.find((el) => {
@@ -280,11 +278,28 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    filterBlocks(blocks: AppBlock[], targetApiUuid: string, actionType?: string): AppBlock[] {
+        return blocks.filter((item) => {
+            const elements = item.elements.filter((el) => {
+                if (actionType) {
+                    if (['button'].includes(el.type)) {
+                        return false;
+                    }
+                    return (actionType === 'input' && el?.options?.inputApiUuid == targetApiUuid)
+                        || (actionType === 'output' && el?.options?.outputApiUuid == targetApiUuid);
+                }
+                return el?.options?.inputApiUuid == targetApiUuid || el?.options?.outputApiUuid == targetApiUuid;
+            });
+            return elements.length > 0;
+        });
+    }
+
     findCurrentBlocks(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement): AppBlock[] {
         if (currentElement) {
             const block = this.findBlock(currentElement);
-            if (block) {
-                return [block];
+            const blocks = this.filterBlocks([block], targetApiUuid, 'input');
+            if (blocks.length > 0) {
+                return blocks;
             }
         }
         return this.data.blocks.filter((item) => {
@@ -386,11 +401,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElement?: AppBlockElement): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', blocks: AppBlock[]): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
-        const currentElements = this.findCurrentElements(apiItem.uuid, actionType, currentElement);
-        // const allElements = this.getAllElements();
-        console.log(currentElements);
+        const currentElements = this.getBlocksElements(blocks);
 
         // Body data
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
@@ -403,12 +416,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             bodyFields.forEach((bodyField) => {
                 const element = currentElements.find((item) => {
                     const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
-                    console.log(apiUuid, fieldName, fieldType);
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
                         && fieldType === 'input';
                 });
-                console.log(actionType, bodyField.name, element);
                 if (!element) {
                     return;
                 }
@@ -562,15 +573,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             };
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>): void {
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, blocks: AppBlock[]): void {
         if (response.body) {
             const currentApiUuid = apiItem.uuid;
-            const blocks = this.data.blocks.filter((item) => {
-                const elements = item.elements.filter((el) => {
-                    return el?.options?.outputApiUuid == currentApiUuid;
-                });
-                return elements.length > 0;
-            });
             const responseContentType = response.headers.has('Content-type')
                 ? response.headers.get('Content-type')
                 : apiItem.responseContentType;
@@ -795,7 +800,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (element.type === 'button') {
             if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
-                this.appSubmit(element.options.inputApiUuid, 'output', element);
+                this.appSubmit(element.options.inputApiUuid, 'input', element);
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 window.open(String(element.value), '_blank').focus();
             }
