@@ -54,6 +54,7 @@ export interface AppBlockElement {
     useAsOffset?: boolean;
     isHTML?: boolean;
     itemFieldName?: string;
+    blockIndex?: number;
 }
 
 export interface AppBlockOptions {
