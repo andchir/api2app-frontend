@@ -43,7 +43,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
+
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
+    apiUuidsElementsList: {input: AppBlockElement[], output: AppBlockElement[]} = {input: [], output: []};
+
     itemUuid: string;
     adsShownAt = 0;
     adsShowIntervalSeconds = 3 * 60; // 3 minutes
@@ -108,13 +111,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.elements.forEach((element) => {
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
                     this.apiUuidsList.input.push(element.options.inputApiUuid);
+                    this.apiUuidsElementsList.input.push(element);
                 }
                 if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
                     this.apiUuidsList.output.push(element.options.outputApiUuid);
+                    this.apiUuidsElementsList.output.push(element);
                 }
                 if (element.type === 'button') {
                     if (element.options?.inputApiUuid) {
-                        buttons.push(element.options?.inputApiUuid);
+                        buttons.push(element.options.inputApiUuid);
                     }
                     // if (element.options?.outputApiUuid) {
                     //     buttons.push(element.options?.outputApiUuid);
@@ -126,25 +131,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.applyLocalStoredValue(element);
             });
         });
-        // API auto submit
+        // API auto start
         this.getApiList('output').then((items) => {
             this.apiItems['output'] = items;
-            this.apiUuidsList.output.forEach((apiUuid) => {
+            this.apiUuidsList.output.forEach((apiUuid, index) => {
                 if (!buttons.includes(apiUuid)) {
-                    this.appAutoStart(apiUuid);
+                    this.appAutoStart(apiUuid, this.apiUuidsElementsList.output[index]);
                 }
             });
         });
+
         if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
             this.addTab();
         }
     }
 
-    appAutoStart(apiUuid: string): void {
+    appAutoStart(apiUuid: string, element?: AppBlockElement, actionType: 'input'|'output' = 'output'): void {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, 'output', null, false);
+        this.appSubmit(apiUuid, actionType, element, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -177,7 +183,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const blocks = this.findCurrentBlocks(apiUuid, actionType, currentElement, true);
 
-        if (!this.getIsValid(apiUuid, actionType, blocks)) {
+        if (!this.getIsValid(apiUuid, actionType, blocks, createErrorMessages)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
                 this.appsAutoStartPending.push(apiUuid);
             } else if (createErrorMessages) {
@@ -213,6 +219,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.submitted = false;
 
                     const blocks_out = this.findCurrentBlocks(apiUuid, 'output', currentElement, false);
+                    console.log('blocks_out', blocks_out);
                     this.createAppResponse(currentApi, res, blocks_out);
                     this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
                 },
@@ -318,7 +325,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || !element.required || ['input-chart-line'].includes(element.type)) {
+            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line'].includes(element.type))) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -777,6 +784,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 + (element.suffixText || '');
         }
         ApplicationService.localStoreValue(element);
+        if ((element.value || element.valueArr || element.valueObj) && !['input-select'].includes(element.type)) {
+            this.onElementValueChanged(element);
+        }
     }
 
     onElementClick(element: AppBlockElement): void {
@@ -797,6 +807,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         const apiUuid = element.options?.inputApiUuid;
+        console.log('onElementValueChanged', apiUuid, element);
         if (!apiUuid) {
             return;
         }
@@ -804,6 +815,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const buttonElement = allElements.find((el) => {
             return el.type === 'button' && el.options?.inputApiUuid === apiUuid;
         });
+        console.log('buttonElement', buttonElement);
         if (!buttonElement || ['input-pagination'].includes(element.type)) {
             this.appSubmit(apiUuid, 'input', element);
         }
