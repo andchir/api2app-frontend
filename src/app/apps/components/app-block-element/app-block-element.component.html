@@ -399,7 +399,8 @@
                         [multiple]="options?.multiple"
                         [fileInputAccept]="options?.accept"
                         [placeholder]="options?.placeholder"
-                        [(ngModel)]="options.value"></app-file-upload>
+                        [(ngModel)]="options.value"
+                        (ngModelChange)="onFieldValueChanged()"></app-file-upload>
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

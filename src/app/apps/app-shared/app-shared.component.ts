@@ -832,6 +832,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const inputApiUuid = element.options.inputApiUuid;
         const buttonElement = this.findButtonElement(inputApiUuid, element.blockIndex);
+        if (inputApiUuid && this.errors[inputApiUuid]) {
+            delete this.errors[inputApiUuid][element.name];
+        }
         if (buttonElement && !['input-pagination'].includes(element.type)) {
             return;
         }
