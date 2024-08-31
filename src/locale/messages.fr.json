@@ -252,7 +252,8 @@
         "593955748310655938": "Effectuer une opération...",
         "3923305728200436084": "Valeur du Statut Terminé",
         "8200820842258472590": "Valeur D'État d'Erreur",
-        "8459070725086107409": "Texte D'État Complété",
+        "8459070725086107409": "Texte d'état terminé",
+        "2486496242239618561": "Texte d'état terminé pour VK",
         "5380758074849416105": "Traitement Du Texte d'État",
         "5710793086333825335": "Texte D'État D'Erreur",
         "87508574155167029": "Valeur booléenne (vrai / faux)",
@@ -300,6 +301,7 @@
         "4833015289860045655": "Languette",
         "8722113544858683734": "Entretien",
         "3513540888975286750": "Il est clair",
-        "5469814901164051055": "Désolé, l'application n'est pas disponible pour le moment. S'il vous plaît, revenez plus tard."
+        "5469814901164051055": "Désolé, l'application n'est pas disponible pour le moment. S'il vous plaît, revenez plus tard.",
+        "4120608513784716757": "Afficher uniquement dans VK appah"
     }
 }

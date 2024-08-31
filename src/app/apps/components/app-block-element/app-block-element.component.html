@@ -25,7 +25,7 @@
         <ng-container *ngSwitchCase="'text'">
             <div class="mb-3 flex flex-col gap-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
-                 *ngIf="options?.value || options?.valueArr || editorMode">
+                 *ngIf="(options?.value || options?.valueArr) && !options?.hidden || editorMode">
 
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <ng-container *ngFor="let item of options.valueArr">
@@ -43,10 +43,14 @@
                         'border-green-300': options?.border && options?.color == 'Green',
                         'border-blue-300': options?.border && options?.color == 'Blue',
                         'border-red-300': options?.border && options?.color == 'Red',
+                        'border-violet-300': options?.border && options?.color == 'Violet',
+                        'border-cyan-300': options?.border && options?.color == 'Cyan',
                         'text-gray-500': options?.color == 'Gray',
                         'text-green-500': options?.color == 'Green',
                         'text-blue-500': options?.color == 'Blue',
                         'text-red-500': options?.color == 'Red',
+                        'text-violet-500': options?.color == 'Violet',
+                        'text-cyan-500': options?.color == 'Cyan',
                         'text-sm': options?.fontSize == 'Small',
                         'text-lg': options?.fontSize == 'Large'
                     }">

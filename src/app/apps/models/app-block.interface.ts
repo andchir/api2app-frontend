@@ -55,6 +55,8 @@ export interface AppBlockElement {
     isHTML?: boolean;
     itemFieldName?: string;
     blockIndex?: number;
+    hidden?: boolean;
+    showOnlyInVK?: boolean;
 }
 
 export interface AppBlockOptions {

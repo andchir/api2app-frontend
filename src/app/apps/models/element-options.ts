@@ -150,6 +150,13 @@ export class ElementOptions {
                     value: true,
                     enabled: options?.border
                 });
+                output.push({
+                    name: 'showOnlyInVK',
+                    label: $localize `Show only in VK app`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.showOnlyInVK
+                });
                 break;
             case 'button':
                 output.push({
@@ -1052,6 +1059,13 @@ export class ElementOptions {
                     value: options?.statusCompletedText || ''
                 });
                 output.push({
+                    name: 'statusCompletedTextForVK',
+                    label: $localize `Completed Status Text For VK`,
+                    type: 'input-text',
+                    required: true,
+                    value: options?.statusCompletedTextForVK || ''
+                });
+                output.push({
                     name: 'statusProcessingText',
                     label: $localize `Processing Status Text`,
                     type: 'input-text',
@@ -1141,7 +1155,8 @@ export class ElementOptions {
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,
-                    border: false
+                    border: false,
+                    showOnlyInVK: false
                 });
                 break;
             case 'button':
@@ -1346,6 +1361,7 @@ export class ElementOptions {
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusCompletedText: $localize `Completed`,
+                    statusCompletedTextForVK: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
                     isBoolean: false,

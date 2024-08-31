@@ -75,9 +75,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.itemUuid) {
             this.getData();
         }
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
-        }
+        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+        //     vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        // }
     }
 
     getData(): void {
@@ -113,6 +113,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.data.blocks.forEach((block, blockIndex) => {
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
+                element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
                 if (element.options?.inputApiUuid) {
                     if (element.type === 'button') {
                         if (!this.appElements.buttons[element.options.inputApiUuid]) {
@@ -146,14 +147,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
 
         // API auto start
-        this.getApiList('output').then((items) => {
-            this.apiItems['output'] = items;
-            Object.keys(this.appElements.output).forEach((uuid) => {
-                if (!this.appElements.buttons[uuid]) {
-                    this.appAutoStart(uuid, this.appElements.output[uuid][0], 'output');
-                }
+        if (!this.data.maintenance) {
+            this.getApiList('output').then((items) => {
+                this.apiItems['output'] = items;
+                Object.keys(this.appElements.output).forEach((uuid) => {
+                    if (!this.appElements.buttons[uuid]) {
+                        this.appAutoStart(uuid, this.appElements.output[uuid][0], 'output');
+                    }
+                });
             });
-        });
+        }
 
         if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
             this.addTab();
@@ -638,20 +641,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             // console.log(now - this.adsShownAt);
             return;
         }
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            // Advertising by VK
-            vkBridge.send('interstitial', { ad_format: 'reward' })
-                .then((data: any) => {
-                    console.log(data);
-                    if (data.result) {
-                        this.adsShownAt = Date.now();
-                        console.log('Advertisement shown');
-                    }
-                })
-                .catch((error: any) => {
-                    console.log(error);
-                });
-        }
+        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+        //     // Advertising by VK
+        //     vkBridge.send('interstitial', { ad_format: 'reward' })
+        //         .then((data: any) => {
+        //             console.log(data);
+        //             if (data.result) {
+        //                 this.adsShownAt = Date.now();
+        //                 console.log('Advertisement shown');
+        //             }
+        //         })
+        //         .catch((error: any) => {
+        //             console.log(error);
+        //         });
+        // }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
@@ -822,7 +825,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (element.type === 'button') {
             if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
-                this.appSubmit(element.options.inputApiUuid, 'input', element);
+                if (this.data.maintenance) {
+                    this.maintenanceModalToggle();
+                } else {
+                    this.appSubmit(element.options.inputApiUuid, 'input', element);
+                }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 window.open(String(element.value), '_blank').focus();
             }
@@ -830,9 +837,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onElementValueChanged(element: AppBlockElement): void {
-        if (!this.previewMode || !element.options?.inputApiUuid || !element.value || (Array.isArray(element.value) && element.value.length === 0)) {
-            return;
-        }
+        if (!this.previewMode
+            || this.data.maintenance
+            || !element.options?.inputApiUuid
+            || !element.value
+            || (Array.isArray(element.value) && element.value.length === 0)) {
+                return;
+            }
         const inputApiUuid = element.options.inputApiUuid;
         const buttonElement = this.findButtonElement(inputApiUuid);
         if (inputApiUuid && this.errors[inputApiUuid]) {
