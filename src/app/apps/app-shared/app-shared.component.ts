@@ -75,6 +75,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.itemUuid) {
             this.getData();
         }
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        }
     }
 
     getData(): void {
@@ -192,9 +195,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             return;
         }
-        const blocks = this.findCurrentBlocks(apiUuid, actionType, currentElement, true);
 
-        if (!this.getIsValid(apiUuid, actionType, blocks, createErrorMessages)) {
+        const elements = this.findElements(apiUuid, 'input', currentElement, true);
+        const blocks = this.findBlocksByElements(elements);
+
+        if (!this.getIsValid(apiUuid, actionType, elements, createErrorMessages)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
                 this.appsAutoStartPending.push(apiUuid);
             } else if (createErrorMessages) {
@@ -215,9 +220,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, actionType, blocks);
+        const apiItem = this.prepareApiItem(currentApi, actionType, elements);
 
-        this.stateLoadingUpdate(blocks, true);
+        this.stateLoadingUpdate(blocks, true, false, true);
 
         this.apiService.apiRequest(apiItem, false)
             .pipe(takeUntil(this.destroyed$))
@@ -297,34 +302,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    filterBlocks(blocks: AppBlock[], targetApiUuid: string, actionType?: string): AppBlock[] {
-        return blocks.filter((item) => {
-            const elements = item.elements.filter((el) => {
-                if (actionType) {
-                    if (['button'].includes(el.type)) {
-                        return false;
-                    }
-                    return (actionType === 'input' && el?.options?.inputApiUuid == targetApiUuid)
-                        || (actionType === 'output' && el?.options?.outputApiUuid == targetApiUuid);
-                }
-                return el?.options?.inputApiUuid == targetApiUuid || el?.options?.outputApiUuid == targetApiUuid;
-            });
-            return elements.length > 0;
+    findBlocksByElements(elements: AppBlockElement[]): AppBlock[] {
+        const blockIndexArr = [];
+        const blocks: AppBlock[] = [];
+        elements.forEach((elem) => {
+            if (!blockIndexArr.includes(elem.blockIndex)) {
+                blockIndexArr.push(elem.blockIndex);
+                blocks.push(this.data.blocks[elem.blockIndex]);
+            }
         });
-    }
-
-    findCurrentBlocks(targetApiUuid: string, actionType: 'input'|'output', currentElement?: AppBlockElement, includeCurrent = true): AppBlock[] {
-        const currentBlock = currentElement ? this.findBlock(currentElement) : null;
-        let blocks = [];
-        if (currentBlock) {
-            blocks = this.filterBlocks([currentBlock], targetApiUuid, actionType);
-        }
-        if (blocks.length === 0) {
-            blocks = this.filterBlocks(this.data.blocks, targetApiUuid, actionType);
-        }
-        if (includeCurrent && currentBlock) {
-            blocks.push(currentBlock);
-        }
         return blocks;
     }
 
@@ -335,19 +321,29 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    findElements(targetApiUuid: string, actionType: 'input'|'output', blockIndex: number): AppBlockElement[] {
-        return this.appElements[actionType][targetApiUuid].filter((element: AppBlockElement) => {
+    findElements(targetApiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, includeCurrent: boolean = false): AppBlockElement[] {
+        const blockIndex = currentElement.blockIndex;
+        const elements = this.appElements[actionType][targetApiUuid].filter((element: AppBlockElement) => {
             if (element.blockIndex === blockIndex) {
                 return true;
             }
             const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
             return !currentButton;
         });
+        if (includeCurrent) {
+            elements.push(currentElement);
+        }
+        return elements;
     }
 
-    getIsValid(targetApiUuid: string, actionType: 'input'|'output', blocks: AppBlock[], createErrorMessages = true): boolean {
-        let elements = this.getBlocksElements(blocks);
-        this.errors[targetApiUuid] = {};
+    clearValidationErrors(): void {
+        Object.keys(this.errors).forEach((apiUuid) => {
+            this.errors[apiUuid] = {};
+        });
+    }
+
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true): boolean {
+        this.clearValidationErrors();
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
@@ -364,16 +360,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Object.keys(errors).length === 0;
     }
 
-    stateLoadingUpdate(blocks: AppBlock[], loading: boolean, isSuccess = true): void {
+    stateLoadingUpdate(blocks: AppBlock[], loading: boolean, isSuccess = true, clearBlock = false): void {
         blocks.forEach((block) => {
             if (!loading && isSuccess) {
                 if (block.options?.messageSuccess) {
                     this.message = block.options.messageSuccess;
                     this.messageType = 'success';
                 }
-                if (block.options?.autoClear) {
-                    this.clearElementsValues(block);
-                }
+            }
+            if ((isSuccess && block.options?.autoClear) || clearBlock) {
+                this.clearElementsValues(block);
             }
             block.loading = loading;
         });
@@ -411,7 +407,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             if (['input-file'].includes(element.type)) {
                 element.value = [];
-            } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button'].includes(element.type)) {
+            } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)) {
                 element.value = null;
                 element.valueArr = null;
                 element.valueObj = null;
@@ -419,9 +415,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', blocks: AppBlock[]): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
-        const currentElements = this.getBlocksElements(blocks);
 
         // Body data
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
@@ -597,8 +592,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const responseContentType = response.headers.has('Content-type')
                 ? response.headers.get('Content-type')
                 : apiItem.responseContentType;
-            const blockIndex = currentElement ? currentElement.blockIndex || 0 : 0;
-            const elements = this.findElements(currentApiUuid, 'output', blockIndex);
+            const elements = this.findElements(currentApiUuid, 'output', currentElement);
 
             this.apiService.getDataFromBlob(response.body, responseContentType)
                 .then((data) => {
@@ -615,7 +609,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                     });
 
-                    this.showAds();
+                    this.showAds(currentElement);
                     this.cdr.detectChanges();
                 })
                 .catch((err) => {
@@ -624,26 +618,29 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    showAds(): void {
+    showAds(currentElement: AppBlockElement): void {
+        if (currentElement.type !== 'button') {
+            return;
+        }
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
             // console.log(now - this.adsShownAt);
             return;
         }
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     // Advertising by VK
-        //     vkBridge.send('interstitial', { ad_format: 'reward' })
-        //         .then((data: any) => {
-        //             console.log(data);
-        //             if (data.result) {
-        //                 this.adsShownAt = Date.now();
-        //                 console.log('Advertisement shown');
-        //             }
-        //         })
-        //         .catch((error: any) => {
-        //             console.log(error);
-        //         });
-        // }
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            // Advertising by VK
+            vkBridge.send('interstitial', { ad_format: 'reward' })
+                .then((data: any) => {
+                    console.log(data);
+                    if (data.result) {
+                        this.adsShownAt = Date.now();
+                        console.log('Advertisement shown');
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                });
+        }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
