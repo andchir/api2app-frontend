@@ -596,9 +596,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 : apiItem.responseContentType;
             const elements = this.findElements(currentApiUuid, 'output', currentElement);
             const blocks = this.findBlocksByElements(elements);
-            // blocks.forEach((block) => {
-            //     this.clearElementsValues(block);
-            // });
+            blocks.forEach((block) => {
+                if (block.options?.autoClear) {
+                    this.clearElementsValues(block);
+                }
+            });
 
             this.apiService.getDataFromBlob(response.body, responseContentType)
                 .then((data) => {
