@@ -234,8 +234,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.loading = false;
                     this.submitted = false;
 
-                    this.createAppResponse(currentApi, res, currentElement);
                     this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
+                    this.createAppResponse(currentApi, res, currentElement);
                 },
                 error: (err) => {
                     // console.log(err);
