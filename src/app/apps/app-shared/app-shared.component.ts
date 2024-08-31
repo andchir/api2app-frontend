@@ -314,11 +314,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return blocks;
     }
 
-    findButtonElement(targetApiUuid: string, blockIndex: number): AppBlockElement {
+    findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
         const buttons = this.appElements.buttons[targetApiUuid] || [];
-        return buttons.find((element: AppBlockElement) => {
-            return element.blockIndex === blockIndex;
-        });
+        if (typeof blockIndex !== 'undefined') {
+            return buttons.find((element: AppBlockElement) => {
+                return element.blockIndex === blockIndex;
+            });
+        }
+        return buttons.length > 0 ? buttons[0] : null;
     }
 
     findElements(targetApiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, includeCurrent: boolean = false): AppBlockElement[] {
@@ -827,11 +830,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onElementValueChanged(element: AppBlockElement): void {
-        if (!this.previewMode || !element.options?.inputApiUuid || !element.value) {
+        if (!this.previewMode || !element.options?.inputApiUuid || !element.value || (Array.isArray(element.value) && element.value.length === 0)) {
             return;
         }
         const inputApiUuid = element.options.inputApiUuid;
-        const buttonElement = this.findButtonElement(inputApiUuid, element.blockIndex);
+        const buttonElement = this.findButtonElement(inputApiUuid);
         if (inputApiUuid && this.errors[inputApiUuid]) {
             delete this.errors[inputApiUuid][element.name];
         }
