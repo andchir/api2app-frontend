@@ -323,13 +323,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     findElements(targetApiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, includeCurrent: boolean = false): AppBlockElement[] {
         const blockIndex = currentElement.blockIndex;
-        const elements = this.appElements[actionType][targetApiUuid].filter((element: AppBlockElement) => {
-            if (element.blockIndex === blockIndex) {
-                return true;
-            }
-            const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
-            return !currentButton;
-        });
+        const elements = this.appElements[actionType][targetApiUuid]
+            ? this.appElements[actionType][targetApiUuid].filter((element: AppBlockElement) => {
+                if (element.blockIndex === blockIndex) {
+                    return true;
+                }
+                const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
+                return !currentButton;
+            }) : [];
         if (includeCurrent) {
             elements.push(currentElement);
         }
