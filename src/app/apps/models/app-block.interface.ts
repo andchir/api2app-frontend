@@ -57,6 +57,8 @@ export interface AppBlockElement {
     blockIndex?: number;
     hidden?: boolean;
     showOnlyInVK?: boolean;
+    statusCompletedText?: string;
+    statusCompletedTextForVK?: string;
 }
 
 export interface AppBlockOptions {
