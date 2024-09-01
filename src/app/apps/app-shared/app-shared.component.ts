@@ -456,6 +456,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const bodyFields = apiItem.bodyFields.map(field => {
                 return {...field};
             });
+            let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
                 const element = currentElements.find((item) => {
                     const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
@@ -469,18 +470,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
 
-                // Inject VK file upload URL
                 if (element.type === 'input-file' && this.isVkApp && this.vkUserFileUploadUrl) {
-                    let dataField = bodyFields.find((field) => {
-                        return field.name === 'data';
-                    });
-                    if (!dataField) {
-                        dataField = {name: 'data', value: '', hidden: false};
-                        bodyFields.push(dataField);
-                    }
-                    dataField.value = dataField.value
-                        ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkUserFileUploadUrl})
-                        : JSON.stringify({'upload_url': this.vkUserFileUploadUrl});
+                    isVKFileUploadingMode = true;
                 }
                 if (element.type === 'input-switch') {
                     if (bodyField.value) {
@@ -491,6 +482,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 }
             });
+
+            // Inject VK file upload URL
+            if (isVKFileUploadingMode) {
+                let dataField = bodyFields.find((field) => {
+                    return field.name === 'data';
+                });
+                if (!dataField) {
+                    dataField = {name: 'data', value: '', hidden: false};
+                    bodyFields.push(dataField);
+                }
+                dataField.value = dataField.value
+                    ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkUserFileUploadUrl})
+                    : JSON.stringify({'upload_url': this.vkUserFileUploadUrl});
+            }
+
             apiItem.bodyFields = bodyFields;
         }
         const rawFields = this.apiService.getRawDataFields(apiItem);
