@@ -54,6 +54,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
 
+    // VK mini-app data
+    // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
+    isVkApp: boolean = false;
+    vkAppId: number;
+    vkUserId: number;
+    vkUserToken: string;
+    vkUserFileUploadUrl: string;
+
     constructor(
         protected cdr: ChangeDetectorRef,
         protected titleService: Title,
@@ -75,9 +83,77 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.itemUuid) {
             this.getData();
         }
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
-        // }
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            this.isVkApp = true;
+            this.vkAppInit();
+        }
+    }
+
+    vkAppInit(): void {
+        // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        vkBridge.send('VKWebAppGetLaunchParams')
+            .then((data: any) => {
+                if (data.vk_app_id) {
+                    this.vkAppId = data.vk_app_id;
+                    this.vkUserId = data.vk_user_id;
+                }
+                console.log(data);
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
+    vkGetUserToken(callbackFunc?: () => void): void {
+        if (!this.vkAppId || !this.vkUserId) {
+            return;
+        }
+        vkBridge.send('VKWebAppGetAuthToken', {
+            app_id: this.vkAppId,
+            scope: 'docs'
+        })
+            .then((data: any) => {
+                console.log(data);
+                if (data.access_token) {
+                    this.vkUserToken = data.access_token;
+                    if (typeof callbackFunc === 'function') {
+                        callbackFunc();
+                    }
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
+    vkGetFileUploadUrl(callbackFunc?: () => void): void {
+        if (!this.vkAppId || !this.vkUserId) {
+            return;
+        }
+        this.message = '';
+        this.vkGetUserToken(() => {
+            vkBridge.send('VKWebAppCallAPIMethod', {
+                method: 'docs.getUploadServer',
+                params: {
+                    user_ids: this.vkUserId,
+                    v: '5.131',
+                    access_token: this.vkUserToken
+                }})
+                .then((data: any) => {
+                    console.log(data);
+                    if (data.response) {
+                        this.vkUserFileUploadUrl = data.response?.upload_url;
+                        if (typeof callbackFunc === 'function') {
+                            callbackFunc();
+                        }
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                    this.message = $localize `Unable to obtain permission to upload file.`;
+                    this.messageType = 'error';
+                });
+        });
     }
 
     getData(): void {
@@ -204,6 +280,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const elements = this.findElements(apiUuid, 'input', currentElement, true);
         const blocks = this.findBlocksByElements(elements);
+        const input_file = elements.find((elem) => {
+            return elem.type === 'input-file';
+        });
+
+        if (this.isVkApp && input_file && this.vkUserId && !this.vkUserFileUploadUrl) {
+            this.vkGetFileUploadUrl(() => {
+                this.appSubmit(apiUuid, 'input', currentElement);
+            });
+            return;
+        }
 
         if (!this.getIsValid(apiUuid, actionType, elements, createErrorMessages)) {
             if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
@@ -449,6 +535,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
+
+                if (element.type === 'input-file' && this.isVkApp && this.vkUserFileUploadUrl) {
+                    bodyFields.push({
+                        name: 'data',
+                        value: JSON.stringify({'upload_url': this.vkUserFileUploadUrl}),
+                        hidden: false
+                    });
+                }
                 if (element.type === 'input-switch') {
                     if (bodyField.value) {
                         bodyField.hidden = !element?.enabled;
