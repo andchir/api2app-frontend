@@ -164,7 +164,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.apiItems['output'] = items;
                 Object.keys(this.appElements.output).forEach((uuid) => {
                     if (!this.appElements.buttons[uuid]) {
-                        this.appAutoStart(uuid, this.appElements.output[uuid][0], 'output');
+                        this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                     }
                 });
             });
@@ -175,11 +175,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    appAutoStart(apiUuid: string, element?: AppBlockElement, actionType: 'input'|'output' = 'output'): void {
+    appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, actionType, element, false);
+        this.appSubmit(apiUuid, actionType, currentElement, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -225,8 +225,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         if (!this.getIsValid(apiUuid, actionType, elements, createErrorMessages)) {
-            if (this.appsAutoStarted.includes(apiUuid) && !this.appsAutoStartPending.includes(apiUuid)) {
-                this.appsAutoStartPending.push(apiUuid);
+            if (this.appsAutoStarted.includes(apiUuid)) {
+                this.removeAutoStart(apiUuid);
             } else if (createErrorMessages) {
                 this.message = $localize `Please correct errors in filling out the form.`;
                 this.messageType = 'error';
@@ -253,12 +253,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    // if (this.appsAutoStarted.includes(apiUuid)) {
-                    //     this.afterAutoStarted(apiUuid);
-                    // }
+                    if (this.appsAutoStarted.includes(apiUuid)) {
+                        this.afterAutoStarted(apiUuid);
+                    }
                     this.loading = false;
                     this.submitted = false;
 
+                    // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
                     this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
                     this.createAppResponse(currentApi, res, currentElement);
                 },
@@ -278,23 +279,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    afterAutoStarted(apiUuid: string): void {
+    removeAutoStart(apiUuid: string): void {
         if (this.appsAutoStarted.includes(apiUuid)) {
-            const index = this.appsAutoStarted.findIndex((val) => {
-                return val === apiUuid;
-            });
+            const index = this.appsAutoStarted.indexOf(apiUuid);
             if (index > -1) {
                 this.appsAutoStarted.splice(index, 1);
             }
         }
-        clearTimeout(this.timerAutoStart);
-        this.timerAutoStart = setTimeout(() => {
-            // Re-launch the application if the fields did not pass validation the last time.
-            this.appsAutoStartPending.forEach((uuid) => {
-                this.appAutoStart(uuid);
-            });
-            this.appsAutoStarted = [];
-        }, 500);
+    }
+
+    afterAutoStarted(apiUuid: string): void {
+        this.removeAutoStart(apiUuid);
+        // clearTimeout(this.timerAutoStart);
+        // this.timerAutoStart = setTimeout(() => {
+        //     // Re-launch the application if the fields did not pass validation the last time.
+        //     this.appsAutoStartPending.forEach((uuid) => {
+        //         this.appAutoStart(uuid);
+        //     });
+        //     this.appsAutoStarted = [];
+        // }, 500);
     }
 
     getAllElements(): AppBlockElement[] {
@@ -898,6 +901,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (buttonElement && !['input-pagination'].includes(element.type)) {
             return;
         }
+        this.removeAutoStart(inputApiUuid);
+        // this.appAutoStart(inputApiUuid, 'input', element);
         this.appSubmit(inputApiUuid, 'input', element);
     }
 
