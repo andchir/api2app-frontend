@@ -668,8 +668,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                     });
 
+                    // Save file to VK files section
                     if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                        this.vkSaveFile(data.result_data.vk_file_to_save);
+                        if (!this.vkUserToken) {
+                            this.vkGetUserToken(() => {
+                                this.vkSaveFile(data.result_data.vk_file_to_save);
+                            });
+                        } else {
+                            this.vkSaveFile(data.result_data.vk_file_to_save);
+                        }
                     }
 
                     this.showAds(currentElement);
