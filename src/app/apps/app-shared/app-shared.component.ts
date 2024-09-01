@@ -469,12 +469,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
 
+                // Inject VK file upload URL
                 if (element.type === 'input-file' && this.isVkApp && this.vkUserFileUploadUrl) {
-                    bodyFields.push({
-                        name: 'data',
-                        value: JSON.stringify({'upload_url': this.vkUserFileUploadUrl}),
-                        hidden: false
+                    let dataField = bodyFields.find((field) => {
+                        return field.name === 'data';
                     });
+                    if (!dataField) {
+                        dataField = {name: 'data', value: '', hidden: false};
+                        bodyFields.push(dataField);
+                    }
+                    dataField.value = dataField.value
+                        ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkUserFileUploadUrl})
+                        : JSON.stringify({'upload_url': this.vkUserFileUploadUrl});
                 }
                 if (element.type === 'input-switch') {
                     if (bodyField.value) {
