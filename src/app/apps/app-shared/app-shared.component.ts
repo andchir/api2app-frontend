@@ -1055,6 +1055,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkSaveFile(fileDataString: string): void {
+        if (!this.isVkApp || !this.vkUserToken) {
+            return;
+        }
         const date = new Date();
         vkBridge.send('VKWebAppCallAPIMethod', {
             method: 'docs.save',
@@ -1066,7 +1069,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 title: this.data.name + ' - ' + date.toLocaleString()
             }})
             .then((data: any) => {
-                console.log(data);
                 if (data.response) {
                     const fileUrl = data.response.doc?.url;
                     this.message = $localize `The result has been successfully saved to your files.`;
