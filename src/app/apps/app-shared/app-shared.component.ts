@@ -89,70 +89,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    vkAppInit(): void {
-        // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
-        vkBridge.send('VKWebAppGetLaunchParams')
-            .then((data: any) => {
-                if (data.vk_app_id) {
-                    this.vkAppId = data.vk_app_id;
-                    this.vkUserId = data.vk_user_id;
-                }
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    }
-
-    vkGetUserToken(callbackFunc?: () => void): void {
-        if (!this.vkAppId || !this.vkUserId) {
-            return;
-        }
-        vkBridge.send('VKWebAppGetAuthToken', {
-            app_id: this.vkAppId,
-            scope: 'docs'
-        })
-            .then((data: any) => {
-                if (data.access_token) {
-                    this.vkUserToken = data.access_token;
-                    if (typeof callbackFunc === 'function') {
-                        callbackFunc();
-                    }
-                }
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    }
-
-    vkGetFileUploadUrl(callbackFunc?: () => void): void {
-        if (!this.vkAppId || !this.vkUserId) {
-            return;
-        }
-        this.message = '';
-        this.vkGetUserToken(() => {
-            vkBridge.send('VKWebAppCallAPIMethod', {
-                method: 'docs.getUploadServer',
-                params: {
-                    user_ids: this.vkUserId,
-                    v: '5.131',
-                    access_token: this.vkUserToken
-                }})
-                .then((data: any) => {
-                    if (data.response) {
-                        this.vkUserFileUploadUrl = data.response?.upload_url;
-                        if (typeof callbackFunc === 'function') {
-                            callbackFunc();
-                        }
-                    }
-                })
-                .catch((error: any) => {
-                    console.log(error);
-                    this.message = $localize `Unable to obtain permission to upload file.`;
-                    this.messageType = 'error';
-                });
-        });
-    }
-
     getData(): void {
         this.errors[this.itemUuid] = {};
         this.loading = true;
@@ -717,6 +653,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                     });
 
+                    if (this.isVkApp && data?.result_data?.vk_file_to_save) {
+                        this.vkSaveFile(data.result_data.vk_file_to_save);
+                    }
+
                     this.showAds(currentElement);
                     this.cdr.detectChanges();
                 })
@@ -1048,6 +988,94 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onMessage(msg: string[]) {
         this.message = msg[0];
         this.messageType = msg[1] as 'error'|'success';
+    }
+
+    vkAppInit(): void {
+        // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        vkBridge.send('VKWebAppGetLaunchParams')
+            .then((data: any) => {
+                if (data.vk_app_id) {
+                    this.vkAppId = data.vk_app_id;
+                    this.vkUserId = data.vk_user_id;
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
+    vkGetUserToken(callbackFunc?: () => void): void {
+        if (!this.vkAppId || !this.vkUserId) {
+            return;
+        }
+        vkBridge.send('VKWebAppGetAuthToken', {
+            app_id: this.vkAppId,
+            scope: 'docs'
+        })
+            .then((data: any) => {
+                if (data.access_token) {
+                    this.vkUserToken = data.access_token;
+                    if (typeof callbackFunc === 'function') {
+                        callbackFunc();
+                    }
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
+    vkGetFileUploadUrl(callbackFunc?: () => void): void {
+        if (!this.vkAppId || !this.vkUserId) {
+            return;
+        }
+        this.message = '';
+        this.vkGetUserToken(() => {
+            vkBridge.send('VKWebAppCallAPIMethod', {
+                method: 'docs.getUploadServer',
+                params: {
+                    user_ids: this.vkUserId,
+                    v: '5.131',
+                    access_token: this.vkUserToken
+                }})
+                .then((data: any) => {
+                    if (data.response) {
+                        this.vkUserFileUploadUrl = data.response?.upload_url;
+                        if (typeof callbackFunc === 'function') {
+                            callbackFunc();
+                        }
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                    this.message = $localize `Unable to obtain permission to upload file.`;
+                    this.messageType = 'error';
+                });
+        });
+    }
+
+    vkSaveFile(fileDataString: string): void {
+        const date = new Date();
+        vkBridge.send('VKWebAppCallAPIMethod', {
+            method: 'docs.save',
+            params: {
+                user_ids: this.vkUserId,
+                v: '5.131',
+                access_token: this.vkUserToken,
+                file: fileDataString,
+                title: this.data.name + ' - ' + date.toLocaleString()
+            }})
+            .then((data: any) => {
+                console.log(data);
+                if (data.response) {
+                    const fileUrl = data.response.doc?.url;
+                    this.message = $localize `The result has been successfully saved to your files.`;
+                    this.messageType = 'success';
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
     }
 
     navigateBack(event?: MouseEvent) {
