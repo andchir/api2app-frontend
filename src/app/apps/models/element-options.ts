@@ -79,7 +79,7 @@ export class ElementOptions {
                     name: 'itemFieldName',
                     label: $localize `Field name in the array`,
                     type: 'input-text',
-                    value: options?.itemFieldName
+                    value: options?.itemFieldName || ''
                 });
                 output.push({
                     name: 'value',
