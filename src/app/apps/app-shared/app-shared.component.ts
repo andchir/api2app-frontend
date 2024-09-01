@@ -97,7 +97,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkAppId = data.vk_app_id;
                     this.vkUserId = data.vk_user_id;
                 }
-                console.log(data);
             })
             .catch((error: any) => {
                 console.log(error);
@@ -113,7 +112,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             scope: 'docs'
         })
             .then((data: any) => {
-                console.log(data);
                 if (data.access_token) {
                     this.vkUserToken = data.access_token;
                     if (typeof callbackFunc === 'function') {
@@ -140,7 +138,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     access_token: this.vkUserToken
                 }})
                 .then((data: any) => {
-                    console.log(data);
                     if (data.response) {
                         this.vkUserFileUploadUrl = data.response?.upload_url;
                         if (typeof callbackFunc === 'function') {
