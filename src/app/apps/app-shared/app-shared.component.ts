@@ -194,7 +194,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, createErrorMessages = true): void {
+    appSubmit(apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -206,7 +206,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType, currentElement, createErrorMessages);
+                this.appSubmit(apiUuid, actionType, currentElement, showMessages);
             });
             return;
         }
@@ -219,15 +219,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (this.isVkApp && input_file && this.vkUserId && !this.vkUserFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(apiUuid, 'input', currentElement);
+                this.appSubmit(apiUuid, 'input', currentElement, showMessages);
             });
             return;
         }
 
-        if (!this.getIsValid(apiUuid, actionType, elements, createErrorMessages)) {
+        if (!this.getIsValid(apiUuid, actionType, elements, showMessages)) {
             if (this.appsAutoStarted.includes(apiUuid)) {
                 this.removeAutoStart(apiUuid);
-            } else if (createErrorMessages) {
+            } else if (showMessages) {
                 this.message = $localize `Please correct errors in filling out the form.`;
                 this.messageType = 'error';
             }
@@ -260,7 +260,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.submitted = false;
 
                     // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
-                    this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
+                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
                     this.createAppResponse(currentApi, res, currentElement);
                 },
                 error: (err) => {
@@ -392,15 +392,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Object.keys(errors).length === 0;
     }
 
-    stateLoadingUpdate(blocks: AppBlock[], loading: boolean, isSuccess = true, clearBlock = false): void {
+    stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {
         blocks.forEach((block) => {
-            if (!loading && isSuccess) {
+            if (!loading && showMessage) {
                 if (block.options?.messageSuccess) {
                     this.message = block.options.messageSuccess;
                     this.messageType = 'success';
                 }
             }
-            if ((isSuccess && block.options?.autoClear) || clearBlock) {
+            if ((showMessage && block.options?.autoClear) || clearBlock) {
                 this.clearElementsValues(block);
             }
             block.loading = loading;
