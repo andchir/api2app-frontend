@@ -16,4 +16,7 @@ export interface ApplicationItem {
     blocks: AppBlock[];
     user?: User;
     image?: string;
+    uuid_embed?: string;
+    tabs?: string[];
+    maintenance?: boolean;
 }

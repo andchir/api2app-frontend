@@ -28,6 +28,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
+    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
         {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
@@ -54,8 +55,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'table', title: $localize `Table`, icon: 'bi-table'}
     ];
 
-    public chartOptions: ChartOptions;
-    public pagesOptions: PaginationInstance;
+    chartOptions: ChartOptions;
+    pagesOptions: PaginationInstance;
     timerSelectItem: any;
 
     constructor() {}
@@ -220,11 +221,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     updatePagesOptions(): void {
         this.options.valueObj = {
             id: this.options.name,
-            totalItems: this.editorMode ? 100 : 0,
+            totalItems: this.editorMode ? (this.options.perPage * 5) : 0,
             itemsPerPage: this.options.perPage,
             currentPage: 1
         }
-        this.options.value = 1;
+        this.options.value = this.options.useAsOffset ? 0 : 1;
     }
 
     onPageChanged(pageNumber: number): void {
@@ -232,7 +233,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             this.updatePagesOptions();
         }
         this.options.valueObj.currentPage = pageNumber;
-        this.options.value = pageNumber;
+        this.options.value = this.options.useAsOffset
+            ? this.options.perPage * (pageNumber - 1)
+            : pageNumber;
         this.onFieldValueChanged();
     }
 
@@ -244,6 +247,35 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             }
             this.itemSelected.emit(index);
         }, 100);
+    }
+
+    download(url: any, filename = '', event?: MouseEvent): void {
+        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
+            url = url.changingThisBreaksApplicationSecurity;
+        }
+        if (typeof url === 'string' && url.match(/^https?:\/\//)) {
+            return;
+        }
+        if (event) {
+            event.preventDefault();
+        }
+        if (!filename) {
+            const matches = url.match(/data:image\/([^;]+)/);
+            filename = (new Date().valueOf()) + '.' + matches[1];
+        }
+        fetch(url)
+            .then(response => response.blob())
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+            })
+            .catch(console.error);
+    }
+
+    onMessage(msg: string[]) {
+        this.message.emit(msg);
     }
 
     isArray(obj: any ): boolean {

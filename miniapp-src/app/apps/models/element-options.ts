@@ -31,6 +31,14 @@ export class ElementOptions {
                     value: options?.icon || ''
                 });
                 output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -60,6 +68,20 @@ export class ElementOptions {
                     value: options?.icon || ''
                 });
                 output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Field name in the array`,
+                    type: 'input-text',
+                    value: options?.itemFieldName || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -82,7 +104,30 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Black', 'Gray', 'Green', 'Blue', 'Red']
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Black`, value: 'Black'},
+                        {label: $localize `Gray`, value: 'Gray'},
+                        {label: $localize `Green`, value: 'Green'},
+                        {label: $localize `Blue`, value: 'Blue'},
+                        {label: $localize `Cyan`, value: 'Cyan'},
+                        {label: $localize `Violet`, value: 'Violet'},
+                        {label: $localize `Red`, value: 'Red'}
+                    ]
+                });
+                output.push({
+                    name: 'fontSize',
+                    label: $localize `Font Size`,
+                    type: 'input-select',
+                    value: options?.fontSize,
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Small`, value: 'Small'},
+                        {label: $localize `Medium`, value: 'Medium'},
+                        {label: $localize `Large`, value: 'Large'}
+                    ]
                 });
                 output.push({
                     name: 'whiteSpacePre',
@@ -104,6 +149,13 @@ export class ElementOptions {
                     type: 'input-switch',
                     value: true,
                     enabled: options?.border
+                });
+                output.push({
+                    name: 'showOnlyInVK',
+                    label: $localize `Show only in VK app`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.showOnlyInVK
                 });
                 break;
             case 'button':
@@ -135,11 +187,28 @@ export class ElementOptions {
                     value: options?.icon || ''
                 });
                 output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
                     name: 'color',
                     label: $localize `Color`,
                     type: 'input-select',
                     value: options?.color,
-                    choices: ['Green', 'Blue', 'Red']
+                    itemFieldNameForTitle: 'label',
+                    itemFieldNameForValue: 'value',
+                    valueArr: [
+                        {label: $localize `Green`, value: 'Green'},
+                        {label: $localize `Blue`, value: 'Blue'},
+                        {label: $localize `Cyan`, value: 'Cyan'},
+                        {label: $localize `Violet`, value: 'Violet'},
+                        {label: $localize `Red`, value: 'Red'},
+                        {label: $localize `Gray`, value: 'Gray'}
+                    ]
                 });
                 output.push({
                     name: 'hiddenByDefault',
@@ -181,6 +250,14 @@ export class ElementOptions {
                     type: 'input-text',
                     placeholder: ($localize `Example`) + ': bi-info-circle',
                     value: options?.icon || ''
+                });
+                output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
                 });
                 output.push({
                     name: 'prefixText',
@@ -229,6 +306,12 @@ export class ElementOptions {
                     label: $localize `Voice the text`,
                     type: 'input-switch',
                     enabled: options?.speechSynthesisEnabled || false
+                });
+                output.push({
+                    name: 'copyToClipboardEnabled',
+                    label: $localize `Copy to clipboard`,
+                    type: 'input-switch',
+                    enabled: options?.copyToClipboardEnabled || false
                 });
                 output.push({
                     name: 'storeValue',
@@ -311,6 +394,12 @@ export class ElementOptions {
                     label: $localize `Voice the text`,
                     type: 'input-switch',
                     enabled: options?.speechSynthesisEnabled || false
+                });
+                output.push({
+                    name: 'copyToClipboardEnabled',
+                    label: $localize `Copy to clipboard`,
+                    type: 'input-switch',
+                    enabled: options?.copyToClipboardEnabled || false
                 });
                 output.push({
                     name: 'storeValue',
@@ -719,6 +808,14 @@ export class ElementOptions {
                     value: options?.name
                 });
                 output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
+                });
+                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -817,6 +914,13 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'useLink',
+                    label: $localize `Use link`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useLink
+                });
                 break;
             case 'input-chart-line':
                 output.push({
@@ -837,13 +941,13 @@ export class ElementOptions {
                     name: 'fieldNameAxisX',
                     label: $localize `Field name for X axis`,
                     type: 'input-text',
-                    value: options?.fieldNameAxisX
+                    value: options?.fieldNameAxisX || ''
                 });
                 output.push({
                     name: 'fieldNameAxisY',
                     label: $localize `Field name for Y axis`,
                     type: 'input-text',
-                    value: options?.fieldNameAxisY
+                    value: options?.fieldNameAxisY || ''
                 });
                 output.push({
                     name: 'isXAxisDate',
@@ -913,6 +1017,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.autoHide || false
                 });
+                output.push({
+                    name: 'useAsOffset',
+                    label: $localize `Use as offset`,
+                    type: 'input-switch',
+                    enabled: options?.useAsOffset || false
+                });
                 break;
             case 'status':
                 output.push({
@@ -947,6 +1057,13 @@ export class ElementOptions {
                     type: 'input-text',
                     required: true,
                     value: options?.statusCompletedText || ''
+                });
+                output.push({
+                    name: 'statusCompletedTextForVK',
+                    label: $localize `Completed Status Text For VK`,
+                    type: 'input-text',
+                    required: true,
+                    value: options?.statusCompletedTextForVK || ''
                 });
                 output.push({
                     name: 'statusProcessingText',
@@ -998,6 +1115,18 @@ export class ElementOptions {
                     value: options?.keys || [],
                     choices: []
                 });
+                output.push({
+                    name: 'isHTML',
+                    label: $localize `Value as HTML code`,
+                    type: 'input-switch',
+                    enabled: options?.isHTML || false
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
                 break;
         }
         return output;
@@ -1020,11 +1149,14 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     color: 'Black',
+                    fontSize: 'Medium',
+                    itemFieldName: '',
                     icon: '',
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,
-                    border: false
+                    border: false,
+                    showOnlyInVK: false
                 });
                 break;
             case 'button':
@@ -1050,6 +1182,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    copyToClipboardEnabled: false,
                     storeValue: false,
                     value: ''
                 });
@@ -1067,6 +1200,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
+                    copyToClipboardEnabled: false,
                     storeValue: false,
                     value: null
                 });
@@ -1185,7 +1319,8 @@ export class ElementOptions {
                     itemThumbnailFieldName: '',
                     prefixText: '',
                     value: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    useLink: true
                 });
                 break;
             case 'audio':
@@ -1202,7 +1337,7 @@ export class ElementOptions {
                     name: 'chart',
                     label: $localize `Line Chart`,
                     itemTitle: $localize `Item Title`,
-                    fieldNameAxisXL: '',
+                    fieldNameAxisX: '',
                     fieldNameAxisY: '',
                     itemFieldName: 'id',
                     isXAxisDate: false,
@@ -1216,6 +1351,7 @@ export class ElementOptions {
                     perPage: 20,
                     maxSize: 9,
                     autoHide: false,
+                    useAsOffset: false,
                     value: 1
                 });
                 break;
@@ -1225,6 +1361,7 @@ export class ElementOptions {
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusCompletedText: $localize `Completed`,
+                    statusCompletedTextForVK: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
                     isBoolean: false,
@@ -1235,7 +1372,9 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'table',
                     headers: ['Column1', 'Column2', 'Column3'],
-                    keys: ['key1', 'key2', 'key3']
+                    keys: ['key1', 'key2', 'key3'],
+                    isHTML: false,
+                    hiddenByDefault: false
                 });
                 break;
         }

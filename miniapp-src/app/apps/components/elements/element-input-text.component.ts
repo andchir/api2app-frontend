@@ -39,7 +39,9 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() storeValue: boolean;
     @Input() speechRecognitionEnabled = false;
     @Input() speechSynthesisEnabled = false;
+    @Input() copyToClipboardEnabled = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     private _value;
     isChanged = false;
     isTouched = false;
@@ -103,6 +105,36 @@ export class ElementInputTextComponent implements ControlValueAccessor {
             this.recognition = null;
         }
         this.cdr.detectChanges();
+    }
+
+    copyToClipboard(inputEl: HTMLInputElement): void {
+        if (this.editorMode || !this.value || !navigator.clipboard) {
+            if (!navigator.clipboard) {
+                console.log('Clipboard API is not supported by the browser.');
+            }
+            return;
+        }
+        inputEl.select();
+        inputEl.setSelectionRange(0, 99999);
+
+        this.writeClipboardText(inputEl.value)
+            .then(() => {
+                const message = $localize `The value has been successfully copied to the clipboard.`;
+                this.message.emit([message, 'success']);
+            })
+            .catch(() => {
+                const message = $localize `Sorry, copying to clipboard is not allowed.`;
+                this.message.emit([message, 'error']);
+            });
+    }
+
+    async writeClipboardText(text: string): Promise<void> {
+        try {
+            await navigator.clipboard.writeText(text);
+        } catch (error) {
+            console.log(error.message);
+            return Promise.reject(error.message);
+        }
     }
 
     speechSynthesisPlayToggle(): void {

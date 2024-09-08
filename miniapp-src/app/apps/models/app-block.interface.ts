@@ -39,20 +39,32 @@ export interface AppBlockElement {
     fieldNameAxisY?: string;
     isXAxisDate?: boolean;
     selectDefaultFirst?: boolean;
-    itemFieldNameForValue?: string;
     useDefault?: boolean;
     perPage?: number,
     statusCompleted?: string;
     statusError?: string;
+    itemFieldNameForTitle?: string;
+    itemFieldNameForValue?: string;
     options?: AppBlockElementOptions;
     value?: string | number | boolean | string[] | File[] | SafeResourceUrl | null;
-    valueArr?: string[] | File[] | null;
+    valueArr?: string[] | {label: string, value: string}[] | File[] | null;
     valueObj?: any | null;
+    markdown?: boolean;
+    icon?: string;
+    useAsOffset?: boolean;
+    isHTML?: boolean;
+    itemFieldName?: string;
+    blockIndex?: number;
+    hidden?: boolean;
+    showOnlyInVK?: boolean;
+    statusCompletedText?: string;
+    statusCompletedTextForVK?: string;
 }
 
 export interface AppBlockOptions {
     gridColumnSpan?: number;
     orderIndex?: number;
+    tabIndex?: number;
     autoClear?: boolean;
     messageSuccess?: string;
 }

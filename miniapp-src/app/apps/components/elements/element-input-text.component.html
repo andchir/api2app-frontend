@@ -29,8 +29,15 @@
         </ng-container>
     </ng-container>
     <div class="relative">
-        <div class="absolute bottom-1.5 right-1.5" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled">
-            <button type="button" class="cursor-pointer text-xl"
+        <div class="absolute bottom-1.5 right-2" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
+            <button type="button" class="cursor-pointer text-xl ml-3"
+                    (click)="copyToClipboard(inputControl.nativeElement)"
+                    title="Copy to clipboard"
+                    i18n-title
+                    *ngIf="copyToClipboardEnabled && (value || editorMode)">
+                <i class="bi bi-copy"></i>
+            </button>
+            <button type="button" class="cursor-pointer text-xl ml-3"
                     (click)="speechSynthesisPlayToggle()"
                     title="Voice the text"
                     i18n-title
