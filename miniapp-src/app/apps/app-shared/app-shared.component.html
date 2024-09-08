@@ -7,7 +7,7 @@
                 </div>
             </div>
             <div class="py-3">
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900">
+                <h1 class="text-xl md:text-3xl font-bold tracking-tight text-gray-900">
                     {{ data?.name }}
                     <svg aria-hidden="true" class="inline w-6 h-6 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"
                          *ngIf="loading && !submitted">
@@ -30,8 +30,8 @@
                  [ngClass]="{'md:col-span-2 lg:col-span-3': block.options?.gridColumnSpan === 3, 'lg:col-span-2': block.options?.gridColumnSpan === 2}"
                  *ngFor="let block of data?.blocks; index as index">
 
-                <div class="relative z-20 bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
-                    <div [ngClass]="{'opacity-20 pointer-events-none': block.loading}">
+                <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
+                    <div class="min-h-6" [ngClass]="{'opacity-20 pointer-events-none': block.loading}">
                         <ng-container *ngFor="let element of block.elements; index as ind">
                             <app-block-element [type]="element.type"
                                                [parentIndex]="index"
@@ -42,7 +42,8 @@
                                                [editorMode]="false"
                                                (elementClick)="onElementClick(element)"
                                                (elementValueChange)="onElementValueChanged(element)"
-                                               (itemSelected)="onItemSelected(element, $event)"></app-block-element>
+                                               (itemSelected)="onItemSelected(element, $event)"
+                                               (message)="onMessage($event)"></app-block-element>
                             <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
                                 <div class="w-full max-w-[600px] mx-auto">
                                     <div class="relative -top-2 mb-3 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
@@ -63,4 +64,4 @@
     </div>
 </main>
 
-<app-alert [(message)]="message" [type]="messageType"></app-alert>
+<app-alert [(message)]="message" [type]="messageType" [delay]="5000"></app-alert>

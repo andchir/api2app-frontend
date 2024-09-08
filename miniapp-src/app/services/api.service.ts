@@ -32,6 +32,8 @@ export class ApiService extends DataService<ApiItem> {
             requestContentType: 'json',
             basicAuth: false,
             sendAsFormData: false,
+            dailyLimitUsage: 0,
+            dailyLimitForUniqueUsers: false,
             responseBody: '',
             responseHeaders: [],
             responseContentType: 'json',
@@ -103,13 +105,16 @@ export class ApiService extends DataService<ApiItem> {
         return responseTypeValue;
     }
 
-    apiRequest(data: ApiItem): Observable<HttpResponse<any>> {
+    apiRequest(data: ApiItem, isApiTesting = true): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
-        const sendAsFormData = data?.sendAsFormData || false;
+        const bodyDataSource = data.bodyDataSource;
+        const sendAsFormData = (data?.sendAsFormData || false) && bodyDataSource === 'fields';
 
         if (data.sender === 'server') {
-            requestUrl = `${BASE_URL}api/v1/proxy`;
+            requestUrl = isApiTesting
+                ? `${BASE_URL}api/v1/proxy`
+                : `${BASE_URL}api/v1/inference`;
             requestMethod = 'POST';
         }
 
@@ -133,12 +138,11 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         // Request body
+        const bodyContent = data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent;
         const formData = new FormData();
-        const bodyRaw = data.bodyDataSource === 'raw'
-            ? data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent
-            : null;
+        const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
         let body: any = null;
-        if (data.bodyDataSource === 'fields') {
+        if (bodyDataSource === 'fields') {
             body = {};
             data.bodyFields.forEach((item) => {
                 if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
@@ -165,6 +169,9 @@ export class ApiService extends DataService<ApiItem> {
                                 }
                             }
                         } else {
+                            if (item.value === '[RAW]') {
+                                formData.append('opt__body', JSON.stringify(bodyContent));
+                            }
                             formData.append(item.name, String(item.value) || '');
                         }
                     }
@@ -186,29 +193,59 @@ export class ApiService extends DataService<ApiItem> {
             : Object.assign({}, headersData);
         if (data.sender === 'server') {
             if (sendAsFormData) {
-                formData.append('opt__headers', Object.keys(headersData).join(','));
-                formData.append('opt__headers_values', Object.values(headersData).join(','));
-                formData.append('opt__queryParams', Object.keys(queryParams).join(','));
                 formData.append('opt__uuid', data.uuid || '');
-                formData.append('opt__requestUrl', data.requestUrl || '');
-                formData.append('opt__requestMethod', data.requestMethod || 'GET');
-                formData.append('opt__responseContentType', data.responseContentType || '');
-                formData.append('opt__sendAsFormData', data.sendAsFormData ? '1' : '0');
+                formData.append('opt__queryParams', Object.keys(queryParams).join(','));
+
+                if (data?.urlPartIndex && data?.urlPartValue) {
+                    formData.append('opt__urlPartIndex', String(data.urlPartIndex));
+                    formData.append('opt__urlPartValue', String(data.urlPartValue));
+                }
+
+                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
+                    formData.append('opt__basicAuth', data.basicAuth ? '1' : '0');
+                    formData.append('opt__authLogin', data.authLogin);
+                    formData.append('opt__authPassword', data.authPassword);
+                }
+                if (isApiTesting) {
+                    formData.append('opt__headers', Object.keys(headersData).join(','));
+                    formData.append('opt__headers_values', Object.values(headersData).join(','));
+                    formData.append('opt__requestUrl', data?.requestUrl || '');
+                    formData.append('opt__requestMethod', data?.requestMethod || 'GET');
+                    formData.append('opt__responseContentType', data?.responseContentType || '');
+                    formData.append('opt__sendAsFormData', data?.sendAsFormData ? '1' : '0');
+                }
             } else {
                 body = Object.assign({}, {
                     body,
                     bodyRaw,
-                    headers: Object.assign({}, headersData),
                     queryParams: Object.assign({}, queryParams),
-                    opt__uuid: data?.uuid,
-                    opt__requestUrl: data?.requestUrl,
-                    opt__requestMethod: data?.requestMethod,
-                    opt__responseContentType: data?.responseContentType,
-                    opt__sendAsFormData: data?.sendAsFormData
+                    opt__uuid: data?.uuid
                 });
+                if (data?.urlPartIndex && data?.urlPartValue) {
+                    Object.assign(body, {
+                        opt__urlPartIndex: data.urlPartIndex,
+                        opt__urlPartValue: data.urlPartValue
+                    });
+                }
+                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
+                    Object.assign(body, {
+                        opt__basicAuth: true,
+                        opt__authLogin: data.authLogin,
+                        opt__authPassword: data.authPassword
+                    });
+                }
+                if (isApiTesting) {
+                    Object.assign(body, {
+                        headers: Object.assign({}, headersData),
+                        opt__requestUrl: data?.requestUrl,
+                        opt__requestMethod: data?.requestMethod,
+                        opt__responseContentType: data?.responseContentType,
+                        opt__sendAsFormData: data?.sendAsFormData
+                    });
+                }
             }
             if (!isDevMode()) {
-                const csrfToken = this.getCookie('csrftoken');
+                const csrfToken = '';// this.getCookie('csrftoken');
                 requestHeaders['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 requestHeaders['Mode'] = 'same-origin';
             }
@@ -247,7 +284,7 @@ export class ApiService extends DataService<ApiItem> {
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}api/v1/proxy`;
-        const csrfToken = this.getCookie('csrftoken');
+        const csrfToken = '';// this.getCookie('csrftoken');
         // console.log('csrfToken', csrfToken);
         // console.log('window.csrf_token', window['csrf_token']);
         let headers;
@@ -297,14 +334,26 @@ export class ApiService extends DataService<ApiItem> {
         )
     }
 
+    getRawDataFields(apiItem: ApiItem): string[] {
+        if (!apiItem) {
+            return [];
+        }
+        const output = apiItem.bodyFields.map((item) => {
+            return !item.hidden && item.value === '[RAW]' ? item['name'] : '';
+        });
+        return output.filter((name) => {
+            return name;
+        });
+    }
+
     getDataFromBlob(blob: Blob, contentType = 'json'): Promise<any> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.onload = (fileLoadedEvent) => {
                 if (['[', '{'].includes(((fileLoadedEvent.target?.result || '') as string).substring(0, 1))) {
                     try {
-                        const errorData = JSON.parse((fileLoadedEvent.target?.result || '') as string);
-                        resolve(errorData);
+                        const responseData = JSON.parse((fileLoadedEvent.target?.result || '[]') as string);
+                        resolve(responseData);
                     } catch (e) {
                         reject(e);
                     }

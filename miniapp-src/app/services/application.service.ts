@@ -2,19 +2,38 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
 
+import { catchError, Observable } from 'rxjs';
 import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
 import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
-import {catchError, Observable} from "rxjs";
+
+declare const vkBridge: any;
 
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {
 
+    constructor(
+        @Inject(LOCALE_ID) public locale: string,
+        httpClient: HttpClient
+    ) {
+        super(httpClient);
+        // this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
+        this.requestUrl = 'assets/app_';
+    }
+
     getItemByJsonFile(fileName: string): Observable<ApplicationItem> {
         const url = `assets/${fileName}.json`;
         return this.httpClient.get<ApplicationItem>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
+        const url = `${BASE_URL}api/v1/application_import_from_json`;
+        return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -107,9 +126,19 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        obj[key] = value;
-        window.localStorage.setItem(apiUuid, JSON.stringify(obj));
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            vkBridge.send('VKWebAppStorageSet', {key, value})
+                .then((data) => {
+                    // console.log('VKWebAppStorageSet', data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+            obj[key] = value;
+            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
+        }
     }
 
     static applyLocalStoredValue(element: AppBlockElement): void {
@@ -121,9 +150,21 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return;
         }
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        if (obj[key]) {
-            element.value = obj[key];
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            vkBridge.send('VKWebAppStorageGet', {keys: [key]})
+                .then((data) => {
+                    if (data.keys && data.keys.length > 0) {
+                        element.value = data.keys[0].value;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+            if (obj[key]) {
+                element.value = obj[key];
+            }
         }
     }
 
@@ -139,14 +180,5 @@ export class ApplicationService extends DataService<ApplicationItem> {
             image: '',
             blocks: [{elements: []}, {elements: []}, {elements: []}]
         };
-    }
-
-    constructor(
-        @Inject(LOCALE_ID) public locale: string,
-        httpClient: HttpClient
-    ) {
-        super(httpClient);
-        // this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
-        this.requestUrl = 'assets/app_';
     }
 }

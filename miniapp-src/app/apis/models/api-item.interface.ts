@@ -14,6 +14,8 @@ export interface ApiItem {
     authLogin: string;
     authPassword: string;
     sendAsFormData: boolean;
+    dailyLimitUsage: number;
+    dailyLimitForUniqueUsers: boolean;
 
     bodyFields: RequestDataField[];
     bodyContent: string;
@@ -29,6 +31,9 @@ export interface ApiItem {
     hidden: boolean;
     url?: string;
     method?: string;
+
+    urlPartIndex?: number,
+    urlPartValue?: string | null,
 
     user?: User;
 }

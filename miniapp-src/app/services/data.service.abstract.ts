@@ -66,6 +66,14 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
+    getItemByUuidEmbedded(itemUuid: string): Observable<T> {
+        const url = `${this.requestUrl}/${itemUuid}/embedded`;
+        return this.httpClient.get<T>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     deleteItem(itemId: number): Observable<any> {
         const url = `${this.requestUrl}/${itemId}`;
         return this.httpClient.delete<any>(url, this.httpOptions)
@@ -124,6 +132,14 @@ export abstract class DataService<T extends {id: number}> {
         const url = `${this.requestUrl}/${itemId}`;
         const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
         return this.httpClient.put<T>(url, item, httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    downloadItem(uuid: string): Observable<{success: boolean, file_name?: string}> {
+        const url = `${this.requestUrl}/${uuid}/download`
+        return this.httpClient.post<{success: boolean, file_name?: string}>(url, {}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
