@@ -180,6 +180,10 @@
                     "ru": {
                         "translation": "miniapp-src/locale/messages.ru.json",
                         "baseHref": ""
+                    },
+                    "fr": {
+                        "translation": "miniapp-src/locale/messages.fr.json",
+                        "baseHref": "fr/"
                     }
                 }
             },
