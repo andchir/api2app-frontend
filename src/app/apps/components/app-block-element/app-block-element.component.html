@@ -475,7 +475,7 @@
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
-                    <video class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></video>
+                    <video class="block w-full" [src]="options?.value" controls *ngIf="options?.value" [poster]="options?.posterUrl"></video>
                     <div class="px-4 py-10 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
                          *ngIf="!options?.value && editorMode">
                         <i class="bi bi-play-btn mr-2"></i>

@@ -874,6 +874,14 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                if (type === 'video') {
+                    output.push({
+                        name: 'posterUrl',
+                        label: $localize `Poster URL`,
+                        type: 'input-text',
+                        value: options?.posterUrl || ''
+                    });
+                }
                 break;
             case 'image':
                 output.push({
@@ -1324,11 +1332,19 @@ export class ElementOptions {
                 });
                 break;
             case 'audio':
+                Object.assign(output, {
+                    name: type,
+                    prefixText: '',
+                    value: '',
+                    hiddenByDefault: false
+                });
+                break;
             case 'video':
                 Object.assign(output, {
                     name: type,
                     prefixText: '',
                     value: '',
+                    posterUrl: '',
                     hiddenByDefault: false
                 });
                 break;
