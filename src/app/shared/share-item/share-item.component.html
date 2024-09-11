@@ -39,7 +39,7 @@
                     </div>
 
                     <div class="pt-3" *ngIf="isShared && itemEmbedUuid">
-                        <div class="border p-3 border-gray-300 bg-gray-100 rounded-md">
+                        <div class="border p-3 border-gray-300 bg-gray-100 rounded-md mb-3">
                             <label class="text-gray-500 text-sm" for="embedUrlField" i18n>URL for embedding</label>
                             <div class="flex" [ngClass]="{'opacity-50': loading}">
                                 <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
@@ -56,9 +56,6 @@
                                 </button>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="pt-3">
                         <div class="flex gap-3 items-center px-4 py-2 mb-4 text-blue-800 border border-blue-300 rounded-lg bg-blue-50" role="alert">
                             <div>
                                 <i class="bi bi-info-circle text-lg"></i>
