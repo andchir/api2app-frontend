@@ -625,6 +625,12 @@ export class ElementOptions {
                     enabled: options?.clearable || false
                 });
                 output.push({
+                    name: 'searchable',
+                    label: $localize `Searchable`,
+                    type: 'input-switch',
+                    enabled: options?.searchable || false
+                });
+                output.push({
                     name: 'addTag',
                     label: $localize `Allow adding value`,
                     type: 'input-switch',
@@ -1264,6 +1270,7 @@ export class ElementOptions {
                     choices: ['Value1', 'Value2', 'Value3'],
                     required: true,
                     clearable: true,
+                    searchable: true,
                     addTag: false,
                     selectDefaultFirst: true,
                     hiddenByDefault: false,

@@ -207,6 +207,7 @@
                                    [bindValue]="options?.itemFieldNameForValue"
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
+                                   [searchable]="options.searchable"
                                    [addTag]="options.addTag"
                                    notFoundText="No items found"
                                    i18n-notFoundText
@@ -232,6 +233,7 @@
                                    [items]="options.choices"
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
+                                   [searchable]="options.searchable"
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
