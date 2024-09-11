@@ -83,7 +83,8 @@ export class AuthInterceptor implements HttpInterceptor {
             );
         }
         if (!token) {
-            return throwError(() => new Error('forbidden'));
+            const forbiddenMessage = $localize `Access Denied`;
+            return throwError(() => new Error(forbiddenMessage));
         }
 
         return this.refreshTokenSubject.pipe(
