@@ -234,6 +234,10 @@
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
                                    [searchable]="options.searchable"
+                                   notFoundText="No items found"
+                                   i18n-notFoundText
+                                   addTagText="Add item"
+                                   i18n-addTagText
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
