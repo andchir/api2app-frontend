@@ -1099,6 +1099,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.messageType = 'success';
 
                     const docUrl = data.response.doc?.url;
+                    // Pass the URL as the value of the download button
                     if (docUrl) {
                         const buttonElement = outputElements.find((elem) => {
                             return elem.type === 'button';
