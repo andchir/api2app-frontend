@@ -1104,7 +1104,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         const buttonElement = outputElements.find((elem) => {
                             return elem.type === 'button';
                         });
-                        console.log(buttonElement);
                         buttonElement.value = docUrl;
                         this.cdr.detectChanges();
                     }
