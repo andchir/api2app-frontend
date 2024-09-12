@@ -672,10 +672,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.isVkApp && data?.result_data?.vk_file_to_save) {
                         if (!this.vkUserToken) {
                             this.vkGetUserToken(() => {
-                                this.vkSaveFile(data.result_data.vk_file_to_save);
+                                this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                             });
                         } else {
-                            this.vkSaveFile(data.result_data.vk_file_to_save);
+                            this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                         }
                     }
 
@@ -1078,7 +1078,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    vkSaveFile(fileDataString: string): void {
+    vkSaveFile(fileDataString: string, outputElements: AppBlockElement[]): void {
         if (!this.isVkApp || !this.vkUserToken) {
             return;
         }
@@ -1097,6 +1097,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const fileUrl = data.response.doc?.url;
                     this.message = $localize `The result has been successfully saved to your files.`;
                     this.messageType = 'success';
+
+                    const docUrl = data.response.doc?.url;
+                    if (docUrl) {
+                        const buttonElement = outputElements.find((elem) => {
+                            return elem.type === 'button';
+                        });
+                        console.log(buttonElement);
+                        buttonElement.value = docUrl;
+                        this.cdr.detectChanges();
+                    }
                 }
             })
             .catch((error: any) => {
