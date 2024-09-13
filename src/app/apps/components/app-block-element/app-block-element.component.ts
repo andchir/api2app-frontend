@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
 
-import { AppBlockElementType } from '../../models/app-block.interface';
+import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
@@ -176,6 +176,22 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (emitChange) {
             this.onFieldValueChanged();
         }
+    }
+
+    onImageError(imageContainer: HTMLElement, element: AppBlockElement, index?: number): void {
+        if (imageContainer) {
+            imageContainer.classList.remove('loading-bg-image');
+        }
+        if (typeof index !== 'undefined' && element.valueArr) {
+            if (element.itemThumbnailFieldName) {
+                element.valueArr[index][element.itemThumbnailFieldName] = 'assets/img/image-broken.png';
+            } else {
+                element.valueArr[index] = 'assets/img/image-broken.png';
+            }
+        } else {
+            element.value = 'assets/img/image-broken.png';
+        }
+        this.onFieldValueChanged();
     }
 
     createChartOptions(): void {

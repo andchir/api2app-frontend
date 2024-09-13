@@ -54,6 +54,7 @@ export interface AppBlockElement {
     useAsOffset?: boolean;
     isHTML?: boolean;
     itemFieldName?: string;
+    itemThumbnailFieldName?: string;
     blockIndex?: number;
     hidden?: boolean;
     showOnlyInVK?: boolean;

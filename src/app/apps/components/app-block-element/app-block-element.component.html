@@ -446,7 +446,7 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <ng-container *ngFor="let image of options.valueArr">
+                        <ng-container *ngFor="let image of options.valueArr; let index = index">
                             <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md" #imageContainer>
                                 <a class="block"
                                    [ngClass]="{'pointer-events-none': !options?.useLink}"
@@ -454,6 +454,7 @@
                                    target="_blank">
                                     <img class="w-full h-auto max-w-full" loading="lazy"
                                          (load)="imageContainer.classList.remove('loading-bg-image')"
+                                         (error)="onImageError(imageContainer, options, index)"
                                          [src]="image[options?.itemThumbnailFieldName] || image" alt="">
                                 </a>
                             </div>
@@ -471,6 +472,7 @@
                            *ngIf="options?.value">
                             <img class="inline-block max-w-full" loading="lazy"
                                  (load)="imageContainer.classList.remove('loading-bg-image')"
+                                 (error)="onImageError(imageContainer, options)"
                                  [src]="options?.value" alt="">
                         </a>
                         <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
