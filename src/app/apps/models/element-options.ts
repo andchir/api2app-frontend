@@ -82,6 +82,13 @@ export class ElementOptions {
                     value: options?.itemFieldName || ''
                 });
                 output.push({
+                    name: 'keys',
+                    label: $localize `Value keys`,
+                    type: 'input-tags',
+                    value: options?.keys || [],
+                    choices: []
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -1166,6 +1173,7 @@ export class ElementOptions {
                     fontSize: 'Medium',
                     itemFieldName: '',
                     icon: '',
+                    keys: [],
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,

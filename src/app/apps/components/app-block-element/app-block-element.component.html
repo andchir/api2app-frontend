@@ -58,13 +58,21 @@
                         <div class="max-w-full overflow-hidden">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
-                            <ng-container *ngIf="options?.itemFieldName && item">
-                                <span *ngIf="item[options.itemFieldName] && !options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                <span *ngIf="item[options.itemFieldName] && options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
+                            <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
+                                <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
+                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
                             </ng-container>
                             <ng-container *ngIf="!options?.itemFieldName || !item">
                                 <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
                                 <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                            </ng-container>
+                            <ng-container *ngIf="options?.keys && item">
+                                <div *ngFor="let key of options?.keys">
+                                    <div class="mb-3" *ngIf="item[key]">
+                                        <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
+                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { disableSanitizer: true } | async"></span>
+                                    </div>
+                                </div>
                             </ng-container>
 
                             <span class="text-gray-400" *ngIf="!options?.value && !options?.valueArr && editorMode">{{ options?.name }}</span>
@@ -77,7 +85,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
-            <h4 class="text-2xl font-bold mb-3 min-h-[20px] mb-3"
+            <h4 class="text-2xl font-bold min-h-[20px] mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <span class="flex gap-2 items-center">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
@@ -439,17 +447,14 @@
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         <ng-container *ngFor="let image of options.valueArr">
-                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md"
-                                 *ngIf="image[options?.itemFieldName]"
-                                 #imageContainer>
+                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md" #imageContainer>
                                 <a class="block"
                                    [ngClass]="{'pointer-events-none': !options?.useLink}"
-                                   [href]="image[options?.itemFieldName]"
+                                   [href]="image[options?.itemFieldName] || image"
                                    target="_blank">
                                     <img class="w-full h-auto max-w-full" loading="lazy"
                                          (load)="imageContainer.classList.remove('loading-bg-image')"
-                                         [src]="image[options?.itemThumbnailFieldName]"
-                                         alt="">
+                                         [src]="image[options?.itemThumbnailFieldName] || image" alt="">
                                 </a>
                             </div>
                         </ng-container>
