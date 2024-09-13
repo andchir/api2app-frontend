@@ -91,6 +91,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[]|null {
         switch (element.type) {
+            case 'input-tags':
+                return Array.isArray(element?.value) ? element?.value : [];
             case 'input-date':
                 const dateFormat = element?.format;
                 const date = moment(String(element?.value));

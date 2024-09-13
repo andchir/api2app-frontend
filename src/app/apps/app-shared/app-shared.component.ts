@@ -971,14 +971,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return obj;
         }
         if (Array.isArray(obj)) {
-            obj.forEach((item, index) => {
-                let propName = parent ? parent + '.' + index : String(index);
-                if (typeof item === 'object') {
-                    this.flattenObj(item, propName, res);
-                } else {
-                    res[propName] = item;
-                }
-            });
+            if (obj.length > 0) {
+                obj.forEach((item, index) => {
+                    let propName = parent ? parent + '.' + index : String(index);
+                    if (typeof item === 'object') {
+                        this.flattenObj(item, propName, res);
+                    } else {
+                        res[propName] = item;
+                    }
+                });
+            } else {
+                res[parent] = [];
+            }
             return res;
         }
         for (let key in obj) {

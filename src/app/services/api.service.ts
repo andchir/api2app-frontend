@@ -145,7 +145,17 @@ export class ApiService extends DataService<ApiItem> {
             body = {};
             data.bodyFields.forEach((item) => {
                 if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
-                    body[item.name] = typeof item.value === 'string' ? (item.value || '') : item.value;
+                    let value = typeof item.value === 'string' ? (item.value || '') : item.value;
+                    if (!sendAsFormData) {
+                        if (value === '[]') {
+                            value = [];
+                        } else if (['true', 'false'].includes(String(value))) {
+                            value = value === 'true';
+                        } else if (!Number.isNaN(Number(value))) {
+                            value = Number(value);
+                        }
+                    }
+                    body[item.name] = value;
                     if (data.sendAsFormData) {
                         if (item.isFile) {
                             if (item.files) {
