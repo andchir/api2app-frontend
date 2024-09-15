@@ -30,8 +30,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
             );
     }
 
-    static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
+    static createBlockOptionsFields(options?: any, index = 0, tabIndex = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
+        output.push({
+            name: 'tabIndex',
+            label: $localize `Tab Index`,
+            type: 'input-number',
+            min: 0,
+            max: 30,
+            value: tabIndex
+        });
         output.push({
             name: 'orderIndex',
             label: $localize `Order Index`,
@@ -52,7 +60,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: 'messageSuccess',
             label: $localize `Success message`,
             type: 'input-textarea',
-            value: options?.messageSuccess
+            value: options?.messageSuccess || ''
         });
         output.push({
             name: 'autoClear',

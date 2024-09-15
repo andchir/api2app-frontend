@@ -222,7 +222,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             block.options = {};
         }
         this.selectedBlockIndex = index;
-        this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options, index);
+        this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options, index, this.tabIndex);
         this.selectedBlock = block;
         this.selectedElement = null;
         this.isOptionsActive = true;
@@ -250,7 +250,17 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             }
         }
         if (this.selectedBlock) {
-            Object.assign(this.selectedBlock.options, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
+            const options = ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields);
+            let newTabIndex = parseInt(options.tabIndex || '0');
+            delete options.tabIndex;
+            if (newTabIndex > this.data.tabs.length - 1) {
+                newTabIndex = this.data.tabs.length - 1;
+            }
+            if (this.selectedBlock.tabIndex !== newTabIndex) {
+                this.selectedBlock.tabIndex = newTabIndex;
+                this.tabIndex = newTabIndex;
+            }
+            Object.assign(this.selectedBlock.options, options);
             if (this.selectedBlock?.options?.orderIndex !== this.selectedBlockIndex) {
                 this.updateBlockIndex(this.selectedBlockIndex, this.selectedBlock?.options?.orderIndex);
             }
