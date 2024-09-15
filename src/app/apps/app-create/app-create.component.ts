@@ -88,6 +88,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 next: (res) => {
                     this.data = res;
                     this.loading = false;
+                    this.data.blocks.forEach((block, blockIndex) => {
+                        if (typeof block.tabIndex === 'undefined') {
+                            block.tabIndex = 0;
+                        }
+                    });
                     this.addEmptyBlockByGrid();
                     this.cdr.detectChanges();
                 },
@@ -101,7 +106,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     findEmptyBlocks(): AppBlock[] {
         return this.data.blocks.filter((item) => {
             const emptyElements = this.findEmptyElements(item);
-            return emptyElements.length === item.elements.length;
+            return emptyElements.length === item.elements.length && (item.tabIndex === -1 || item.tabIndex === this.tabIndex);
         });
     }
 
@@ -136,7 +141,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (emptyItems.length >= gridColumns) {
             return;
         }
-        this.data.blocks.push(ApplicationService.getBlockDefaults());
+        const newBlock = Object.assign({}, ApplicationService.getBlockDefaults(), {tabIndex: -1});
+        this.data.blocks.push(newBlock);
         emptyItems = this.findEmptyBlocks();
         if (emptyItems.length < gridColumns) {
             this.addEmptyBlockByGrid();
@@ -162,6 +168,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (emptyElements.length > 0) {
             return;
         }
+        block.tabIndex = this.tabIndex;
         block.elements.push({type: null});
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();

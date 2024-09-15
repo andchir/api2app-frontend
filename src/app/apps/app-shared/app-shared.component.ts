@@ -120,6 +120,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const buttons = [];
         this.data.blocks.forEach((block, blockIndex) => {
+            if (typeof block.tabIndex === 'undefined') {
+                block.tabIndex = 0;
+            }
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
                 element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
@@ -173,6 +176,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     switchTab(tabIndex: number): void {
         this.tabIndex = tabIndex;
+        this.cdr.detectChanges();
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {

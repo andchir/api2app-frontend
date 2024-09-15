@@ -74,4 +74,5 @@ export interface AppBlock {
     elements: AppBlockElement[];
     options?: AppBlockOptions;
     loading?: boolean;
+    tabIndex?: number;
 }
