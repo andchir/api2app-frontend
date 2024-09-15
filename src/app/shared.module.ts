@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -17,7 +18,7 @@ import { ImageUploadCircleComponent } from './apps/components/app-image-upload-c
 import { PaginationComponent } from './shared/pagination/pagination.component';
 
 import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
-import {HttpClient} from "@angular/common/http";
+import { FilterBlockPipe } from './shared/pipes/filter-block';
 
 export function markedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
@@ -64,7 +65,8 @@ export function markedOptionsFactory(): MarkedOptions {
         ImageUploadCircleComponent,
         PaginationComponent,
 
-        ToHtmlPipe
+        ToHtmlPipe,
+        FilterBlockPipe
     ],
     exports: [
         AlertComponent,
@@ -82,7 +84,8 @@ export function markedOptionsFactory(): MarkedOptions {
         NgxPaginationModule,
         MarkdownModule,
 
-        ToHtmlPipe
+        ToHtmlPipe,
+        FilterBlockPipe
     ]
 })
 export class SharedModule { }
