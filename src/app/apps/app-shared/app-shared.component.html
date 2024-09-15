@@ -24,6 +24,19 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
 
+        <div class="w-full overflow-y-hidden overflow-x-auto mb-4">
+            <ul class="flex flex-nowrap text-sm font-medium text-center border-b border-b-gray-300" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+                <li class="me-2" *ngFor="let tabName of data.tabs; index as index">
+                    <button type="button"
+                            class="relative whitespace-nowrap z-10 top-[1px] inline-block px-4 py-3 rounded-t-lg border"
+                            [ngClass]="{'border-gray-300 text-blue-700 border-b-gray-100': tabIndex == index, 'border-gray-100 border-b-gray-300 text-gray-500 hover:text-gray-700 bg-gray-200 hover:border-gray-300': tabIndex !== index}"
+                            (click)="switchTab(index)">
+                        {{ tabName }}
+                    </button>
+                </li>
+            </ul>
+        </div>
+
         <div class="grid grid-cols-1 gap-4"
              [ngClass]="{'md:grid-cols-2 lg:grid-cols-3': data?.gridColumns === 3, 'md:grid-cols-2': data?.gridColumns === 2}">
 

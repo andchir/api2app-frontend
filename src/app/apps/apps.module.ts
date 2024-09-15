@@ -20,6 +20,7 @@ import { ApiService } from '../services/api.service';
 import { ModalService } from '../services/modal.service';
 import { ElementInputTextComponent } from './components/elements/element-input-text.component';
 import { ApplicationImportComponent } from './app-import/app-import.component';
+import { RenameComponent } from '../shared/rename/rename.component';
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { ApplicationImportComponent } from './app-import/app-import.component';
         AppActionComponent,
         ApplicationImportComponent,
 
-        ElementInputTextComponent
+        ElementInputTextComponent,
+        RenameComponent
     ],
     imports: [
         CommonModule,

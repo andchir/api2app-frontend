@@ -169,10 +169,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
             });
         }
+    }
 
-        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
-            this.addTab();
-        }
+    switchTab(tabIndex: number): void {
+        this.tabIndex = tabIndex;
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
@@ -924,17 +924,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         // console.log('onItemSelected', element);
         this.appSubmit(apiUuid, 'input', element);
-    }
-
-    switchTab(tabIndex: number): void {
-        this.tabIndex = tabIndex;
-    }
-
-    addTab(): void {
-        if (!this.data.tabs) {
-            this.data.tabs = [];
-        }
-        this.data.tabs.push(($localize `Tab`) + ' ' + (this.data.tabs.length + 1));
     }
 
     isJson(str: string): boolean {

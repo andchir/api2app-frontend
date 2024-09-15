@@ -22,6 +22,7 @@ import { ApiService } from '../../services/api.service';
 import { RouterEventsService } from '../../services/router-events.service';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { ElementOptions } from '../models/element-options';
+import { RenameComponent } from '../../shared/rename/rename.component';
 import { environment } from '../../../environments/environment';
 
 const APP_NAME = environment.appName;
@@ -404,6 +405,53 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             return;
         }
         this.createAppOptions();
+        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
+            this.addTab();
+        }
+    }
+
+    addTab(tabNumber: number = -1): void {
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
+        if (tabNumber === -1) {
+            this.addTab(this.data.tabs.length + 1);
+            return;
+        }
+        const tabName = ($localize `Tab`) + ' ' + tabNumber;
+        if (this.data.tabs.find(name => name === tabName)) {
+            this.addTab(tabNumber + 1);
+            return;
+        }
+        this.data.tabs.push(tabName);
+    }
+
+    removeTab(): void {
+        if (!this.data?.tabs || this.data?.tabs.length <= 1) {
+            return;
+        }
+        this.data?.tabs.splice(this.tabIndex, 1);
+        if (this.data?.tabs.length - 1 < this.tabIndex) {
+            this.switchTab(this.tabIndex - 1);
+        }
+    }
+
+    editTab(): void {
+        if (!this.data.tabs[this.tabIndex]) {
+            return;
+        }
+        const initialData = {
+            currentValue: this.data.tabs[this.tabIndex]
+        };
+        this.modalService.showDynamicComponent(this.viewRef, RenameComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'submit') {
+                        this.data.tabs[this.tabIndex] = this.modalService.content.currentValue;
+                    }
+                }
+            });
     }
 
     getFileExtension(fileName: string): string {
