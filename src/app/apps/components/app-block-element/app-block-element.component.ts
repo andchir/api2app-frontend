@@ -182,14 +182,18 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (imageContainer) {
             imageContainer.classList.remove('loading-bg-image');
         }
+        if (this.editorMode) {
+            return;
+        }
+        const imageBrokenUrl = 'assets/img/image-broken.png';
         if (typeof index !== 'undefined' && element.valueArr) {
             if (element.itemThumbnailFieldName) {
-                element.valueArr[index][element.itemThumbnailFieldName] = 'assets/img/image-broken.png';
+                element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
             } else {
-                element.valueArr[index] = 'assets/img/image-broken.png';
+                element.valueArr[index] = imageBrokenUrl;
             }
         } else {
-            element.value = 'assets/img/image-broken.png';
+            element.value = imageBrokenUrl;
         }
         this.onFieldValueChanged();
     }
