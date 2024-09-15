@@ -37,12 +37,12 @@
             </ul>
         </div>
 
-        <div class="grid grid-cols-1 gap-4"
-             [ngClass]="{'md:grid-cols-2 lg:grid-cols-3': data?.gridColumns === 3, 'md:grid-cols-2': data?.gridColumns === 2}">
+        <div class="grid gap-4 grid-cols-1"
+             [ngClass]="{'md:grid-cols-2': data?.gridColumns === 3 || data?.gridColumns === 2, 'lg:grid-cols-3': data?.gridColumns === 3}">
 
             <ng-container *ngFor="let block of data.blocks | filterBlock : 'tabIndex' : tabIndex; index as index">
                 <div class="block relative group/block"
-                     [ngClass]="{'md:col-span-2 lg:col-span-3': block.options?.gridColumnSpan === 3, 'lg:col-span-2': block.options?.gridColumnSpan === 2}">
+                     [ngClass]="{'md:col-span-2': block.options?.gridColumnSpan === 2, 'md:col-span-3': block.options?.gridColumnSpan === 3}">
 
                     <div class="relative bg-white p-3 rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
                         <div class="min-h-6" [ngClass]="{'opacity-20 pointer-events-none': block.loading}">
