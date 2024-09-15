@@ -300,12 +300,13 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     cloneBlock(block: AppBlock): AppBlock {
+        const tabIndex = block.tabIndex || 0;
         const options = Object.assign({}, block.options);
         const elements = block.elements.map(obj => ({...obj}));
         elements.forEach((element: AppBlockElement) => {
             element.options = Object.assign({}, element.options);
         });
-        return {elements, options};
+        return {tabIndex, elements, options};
     }
 
     saveData(): void {
