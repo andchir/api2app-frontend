@@ -684,8 +684,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                     }
                 }
-
-                this.showAds(currentElement);
+                if (currentElement.type === 'button') {
+                    this.showAds();
+                }
                 this.cdr.detectChanges();
             })
             .catch((err) => {
@@ -693,29 +694,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    showAds(currentElement: AppBlockElement): void {
-        if (currentElement.type !== 'button') {
-            return;
-        }
+    showAds(): void {
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
             // console.log(now - this.adsShownAt);
             return;
         }
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     // Advertising by VK
-        //     vkBridge.send('interstitial', { ad_format: 'reward' })
-        //         .then((data: any) => {
-        //             console.log(data);
-        //             if (data.result) {
-        //                 this.adsShownAt = Date.now();
-        //                 console.log('Advertisement shown');
-        //             }
-        //         })
-        //         .catch((error: any) => {
-        //             console.log(error);
-        //         });
-        // }
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            // Advertising by VK
+            vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
+                .then((data: any) => {
+                    // console.log(data);
+                    if (data.result) {
+                        this.adsShownAt = Date.now();
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                });
+        }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
