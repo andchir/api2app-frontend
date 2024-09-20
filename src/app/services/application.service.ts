@@ -179,7 +179,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumns: 3,
             language: '',
             image: '',
-            blocks: [{elements: []}, {elements: []}, {elements: []}]
+            blocks: [{tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}]
         };
     }
 }

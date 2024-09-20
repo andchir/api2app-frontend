@@ -76,6 +76,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     override ngOnInit(): void {
         this.isLoggedIn = !!this.tokenStorageService.getToken();
         this.itemId = Number(this.route.snapshot.paramMap.get('id'));
+        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
+            this.addTab();
+        }
         if (this.itemId) {
             this.getData();
         }

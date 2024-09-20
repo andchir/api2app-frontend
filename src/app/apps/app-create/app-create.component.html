@@ -147,6 +147,8 @@
                     <li class="me-2" *ngIf="!previewMode">
                         <button type="button"
                                 class="relative z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                title="Add tab"
+                                i18n-title
                                 (click)="addTab()">
                             <i class="bi bi-plus"></i>
                         </button>
@@ -154,6 +156,8 @@
                     <li class="me-2" *ngIf="!previewMode && data.tabs.length > 1">
                         <button type="button"
                                 class="relative z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                title="Delete tab"
+                                i18n-title
                                 (click)="removeTab()">
                             <i class="bi bi-trash3"></i>
                         </button>
@@ -161,6 +165,8 @@
                     <li class="me-2" *ngIf="!previewMode">
                         <button type="button"
                                 class="relative z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                title="Rename tab"
+                                i18n-title
                                 (click)="editTab()">
                             <i class="bi bi-pencil-square"></i>
                         </button>
