@@ -61,6 +61,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     vkUserId: number;
     vkUserToken: string;
     vkUserFileUploadUrl: string;
+    vkAdAvailableInterstitial: boolean = false;
 
     constructor(
         protected cdr: ChangeDetectorRef,
@@ -695,9 +696,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     showAds(): void {
+        if (!this.vkAdAvailableInterstitial) {
+            return;
+        }
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            // console.log(now - this.adsShownAt);
+            console.log(now - this.adsShownAt);
             return;
         }
         if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
@@ -1010,7 +1014,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkAppInit(): void {
-        // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
+            .then((data: any) => {
+                if (data.result) {
+                    this.vkAdAvailableInterstitial = true;
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+
         vkBridge.send('VKWebAppGetLaunchParams')
             .then((data: any) => {
                 if (data.vk_app_id) {
