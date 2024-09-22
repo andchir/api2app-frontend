@@ -26,7 +26,7 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
 
     getData(): void {
         this.loading = true;
-        this.dataService.getListShared(this.currentPage, this.searchWord)
+        this.dataService.getListShared(this.currentPage, this.searchWord, this.searchLanguage)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

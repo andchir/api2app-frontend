@@ -33,9 +33,9 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
-    getListShared(page = 1, search?: string): Observable<{count: number, results: T[]}> {
+    getListShared(page = 1, search?: string, language?: string): Observable<{count: number, results: T[]}> {
         const url = `${this.requestUrl}/list_shared`;
-        const params = this.createParams({page, search});
+        const params = this.createParams({page, search, language});
         return this.httpClient.get<{count: number, results: T[]}>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)

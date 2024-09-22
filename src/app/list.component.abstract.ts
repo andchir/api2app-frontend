@@ -19,6 +19,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     totalRecords = 0;
     currentPage = 1;
     searchWord: string;
+    searchLanguage: string;
     selectedId = 0;
     message: string = '';
     messageType: 'error'|'success' = 'error';
@@ -147,6 +148,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
     onQueryParamsChange(params: Params): void {
         this.currentPage = 1;
         this.searchWord = params['search'] || '';
+        this.searchLanguage = params['language'] || this.locale;
         this.getData();
     }
 
