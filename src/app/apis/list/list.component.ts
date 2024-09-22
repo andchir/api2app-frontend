@@ -20,7 +20,7 @@ export class ListApisComponent implements OnInit {
     languagesList: {name: string, title: string}[] = [
         {
             name: 'all',
-            title: 'All languages'
+            title: $localize `All languages`
         },
         {
             name: 'en',
