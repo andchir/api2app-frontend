@@ -704,11 +704,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             console.log(now - this.adsShownAt);
             return;
         }
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+        if (this.isVkApp) {
             // Advertising by VK
             vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
                 .then((data: any) => {
-                    // console.log(data);
+                    console.log(data);
                     if (data.result) {
                         this.adsShownAt = Date.now();
                     }
@@ -1016,6 +1016,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     vkAppInit(): void {
         vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
             .then((data: any) => {
+                console.log(data);
                 if (data.result) {
                     this.vkAdAvailableInterstitial = true;
                 }
