@@ -49,7 +49,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     itemUuid: string;
     adsShownAt = 0;
-    adsShowIntervalSeconds = 3 * 60; // 3 minutes
+    adsShowIntervalSeconds = 4 * 60; // 4 minutes
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
