@@ -701,14 +701,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            console.log(now - this.adsShownAt);
+            // console.log(now - this.adsShownAt);
             return;
         }
         if (this.isVkApp) {
             // Advertising by VK
             vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
                 .then((data: any) => {
-                    console.log(data);
+                    // console.log(data);
                     if (data.result) {
                         this.adsShownAt = Date.now();
                     }
@@ -1016,7 +1016,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     vkAppInit(): void {
         vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
             .then((data: any) => {
-                console.log(data);
+                // console.log(data);
                 if (data.result) {
                     this.vkAdAvailableInterstitial = true;
                 }
