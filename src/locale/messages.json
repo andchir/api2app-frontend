@@ -300,6 +300,7 @@
         "4785285051652295486": "Sorry, copying to clipboard is not allowed.",
         "4833015289860045655": "Tab",
         "8722113544858683734": "Maintenance",
+        "3465942650835858981": "Maintenance",
         "3513540888975286750": "It's clear",
         "5469814901164051055": "Sorry, the app is currently unavailable. Please come back later.",
         "4120608513784716757": "Show only in VK app",
@@ -316,6 +317,8 @@
         "6932824743515258735": "Delete tab",
         "6041115344061899387": "Rename",
         "8883248878382789702": "Application language",
-        "40119547597591062": "All languages"
+        "40119547597591062": "All languages",
+        "2968053318921352807": "Clone Application",
+        "718763579177222941": "Are you sure you want to clone this application?"
     }
 }

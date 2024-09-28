@@ -12,18 +12,20 @@ export class ConfirmComponent implements OnInit {
     @Input() isActive = false;
     @Output() isActiveChange = new EventEmitter<boolean>();
     @Output() confirmed = new EventEmitter<void>();
+    @Output() close: EventEmitter<string> = new EventEmitter<string>();
 
     ngOnInit(): void {
 
     }
 
-    closeModal(): void {
+    closeModal(reason: string = 'close'): void {
         this.isActive = false;
         this.isActiveChange.emit(this.isActive);
+        this.close.emit(reason);
     }
 
     confirm(): void {
         this.confirmed.emit();
-        this.closeModal();
+        this.closeModal('confirmed');
     }
 }

@@ -30,6 +30,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             );
     }
 
+    cloneItem(uuid: string): Observable<{success: boolean}> {
+        const url = `${this.requestUrl}/${uuid}/clone`
+        return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     static createBlockOptionsFields(options?: any, index = 0, tabIndex = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
         output.push({

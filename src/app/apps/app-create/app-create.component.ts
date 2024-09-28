@@ -24,6 +24,7 @@ import { TokenStorageService } from '../../services/token-storage.service';
 import { ElementOptions } from '../models/element-options';
 import { RenameComponent } from '../../shared/rename/rename.component';
 import { environment } from '../../../environments/environment';
+import {ConfirmComponent} from "../../shared/confirm/confirm.component";
 
 const APP_NAME = environment.appName;
 
@@ -312,6 +313,39 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         return {tabIndex, elements, options};
     }
 
+    cloneApp(): void {
+        const initialData = {
+            message: $localize `Are you sure you want to clone this application?`,
+            isActive: true
+        };
+        this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'confirmed') {
+                        this.loading = true;
+                        this.dataService.cloneItem(this.data.uuid)
+                            .pipe(takeUntil(this.destroyed$))
+                            .subscribe({
+                                next: (res) => {
+                                    this.router.navigate(['apps', 'personal']);
+                                    this.cdr.detectChanges();
+                                },
+                                error: (err) => {
+                                    if (err.detail) {
+                                        this.message = err.detail;
+                                        this.messageType = 'error';
+                                    }
+                                    this.loading = false;
+                                    this.saving = true;
+                                    this.cdr.detectChanges();
+                                }
+                            });
+                    }
+                }
+            });
+    }
+
     saveData(): void {
         const data = Object.assign({}, this.data, {language: this.locale});
         let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
@@ -348,7 +382,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     this.itemId = res.id;
                     this.data.id = this.itemId;
                     this.loading = false;
-                    this.saving = true;
+                    this.saving = false;
                     this.message = $localize `Saved successfully.`;
                     this.messageType = 'success';
                     this.cdr.detectChanges();
@@ -358,7 +392,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     this.message = $localize `Please correct the errors.`;
                     this.messageType = 'error';
                     this.loading = false;
-                    this.saving = true;
+                    this.saving = false;
                     this.cdr.detectChanges();
                 }
             });

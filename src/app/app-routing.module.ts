@@ -10,7 +10,7 @@ import { AuthRegisterComponent } from './auth/auth-register.component';
 import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
 import { AuthUserActivateComponent } from './auth/auth-activate.component';
 import { AuthPasswordResetConfirmComponent } from './auth/auth-password-reset-confirm.component';
-import {MyProfileComponent} from "./my-profile/my-profile.component";
+import { MyProfileComponent } from './my-profile/my-profile.component';
 
 const routes: Routes = [
     {

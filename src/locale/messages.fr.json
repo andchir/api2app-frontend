@@ -300,6 +300,7 @@
         "4785285051652295486": "Désolé, la copie dans le presse-papiers n'est pas autorisée.",
         "4833015289860045655": "Languette",
         "8722113544858683734": "Entretien",
+        "3465942650835858981": "Entretien",
         "3513540888975286750": "Il est clair",
         "5469814901164051055": "Désolé, l'application n'est pas disponible pour le moment. S'il vous plaît, revenez plus tard.",
         "4120608513784716757": "Afficher uniquement dans VK appah",
@@ -316,6 +317,8 @@
         "6932824743515258735": "Supprimer l'onglet",
         "6041115344061899387": "Rebaptiser",
         "8883248878382789702": "Langue de l'application",
-        "40119547597591062": "Toutes les langues"
+        "40119547597591062": "Toutes les langues",
+        "2968053318921352807": "Cloner une application",
+        "718763579177222941": "Êtes-vous sûr de vouloir cloner cette application?"
     }
 }
