@@ -485,7 +485,19 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (!this.data?.tabs || this.data?.tabs.length <= 1) {
             return;
         }
+        const tabIndex = this.tabIndex;
+        const blocks = this.data.blocks.filter((block) => {
+            return block.tabIndex >= tabIndex;
+        });
         this.data?.tabs.splice(this.tabIndex, 1);
+        blocks.forEach((block) => {
+            if (block.tabIndex > 0) {
+                block.tabIndex--;
+            }
+            if (block.tabIndex > this.data?.tabs.length - 1) {
+                block.tabIndex--;
+            }
+        });
         if (this.data?.tabs.length - 1 < this.tabIndex) {
             this.switchTab(this.tabIndex - 1);
         }
