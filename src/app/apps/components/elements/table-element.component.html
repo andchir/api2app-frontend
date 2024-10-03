@@ -1,10 +1,10 @@
 <table class="border border-gray-300 w-full">
     <thead>
-    <tr class="border-b-2 border-gray-300 bg-gray-100">
-        <td class="py-2 px-3 border border-gray-300 font-bold" *ngFor="let headerText of headers">
-            {{ headerText }}
-        </td>
-    </tr>
+        <tr class="border-b-2 border-gray-300 bg-gray-100">
+            <td class="py-2 px-3 border border-gray-300 font-bold text-sm" *ngFor="let headerText of headers">
+                {{ headerText }}
+            </td>
+        </tr>
     </thead>
     <tbody *ngIf="!editorMode">
     <ng-container *ngIf="value && value.length > 0; else templateTableEmpty">
@@ -22,7 +22,7 @@
                            [(ngModel)]="item[key]">
                 </ng-template>
                 <button type="button"
-                        class="absolute right-2 top-2 hidden group-hover:inline-block"
+                        class="absolute right-[2px] top-[2px] hidden group-hover:inline-block p-2 bg-gray-50"
                         title="Delete"
                         i18n-title
                         (click)="removeRow(ind)" *ngIf="colIndex == keys.length - 1">

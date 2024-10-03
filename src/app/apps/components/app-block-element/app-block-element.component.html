@@ -602,6 +602,17 @@
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'input-select-image'">
+            <div role="status" class="mb-3 rounded-[0.7rem]"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="options?.value !== null || editorMode">
+                <div>
+                    image-select
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
         <ng-container *ngSwitchDefault>
             <div class="min-h-[20px] mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"></div>

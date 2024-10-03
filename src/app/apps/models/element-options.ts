@@ -1161,6 +1161,29 @@ export class ElementOptions {
                     enabled: options?.editable || false
                 });
                 break;
+            case 'input-select-image':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name || ''
+                });
+                output.push({
+                    name: 'data',
+                    label: $localize `Name`,
+                    type: 'table',
+                    headers: ['Название', 'URL изображения'],
+                    keys: ['name', 'imageUrl'],
+                    editable: true,
+                    value: options?.data || []
+                });
+                output.push({
+                    name: 'showTitle',
+                    label: $localize `Show titles`,
+                    type: 'input-switch',
+                    enabled: options?.showTitle || false
+                });
+                break;
         }
         return output;
     }
@@ -1419,6 +1442,13 @@ export class ElementOptions {
                     isHTML: false,
                     hiddenByDefault: false,
                     editable: false
+                });
+                break;
+            case 'input-select-image':
+                Object.assign(output, {
+                    name: 'select-image',
+                    data: [],
+                    showTitle: false
                 });
                 break;
         }
