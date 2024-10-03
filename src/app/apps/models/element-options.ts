@@ -1175,7 +1175,7 @@ export class ElementOptions {
                     headers: ['Название', 'URL изображения'],
                     keys: ['name', 'imageUrl'],
                     editable: true,
-                    value: options?.data || []
+                    valueArr: options?.data || []
                 });
                 output.push({
                     name: 'showTitle',
