@@ -1154,6 +1154,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
                 });
+                output.push({
+                    name: 'editable',
+                    label: $localize `Editable`,
+                    type: 'input-switch',
+                    enabled: options?.editable || false
+                });
                 break;
         }
         return output;
@@ -1411,7 +1417,8 @@ export class ElementOptions {
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
                     isHTML: false,
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    editable: false
                 });
                 break;
         }

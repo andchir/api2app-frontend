@@ -585,41 +585,20 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'table'">
-            <h4 class="min-h-[20px] max-w-full overflow-auto mb-3"
+            <div class="min-h-[20px] max-w-full overflow-auto mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
-                <table class="border border-gray-300 w-full">
-                    <thead>
-                        <tr class="border-b-2 border-gray-300 bg-gray-100">
-                            <td class="py-2 px-3 border border-gray-300 font-bold" *ngFor="let headerText of options.headers">
-                                {{ headerText }}
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody *ngIf="!editorMode">
-                        <ng-container *ngIf="options.valueArr && options.valueArr.length > 0; else templateTableEmpty">
-                            <tr *ngFor="let item of options.valueArr">
-                                <td class="py-2 px-3 border border-gray-300 max-w-[350px] overflow-auto" *ngFor="let key of options.keys">
-                                    <div *ngIf="options.isHTML" [innerHTML]="item[key]"></div>
-                                    <div *ngIf="!options.isHTML">{{ item[key] }}</div>
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                    <tbody *ngIf="editorMode">
-                        <tr *ngFor="let item of [1, 2, 3]">
-                            <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
-                                {{ key }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <ng-template #templateTableEmpty>
-                    <tr>
-                        <td class="p-3 text-center" [colSpan]="options.headers.length" i18n>Empty.</td>
-                    </tr>
-                </ng-template>
-            </h4>
+
+                <app-table-element
+                    [editorMode]="editorMode"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [name]="options.name"
+                    [headers]="options.headers"
+                    [keys]="options.keys"
+                    [editable]="options.editable"
+                    [(ngModel)]="options.valueArr"></app-table-element>
+            </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 

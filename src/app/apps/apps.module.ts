@@ -21,6 +21,7 @@ import { ModalService } from '../services/modal.service';
 import { ElementInputTextComponent } from './components/elements/element-input-text.component';
 import { ApplicationImportComponent } from './app-import/app-import.component';
 import { RenameComponent } from '../shared/rename/rename.component';
+import {TableElementComponent} from "./components/elements/table-element.component";
 
 @NgModule({
     declarations: [
@@ -41,7 +42,8 @@ import { RenameComponent } from '../shared/rename/rename.component';
         CommonModule,
         AppsRoutingModule,
         SharedModule,
-        NgApexchartsModule
+        NgApexchartsModule,
+        TableElementComponent
     ],
     providers: [ authInterceptorProviders, ApplicationService, ApiService, ModalService ]
 })
