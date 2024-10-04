@@ -1183,6 +1183,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.showTitle || false
                 });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
         }
         return output;
@@ -1448,7 +1454,8 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'select-image',
                     data: [],
-                    showTitle: false
+                    showTitle: true,
+                    required: false
                 });
                 break;
         }

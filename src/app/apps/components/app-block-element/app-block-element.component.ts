@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';

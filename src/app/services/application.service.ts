@@ -98,6 +98,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             if (item.type === 'input-switch') {
                 output['enabled'] = !!item.enabled;
                 output[item.name] = !!item.enabled;
+            } else if (item.type === 'table') {
+                output[item.name] = item.valueArr;
             } else {
                 output[item.name] = item.value;
             }

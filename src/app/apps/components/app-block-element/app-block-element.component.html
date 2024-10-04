@@ -603,12 +603,17 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-select-image'">
-            <div role="status" class="mb-3 rounded-[0.7rem]"
+            <div role="status" class="mb-3 rounded-[0.7rem] p-2"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                  *ngIf="options?.value !== null || editorMode">
-                <div>
-                    image-select
-                </div>
+                <app-select-image
+                    [editorMode]="editorMode"
+                    [name]="options.name"
+                    [showTitle]="options.showTitle"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [data]="options.data"
+                    [(ngModel)]="options.value"></app-select-image>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

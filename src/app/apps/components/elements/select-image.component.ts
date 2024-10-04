@@ -6,43 +6,39 @@ import {
     forwardRef,
     Input,
     Output
-} from '@angular/core';
-import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
-
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 
 @Component({
-    selector: 'app-table-element',
-    templateUrl: 'table-element.component.html',
+    selector: 'app-select-image',
+    templateUrl: 'select-image.component.html',
     providers: [{
         provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => TableElementComponent),
+        useExisting: forwardRef(() => SelectImageComponent),
         multi: true
     }],
     standalone: true,
     imports: [
         NgForOf,
         NgIf,
-        NgClass,
-        FormsModule
+        NgClass
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class TableElementComponent implements ControlValueAccessor {
+export class SelectImageComponent implements ControlValueAccessor {
 
     @Input() editorMode = false;
     @Input() name: string;
+    @Input() showTitle: boolean = true;
     @Input() parentIndex: number;
     @Input() index: number;
-    @Input() isHTML: boolean = false;
-    @Input() editable: boolean = false;
-    @Input() keys: string[] = [];
-    @Input() headers: string[] = [];
+    @Input() data: any[] = [];
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
-    private _value: any[];
+    private _value: string;
 
-    get value(): any[] {
+    get value(): string {
         return this._value;
     }
 
@@ -61,7 +57,7 @@ export class TableElementComponent implements ControlValueAccessor {
 
     onTouched(_: any) {}
 
-    writeValue(value: any[]) {
+    writeValue(value: string) {
         this.value = value;
     }
 
@@ -73,18 +69,10 @@ export class TableElementComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
-    addRow(): void {
+    selectItem(item: any): void {
         if (this.editorMode) {
             return;
         }
-        const row = Object.fromEntries(this.keys.map((key, index) => [key, '']));
-        if (!this.value) {
-            this.value = [];
-        }
-        this.value.push(row);
-    }
-
-    removeRow(index: number): void {
-        this.value.splice(index, 1);
+        this.value = this.value !== item.name ? item.name : '';
     }
 }
