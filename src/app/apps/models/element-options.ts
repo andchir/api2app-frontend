@@ -1169,6 +1169,12 @@ export class ElementOptions {
                     value: options?.name || ''
                 });
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
                     name: 'data',
                     label: $localize `Name`,
                     type: 'table',
@@ -1176,6 +1182,12 @@ export class ElementOptions {
                     keys: ['name', 'imageUrl'],
                     editable: true,
                     valueArr: options?.data || []
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
                 });
                 output.push({
                     name: 'showTitle',
@@ -1453,9 +1465,11 @@ export class ElementOptions {
             case 'input-select-image':
                 Object.assign(output, {
                     name: 'select-image',
+                    label: $localize `Select image`,
                     data: [],
                     showTitle: true,
-                    required: false
+                    required: false,
+                    value: null
                 });
                 break;
         }

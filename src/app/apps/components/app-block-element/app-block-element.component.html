@@ -606,6 +606,9 @@
             <div role="status" class="mb-3 rounded-[0.7rem] p-2"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                  *ngIf="options?.value !== null || editorMode">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    {{ options?.label }}
+                </label>
                 <app-select-image
                     [editorMode]="editorMode"
                     [name]="options.name"
