@@ -58,13 +58,21 @@
                         <div class="max-w-full overflow-hidden">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
-                            <ng-container *ngIf="options?.itemFieldName && item">
-                                <span *ngIf="item[options.itemFieldName] && !options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                <span *ngIf="item[options.itemFieldName] && options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
+                            <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
+                                <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
+                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
                             </ng-container>
                             <ng-container *ngIf="!options?.itemFieldName || !item">
                                 <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
                                 <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                            </ng-container>
+                            <ng-container *ngIf="options?.keys && item">
+                                <div *ngFor="let key of options?.keys">
+                                    <div class="mb-3" *ngIf="item[key]">
+                                        <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
+                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { disableSanitizer: true } | async"></span>
+                                    </div>
+                                </div>
                             </ng-container>
 
                             <span class="text-gray-400" *ngIf="!options?.value && !options?.valueArr && editorMode">{{ options?.name }}</span>
@@ -77,7 +85,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'text-header'">
-            <h4 class="text-2xl font-bold mb-3 min-h-[20px] mb-3"
+            <h4 class="text-2xl font-bold min-h-[20px] mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <span class="flex gap-2 items-center">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
@@ -207,6 +215,7 @@
                                    [bindValue]="options?.itemFieldNameForValue"
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
+                                   [searchable]="options.searchable"
                                    [addTag]="options.addTag"
                                    notFoundText="No items found"
                                    i18n-notFoundText
@@ -232,6 +241,11 @@
                                    [items]="options.choices"
                                    [placeholder]="options.placeholder"
                                    [clearable]="options.clearable"
+                                   [searchable]="options.searchable"
+                                   notFoundText="No items found"
+                                   i18n-notFoundText
+                                   addTagText="Add item"
+                                   i18n-addTagText
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
@@ -344,7 +358,7 @@
                             {{ options?.value }}
                         </span>
                         <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" type="range"
-                               [ngStyle]="{backgroundSize: options?.value / options?.max * 100 + '%, 100%'}"
+                               [ngStyle]="{backgroundSize: (options?.value - options?.min) / (options?.max - options?.min) * 100 + '%, 100%'}"
                                class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                                [min]="options?.min"
                                [max]="options?.max"
@@ -414,7 +428,9 @@
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
-                    <audio class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></audio>
+                    <audio class="block w-full" [src]="options?.value" controls
+                           controlsList="nodownload"
+                           *ngIf="options?.value"></audio>
                     <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
                          *ngIf="!options?.value && editorMode">
                         <i class="bi bi-music-note-beamed mr-2"></i>
@@ -430,18 +446,16 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <ng-container *ngFor="let image of options.valueArr">
-                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md"
-                                 *ngIf="image[options?.itemFieldName]"
-                                 #imageContainer>
+                        <ng-container *ngFor="let image of options.valueArr; let index = index">
+                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-md" #imageContainer>
                                 <a class="block"
                                    [ngClass]="{'pointer-events-none': !options?.useLink}"
-                                   [href]="image[options?.itemFieldName]"
+                                   [href]="image[options?.itemFieldName] || image"
                                    target="_blank">
                                     <img class="w-full h-auto max-w-full" loading="lazy"
                                          (load)="imageContainer.classList.remove('loading-bg-image')"
-                                         [src]="image[options?.itemThumbnailFieldName]"
-                                         alt="">
+                                         (error)="onImageError(imageContainer, options, index)"
+                                         [src]="image[options?.itemThumbnailFieldName] || image" alt="">
                                 </a>
                             </div>
                         </ng-container>
@@ -458,6 +472,7 @@
                            *ngIf="options?.value">
                             <img class="inline-block max-w-full" loading="lazy"
                                  (load)="imageContainer.classList.remove('loading-bg-image')"
+                                 (error)="onImageError(imageContainer, options)"
                                  [src]="options?.value" alt="">
                         </a>
                         <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
@@ -475,7 +490,10 @@
             <div class="mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
-                    <video class="block w-full" [src]="options?.value" controls *ngIf="options?.value"></video>
+                    <video class="block w-full" [src]="options?.value" controls
+                           controlsList="nodownload"
+                           [poster]="options?.posterUrl"
+                           *ngIf="options?.value"></video>
                     <div class="px-4 py-10 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
                          *ngIf="!options?.value && editorMode">
                         <i class="bi bi-play-btn mr-2"></i>
@@ -567,41 +585,39 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'table'">
-            <h4 class="min-h-[20px] max-w-full overflow-auto mb-3"
+            <div class="min-h-[20px] max-w-full overflow-auto mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
-                <table class="border border-gray-300 w-full">
-                    <thead>
-                        <tr class="border-b-2 border-gray-300 bg-gray-100">
-                            <td class="py-2 px-3 border border-gray-300 font-bold" *ngFor="let headerText of options.headers">
-                                {{ headerText }}
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody *ngIf="!editorMode">
-                        <ng-container *ngIf="options.valueArr && options.valueArr.length > 0; else templateTableEmpty">
-                            <tr *ngFor="let item of options.valueArr">
-                                <td class="py-2 px-3 border border-gray-300 max-w-[350px] overflow-auto" *ngFor="let key of options.keys">
-                                    <div *ngIf="options.isHTML" [innerHTML]="item[key]"></div>
-                                    <div *ngIf="!options.isHTML">{{ item[key] }}</div>
-                                </td>
-                            </tr>
-                        </ng-container>
-                    </tbody>
-                    <tbody *ngIf="editorMode">
-                        <tr *ngFor="let item of [1, 2, 3]">
-                            <td class="py-2 px-3 border border-gray-300" *ngFor="let key of options.keys">
-                                {{ key }}
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <ng-template #templateTableEmpty>
-                    <tr>
-                        <td class="p-3 text-center" [colSpan]="options.headers.length" i18n>Empty.</td>
-                    </tr>
-                </ng-template>
-            </h4>
+
+                <app-table-element
+                    [editorMode]="editorMode"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [name]="options.name"
+                    [headers]="options.headers"
+                    [keys]="options.keys"
+                    [editable]="options.editable"
+                    [(ngModel)]="options.valueArr"></app-table-element>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'input-select-image'">
+            <div role="status" class="mb-3 rounded-[0.7rem] p-2"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="options?.value !== null || editorMode">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    {{ options?.label }}
+                </label>
+                <app-select-image
+                    [editorMode]="editorMode"
+                    [name]="options.name"
+                    [showTitle]="options.showTitle"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [dataJson]="options.data | json"
+                    [(ngModel)]="options.value"></app-select-image>
+            </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 

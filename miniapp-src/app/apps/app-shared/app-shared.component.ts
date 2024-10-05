@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 
@@ -47,7 +47,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     itemUuid: string;
     adsShownAt = 0;
-    adsShowIntervalSeconds = 3 * 60; // 3 minutes
+    adsShowIntervalSeconds = 4 * 60; // 4 minutes
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
@@ -59,6 +59,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     vkUserId: number;
     vkUserToken: string;
     vkUserFileUploadUrl: string;
+    vkAdAvailableInterstitial: boolean = false;
 
     constructor(
         protected cdr: ChangeDetectorRef,
@@ -111,6 +112,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const buttons = [];
         this.data.blocks.forEach((block, blockIndex) => {
+            if (typeof block.tabIndex === 'undefined') {
+                block.tabIndex = 0;
+            }
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
                 element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
@@ -160,10 +164,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
             });
         }
+    }
 
-        if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
-            this.addTab();
-        }
+    switchTab(tabIndex: number): void {
+        this.tabIndex = tabIndex;
+        this.cdr.detectChanges();
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
@@ -631,77 +636,78 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement): void {
-        if (response.body) {
-            const currentApiUuid = apiItem.uuid;
-            const responseContentType = response.headers.has('Content-type')
-                ? response.headers.get('Content-type')
-                : apiItem.responseContentType;
-            const elements = this.findElements(currentApiUuid, 'output', currentElement);
-            const blocks = this.findBlocksByElements(elements);
-            blocks.forEach((block) => {
-                if (block.options?.autoClear) {
-                    this.clearElementsValues(block);
-                }
-            });
-
-            this.apiService.getDataFromBlob(response.body, responseContentType)
-                .then((data) => {
-                    const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-                    const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-
-                    elements.forEach((element, index) => {
-                        if (element.type === 'input-chart-line') {
-                            this.chartElementValueApply(element, data);
-                        } else if (element.type === 'input-pagination') {
-                            this.paginationValueApply(element, valuesObj, data);
-                        } else {
-                            this.blockElementValueApply(element, valuesObj, data);
-                        }
-                    });
-
-                    // Save file to VK files section
-                    if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                        if (!this.vkUserToken) {
-                            this.vkGetUserToken(() => {
-                                this.vkSaveFile(data.result_data.vk_file_to_save);
-                            });
-                        } else {
-                            this.vkSaveFile(data.result_data.vk_file_to_save);
-                        }
-                    }
-
-                    this.showAds(currentElement);
-                    this.cdr.detectChanges();
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+        if (!response.body) {
+            return;
         }
+        const currentApiUuid = apiItem.uuid;
+        const responseContentType = response.headers.has('Content-type')
+            ? response.headers.get('Content-type')
+            : apiItem.responseContentType;
+        const elements = this.findElements(currentApiUuid, 'output', currentElement);
+        const blocks = this.findBlocksByElements(elements);
+        blocks.forEach((block) => {
+            if (block.options?.autoClear) {
+                this.clearElementsValues(block);
+            }
+        });
+
+        this.apiService.getDataFromBlob(response.body, responseContentType)
+            .then((data) => {
+                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+
+                elements.forEach((element, index) => {
+                    if (element.type === 'input-chart-line') {
+                        this.chartElementValueApply(element, data);
+                    } else if (element.type === 'input-pagination') {
+                        this.paginationValueApply(element, valuesObj, data);
+                    } else {
+                        this.blockElementValueApply(element, valuesObj, data);
+                    }
+                });
+
+                // Save file to VK files section
+                if (this.isVkApp && data?.result_data?.vk_file_to_save) {
+                    if (!this.vkUserToken) {
+                        this.vkGetUserToken(() => {
+                            this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+                        });
+                    } else {
+                        this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+                    }
+                }
+                if (currentElement.type === 'button') {
+                    this.showAds();
+                }
+                this.cdr.detectChanges();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
-    showAds(currentElement: AppBlockElement): void {
-        if (currentElement.type !== 'button') {
+    showAds(): void {
+        if (!this.vkAdAvailableInterstitial) {
             return;
         }
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            // console.log(now - this.adsShownAt);
+            console.log(this.adsShowIntervalSeconds * 1000 - (now - this.adsShownAt));
             return;
         }
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     // Advertising by VK
-        //     vkBridge.send('interstitial', { ad_format: 'reward' })
-        //         .then((data: any) => {
-        //             console.log(data);
-        //             if (data.result) {
-        //                 this.adsShownAt = Date.now();
-        //                 console.log('Advertisement shown');
-        //             }
-        //         })
-        //         .catch((error: any) => {
-        //             console.log(error);
-        //         });
-        // }
+        if (this.isVkApp) {
+            // Advertising by VK
+            vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
+                .then((data: any) => {
+                    // console.log(data);
+                    if (data.result) {
+                        this.adsShownAt = Date.now();
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(error);
+                });
+        }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
@@ -916,17 +922,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.appSubmit(apiUuid, 'input', element);
     }
 
-    switchTab(tabIndex: number): void {
-        this.tabIndex = tabIndex;
-    }
-
-    addTab(): void {
-        if (!this.data.tabs) {
-            this.data.tabs = [];
-        }
-        this.data.tabs.push(($localize `Tab`) + ' ' + (this.data.tabs.length + 1));
-    }
-
     isJson(str: string): boolean {
         if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
             return false;
@@ -961,14 +956,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return obj;
         }
         if (Array.isArray(obj)) {
-            obj.forEach((item, index) => {
-                let propName = parent ? parent + '.' + index : String(index);
-                if (typeof item === 'object') {
-                    this.flattenObj(item, propName, res);
-                } else {
-                    res[propName] = item;
-                }
-            });
+            if (obj.length > 0) {
+                obj.forEach((item, index) => {
+                    let propName = parent ? parent + '.' + index : String(index);
+                    if (typeof item === 'object') {
+                        this.flattenObj(item, propName, res);
+                    } else {
+                        res[propName] = item;
+                    }
+                });
+            } else {
+                res[parent] = [];
+            }
             return res;
         }
         for (let key in obj) {
@@ -1006,7 +1005,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkAppInit(): void {
-        // vkBridge.send('VKWebAppCheckNativeAds', { ad_format: 'interstitial'});
+        vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
+            .then((data: any) => {
+                // console.log(data);
+                if (data.result) {
+                    this.vkAdAvailableInterstitial = true;
+                }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+
         vkBridge.send('VKWebAppGetLaunchParams')
             .then((data: any) => {
                 if (data.vk_app_id) {
@@ -1069,7 +1078,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    vkSaveFile(fileDataString: string): void {
+    vkSaveFile(fileDataString: string, outputElements: AppBlockElement[]): void {
         if (!this.isVkApp || !this.vkUserToken) {
             return;
         }
@@ -1088,6 +1097,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const fileUrl = data.response.doc?.url;
                     this.message = $localize `The result has been successfully saved to your files.`;
                     this.messageType = 'success';
+
+                    const docUrl = data.response.doc?.url;
+                    // Pass the URL as the value of the download button
+                    if (docUrl) {
+                        const buttonElement = outputElements.find((elem) => {
+                            return elem.type === 'button';
+                        });
+                        buttonElement.value = docUrl;
+                        this.cdr.detectChanges();
+                    }
                 }
             })
             .catch((error: any) => {

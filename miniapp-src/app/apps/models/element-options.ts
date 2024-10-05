@@ -82,6 +82,13 @@ export class ElementOptions {
                     value: options?.itemFieldName || ''
                 });
                 output.push({
+                    name: 'keys',
+                    label: $localize `Value keys`,
+                    type: 'input-tags',
+                    value: options?.keys || [],
+                    choices: []
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
@@ -625,6 +632,12 @@ export class ElementOptions {
                     enabled: options?.clearable || false
                 });
                 output.push({
+                    name: 'searchable',
+                    label: $localize `Searchable`,
+                    type: 'input-switch',
+                    enabled: options?.searchable || false
+                });
+                output.push({
                     name: 'addTag',
                     label: $localize `Allow adding value`,
                     type: 'input-switch',
@@ -669,6 +682,12 @@ export class ElementOptions {
                     label: $localize `Label`,
                     type: 'input-text',
                     value: options?.label
+                });
+                output.push({
+                    name: 'placeholder',
+                    label: $localize `Placeholder`,
+                    type: 'input-text',
+                    value: options?.placeholder
                 });
                 output.push({
                     name: 'value',
@@ -874,6 +893,14 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                if (type === 'video') {
+                    output.push({
+                        name: 'posterUrl',
+                        label: $localize `Poster URL`,
+                        type: 'input-text',
+                        value: options?.posterUrl || ''
+                    });
+                }
                 break;
             case 'image':
                 output.push({
@@ -1127,6 +1154,57 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
                 });
+                // output.push({
+                //     name: 'editable',
+                //     label: $localize `Editable`,
+                //     type: 'input-switch',
+                //     enabled: options?.editable || false
+                // });
+                break;
+            case 'input-select-image':
+                output.push({
+                    name: 'name',
+                    label: $localize `Name`,
+                    type: 'input-text',
+                    value: options?.name || ''
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'data',
+                    label: $localize `Name`,
+                    type: 'table',
+                    headers: ['Название', 'URL изображения'],
+                    keys: ['name', 'imageUrl'],
+                    editable: true,
+                    valueArr: options?.data
+                        ? options.data.map((item) => {
+                            return Object.assign({}, item)
+                        })
+                        : []
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
+                    name: 'showTitle',
+                    label: $localize `Show titles`,
+                    type: 'input-switch',
+                    enabled: options?.showTitle || false
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
         }
         return output;
@@ -1152,6 +1230,7 @@ export class ElementOptions {
                     fontSize: 'Medium',
                     itemFieldName: '',
                     icon: '',
+                    keys: [],
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,
@@ -1256,6 +1335,7 @@ export class ElementOptions {
                     choices: ['Value1', 'Value2', 'Value3'],
                     required: true,
                     clearable: true,
+                    searchable: true,
                     addTag: false,
                     selectDefaultFirst: true,
                     hiddenByDefault: false,
@@ -1324,11 +1404,19 @@ export class ElementOptions {
                 });
                 break;
             case 'audio':
+                Object.assign(output, {
+                    name: type,
+                    prefixText: '',
+                    value: '',
+                    hiddenByDefault: false
+                });
+                break;
             case 'video':
                 Object.assign(output, {
                     name: type,
                     prefixText: '',
                     value: '',
+                    posterUrl: '',
                     hiddenByDefault: false
                 });
                 break;
@@ -1374,7 +1462,18 @@ export class ElementOptions {
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
                     isHTML: false,
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    editable: false
+                });
+                break;
+            case 'input-select-image':
+                Object.assign(output, {
+                    name: 'select-image',
+                    label: $localize `Select image`,
+                    data: [],
+                    showTitle: true,
+                    required: false,
+                    value: null
                 });
                 break;
         }

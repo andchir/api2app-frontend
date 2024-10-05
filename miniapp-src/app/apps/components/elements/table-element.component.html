@@ -1,0 +1,55 @@
+<table class="border border-gray-300 w-full">
+    <thead>
+        <tr class="border-b-2 border-gray-300 bg-gray-100">
+            <td class="py-2 px-3 border border-gray-300 font-bold text-sm" *ngFor="let headerText of headers">
+                {{ headerText }}
+            </td>
+        </tr>
+    </thead>
+    <tbody *ngIf="!editorMode">
+    <ng-container *ngIf="value && value.length > 0; else templateTableEmpty">
+        <tr class="group" *ngFor="let item of value; let ind = index">
+            <td class="relative border border-gray-300 max-w-[350px] overflow-auto"
+                [ngClass]="{'py-2 px-3': !editable}"
+                *ngFor="let key of keys; let colIndex = index">
+                <ng-container *ngIf="!editable; else inputField">
+                    <div *ngIf="isHTML" [innerHTML]="item[key]"></div>
+                    <div *ngIf="!isHTML">{{ item[key] }}</div>
+                </ng-container>
+                <ng-template #inputField>
+                    <input type="text"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           [(ngModel)]="item[key]">
+                </ng-template>
+                <button type="button"
+                        class="absolute right-[2px] top-[2px] hidden group-hover:inline-block p-2 bg-gray-50"
+                        title="Delete"
+                        i18n-title
+                        (click)="removeRow(ind)" *ngIf="colIndex == keys.length - 1">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </td>
+        </tr>
+    </ng-container>
+    </tbody>
+    <tbody *ngIf="editorMode">
+        <tr *ngFor="let item of [1, 2, 3]">
+            <td class="py-2 px-3 border border-gray-300" *ngFor="let key of keys">
+                {{ key }}
+            </td>
+        </tr>
+    </tbody>
+</table>
+<div class="text-center py-3" *ngIf="editable">
+    <button type="button"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-xs px-8 py-1"
+            (click)="addRow()">
+        <i class="bi bi-plus-lg mr-2"></i>
+        <span i18n>Add</span>
+    </button>
+</div>
+<ng-template #templateTableEmpty>
+    <tr>
+        <td class="p-3 text-center" [colSpan]="headers.length" i18n>Empty.</td>
+    </tr>
+</ng-template>

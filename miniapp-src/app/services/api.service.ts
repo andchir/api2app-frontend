@@ -146,7 +146,17 @@ export class ApiService extends DataService<ApiItem> {
             body = {};
             data.bodyFields.forEach((item) => {
                 if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
-                    body[item.name] = typeof item.value === 'string' ? (item.value || '') : item.value;
+                    let value = typeof item.value === 'string' ? (item.value || '') : item.value;
+                    if (!sendAsFormData && typeof value === 'string') {
+                        if (value === '[]') {
+                            value = [];
+                        } else if (['true', 'false'].includes(String(value))) {
+                            value = value === 'true';
+                        } else if (!Number.isNaN(Number(value))) {
+                            value = Number(value);
+                        }
+                    }
+                    body[item.name] = value;
                     if (data.sendAsFormData) {
                         if (item.isFile) {
                             if (item.files) {
@@ -381,7 +391,7 @@ export class ApiService extends DataService<ApiItem> {
     }
 
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
-        const url = `${BASE_URL}api/v1/api_import_from_curl`;
+        const url = `${BASE_URL}${this.locale}/api/v1/api_import_from_curl`;
         return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)

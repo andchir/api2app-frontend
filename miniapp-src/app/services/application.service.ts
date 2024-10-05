@@ -32,15 +32,31 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
-        const url = `${BASE_URL}api/v1/application_import_from_json`;
+        const url = `${BASE_URL}${this.locale}/api/v1/application_import_from_json`;
         return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
     }
 
-    static createBlockOptionsFields(options?: any, index = 0): AppBlockElement[] {
+    cloneItem(uuid: string): Observable<{success: boolean}> {
+        const url = `${this.requestUrl}/${uuid}/clone`
+        return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    static createBlockOptionsFields(options?: any, index = 0, tabIndex = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
+        output.push({
+            name: 'tabIndex',
+            label: $localize `Tab Index`,
+            type: 'input-number',
+            min: 0,
+            max: 30,
+            value: tabIndex
+        });
         output.push({
             name: 'orderIndex',
             label: $localize `Order Index`,
@@ -61,7 +77,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             name: 'messageSuccess',
             label: $localize `Success message`,
             type: 'input-textarea',
-            value: options?.messageSuccess
+            value: options?.messageSuccess || ''
         });
         output.push({
             name: 'autoClear',
@@ -91,6 +107,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             if (item.type === 'input-switch') {
                 output['enabled'] = !!item.enabled;
                 output[item.name] = !!item.enabled;
+            } else if (item.type === 'table') {
+                output[item.name] = item.valueArr;
             } else {
                 output[item.name] = item.value;
             }
@@ -100,6 +118,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[]|null {
         switch (element.type) {
+            case 'input-tags':
+                return Array.isArray(element?.value) ? element?.value : [];
             case 'input-date':
                 const dateFormat = element?.format;
                 const date = moment(String(element?.value));
@@ -178,7 +198,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumns: 3,
             language: '',
             image: '',
-            blocks: [{elements: []}, {elements: []}, {elements: []}]
+            blocks: [{tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}]
         };
     }
 }

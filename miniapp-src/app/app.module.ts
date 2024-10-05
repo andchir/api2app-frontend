@@ -15,6 +15,8 @@ import { ElementInputTextComponent } from './apps/components/elements/element-in
 import { ApplicationService } from './services/application.service';
 import { ApiService } from './services/api.service';
 import { ModalService } from './services/modal.service';
+import {TableElementComponent} from "./apps/components/elements/table-element.component";
+import {SelectImageComponent} from "./apps/components/elements/select-image.component";
 
 @NgModule({
     declarations: [
@@ -34,7 +36,9 @@ import { ModalService } from './services/modal.service';
         AppRoutingModule,
         FormsModule,
         SharedModule,
-        NgApexchartsModule
+        NgApexchartsModule,
+        TableElementComponent,
+        SelectImageComponent
     ],
     providers: [ApplicationService, ApiService, ModalService],
     bootstrap: [AppComponent]

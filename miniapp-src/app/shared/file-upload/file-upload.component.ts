@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input } from '@angular/core';
+import { Component, ElementRef, forwardRef, Input, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { noop } from 'rxjs';
 
@@ -16,11 +16,13 @@ import { noop } from 'rxjs';
 export class FileUploadComponent implements ControlValueAccessor {
 
     private _value: File[];
+    @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
     @Input() fileInputAccept: string;
     @Input() multiple = true;
     @Input() placeholder = 'Upload File';
     disabled = false;
     files: File[] = [];
+    imageBlobsUrls: string[] = [];
     loadingUpload = false;
 
     constructor() {}
@@ -34,6 +36,8 @@ export class FileUploadComponent implements ControlValueAccessor {
         this._value = val;
         if (!this._value || this._value.length === 0) {
             this.files = [];
+            this.imageBlobsUrls = [];
+            this.clearFileInput();
         }
         this.onChange(this._value);
     }
@@ -51,7 +55,7 @@ export class FileUploadComponent implements ControlValueAccessor {
         event.preventDefault();
         event.stopPropagation();
 
-        (event.target as HTMLElement).classList.remove('border-green-400');
+        this.dragLeave(null, event.target as HTMLElement);
 
         const files = this.getTransferredFiles(event.dataTransfer);
         this.files = [...files, ...this.files];
@@ -65,12 +69,24 @@ export class FileUploadComponent implements ControlValueAccessor {
         event.preventDefault();
     }
 
-    dragEnter(event: DragEvent): void {
-        (event.target as HTMLElement).classList.add('border-green-400');
+    dragEnter(event: DragEvent, element?: HTMLElement): void {
+        element = element || event.target as HTMLElement;
+        if (element.tagName !== 'DIV') {
+            this.dragEnter(null, element.parentElement);
+            return;
+        }
+        element.classList.add('border-green-400');
+        element.querySelector('button').classList.add('pointer-events-none');
     }
 
-    dragLeave(event: DragEvent): void {
-        (event.target as HTMLElement).classList.remove('border-green-400');
+    dragLeave(event: DragEvent, element?: HTMLElement): void {
+        element = element || event.target as HTMLElement;
+        if (element.tagName !== 'DIV') {
+            this.dragLeave(null, element.parentElement);
+            return;
+        }
+        element.classList.remove('border-green-400');
+        element.querySelector('button').classList.remove('pointer-events-none');
     }
 
     buttonHandler(event?: MouseEvent): void {
@@ -93,7 +109,10 @@ export class FileUploadComponent implements ControlValueAccessor {
         const files = [];
         if (dataTransfer.items) {
             for (let i = 0; i < dataTransfer.items.length; i++) {
-                files.push(dataTransfer.items[i].getAsFile());
+                const file = dataTransfer.items[i].getAsFile();
+                if (file) {
+                    files.push(file);
+                }
             }
         }
         return files;
@@ -104,7 +123,16 @@ export class FileUploadComponent implements ControlValueAccessor {
             return;
         }
         this.files.splice(index, 1);
+        if (this.files.length === 0) {
+            this.clearFileInput();
+        }
         this.writeValue(this.files);
+    }
+
+    clearFileInput(): void {
+        if (this.fileInput && this.fileInput.nativeElement) {
+            this.fileInput.nativeElement.value = null;
+        }
     }
 
     onChange: (value: File[]) => void = noop;
@@ -125,5 +153,30 @@ export class FileUploadComponent implements ControlValueAccessor {
 
     writeValue(value: File[]): void {
         this.value = value;
+        this.imageBlobsUrls = [];
+        if (value) {
+            value.forEach((file, index) => {
+                this.imageBlobsUrls[index] = this.createImageUrl(file);
+            });
+        }
+    }
+
+    createImageUrl(file: File, imageEl?: HTMLImageElement): string {
+        if (!file.type.includes('image/') && !file.type.includes('djvu')) {
+            return null;
+        }
+        if (imageEl && !imageEl.src) {
+            imageEl.onload = () => {
+                URL.revokeObjectURL(imageEl.src);
+            };
+        }
+        return URL.createObjectURL(file);
+    }
+
+    onImageLoaded(event: Event) {
+        const imageEl = event.target as HTMLImageElement;
+        if (imageEl.src) {
+            URL.revokeObjectURL(imageEl.src);
+        }
     }
 }

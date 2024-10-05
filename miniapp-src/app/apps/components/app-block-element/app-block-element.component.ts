@@ -1,9 +1,9 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
 
-import { AppBlockElementType } from '../../models/app-block.interface';
+import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
@@ -52,7 +52,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-chart-line', title: $localize `Line Chart`, icon: 'bi-graph-up'},
         {name: 'input-pagination', title: $localize `Pagination`, icon: 'bi-segmented-nav'},
         {name: 'status', title: $localize `Status Indicator`, icon: 'bi-check-circle'},
-        {name: 'table', title: $localize `Table`, icon: 'bi-table'}
+        {name: 'table', title: $localize `Table`, icon: 'bi-table'},
+        {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'}
     ];
 
     chartOptions: ChartOptions;
@@ -176,6 +177,26 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (emitChange) {
             this.onFieldValueChanged();
         }
+    }
+
+    onImageError(imageContainer: HTMLElement, element: AppBlockElement, index?: number): void {
+        if (imageContainer) {
+            imageContainer.classList.remove('loading-bg-image');
+        }
+        if (this.editorMode) {
+            return;
+        }
+        const imageBrokenUrl = 'assets/img/image-broken.png';
+        if (typeof index !== 'undefined' && element.valueArr) {
+            if (element.itemThumbnailFieldName) {
+                element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
+            } else {
+                element.valueArr[index] = imageBrokenUrl;
+            }
+        } else {
+            element.value = imageBrokenUrl;
+        }
+        this.onFieldValueChanged();
     }
 
     createChartOptions(): void {
