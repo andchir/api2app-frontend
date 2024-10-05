@@ -1154,12 +1154,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
                 });
-                output.push({
-                    name: 'editable',
-                    label: $localize `Editable`,
-                    type: 'input-switch',
-                    enabled: options?.editable || false
-                });
+                // output.push({
+                //     name: 'editable',
+                //     label: $localize `Editable`,
+                //     type: 'input-switch',
+                //     enabled: options?.editable || false
+                // });
                 break;
             case 'input-select-image':
                 output.push({
