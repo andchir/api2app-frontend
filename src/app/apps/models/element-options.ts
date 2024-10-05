@@ -1181,7 +1181,11 @@ export class ElementOptions {
                     headers: ['Название', 'URL изображения'],
                     keys: ['name', 'imageUrl'],
                     editable: true,
-                    valueArr: options?.data || []
+                    valueArr: options?.data
+                        ? options.data.map((item) => {
+                            return Object.assign({}, item)
+                        })
+                        : []
                 });
                 output.push({
                     name: 'value',

@@ -4,8 +4,8 @@ import {
     Component,
     EventEmitter,
     forwardRef,
-    Input,
-    Output
+    Input, OnChanges, OnInit,
+    Output, SimpleChanges
 } from "@angular/core";
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
@@ -26,7 +26,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SelectImageComponent implements ControlValueAccessor {
+export class SelectImageComponent implements ControlValueAccessor, OnInit, OnChanges {
 
     @Input() editorMode = false;
     @Input() name: string;
@@ -34,6 +34,7 @@ export class SelectImageComponent implements ControlValueAccessor {
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() data: any[] = [];
+    @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     private _value: string;
@@ -52,6 +53,18 @@ export class SelectImageComponent implements ControlValueAccessor {
     constructor(
         private cdr: ChangeDetectorRef
     ) {}
+
+    ngOnInit(): void {
+        if (this.dataJson) {
+            this.data = JSON.parse(this.dataJson);
+        }
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['dataJson'] && changes['dataJson'].currentValue) {
+            this.data = JSON.parse(changes['dataJson'].currentValue);
+        }
+    }
 
     onChange(_: any) {}
 

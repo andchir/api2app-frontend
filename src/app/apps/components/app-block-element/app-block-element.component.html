@@ -615,7 +615,7 @@
                     [showTitle]="options.showTitle"
                     [parentIndex]="parentIndex"
                     [index]="index"
-                    [data]="options.data"
+                    [dataJson]="options.data | json"
                     [(ngModel)]="options.value"></app-select-image>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

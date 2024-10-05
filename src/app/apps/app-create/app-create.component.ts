@@ -273,6 +273,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.selectedElement = null;
         this.selectedBlock = null;
         this.isOptionsActive = false;
+        this.cdr.detectChanges();
     }
 
     updateElementOrder(currentIndex: number, nexIndex: number, blockIndex: number): void {
