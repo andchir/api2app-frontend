@@ -145,7 +145,7 @@
 
             <div class="w-full overflow-y-hidden overflow-x-auto mb-4">
                 <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
-                    <li class="me-2" *ngFor="let tabName of data.tabs; index as index">
+                    <li class="me-0 md:me-2" *ngFor="let tabName of data.tabs; index as index">
                         <button type="button"
                                 class="relative block md:inline-block w-full md:w-auto md:whitespace-nowrap z-10 top-[1px] px-4 py-3 rounded-lg md:rounded-none md:rounded-t-lg border mb-3 md:mb-0"
                                 [ngClass]="{'border-gray-300 text-blue-700 border-b-300 md:border-b-gray-100': tabIndex == index, 'border-gray-100 border-b-gray-100 md:border-b-gray-300 text-gray-500 hover:text-gray-700 bg-gray-200 hover:border-gray-300': tabIndex !== index}"
