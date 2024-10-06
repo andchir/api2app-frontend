@@ -212,6 +212,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.selectedElement = element;
         this.selectedBlock = null;
         element.orderIndex = elementIndex;
+        element.blockIndex = blockIndex;
         this.selectedItemOptionsFields = ElementOptions.createElementOptionsFields(element.type, element);
         this.isOptionsActive = true;
         this.cdr.detectChanges();
@@ -246,11 +247,15 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     updateItemOptions(): void {
         if (this.selectedElement) {
             Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));
+            let newItemIndex = this.selectedElement.orderIndex;
             if (this.selectedElement.orderIndex !== this.selectedElementIndex) {
-                this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
+                newItemIndex = this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
             }
             if (this.selectedElement.type === 'input-pagination') {
                 this.selectedElement.value = this.selectedElement.useAsOffset ? 0 : 1;
+            }
+            if (this.selectedElement.blockIndex !== this.selectedBlockIndex) {
+                this.moveElementToBlock(newItemIndex, this.selectedBlockIndex, this.selectedElement.blockIndex);
             }
         }
         if (this.selectedBlock) {
@@ -276,20 +281,44 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
-    updateElementOrder(currentIndex: number, nexIndex: number, blockIndex: number): void {
+    updateElementOrder(currentIndex: number, newIndex: number, blockIndex: number): number {
         const currentBlock = this.data.blocks[blockIndex] || null;
         if (!currentBlock) {
-            return;
+            return currentIndex;
         }
         const elements = currentBlock.elements;
-        if (nexIndex > elements.length - 1) {
-            nexIndex = elements.length - 1;
+        newIndex = Math.max(0, newIndex);
+        if (newIndex > elements.length - 1) {
+            newIndex = elements.length - 1;
         }
-        if (currentIndex === nexIndex) {
-            return;
+        if (currentIndex === newIndex) {
+            return currentIndex;
         }
         const deletedItems = elements.splice(currentIndex, 1);
-        elements.splice(nexIndex, 0, deletedItems[0]);
+        elements.splice(newIndex, 0, deletedItems[0]);
+        return newIndex;
+    }
+
+    moveElementToBlock(currentIndex: number, blockIndex: number, targetBlockIndex: number): number {
+        if (blockIndex === targetBlockIndex) {
+            return currentIndex;
+        }
+        const currentBlock = this.data.blocks[blockIndex] || null;
+        const targetBlock = this.data.blocks[targetBlockIndex] || null;
+        if (!currentBlock || !targetBlock) {
+            return currentIndex;
+        }
+        const element = currentBlock.elements[currentIndex] || null;
+        if (!element) {
+            return currentIndex;
+        }
+        const deletedItems = currentBlock.elements.splice(currentIndex, 1);
+        let newIndex = Math.max(0, currentIndex);
+        if (newIndex > targetBlock.elements.length - 1) {
+            newIndex = targetBlock.elements.length - 1;
+        }
+        targetBlock.elements.splice(newIndex, 0, deletedItems[0]);
+        return newIndex;
     }
 
     updateBlockIndex(currentIndex: number, nexIndex: number): void {

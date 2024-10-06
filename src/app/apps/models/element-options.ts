@@ -16,6 +16,14 @@ export class ElementOptions {
                     value: options?.name
                 });
                 output.push({
+                    name: 'blockIndex',
+                    label: $localize `Block Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.blockIndex || 0
+                });
+                output.push({
                     name: 'orderIndex',
                     label: $localize `Order Index`,
                     type: 'input-number',
@@ -51,6 +59,14 @@ export class ElementOptions {
                     label: $localize `Name`,
                     type: 'input-text',
                     value: options?.name
+                });
+                output.push({
+                    name: 'blockIndex',
+                    label: $localize `Block Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.blockIndex || 0
                 });
                 output.push({
                     name: 'orderIndex',
@@ -1167,6 +1183,14 @@ export class ElementOptions {
                     label: $localize `Name`,
                     type: 'input-text',
                     value: options?.name || ''
+                });
+                output.push({
+                    name: 'orderIndex',
+                    label: $localize `Order Index`,
+                    type: 'input-number',
+                    min: 0,
+                    max: 100,
+                    value: options?.orderIndex || 0
                 });
                 output.push({
                     name: 'label',
