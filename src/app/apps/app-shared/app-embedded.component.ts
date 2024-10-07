@@ -20,6 +20,7 @@ import { TokenStorageService } from '../../services/token-storage.service';
 import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
 import { ApplicationSharedComponent } from './app-shared.component';
+import { VkBridgeService } from '../../services/vk-bridge.service';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -27,7 +28,7 @@ declare const vkBridge: any;
 @Component({
     selector: 'app-item-embedded',
     templateUrl: './app-shared.component.html',
-    providers: [],
+    providers: [VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationEmbeddedComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
@@ -43,9 +44,10 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
         dataService: ApplicationService,
         apiService: ApiService,
         modalService: ModalService,
-        routerEventsService: RouterEventsService
+        routerEventsService: RouterEventsService,
+        vkBridgeService: VkBridgeService
     ) {
-        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService, vkBridgeService);
     }
 
     override getData(): void {

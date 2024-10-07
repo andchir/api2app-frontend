@@ -24,7 +24,8 @@ import { TokenStorageService } from '../../services/token-storage.service';
 import { ElementOptions } from '../models/element-options';
 import { RenameComponent } from '../../shared/rename/rename.component';
 import { environment } from '../../../environments/environment';
-import {ConfirmComponent} from "../../shared/confirm/confirm.component";
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { VkBridgeService } from '../../services/vk-bridge.service';
 
 const APP_NAME = environment.appName;
 
@@ -32,7 +33,7 @@ const APP_NAME = environment.appName;
     selector: 'app-application-create',
     templateUrl: './app-create.component.html',
     styleUrls: ['./app-create.component.css'],
-    providers: [],
+    providers: [VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationCreateComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
@@ -63,9 +64,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         dataService: ApplicationService,
         apiService: ApiService,
         modalService: ModalService,
-        routerEventsService: RouterEventsService
+        routerEventsService: RouterEventsService,
+        vkBridgeService: VkBridgeService
     ) {
-        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService, vkBridgeService);
     }
 
     get optionsTitle(): string {

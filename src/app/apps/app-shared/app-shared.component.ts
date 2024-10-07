@@ -17,6 +17,8 @@ import { ModalService } from '../../services/modal.service';
 import { TokenStorageService } from '../../services/token-storage.service';
 import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
+import { VkBridgeService } from '../../services/vk-bridge.service';
+import { VkAppOptions } from '../models/vk-app-options.interface';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -24,7 +26,7 @@ declare const vkBridge: any;
 @Component({
     selector: 'app-item-shared',
     templateUrl: './app-shared.component.html',
-    providers: [],
+    providers: [VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
@@ -57,11 +59,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
     isVkApp: boolean = false;
-    vkAppId: number;
-    vkUserId: number;
-    vkUserToken: string;
-    vkUserFileUploadUrl: string;
-    vkAdAvailableInterstitial: boolean = false;
+    vkAppOptions: VkAppOptions;
 
     constructor(
         protected cdr: ChangeDetectorRef,
@@ -73,7 +71,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected dataService: ApplicationService,
         protected apiService: ApiService,
         protected modalService: ModalService,
-        protected routerEventsService: RouterEventsService
+        protected routerEventsService: RouterEventsService,
+        protected vkBridgeService: VkBridgeService
     ) {}
 
     ngOnInit(): void {
@@ -222,7 +221,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return elem.type === 'input-file';
         });
 
-        if (this.isVkApp && input_file && this.vkUserId && !this.vkUserFileUploadUrl) {
+        if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
                 this.appSubmit(apiUuid, 'input', currentElement, showMessages);
             });
@@ -478,7 +477,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
 
-                if (element.type === 'input-file' && this.isVkApp && this.vkUserFileUploadUrl) {
+                if (element.type === 'input-file' && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
                 }
                 if (element.type === 'input-switch') {
@@ -501,8 +500,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     bodyFields.push(dataField);
                 }
                 dataField.value = dataField.value
-                    ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkUserFileUploadUrl})
-                    : JSON.stringify({'upload_url': this.vkUserFileUploadUrl});
+                    ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkAppOptions.userFileUploadUrl})
+                    : JSON.stringify({'upload_url': this.vkAppOptions.userFileUploadUrl});
             }
 
             apiItem.bodyFields = bodyFields;
@@ -677,10 +676,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 // Save file to VK files section
                 if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                    if (!this.vkUserToken) {
-                        this.vkGetUserToken(() => {
-                            this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-                        });
+                    if (!this.vkAppOptions.userToken) {
+                        this.vkBridgeService.getUserToken(this.vkAppOptions)
+                            .then(() => {
+                                this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+                            });
                     } else {
                         this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                     }
@@ -696,7 +696,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     showAds(): void {
-        if (!this.vkAdAvailableInterstitial) {
+        if (!this.vkAppOptions.adAvailableInterstitial) {
             return;
         }
         const now = Date.now();
@@ -1014,90 +1014,42 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkAppInit(): void {
-        vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
-            .then((data: any) => {
-                // console.log(data);
-                if (data.result) {
-                    this.vkAdAvailableInterstitial = true;
-                }
+        this.vkBridgeService.getOptions()
+            .then((options) => {
+                this.vkAppOptions = options;
+                console.log(options);
             })
-            .catch((error: any) => {
-                console.log(error);
-            });
-
-        vkBridge.send('VKWebAppGetLaunchParams')
-            .then((data: any) => {
-                if (data.vk_app_id) {
-                    this.vkAppId = data.vk_app_id;
-                    this.vkUserId = data.vk_user_id;
-                }
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    }
-
-    vkGetUserToken(callbackFunc?: () => void): void {
-        if (!this.vkAppId || !this.vkUserId) {
-            return;
-        }
-        vkBridge.send('VKWebAppGetAuthToken', {
-            app_id: this.vkAppId,
-            scope: 'docs'
-        })
-            .then((data: any) => {
-                if (data.access_token) {
-                    this.vkUserToken = data.access_token;
-                    if (typeof callbackFunc === 'function') {
-                        callbackFunc();
-                    }
-                }
-            })
-            .catch((error: any) => {
-                console.log(error);
+            .catch(() => {
+                this.vkAppOptions = {};
             });
     }
 
     vkGetFileUploadUrl(callbackFunc?: () => void): void {
-        if (!this.vkAppId || !this.vkUserId) {
-            return;
-        }
         this.message = '';
-        this.vkGetUserToken(() => {
-            vkBridge.send('VKWebAppCallAPIMethod', {
-                method: 'docs.getUploadServer',
-                params: {
-                    user_ids: this.vkUserId,
-                    v: '5.131',
-                    access_token: this.vkUserToken
-                }})
-                .then((data: any) => {
-                    if (data.response) {
-                        this.vkUserFileUploadUrl = data.response?.upload_url;
-                        if (typeof callbackFunc === 'function') {
-                            callbackFunc();
-                        }
-                    }
-                })
-                .catch((error: any) => {
-                    console.log(error);
-                    this.message = $localize `Unable to obtain permission to upload file.`;
-                    this.messageType = 'error';
-                });
-        });
+        this.vkBridgeService.getFileUploadUrl(this.vkAppOptions)
+            .then((userFileUploadUrl: string) => {
+                if (typeof callbackFunc === 'function') {
+                    callbackFunc();
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+                this.message = $localize `Unable to obtain permission to upload file.`;
+                this.messageType = 'error';
+            });
     }
 
     vkSaveFile(fileDataString: string, outputElements: AppBlockElement[]): void {
-        if (!this.isVkApp || !this.vkUserToken) {
+        if (!this.isVkApp || !this.vkAppOptions.userToken) {
             return;
         }
         const date = new Date();
         vkBridge.send('VKWebAppCallAPIMethod', {
             method: 'docs.save',
             params: {
-                user_ids: this.vkUserId,
                 v: '5.131',
-                access_token: this.vkUserToken,
+                user_ids: this.vkAppOptions.userId,
+                access_token: this.vkAppOptions.userToken,
                 file: fileDataString,
                 title: this.data.name + ' - ' + date.toLocaleString()
             }})
