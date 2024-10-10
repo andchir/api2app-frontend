@@ -44,6 +44,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     override previewMode = false;
     errorsObj: {[name: string]: string[]} = {};
     isOptionsActive = false;
+    isSettingsActive = false;
     saving = false;
     itemId: number = 0;
     selectedElement: AppBlockElement;
@@ -343,6 +344,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             element.options = Object.assign({}, element.options);
         });
         return {tabIndex, elements, options};
+    }
+
+    appSettingsToggle(): void {
+        this.isSettingsActive = !this.isSettingsActive;
     }
 
     cloneApp(): void {
