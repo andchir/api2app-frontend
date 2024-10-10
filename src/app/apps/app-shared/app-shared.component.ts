@@ -59,7 +59,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
     isVkApp: boolean = false;
-    vkAppOptions: VkAppOptions;
+    vkAppOptions: VkAppOptions = {};
 
     constructor(
         protected cdr: ChangeDetectorRef,
@@ -1017,7 +1017,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                console.log(options);
+                console.log(this.vkAppOptions);
+                // this.vkBridgeService.showBannerAd();
             })
             .catch(() => {
                 this.vkAppOptions = {};

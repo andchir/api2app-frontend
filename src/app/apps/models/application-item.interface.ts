@@ -19,6 +19,6 @@ export interface ApplicationItem {
     uuid_embed?: string;
     tabs?: string[];
     maintenance?: boolean;
-    vkAppId?: number;
+    vkAppId?: string;
     vkSecretKey?: string;
 }
