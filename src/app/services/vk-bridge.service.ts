@@ -73,7 +73,6 @@ export class VkBridgeService {
 
     getUserSubscriptions(appData: any): Observable<{subscriptions: string[]}> {
         const url = `${BASE_URL}api/v1/vk_user_subscriptions`;
-        console.log(appData);
         return this.httpClient.post<{subscriptions: string[]}>(url, appData, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
@@ -130,14 +129,14 @@ export class VkBridgeService {
         vkBridge.send('VKWebAppShowBannerAd', {
             banner_location: 'top'
         })
-            .then((data) => {
+            .then((data: any) => {
                 if (data.result) {
                     // Banner ad displayed
                 } else {
                     console.log(data);
                 }
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 console.log(error);
             });
     }

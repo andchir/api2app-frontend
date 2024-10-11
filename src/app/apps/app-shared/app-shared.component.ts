@@ -1017,8 +1017,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                console.log(this.vkAppOptions);
-                // this.vkBridgeService.showBannerAd();
+                if (!this.vkAppOptions.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
+                    this.vkBridgeService.showBannerAd();
+                }
             })
             .catch(() => {
                 this.vkAppOptions = {};
