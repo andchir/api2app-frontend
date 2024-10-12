@@ -4,6 +4,7 @@ import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 
 import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 import { BASE_URL } from '../../environments/environment';
+import {AppBlockElement} from "../apps/models/app-block.interface";
 
 declare const vkBridge: any;
 
@@ -102,7 +103,7 @@ export class VkBridgeService {
             });
     }
 
-    getFileUploadUrl(options: VkAppOptions): Promise<string> {
+    async getFileUploadUrl(options: VkAppOptions): Promise<string> {
         return this.getUserToken(options)
             .then((userToken) => {
                 return userToken;
@@ -161,7 +162,7 @@ export class VkBridgeService {
             });
     }
 
-    showNativeAds(type: string = 'interstitial'): Promise<any> {
+    async showNativeAds(type: string = 'interstitial'): Promise<any> {
         return vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
             .then((data: any) => {
                 return data;
@@ -171,21 +172,28 @@ export class VkBridgeService {
             });
     }
 
-    saveFile(options: VkAppOptions, fileDataString: string, fileName: string): void {
-        vkBridge.send('VKWebAppCallAPIMethod', {
-            method: 'docs.save',
-            params: {
-                v: '5.131',
-                user_ids: options.userId,
-                access_token: options.userToken,
-                file: fileDataString,
-                title: fileName
-            }})
-            .then((data: any) => {
-                return data.response?.doc?.url;
+    async saveFile(appName: string, options: VkAppOptions, fileDataString: string): Promise<string> {
+        return this.getUserToken(options)
+            .then((userToken) => {
+                return userToken;
             })
-            .catch((error: any) => {
-                console.log(error);
+            .then((userToken) => {
+                const date = new Date();
+                return vkBridge.send('VKWebAppCallAPIMethod', {
+                    method: 'docs.save',
+                    params: {
+                        v: '5.131',
+                        user_ids: options.userId,
+                        access_token: options.userToken,
+                        file: fileDataString,
+                        title: appName + ' - ' + date.toLocaleString()
+                    }})
+                    .then((data: any) => {
+                        return data.response?.doc?.url;
+                    })
+                    .catch((error: any) => {
+                        console.log(error);
+                    });
             });
     }
 

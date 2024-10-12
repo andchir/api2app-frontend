@@ -674,14 +674,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 // Save file to VK files section
                 if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                    if (!this.vkAppOptions.userToken) {
-                        this.vkBridgeService.getUserToken(this.vkAppOptions)
-                            .then(() => {
-                                this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-                            });
-                    } else {
-                        this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-                    }
+                    this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                 }
                 if (this.isVkApp && currentElement.type === 'button') {
                     this.vkBridgeService.showAds(this.vkAppOptions);
@@ -1016,38 +1009,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkSaveFile(fileDataString: string, outputElements: AppBlockElement[]): void {
-        if (!this.isVkApp || !this.vkAppOptions.userToken) {
-            return;
-        }
-        const date = new Date();
-        vkBridge.send('VKWebAppCallAPIMethod', {
-            method: 'docs.save',
-            params: {
-                v: '5.131',
-                user_ids: this.vkAppOptions.userId,
-                access_token: this.vkAppOptions.userToken,
-                file: fileDataString,
-                title: this.data.name + ' - ' + date.toLocaleString()
-            }})
-            .then((data: any) => {
-                if (data.response) {
-                    const fileUrl = data.response.doc?.url;
-                    this.message = $localize `The result has been successfully saved to your files.`;
-                    this.messageType = 'success';
+        this.vkBridgeService.saveFile(this.data.name, this.vkAppOptions, fileDataString)
+            .then((docUrl: string) => {
+                this.message = $localize `The result has been successfully saved to your files.`;
+                this.messageType = 'success';
 
-                    const docUrl = data.response.doc?.url;
-                    // Pass the URL as the value of the download button
-                    if (docUrl) {
-                        const buttonElement = outputElements.find((elem) => {
-                            return elem.type === 'button';
-                        });
-                        buttonElement.value = docUrl;
-                        this.cdr.detectChanges();
-                    }
+                // Pass the URL as the value of the download button
+                if (docUrl) {
+                    const buttonElement = outputElements.find((elem) => {
+                        return elem.type === 'button';
+                    });
+                    buttonElement.value = docUrl;
+                    this.cdr.detectChanges();
                 }
-            })
-            .catch((error: any) => {
-                console.log(error);
             });
     }
 
