@@ -74,6 +74,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
+        this.data.blocks = [];
         this.isLoggedIn = !!this.tokenStorageService.getToken();
         this.itemUuid = this.route.snapshot.paramMap.get('uuid');
         this.needBackButton = !!this.routerEventsService.getPreviousUrl();
@@ -102,6 +103,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     } else {
                         this.createAppOptions();
                     }
+                    this.subscriptionsElementsSync();
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
@@ -997,6 +999,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.messageType = msg[1] as 'error'|'success';
     }
 
+    subscriptionsElementsSync(): void {
+        if (!this.vkAppOptions?.userSubscriptions
+            || this.vkAppOptions.userSubscriptions.length === 0
+            || this.data.blocks.length === 0) {
+            return;
+        }
+        this.data.blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                if (element.type !== 'user-subscription') {
+                    return;
+                }
+                if (this.vkAppOptions.userSubscriptions.includes(element.subscriptionId)) {
+                    element.value = true;
+                }
+            });
+        });
+        this.cdr.markForCheck();
+    }
+
     vkAppInit(): void {
         this.vkBridgeService.getOptions()
             .then((options) => {
@@ -1004,6 +1025,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
                     this.vkBridgeService.showBannerAd();
                 }
+                this.subscriptionsElementsSync();
             })
             .catch(() => {
                 this.vkAppOptions = {};
