@@ -104,10 +104,10 @@ export abstract class DataService<T extends {id: number}> {
             if (Object.keys(files).includes(key)) {
                 return;
             }
-            if (typeof data[key] === 'object') {
+            if (data[key] && typeof data[key] === 'object') {
                 formData.append(key, JSON.stringify(data[key]));
             } else {
-                formData.append(key, String(data[key]));
+                formData.append(key, String(data[key] || ''));
             }
         });
         Object.keys(files).forEach((key) => {
