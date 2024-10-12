@@ -863,6 +863,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 window.open(String(element.value), '_blank').focus();
             }
         }
+        if (element.type === 'user-subscription' && this.isVkApp) {
+            this.message = '';
+            if (element.value) {
+                this.message = $localize `You are already subscribed.`;
+                this.messageType = 'success';
+            } else if (element.subscriptionId) {
+                this.vkBridgeService.showSubscriptionBox(element.subscriptionId)
+                    .then((data: any) => {
+                        console.log(data);
+                        element.value = true;
+                        this.cdr.detectChanges();
+                    });
+            }
+        }
     }
 
     onElementValueChanged(element: AppBlockElement): void {

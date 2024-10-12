@@ -197,6 +197,20 @@ export class VkBridgeService {
             });
     }
 
+    showSubscriptionBox(itemName: string): Promise<any> {
+        return vkBridge.send('VKWebAppShowSubscriptionBox', {
+            action: 'create',
+            item: itemName
+        })
+            .then((data) => {
+                console.log('The purchase was successful.', data);
+                return data;
+            })
+            .catch((e) => {
+                console.log('Error!', e);
+            });
+    }
+
     handleError<T>(error: HttpErrorResponse): Observable<any> {
         if (error.error) {
             return throwError(error.error);

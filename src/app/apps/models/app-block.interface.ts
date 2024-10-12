@@ -64,6 +64,7 @@ export interface AppBlockElement {
     statusCompletedTextForVK?: string;
     keys?: string[];
     headers?: string[];
+    subscriptionId?: string;
 }
 
 export interface AppBlockOptions {

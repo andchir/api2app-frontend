@@ -632,8 +632,9 @@
                         </div>
                         <div class="flex-grow">
                             <button type="button"
-                                    class="w-full flex gap-3 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white border rounded rounded-[0.7rem] justify-center cursor-pointer"
-                                    [ngClass]="{'!bg-green-400 !hover-bg-green-400': options.value}">
+                                    class="w-full flex gap-3 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-sm text-white border rounded rounded-[0.7rem] justify-center cursor-pointer"
+                                    [ngClass]="{'!bg-green-400 !hover-bg-green-400': options.value}"
+                                    (click)="onClick()">
                                 <span>
                                     <i class="bi" [ngClass]="options?.icon"></i>
                                 </span>
