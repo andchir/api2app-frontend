@@ -871,9 +871,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else if (element.subscriptionId) {
                 this.vkBridgeService.showSubscriptionBox(element.subscriptionId)
                     .then((data: any) => {
-                        console.log(data);
-                        element.value = true;
-                        this.cdr.detectChanges();
+                        if (data?.success) {
+                            element.value = true;
+                            this.message = $localize `The purchase was successful.`;
+                            this.messageType = 'success';
+                            this.cdr.detectChanges();
+                        }
                     });
             }
         }

@@ -203,7 +203,7 @@ export class VkBridgeService {
             item: itemName
         })
             .then((data) => {
-                console.log('The purchase was successful.', data);
+                // console.log('The purchase was successful.', data);
                 return data;
             })
             .catch((e) => {
