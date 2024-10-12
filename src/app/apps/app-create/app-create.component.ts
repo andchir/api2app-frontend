@@ -385,6 +385,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     saveData(): void {
         const data = Object.assign({}, this.data, {language: this.locale});
+        data.hidden = data.hidden || false;
+        data.shared = data.shared || false;
         let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
         blocks = blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);

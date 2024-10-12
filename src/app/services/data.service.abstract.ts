@@ -106,6 +106,8 @@ export abstract class DataService<T extends {id: number}> {
             }
             if (data[key] && typeof data[key] === 'object') {
                 formData.append(key, JSON.stringify(data[key]));
+            } else if (typeof data[key] === 'boolean') {
+                formData.append(key, data[key] ? '1' : '0');
             } else {
                 formData.append(key, String(data[key] || ''));
             }
