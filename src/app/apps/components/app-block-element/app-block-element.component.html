@@ -621,6 +621,33 @@
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'user-subscription'">
+            <div role="status" class="mb-3 rounded-[0.7rem] p-2"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <div class="block w-full max-w-[600px] mx-auto">
+                    <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md"
+                        [ngClass]="{'!border-green-300 !text-green-400': options.value}">
+                        <div class="px-3">
+                            <i class="bi text-xl" [ngClass]="{'bi-cart': !options.value, 'bi-cart-check': options.value}"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <button type="button"
+                                    class="w-full flex gap-3 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-white border rounded rounded-[0.7rem] justify-center cursor-pointer"
+                                    [ngClass]="{'!bg-green-400 !hover-bg-green-400': options.value}">
+                                <span>
+                                    <i class="bi" [ngClass]="options?.icon"></i>
+                                </span>
+                                <span>
+                                    {{ options?.label }}
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
         <ng-container *ngSwitchDefault>
             <div class="min-h-[20px] mb-3"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"></div>

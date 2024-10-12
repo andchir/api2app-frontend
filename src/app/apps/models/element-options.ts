@@ -6,31 +6,32 @@ export class ElementOptions {
         if (!options) {
             options = {} as any;
         }
-        const output = [] as AppBlockElement[];
+        const output = [
+            {
+                name: 'name',
+                label: $localize `Name`,
+                type: 'input-text',
+                value: options?.name
+            },
+            {
+                name: 'blockIndex',
+                label: $localize `Block Index`,
+                type: 'input-number',
+                min: 0,
+                max: 100,
+                value: options?.blockIndex || 0
+            },
+            {
+                name: 'orderIndex',
+                label: $localize `Order Index`,
+                type: 'input-number',
+                min: 0,
+                max: 100,
+                value: options?.orderIndex || 0
+            }
+        ] as AppBlockElement[];
         switch (type) {
             case 'text-header':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'icon',
                     label: $localize `Icon`,
@@ -54,28 +55,6 @@ export class ElementOptions {
                 });
                 break;
             case 'text':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'icon',
                     label: $localize `Icon`,
@@ -183,28 +162,6 @@ export class ElementOptions {
                 break;
             case 'button':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'text',
                     label: $localize `Text`,
                     type: 'input-text',
@@ -249,28 +206,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-text':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -361,28 +296,6 @@ export class ElementOptions {
                 break;
             case 'input-textarea':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -457,28 +370,6 @@ export class ElementOptions {
                 break;
             case 'input-number':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -504,28 +395,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-slider':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -562,28 +431,6 @@ export class ElementOptions {
                 break;
             case 'input-hidden':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
                     type: 'input-text',
@@ -603,28 +450,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-switch':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -646,28 +471,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-select':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -744,28 +547,6 @@ export class ElementOptions {
                 break;
             case 'input-tags':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -793,28 +574,6 @@ export class ElementOptions {
                 break;
             case 'input-radio':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -835,28 +594,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-date':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -897,28 +634,6 @@ export class ElementOptions {
                 break;
             case 'input-color':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -932,28 +647,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-file':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -988,28 +681,6 @@ export class ElementOptions {
             case 'audio':
             case 'video':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
                     type: 'input-text',
@@ -1031,28 +702,6 @@ export class ElementOptions {
                 }
                 break;
             case 'image':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'itemFieldName',
                     label: $localize `Field name in the array`,
@@ -1086,28 +735,6 @@ export class ElementOptions {
                 });
                 break;
             case 'input-chart-line':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'fieldNameAxisX',
                     label: $localize `Field name for X axis`,
@@ -1153,28 +780,6 @@ export class ElementOptions {
                 break;
             case 'input-pagination':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'perPage',
                     label: $localize `Items per page`,
                     type: 'input-number',
@@ -1204,28 +809,6 @@ export class ElementOptions {
                 });
                 break;
             case 'status':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'statusCompleted',
                     label: $localize `Completed Status Value`,
@@ -1275,28 +858,6 @@ export class ElementOptions {
                 break;
             case 'table':
                 output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name || ''
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
-                output.push({
                     name: 'headers',
                     label: $localize `Columns headers`,
                     type: 'input-tags',
@@ -1330,28 +891,6 @@ export class ElementOptions {
                 // });
                 break;
             case 'input-select-image':
-                output.push({
-                    name: 'name',
-                    label: $localize `Name`,
-                    type: 'input-text',
-                    value: options?.name || ''
-                });
-                output.push({
-                    name: 'blockIndex',
-                    label: $localize `Block Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.blockIndex || 0
-                });
-                output.push({
-                    name: 'orderIndex',
-                    label: $localize `Order Index`,
-                    type: 'input-number',
-                    min: 0,
-                    max: 100,
-                    value: options?.orderIndex || 0
-                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -1388,6 +927,42 @@ export class ElementOptions {
                     label: $localize `Required`,
                     type: 'input-switch',
                     enabled: options?.required || false
+                });
+                break;
+            case 'user-subscription':
+                output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
+                });
+                output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
+                    name: 'subscriptionId',
+                    label: $localize `Subscription ID`,
+                    type: 'input-text',
+                    value: options?.subscriptionId || ''
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'showOnlyInVK',
+                    label: $localize `Show only in VK app`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.showOnlyInVK
                 });
                 break;
         }
@@ -1657,6 +1232,16 @@ export class ElementOptions {
                     data: [],
                     showTitle: true,
                     required: false,
+                    value: null
+                });
+                break;
+            case 'user-subscription':
+                Object.assign(output, {
+                    icon: '',
+                    name: 'user-subscription',
+                    label: $localize `My subscription`,
+                    subscriptionId: '',
+                    showOnlyInVK: true,
                     value: null
                 });
                 break;
