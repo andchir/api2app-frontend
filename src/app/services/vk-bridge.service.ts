@@ -17,6 +17,9 @@ export class VkBridgeService {
         })
     };
 
+    adsShownAt = 0;
+    adsShowIntervalSeconds = 3 * 60; // 3 minutes
+
     constructor(
         @Inject(LOCALE_ID) public locale: string,
         protected httpClient: HttpClient
@@ -135,6 +138,33 @@ export class VkBridgeService {
                 } else {
                     console.log(data);
                 }
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
+    showAds(options: VkAppOptions): void {
+        if (!options.adAvailableInterstitial || options.userSubscriptions.includes('remove_ad')) {
+            return;
+        }
+        const now = Date.now();
+        if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
+            console.log(this.adsShowIntervalSeconds * 1000 - (now - this.adsShownAt));
+            return;
+        }
+        this.showNativeAds()
+            .then((data: any) => {
+                if (data.result) {
+                    this.adsShownAt = Date.now();
+                }
+            });
+    }
+
+    showNativeAds(type: string = 'interstitial'): Promise<any> {
+        return vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
+            .then((data: any) => {
+                return data;
             })
             .catch((error: any) => {
                 console.log(error);

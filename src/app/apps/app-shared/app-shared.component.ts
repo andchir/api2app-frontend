@@ -50,8 +50,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appElements: {input: AppBlockElement[], output: AppBlockElement[], buttons: AppBlockElement[]} = {input: [], output: [], buttons: []};
 
     itemUuid: string;
-    adsShownAt = 0;
-    adsShowIntervalSeconds = 4 * 60; // 4 minutes
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
@@ -685,38 +683,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                     }
                 }
-                if (currentElement.type === 'button') {
-                    this.showAds();
+                if (this.isVkApp && currentElement.type === 'button') {
+                    this.vkBridgeService.showAds(this.vkAppOptions);
                 }
                 this.cdr.detectChanges();
             })
             .catch((err) => {
                 console.log(err);
             });
-    }
-
-    showAds(): void {
-        if (!this.vkAppOptions.adAvailableInterstitial) {
-            return;
-        }
-        const now = Date.now();
-        if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            console.log(this.adsShowIntervalSeconds * 1000 - (now - this.adsShownAt));
-            return;
-        }
-        if (this.isVkApp) {
-            // Advertising by VK
-            vkBridge.send('VKWebAppShowNativeAds', { ad_format: 'interstitial' })
-                .then((data: any) => {
-                    // console.log(data);
-                    if (data.result) {
-                        this.adsShownAt = Date.now();
-                    }
-                })
-                .catch((error: any) => {
-                    console.log(error);
-                });
-        }
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
@@ -1017,7 +991,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                if (!this.vkAppOptions.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
+                if (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
                     this.vkBridgeService.showBannerAd();
                 }
             })
