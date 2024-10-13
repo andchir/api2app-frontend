@@ -874,6 +874,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.vkBridgeService.showSubscriptionBox(element.subscriptionId)
                     .then((data: any) => {
                         if (data?.success) {
+                            this.vkAppOptions.userSubscriptions.push(element.subscriptionId);
                             element.value = true;
                             this.message = $localize `The purchase was successful.`;
                             this.messageType = 'success';

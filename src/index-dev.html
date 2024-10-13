@@ -30,5 +30,15 @@
     </div>
 </app-root>
 
+<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script>
+    vkBridge.send('VKWebAppInit')
+        .then((data) => {
+            if (data.result) {
+                window.isVKApp = true;
+            }
+        });
+</script>
+
 </body>
 </html>
