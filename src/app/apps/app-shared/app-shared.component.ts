@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
@@ -31,6 +31,9 @@ declare const vkBridge: any;
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
+    @Input('itemUuid') itemUuid: string;
+    @Input('showHeader') showHeader: boolean = true;
+    @Input('needBackButton') needBackButton: boolean|null = null;
     errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
@@ -39,7 +42,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     loading = false;
     submitted = false;
     previewMode = true;
-    needBackButton = false;
     maintenanceModalActive = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
@@ -49,7 +51,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     appElements: {input: AppBlockElement[], output: AppBlockElement[], buttons: AppBlockElement[]} = {input: [], output: [], buttons: []};
 
-    itemUuid: string;
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
@@ -76,8 +77,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.data.blocks = [];
         this.isLoggedIn = !!this.tokenStorageService.getToken();
-        this.itemUuid = this.route.snapshot.paramMap.get('uuid');
-        this.needBackButton = !!this.routerEventsService.getPreviousUrl();
+        if (!this.itemUuid) {
+            this.itemUuid = this.route.snapshot.paramMap.get('uuid');
+        }
+        if (this.needBackButton === null) {
+            this.needBackButton = !!this.routerEventsService.getPreviousUrl();
+        }
 
         if (this.itemUuid) {
             this.getData();

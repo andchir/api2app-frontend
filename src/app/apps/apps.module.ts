@@ -47,7 +47,10 @@ import { SelectImageComponent } from './components/elements/select-image.compone
         TableElementComponent,
         SelectImageComponent
     ],
-    providers: [ authInterceptorProviders, ApplicationService, ApiService, ModalService ]
+    exports: [
+        ApplicationSharedComponent
+    ],
+    providers: [authInterceptorProviders, ApplicationService, ApiService, ModalService]
 })
 export class AppsModule {
 }

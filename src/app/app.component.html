@@ -22,6 +22,10 @@
                                [routerLink]="isPersonalPageUrl ? '/apis/personal' : '/apis/shared'"
                                routerLinkActive="active bg-gray-900 hover:bg-gray-900"
                                ariaCurrentWhenActive="page" i18n>APIs</a>
+                            <a class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                               routerLink="/docs"
+                               routerLinkActive="active bg-gray-900 hover:bg-gray-900"
+                               ariaCurrentWhenActive="page" i18n>Documentation</a>
                         </div>
                     </div>
                     <div class="pl-4" *ngIf="navigationLoading">
@@ -195,6 +199,10 @@
                    class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
                    routerLink="/apis"
                    routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>APIs</a>
+                <a href="#"
+                   class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                   routerLink="/docs"
+                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>Documentation</a>
             </div>
             <div class="border-t border-gray-700 pb-3 pt-4" *ngIf="userSubject$ | async">
                 <div class="flex items-center px-5">
