@@ -34,7 +34,7 @@
                 </ng-container>
 
                 <ng-template let-item #templateImageItem>
-                    <div class="flex gap-2 items-center w-full max-w-[600px] mx-auto"
+                    <div class="flex gap-2 items-center w-full"
                          [ngClass]="{
                         'whitespace-pre-line': options?.whiteSpacePre,
                         'min-h-[20px]': editorMode,
@@ -52,7 +52,8 @@
                         'text-violet-500': options?.color == 'Violet',
                         'text-cyan-500': options?.color == 'Cyan',
                         'text-sm': options?.fontSize == 'Small',
-                        'text-lg': options?.fontSize == 'Large'
+                        'text-lg': options?.fontSize == 'Large',
+                        'max-w-[600px] mx-auto': !options.fullWidth
                     }">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
                         <div class="max-w-full overflow-hidden">
@@ -60,17 +61,17 @@
 
                             <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
                                 <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
+                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { inline: true, disableSanitizer: true } | async"></span>
                             </ng-container>
                             <ng-container *ngIf="!options?.itemFieldName || !item">
                                 <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { inline: true, disableSanitizer: true } | async"></span>
                             </ng-container>
                             <ng-container *ngIf="options?.keys && item">
                                 <div *ngFor="let key of options?.keys">
                                     <div class="mb-3" *ngIf="item[key]">
                                         <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
-                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { disableSanitizer: true } | async"></span>
+                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { inline: true, disableSanitizer: true } | async"></span>
                                     </div>
                                 </div>
                             </ng-container>

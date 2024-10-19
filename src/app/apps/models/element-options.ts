@@ -153,6 +153,13 @@ export class ElementOptions {
                     enabled: options?.border
                 });
                 output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth
+                });
+                output.push({
                     name: 'showOnlyInVK',
                     label: $localize `Show only in VK app`,
                     type: 'input-switch',
@@ -993,6 +1000,7 @@ export class ElementOptions {
                     whiteSpacePre: false,
                     markdown: false,
                     hiddenByDefault: false,
+                    fullWidth: true,
                     border: false,
                     showOnlyInVK: false
                 });
