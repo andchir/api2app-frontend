@@ -497,6 +497,19 @@ export class ElementOptions {
                     value: options?.itemFieldNameForValue
                 });
                 output.push({
+                    name: 'valueArr',
+                    label: $localize `Name`,
+                    type: 'table',
+                    headers: [$localize `Name`, $localize `Value`],
+                    keys: ['name', 'value'],
+                    editable: true,
+                    valueArr: options?.valueArr
+                        ? options.valueArr.map((item) => {
+                            return Object.assign({}, item)
+                        })
+                        : null
+                });
+                output.push({
                     name: 'choices',
                     label: $localize `Choices`,
                     type: 'input-tags',
@@ -908,7 +921,7 @@ export class ElementOptions {
                     name: 'data',
                     label: $localize `Name`,
                     type: 'table',
-                    headers: ['Название', 'URL изображения'],
+                    headers: [$localize `Name`, $localize `Image URL`],
                     keys: ['name', 'imageUrl'],
                     editable: true,
                     valueArr: options?.data
@@ -1097,8 +1110,8 @@ export class ElementOptions {
                     label: $localize `Example Select`,
                     type: 'input-select',
                     placeholder: $localize `Please Select`,
-                    itemFieldNameForTitle: '',
-                    itemFieldNameForValue: '',
+                    itemFieldNameForTitle: 'name',
+                    itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
                     required: true,
                     clearable: true,
@@ -1106,7 +1119,8 @@ export class ElementOptions {
                     addTag: false,
                     selectDefaultFirst: true,
                     hiddenByDefault: false,
-                    value: 'Value1'
+                    value: 'Value1',
+                    valueArr: null
                 });
                 break;
             case 'input-tags':
