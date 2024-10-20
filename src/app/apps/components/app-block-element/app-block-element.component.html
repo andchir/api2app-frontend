@@ -209,7 +209,7 @@
                     <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                         {{ options?.label }}
                     </label>
-                    <ng-container *ngIf="options?.valueArr; else templateSelectSimple">
+                    <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateSelectSimple">
                         <ng-select class="ng-select-custom"
                                    [items]="options.valueArr"
                                    [bindLabel]="options?.itemFieldNameForTitle"
@@ -224,18 +224,7 @@
                                    i18n-addTagText
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
-                                   [(ngModel)]="options.value">
-                            <ng-template ng-label-tmp let-item="item">
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
-                            </ng-template>
-                            <ng-template ng-option-tmp let-item="item">
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
-                            </ng-template>
-                        </ng-select>
+                                   [(ngModel)]="options.value"></ng-select>
                     </ng-container>
                     <ng-template #templateSelectSimple>
                         <ng-select class="ng-select-custom"
@@ -589,7 +578,10 @@
             <div class="min-h-[20px] max-w-full overflow-auto mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
-
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                       class="block mb-2 text-sm font-medium text-gray-900" *ngIf="options?.label">
+                    {{ options?.label }}
+                </label>
                 <app-table-element
                     [editorMode]="editorMode"
                     [parentIndex]="parentIndex"

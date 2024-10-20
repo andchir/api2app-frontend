@@ -498,7 +498,7 @@ export class ElementOptions {
                 });
                 output.push({
                     name: 'valueArr',
-                    label: $localize `Name`,
+                    label: $localize `Values`,
                     type: 'table',
                     headers: [$localize `Name`, $localize `Value`],
                     keys: ['name', 'value'],
@@ -878,6 +878,12 @@ export class ElementOptions {
                 break;
             case 'table':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
                     name: 'headers',
                     label: $localize `Columns headers`,
                     type: 'input-tags',
@@ -919,7 +925,7 @@ export class ElementOptions {
                 });
                 output.push({
                     name: 'data',
-                    label: $localize `Name`,
+                    label: $localize `Values`,
                     type: 'table',
                     headers: [$localize `Name`, $localize `Image URL`],
                     keys: ['name', 'imageUrl'],
@@ -1240,6 +1246,7 @@ export class ElementOptions {
             case 'table':
                 Object.assign(output, {
                     name: 'table',
+                    label: '',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
                     isHTML: false,
