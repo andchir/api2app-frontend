@@ -112,7 +112,8 @@
                     'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color == 'Red',
                     'border border-gray-500 bg-gray-400 hover:bg-gray-600 focus:ring-gray-200': options?.color == 'Gray'
                     }"
-                    (click)="onClick()">
+                    (click)="onClick()"
+                    (contextmenu)="$event.preventDefault()">
                     <span class="flex gap-2 w-full justify-center items-center">
                         <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
                         <span>
