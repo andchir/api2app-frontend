@@ -1099,6 +1099,7 @@ export class ElementOptions {
                     speechSynthesisEnabled: false,
                     copyToClipboardEnabled: false,
                     storeValue: false,
+                    autoHeight: false,
                     value: null
                 });
                 break;

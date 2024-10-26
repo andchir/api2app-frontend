@@ -35,13 +35,14 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() placeholder: string;
     @Input() parentIndex: number;
     @Input() index: number;
-    @Input() rows: number;
-    @Input() maxLength: number;
+    @Input() rows: number = 6;
+    @Input() maxLength: number = 0;
     @Input() readOnly: boolean;
     @Input() storeValue: boolean;
-    @Input() speechRecognitionEnabled = false;
-    @Input() speechSynthesisEnabled = false;
-    @Input() copyToClipboardEnabled = false;
+    @Input() speechRecognitionEnabled: boolean = false;
+    @Input() speechSynthesisEnabled: boolean = false;
+    @Input() copyToClipboardEnabled: boolean = false;
+    @Input() autoHeight: boolean = true;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     private _value = '';
@@ -219,8 +220,9 @@ export class ElementInputTextComponent implements ControlValueAccessor {
             this.isChanged = true;
         }
         this.value = value;
-        if (this.inputControl.nativeElement) {
+        if (this.inputControl?.nativeElement) {
             this.inputControl.nativeElement.value = value;
+            this.onInput();
         }
     }
 
@@ -230,6 +232,27 @@ export class ElementInputTextComponent implements ControlValueAccessor {
 
     registerOnTouched(fn: (_: any) => void) {
         this.onTouched = fn;
+    }
+
+    onInput(event?: Event|InputEvent): void {
+        if (!this.autoHeight || !this.inputControl?.nativeElement) {
+            return;
+        }
+        const textAreaEl = this.inputControl.nativeElement;
+        if (!textAreaEl) {
+            return;
+        }
+        const MAX_HEIGHT = 400;
+        textAreaEl.style.overflowY = 'hidden';
+        textAreaEl.style.height = 'auto';
+        const scrollHeight = textAreaEl.scrollHeight;
+        if (scrollHeight > MAX_HEIGHT) {
+            textAreaEl.style.height = MAX_HEIGHT + 'px';
+            textAreaEl.style.overflowY = 'auto';
+            return;
+        }
+        textAreaEl.style.overflowY = 'hidden';
+        textAreaEl.style.height = `${scrollHeight}px`;
     }
 
     onKeyUp(event: KeyboardEvent) {
