@@ -65,6 +65,7 @@ export interface AppBlockElement {
     keys?: string[];
     headers?: string[];
     subscriptionId?: string;
+    rows?: number;
 }
 
 export interface AppBlockOptions {

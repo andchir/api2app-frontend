@@ -51,6 +51,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 break;
@@ -87,6 +88,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 output.push({
@@ -303,6 +305,19 @@ export class ElementOptions {
                 break;
             case 'input-textarea':
                 output.push({
+                    name: 'max',
+                    label: $localize `Maximum text length`,
+                    type: 'input-number',
+                    rows: 6,
+                    value: options?.max || 0
+                });
+                output.push({
+                    name: 'rows',
+                    label: $localize `Number of lines`,
+                    type: 'input-number',
+                    value: options?.rows || 6
+                });
+                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -330,6 +345,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 output.push({
@@ -1072,6 +1088,8 @@ export class ElementOptions {
                     label: $localize `Content`,
                     type: 'input-textarea',
                     placeholder: $localize `Enter your message here`,
+                    rows: 6,
+                    max: 0,
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,

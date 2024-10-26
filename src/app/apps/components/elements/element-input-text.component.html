@@ -23,13 +23,14 @@
             <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                       [placeholder]="placeholder || ''"
+                      [rows]="rows"
                       (keyup)="onKeyUp($event)"
                       (focus)="onFocus($event)"
                       [readonly]="readOnly" #inputControl></textarea>
         </ng-container>
     </ng-container>
     <div class="relative">
-        <div class="absolute bottom-1.5 right-2" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
+        <div class="absolute bottom-2 right-2" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
             <button type="button" class="cursor-pointer text-xl ml-3"
                     (click)="copyToClipboard(inputControl.nativeElement)"
                     title="Copy to clipboard"
@@ -52,6 +53,9 @@
                 <i class="bi bi-mic-fill text-red-700" *ngIf="microphoneActive"></i>
                 <i class="bi bi-mic-mute-fill text-gray-700" *ngIf="!microphoneActive"></i>
             </button>
+            <div class="inline-block py-1 px-2 text-xs rounded bg-black text-white bg-opacity-50 ml-3 pointer-events-none" *ngIf="maxLength">
+                {{ value.length }} / {{ maxLength }}
+            </div>
         </div>
     </div>
 </div>

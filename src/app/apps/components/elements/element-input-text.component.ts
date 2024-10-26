@@ -35,6 +35,8 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() placeholder: string;
     @Input() parentIndex: number;
     @Input() index: number;
+    @Input() rows: number;
+    @Input() maxLength: number;
     @Input() readOnly: boolean;
     @Input() storeValue: boolean;
     @Input() speechRecognitionEnabled = false;
@@ -42,7 +44,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     @Input() copyToClipboardEnabled = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
-    private _value;
+    private _value = '';
     isChanged = false;
     isTouched = false;
     microphoneActive = false;
@@ -51,11 +53,14 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     recognition: SpeechRecognition;
 
     get value() {
-        return this._value;
+        return this._value || '';
     }
 
     @Input()
     set value(val) {
+        if (this.maxLength && val.length > this.maxLength) {
+            val = val.substring(0, this.maxLength);
+        }
         this._value = val;
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -206,6 +211,10 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     onTouched(_: any) {}
 
     writeValue(value: any) {
+        value = value || '';
+        if (this.maxLength && value.length > this.maxLength) {
+            value = value.substring(0, this.maxLength);
+        }
         if (this.value && value && this.value !== value) {
             this.isChanged = true;
         }
@@ -224,6 +233,9 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     }
 
     onKeyUp(event: KeyboardEvent) {
+        if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
+            (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
+        }
         this.value = (event.target as HTMLInputElement).value;
         this.isChanged = true;
     }
