@@ -720,6 +720,14 @@ export class ElementOptions {
                         value: options?.posterUrl || ''
                     });
                 }
+                if (type === 'audio') {
+                    output.push({
+                        name: 'required',
+                        label: $localize `Required`,
+                        type: 'input-switch',
+                        enabled: options?.required || false
+                    });
+                }
                 break;
             case 'image':
                 output.push({
@@ -1195,7 +1203,8 @@ export class ElementOptions {
                     name: type,
                     prefixText: '',
                     value: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    required: false
                 });
                 break;
             case 'video':
