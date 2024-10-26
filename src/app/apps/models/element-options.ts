@@ -701,6 +701,12 @@ export class ElementOptions {
             case 'audio':
             case 'video':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
                     type: 'input-text',
@@ -1201,6 +1207,7 @@ export class ElementOptions {
             case 'audio':
                 Object.assign(output, {
                     name: type,
+                    label: '',
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,

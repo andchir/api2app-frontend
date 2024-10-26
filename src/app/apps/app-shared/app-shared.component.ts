@@ -392,7 +392,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
-                errors[element.name] = $localize `This field is required.`;
+                errors[element.name] = element.label
+                    ? `${element.label} - ` + ($localize `required`)
+                    : $localize `This field is required.`;
             }
         });
         if (createErrorMessages) {
