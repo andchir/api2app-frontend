@@ -115,7 +115,7 @@
                     (click)="onClick()"
                     (contextmenu)="$event.preventDefault()">
                     <span class="flex gap-2 w-full justify-center items-center">
-                        <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
+                        <span *ngIf="options?.icon"><i class="text-lg leading-3 bi" [ngClass]="options?.icon"></i></span>
                         <span>
                             {{ options?.text }}
                         </span>

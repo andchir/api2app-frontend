@@ -121,7 +121,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     if (value.includes('data:audio')) {
                         return ApplicationService.dataURItoFile(value);
                     }
-                    return null;
+                    return String(value);
                 }
                 return String(element.value);
             case 'input-file':
