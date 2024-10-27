@@ -87,6 +87,7 @@
 
         <ng-container *ngSwitchCase="'text-header'">
             <h4 class="text-2xl font-bold min-h-[20px] mb-3"
+                [id]="options?.name"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <span class="flex gap-2 items-center">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
