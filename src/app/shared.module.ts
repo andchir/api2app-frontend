@@ -30,7 +30,8 @@ export function markedOptionsFactory(): MarkedOptions {
     const linkRenderer = renderer.link;
     renderer.link = (href, title, text) => {
         const html = linkRenderer.call(renderer, href, title, text);
-        return html.replace(/^<a /, '<a class="whitespace-nowrap text-blue-500 underline hover:text-blue-700" target="_blank" rel="nofollow" ');
+        const target = href.includes('#') ? '_self' : '_blank';
+        return html.replace(/^<a /, `<a class="whitespace-nowrap text-blue-500 underline hover:text-blue-700" target="${target}" rel="nofollow" `);
     };
 
     return {
