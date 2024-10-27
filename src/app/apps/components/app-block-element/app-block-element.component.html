@@ -618,7 +618,8 @@
 
         <ng-container *ngSwitchCase="'user-subscription'">
             <div role="status" class="mb-3 rounded-[0.7rem]"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="!options?.hidden || editorMode">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md"
                         [ngClass]="{'!border-green-300 !text-green-400': options.value}">

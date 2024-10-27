@@ -33,6 +33,7 @@ export class ApiService extends DataService<ApiItem> {
             sendAsFormData: false,
             dailyLimitUsage: 0,
             dailyLimitForUniqueUsers: false,
+            paidOnly: false,
             responseBody: '',
             responseHeaders: [],
             responseContentType: 'json',

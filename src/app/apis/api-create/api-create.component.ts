@@ -21,6 +21,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     submitted = false;
     senderValue = 'browser';
 
+    isSettingsActive: boolean = false;
     itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
     destroyed$: Subject<void> = new Subject();
@@ -107,6 +108,10 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     onSenderChange(sender: string) {
         this.senderValue = sender;
+    }
+
+    apiSettingsToggle(): void {
+        this.isSettingsActive = !this.isSettingsActive;
     }
 
     ngOnDestroy(): void {

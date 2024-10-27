@@ -130,7 +130,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
-                element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
+                if (typeof element.hidden === 'undefined') {
+                    element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
+                }
                 if (element.type === 'status' && window['isVKApp'] && element.statusCompletedTextForVK) {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }

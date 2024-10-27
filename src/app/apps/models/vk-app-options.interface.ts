@@ -6,4 +6,5 @@ export interface VkAppOptions {
     userSubscriptions?: string[];
     adEnabled?: boolean;
     adAvailableInterstitial?: boolean;
+    appLaunchParamsJson?: string;
 }

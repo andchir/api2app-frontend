@@ -37,7 +37,8 @@ export class VkBridgeService {
             userFileUploadUrl: '',
             userSubscriptions: [],
             adEnabled: true,
-            adAvailableInterstitial: false
+            adAvailableInterstitial: false,
+            appLaunchParamsJson: ''
         };
 
         const p1 = vkBridge.send('VKWebAppCheckNativeAds', {ad_format: 'interstitial'})
@@ -56,6 +57,7 @@ export class VkBridgeService {
                 if (data.vk_app_id) {
                     options.appId = data.vk_app_id;
                     options.userId = data.vk_user_id;
+                    options.appLaunchParamsJson = JSON.stringify(data);
                 }
                 return data;
             })

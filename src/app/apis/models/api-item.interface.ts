@@ -16,6 +16,7 @@ export interface ApiItem {
     sendAsFormData: boolean;
     dailyLimitUsage: number;
     dailyLimitForUniqueUsers: boolean;
+    paidOnly: boolean;
 
     bodyFields: RequestDataField[];
     bodyContent: string;
