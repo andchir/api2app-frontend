@@ -22,7 +22,7 @@ import { AppsModule } from "../apps/apps.module";
 export class DocumentationComponent implements OnInit, OnDestroy {
 
     loading = false;
-    itemUuid: string = '5eaba24c-89a5-11ef-ba06-525400f8f94f';
+    itemUuid: string;
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
@@ -34,6 +34,16 @@ export class DocumentationComponent implements OnInit, OnDestroy {
     ){}
 
     ngOnInit(): void {
+        switch (this.locale) {
+            case 'en':
+                this.itemUuid = '1c05b47c-948c-11ef-b839-525400f8f94f';
+                break;
+            case 'fr':
+                this.itemUuid = 'da932582-948c-11ef-b839-525400f8f94f';
+                break;
+            default:
+                this.itemUuid = '5eaba24c-89a5-11ef-ba06-525400f8f94f';
+        }
         this.getData();
     }
 
