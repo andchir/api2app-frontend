@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-code { display: inline-block; padding: 5px 10px; border-radius: 4px; background-color: rgba(0,0,0,0.3); color: white; }
+.text-content p { display: block; margin-bottom: 15px; }
 .no-pointer-events { pointer-events: none; }
 .dropdown {
     position: relative;

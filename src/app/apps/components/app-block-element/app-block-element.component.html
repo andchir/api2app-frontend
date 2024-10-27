@@ -56,22 +56,31 @@
                         'max-w-[600px] mx-auto': !options.fullWidth
                     }">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                        <div class="max-w-full overflow-hidden">
+                        <div class="max-w-full overflow-hidden text-content">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
                             <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
                                 <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { inline: true, disableSanitizer: true } | async"></span>
+                                <markdown ngPreserveWhitespaces
+                                    [data]="item[options.itemFieldName]"
+                                    *ngIf="options?.markdown">
+                                </markdown>
                             </ng-container>
                             <ng-container *ngIf="!options?.itemFieldName || !item">
                                 <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { inline: true, disableSanitizer: true } | async"></span>
+                                <markdown ngPreserveWhitespaces
+                                          [data]="options?.value"
+                                          *ngIf="options?.value && options?.markdown">
+                                </markdown>
                             </ng-container>
                             <ng-container *ngIf="options?.keys && item">
                                 <div *ngFor="let key of options?.keys">
                                     <div class="mb-3" *ngIf="item[key]">
                                         <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
-                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { inline: true, disableSanitizer: true } | async"></span>
+                                        <markdown ngPreserveWhitespaces
+                                                  [data]="item[key]"
+                                                  *ngIf="options?.markdown">
+                                        </markdown>
                                     </div>
                                 </div>
                             </ng-container>
