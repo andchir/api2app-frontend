@@ -173,8 +173,9 @@ export class ApiService extends DataService<ApiItem> {
                                 } else {
                                     if ((item.value as any) instanceof File) {
                                         formData.append(item.name, (item.value as any));
-                                    } else {
-                                        formData.append(item.name, String(item.value) || '');
+                                    }
+                                    else {
+                                        formData.append(item.name, String(item.value || ''));
                                     }
                                 }
                             }
