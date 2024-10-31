@@ -153,7 +153,7 @@ export class VkBridgeService {
         }
         const now = Date.now();
         if (this.adsShownAt && now - this.adsShownAt < this.adsShowIntervalSeconds * 1000) {
-            console.log(this.adsShowIntervalSeconds * 1000 - (now - this.adsShownAt));
+            // console.log(this.adsShowIntervalSeconds * 1000 - (now - this.adsShownAt));
             return;
         }
         this.showNativeAds()
