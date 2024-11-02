@@ -7,6 +7,7 @@ import { catchError, iif, Observable } from 'rxjs';
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
 import { DataService } from './data.service.abstract';
+import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 
 @Injectable()
 export class ApiService extends DataService<ApiItem> {
@@ -105,7 +106,7 @@ export class ApiService extends DataService<ApiItem> {
         return responseTypeValue;
     }
 
-    apiRequest(data: ApiItem, isApiTesting = true): Observable<HttpResponse<any>> {
+    apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
         const bodyDataSource = data.bodyDataSource;
@@ -225,6 +226,9 @@ export class ApiService extends DataService<ApiItem> {
                     formData.append('opt__responseContentType', data?.responseContentType || '');
                     formData.append('opt__sendAsFormData', data?.sendAsFormData ? '1' : '0');
                 }
+                if (vkAppOptions?.appLaunchParamsJson) {
+                    formData.append('opt__vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
+                }
             } else {
                 body = Object.assign({}, {
                     body,
@@ -232,6 +236,9 @@ export class ApiService extends DataService<ApiItem> {
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid
                 });
+                if (vkAppOptions?.appLaunchParamsJson) {
+                    body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
+                }
                 if (data?.urlPartIndex && data?.urlPartValue) {
                     Object.assign(body, {
                         opt__urlPartIndex: data.urlPartIndex,

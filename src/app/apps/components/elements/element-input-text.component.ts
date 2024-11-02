@@ -28,7 +28,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
 
     @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
     @Input() editorMode = false;
-    @Input() type: string;
+    @Input() type: 'input-text'|'input-textarea';
     @Input() name: string;
     @Input() label: string;
     @Input() icon: string;
@@ -235,7 +235,7 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     }
 
     onInput(event?: Event|InputEvent): void {
-        if (!this.autoHeight || !this.inputControl?.nativeElement) {
+        if (!this.autoHeight || this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
             return;
         }
         const textAreaEl = this.inputControl.nativeElement;

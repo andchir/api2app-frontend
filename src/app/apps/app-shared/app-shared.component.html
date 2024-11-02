@@ -22,10 +22,11 @@
 </header>
 
 <main>
-    <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
+    <div [className]="noBorder ? '' : 'mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8'">
 
         <div class="w-full mb-4">
-            <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+            <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300"
+                *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
                 <li class="me-0 md:me-2" *ngFor="let tabName of data.tabs; index as index">
                     <button type="button"
                             class="relative block md:inline-block w-full md:w-auto md:whitespace-nowrap z-10 top-[1px] px-4 py-3 rounded-lg md:rounded-none md:rounded-t-lg border mb-3 md:mb-0"
@@ -48,7 +49,9 @@
                      'hidden': block.tabIndex !== -1 && block.tabIndex !== tabIndex
                      }">
 
-                    <div class="relative bg-white p-3 rounded-[1rem] border border-gray-200 shadow" *ngIf="block.elements.length > 0">
+                    <div class="relative"
+                         [ngClass]="{'bg-white p-3 rounded-[1rem] border border-gray-200 shadow': !noBorder}"
+                         *ngIf="block.elements.length > 0">
                         <div class="min-h-6" [ngClass]="{'opacity-20 pointer-events-none': block.loading}">
                             <ng-container *ngFor="let element of block.elements; index as ind">
                                 <app-block-element [type]="element.type"

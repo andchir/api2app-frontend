@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import {firstValueFrom, retry, Subject, takeUntil} from 'rxjs';
+import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 
@@ -15,10 +15,10 @@ import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
 import { TokenStorageService } from '../../services/token-storage.service';
-import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
+import { environment } from '../../../environments/environment';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -34,6 +34,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     @Input('itemUuid') itemUuid: string;
     @Input('showHeader') showHeader: boolean = true;
     @Input('needBackButton') needBackButton: boolean|null = null;
+    @Input('noBorder') noBorder: boolean = false;
     errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
@@ -260,7 +261,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.stateLoadingUpdate(blocks, true, false);
 
-        this.apiService.apiRequest(apiItem, false)
+        this.apiService.apiRequest(apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -759,6 +760,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (errorMessage === 'Task not found.') {
             errorMessage = $localize `Task not found.`;
+        }
+        if (errorMessage === 'Sorry, access is for subscribers only.') {
+            errorMessage = $localize `Sorry, access is for subscribers only.`;
         }
         return errorMessage;
     }
