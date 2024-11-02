@@ -88,10 +88,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.itemUuid) {
             this.getData();
         }
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            this.isVkApp = true;
-            this.vkAppInit();
-        }
     }
 
     getData(): void {
@@ -121,6 +117,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppOptions(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            this.isVkApp = true;
+            this.vkAppInit();
+        }
         if (!this.data) {
             return;
         }
@@ -688,7 +688,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.isVkApp && data?.result_data?.vk_file_to_save) {
                     this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                 }
-                if (this.isVkApp && currentElement.type === 'button') {
+                if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
                     this.vkBridgeService.showAds(this.vkAppOptions);
                 }
                 this.cdr.detectChanges();
@@ -1036,7 +1036,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                if (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
+                if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad'))) {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();

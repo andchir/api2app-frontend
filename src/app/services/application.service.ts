@@ -222,6 +222,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             uuid: '',
             shared: false,
             hidden: false,
+            advertising: true,
             gridColumns: 3,
             language: '',
             image: '',
