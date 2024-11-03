@@ -43,7 +43,9 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
 
 /* text-content */
 .text-content p:not(:last-child) { display: block; margin-bottom: 15px; }
-.text-content ol:not(:last-child) { padding: 0 0 0 1rem; margin-bottom: 15px; list-style: auto; }
-.text-content ul:not(:last-child) { padding: 0 0 0 1rem; margin-bottom: 15px; list-style: disc; }
+.text-content ol { padding: 0 0 0 1rem; list-style: auto; }
+.text-content ul { padding: 0 0 0 1rem; list-style: disc; }
+.text-content ol:not(:last-child),
+.text-content ul:not(:last-child) { margin-bottom: 15px;  }
 .text-content ol > li,
 .text-content ul > li { margin-bottom: 15px; }
