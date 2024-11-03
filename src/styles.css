@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-content p { display: block; margin-bottom: 15px; }
+.text-content p:not(:last-child) { display: block; margin-bottom: 15px; }
 .no-pointer-events { pointer-events: none; }
 .dropdown {
     position: relative;
