@@ -3,7 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.text-content p:not(:last-child) { display: block; margin-bottom: 15px; }
 .no-pointer-events { pointer-events: none; }
 .dropdown {
     position: relative;
@@ -42,3 +41,9 @@
 /* input range */
 input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); background-repeat: no-repeat; background-size: 0% 100%; }
 
+/* text-content */
+.text-content p:not(:last-child) { display: block; margin-bottom: 15px; }
+.text-content ol:not(:last-child),
+.text-content ul:not(:last-child) { padding: 0 0 0 1rem; margin-bottom: 15px; list-style: auto; }
+.text-content ol > li,
+.text-content ul > li { margin-bottom: 15px; }
