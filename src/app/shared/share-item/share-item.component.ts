@@ -24,7 +24,6 @@ export class ShareItemComponent implements OnInit {
     message = '';
 
     ngOnInit(): void {
-        this.shareUrl = `${this.baseUrl}/${this.language}${this.shareUrl}`;
         this.embedUrl = this.shareUrl.replace('/shared/', '/embed/');
     }
 

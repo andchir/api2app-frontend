@@ -27,7 +27,7 @@
                                    id="sharedUrlField"
                                    placeholder="Share URL"
                                    i18n-placeholder
-                                   value="{{ shareUrl }}{{ itemUuid }}"
+                                   value="{{ baseUrl }}/{{ language }}{{ shareUrl }}{{ itemUuid }}"
                                    readonly #sharedUrlField>
                             <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
                                     title="Copy To Clipboard"
@@ -46,7 +46,7 @@
                                        id="embedUrlField"
                                        placeholder="Share URL"
                                        i18n-placeholder
-                                       value="{{ embedUrl }}{{ itemEmbedUuid }}"
+                                       value="{{ baseUrl }}/{{ language }}{{ embedUrl }}{{ itemEmbedUuid }}"
                                        readonly #embedUrlField>
                                 <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
                                         title="Copy To Clipboard"
