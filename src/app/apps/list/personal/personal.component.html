@@ -100,8 +100,9 @@
                 [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
                 [(isShared)]="selectedItem.shared"
-                shareUrl="{{ baseUrl }}/{{ locale }}/apps/shared/"
+                shareUrl="/apps/shared/"
                 [itemUuid]="selectedItem.uuid"
+                [language]="selectedItem.language"
                 [itemEmbedUuid]="selectedItem.uuid_embed"
                 (isHiddenChange)="makeHiddenConfirmed($event)"
                 (confirmed)="makeSharedConfirmed($event)" *ngIf="selectedItem"></app-share-item>
