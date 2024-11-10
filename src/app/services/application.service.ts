@@ -76,6 +76,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-switch',
             enabled: options?.autoClear || false
         });
+        output.push({
+            name: 'showLoading',
+            label: $localize `Show loading`,
+            type: 'input-switch',
+            enabled: options?.showLoading
+        });
         return output;
     }
 
@@ -87,7 +93,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 orderIndex: 0,
                 gridColumnSpan: 1,
                 messageSuccess: $localize `The form has been submitted successfully.`,
-                autoClear: false
+                autoClear: false,
+                showLoading: true
             }
         };
     }

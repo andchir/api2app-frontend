@@ -73,6 +73,7 @@ export interface AppBlockOptions {
     orderIndex?: number;
     tabIndex?: number;
     autoClear?: boolean;
+    showLoading?: boolean;
     messageSuccess?: string;
 }
 

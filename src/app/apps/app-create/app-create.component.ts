@@ -99,6 +99,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                         if (typeof block.tabIndex === 'undefined') {
                             block.tabIndex = 0;
                         }
+                        if (typeof block.options.showLoading === 'undefined') {
+                            block.options.showLoading = true;
+                        }
                     });
                     this.addEmptyBlockByGrid();
                     this.cdr.detectChanges();
