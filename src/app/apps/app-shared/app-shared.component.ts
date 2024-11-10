@@ -98,6 +98,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.data = res;
+                    this.data.blocks.forEach((block, blockIndex) => {
+                        if (typeof block.options.showLoading === 'undefined') {
+                            block.options.showLoading = true;
+                        }
+                    });
                     this.titleService.setTitle(`${this.data.name} - ${APP_NAME}`);
                     this.loading = false;
                     if (this.data.maintenance) {
