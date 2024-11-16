@@ -769,6 +769,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (errorMessage === 'Sorry, access is for subscribers only.') {
             errorMessage = $localize `Sorry, access is for subscribers only.`;
         }
+        if (errorMessage === 'The video is too long.') {
+            errorMessage = $localize `The video is too long.`;
+        }
+        if (errorMessage === 'Video not found.') {
+            errorMessage = $localize `Video not found.`;
+        }
         return errorMessage;
     }
 
