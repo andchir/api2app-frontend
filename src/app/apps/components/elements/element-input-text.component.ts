@@ -5,8 +5,8 @@ import {
     ElementRef,
     EventEmitter,
     forwardRef,
-    Input,
-    Output,
+    Input, OnChanges, OnInit,
+    Output, SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -24,7 +24,7 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementInputTextComponent implements ControlValueAccessor {
+export class ElementInputTextComponent implements OnInit, OnChanges, ControlValueAccessor {
 
     @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
     @Input() editorMode = false;
@@ -50,8 +50,18 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     isTouched = false;
     microphoneActive = false;
     speechSynthesisActive = false;
+    paddingRight = '0.625rem';
+    paddingBottom = '0';
     // @ts-ignore
     recognition: SpeechRecognition;
+
+    ngOnInit(): void {
+        this.calculatePadding();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        this.calculatePadding();
+    }
 
     get value() {
         return this._value || '';
@@ -70,6 +80,22 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     constructor(
         private cdr: ChangeDetectorRef
     ) {}
+
+    calculatePadding(): void {
+        const buttonWidth = 2;
+        let paddingRightRem = 0.625;
+        if (this.speechRecognitionEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        if (this.speechSynthesisEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        if (this.copyToClipboardEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        this.paddingRight = `${paddingRightRem}rem`;
+        this.paddingBottom = this.speechRecognitionEnabled || this.speechSynthesisEnabled || this.copyToClipboardEnabled ? '2.3rem' : '0';
+    }
 
     microphoneEnableToggle(): void {
         if (this.editorMode) {
