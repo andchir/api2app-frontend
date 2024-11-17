@@ -2,37 +2,13 @@
     <label for="{{ name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
         {{ label }}
     </label>
-    <ng-container [ngSwitch]="type">
-        <ng-container *ngSwitchCase="'input-text'">
-            <div class="relative" *ngIf="icon">
-                <div class="absolute left-3 top-2">
-                    <i class="bi" [ngClass]="icon"></i>
-                </div>
-            </div>
-            <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                   [ngClass]="{
-                   'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
-                   'pl-9': icon
-                   }"
-                   [placeholder]="placeholder || ''"
-                   (keyup)="onKeyUp($event)"
-                   (focus)="onFocus($event)"
-                   [readonly]="readOnly" #inputControl>
-        </ng-container>
-        <ng-container *ngSwitchCase="'input-textarea'">
-            <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}"
-                      class="block min-h-[110px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-                      [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
-                      [placeholder]="placeholder || ''"
-                      [rows]="rows"
-                      (input)="onInput($event)"
-                      (keyup)="onKeyUp($event)"
-                      (focus)="onFocus($event)"
-                      [readonly]="readOnly" #inputControl></textarea>
-        </ng-container>
-    </ng-container>
     <div class="relative">
-        <div class="absolute bottom-2 right-2" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
+        <div class="absolute h-full pl-3 left-0 top-0 flex items-center" *ngIf="icon">
+            <i class="bi" [ngClass]="icon"></i>
+        </div>
+        <div class="absolute"
+             [ngClass]="{'top-0 right-0 h-full pr-3 flex items-center': type === 'input-text', 'bottom-2 right-2': type === 'input-textarea'}"
+             *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
             <button type="button" class="cursor-pointer text-xl ml-3"
                     (click)="copyToClipboard(inputControl.nativeElement)"
                     title="Copy to clipboard"
@@ -59,5 +35,29 @@
                 {{ value.length }} / {{ maxLength }}
             </div>
         </div>
+        <ng-container [ngSwitch]="type">
+            <ng-container *ngSwitchCase="'input-text'">
+                <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       [ngClass]="{
+                   'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
+                   'pl-9': icon
+                   }"
+                       [placeholder]="placeholder || ''"
+                       (keyup)="onKeyUp($event)"
+                       (focus)="onFocus($event)"
+                       [readonly]="readOnly" #inputControl>
+            </ng-container>
+            <ng-container *ngSwitchCase="'input-textarea'">
+            <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}"
+                      class="block min-h-[110px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                      [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
+                      [placeholder]="placeholder || ''"
+                      [rows]="rows"
+                      (input)="onInput($event)"
+                      (keyup)="onKeyUp($event)"
+                      (focus)="onFocus($event)"
+                      [readonly]="readOnly" #inputControl></textarea>
+            </ng-container>
+        </ng-container>
     </div>
 </div>
