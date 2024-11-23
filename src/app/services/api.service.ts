@@ -405,4 +405,12 @@ export class ApiService extends DataService<ApiItem> {
                 catchError(this.handleError)
             );
     }
+
+    cloneItem(uuid: string): Observable<{success: boolean}> {
+        const url = `${this.requestUrl}/${uuid}/clone`
+        return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
 }

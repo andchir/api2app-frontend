@@ -34,6 +34,15 @@
                     </button>
                 </div>
                 <div>
+                    <button type="button"
+                            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
+                            title="Clone API"
+                            i18n-title
+                            (click)="cloneItem()">
+                        <i class="bi bi-copy"></i>
+                    </button>
+                </div>
+                <div>
                     <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
                             [disabled]="submitted"
                             (click)="saveData()">
@@ -85,6 +94,8 @@
 </main>
 
 <app-alert [message]="message" [type]="messageType"></app-alert>
+
+<ng-template #dynamic></ng-template>
 
 <div tabindex="-1"
      class="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"

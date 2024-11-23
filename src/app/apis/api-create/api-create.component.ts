@@ -1,10 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Subject, takeUntil } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { ApiItem } from '../models/api-item.interface';
 import { ApiService } from '../../services/api.service';
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
     selector: 'app-api-create',
@@ -13,6 +16,8 @@ import { ApiService } from '../../services/api.service';
     providers: []
 })
 export class ApiCreateComponent implements OnInit, OnDestroy {
+
+    @ViewChild('dynamic', { read: ViewContainerRef }) private viewRef: ViewContainerRef;
 
     errors: {[name: string]: string[]} = {};
     message: string = '';
@@ -27,8 +32,10 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         protected route: ActivatedRoute,
         protected router: Router,
+        protected modalService: ModalService,
         protected apiService: ApiService
     ) {}
 
@@ -62,6 +69,36 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                 error: (err) => {
                     this.errors = err;
                     this.loading = false;
+                }
+            });
+    }
+
+    cloneItem(): void {
+        const initialData = {
+            message: $localize `Are you sure you want to clone this API?`,
+            isActive: true
+        };
+        this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'confirmed') {
+                        this.loading = true;
+                        this.apiService.cloneItem(this.data.uuid)
+                            .pipe(takeUntil(this.destroyed$))
+                            .subscribe({
+                                next: (res) => {
+                                    this.router.navigate(['apis', 'personal']);
+                                },
+                                error: (err) => {
+                                    if (err.detail) {
+                                        this.message = err.detail;
+                                        this.messageType = 'error';
+                                    }
+                                    this.loading = false;
+                                }
+                            });
+                    }
                 }
             });
     }

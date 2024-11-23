@@ -38,8 +38,8 @@ const APP_NAME = environment.appName;
 })
 export class ApplicationCreateComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
 
-    @ViewChild('dynamic', { read: ViewContainerRef })
-    private viewRef: ViewContainerRef;
+    @ViewChild('dynamic', { read: ViewContainerRef }) private viewRef: ViewContainerRef;
+
     override isShared = false;
     override previewMode = false;
     errorsObj: {[name: string]: string[]} = {};
@@ -353,7 +353,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.isSettingsActive = !this.isSettingsActive;
     }
 
-    cloneApp(): void {
+    cloneItem(): void {
         const initialData = {
             message: $localize `Are you sure you want to clone this application?`,
             isActive: true
