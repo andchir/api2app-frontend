@@ -9,7 +9,7 @@
         <div class="absolute flex gap-3 justify-between px-2"
              [ngClass]="{'top-0 right-0 h-full pr-3 items-center': type === 'input-text', 'bottom-2 right-2': type === 'input-textarea'}"
              *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
-            <div *ngIf="copyToClipboardEnabled && (value || editorMode)">
+            <div *ngIf="copyToClipboardEnabled">
                 <button type="button" class="cursor-pointer text-xl"
                         (click)="copyToClipboard(inputControl.nativeElement)"
                         title="Copy to clipboard"
