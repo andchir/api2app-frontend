@@ -539,6 +539,12 @@ export class ElementOptions {
                     value: options?.placeholder
                 });
                 output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -1152,6 +1158,7 @@ export class ElementOptions {
                     itemFieldNameForTitle: 'name',
                     itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
+                    LoadValueInto: '',
                     required: true,
                     clearable: true,
                     searchable: true,

@@ -912,22 +912,34 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onElementValueChanged(element: AppBlockElement): void {
         if (!this.previewMode
             || this.data.maintenance
-            || !element.options?.inputApiUuid
             || !element.value
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
-        const inputApiUuid = element.options.inputApiUuid;
-        const buttonElement = this.findButtonElement(inputApiUuid);
-        if (inputApiUuid && this.errors[inputApiUuid]) {
-            delete this.errors[inputApiUuid][element.name];
-        }
-        if (buttonElement && !['input-pagination'].includes(element.type)) {
+        if (element.loadValueInto) {
+            const allElements = this.getAllElements();
+            const targetElement = allElements.find((elem) => {
+                return elem.name === element.loadValueInto;
+            });
+            if (targetElement) {
+                targetElement.value = element.value;
+            }
             return;
         }
-        this.removeAutoStart(inputApiUuid);
-        // this.appAutoStart(inputApiUuid, 'input', element);
-        this.appSubmit(inputApiUuid, 'input', element);
+        const inputApiUuid = element.options?.inputApiUuid;
+        if (inputApiUuid) {
+            const buttonElement = this.findButtonElement(inputApiUuid);
+            if (inputApiUuid && this.errors[inputApiUuid]) {
+                delete this.errors[inputApiUuid][element.name];
+            }
+            if (buttonElement && !['input-pagination'].includes(element.type)) {
+                return;
+            }
+            this.removeAutoStart(inputApiUuid);
+            // this.appAutoStart(inputApiUuid, 'input', element);
+            this.appSubmit(inputApiUuid, 'input', element);
+        }
+
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {
