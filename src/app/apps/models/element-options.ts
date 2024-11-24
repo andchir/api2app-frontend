@@ -134,6 +134,13 @@ export class ElementOptions {
                     ]
                 });
                 output.push({
+                    name: 'alignCenter',
+                    label: $localize `Align to center`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.alignCenter || false
+                });
+                output.push({
                     name: 'whiteSpacePre',
                     label: $localize `Use line break`,
                     type: 'input-switch',
@@ -1053,6 +1060,7 @@ export class ElementOptions {
                     icon: '',
                     keys: [],
                     whiteSpacePre: false,
+                    alignCenter: false,
                     markdown: false,
                     hiddenByDefault: false,
                     fullWidth: true,
