@@ -1330,7 +1330,7 @@ export class ElementOptions {
             case 'progress':
                 Object.assign(output, {
                     name: 'progress',
-                    note: 'Please select the object that contains data about the queue number, duration and status of the operation.',
+                    note: $localize `Please select an object that contains data about the queue number and the operation status.`,
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusFieldName: 'status',

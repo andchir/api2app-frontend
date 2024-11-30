@@ -594,10 +594,16 @@
                  *ngIf="options?.valueObj !== null || editorMode">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <app-progress
-                        [percentCurrent]="editorMode ? 50 : 0"
+                        [editorMode]="editorMode"
                         [parentIndex]="parentIndex"
+                        [statusCompleted]="options?.statusCompleted"
+                        [statusError]="options?.statusError"
+                        [statusFieldName]="options?.statusFieldName"
+                        [queueNumberFieldName]="options?.queueNumberFieldName"
+                        [operationDurationSeconds]="options?.operationDurationSeconds"
                         [index]="index"
-                        [dataJson]="options.valueObj | json"></app-progress>
+                        [dataJson]="options.valueObj | json"
+                        [(ngModel)]="options.value"></app-progress>
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

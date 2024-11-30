@@ -864,6 +864,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
+        } else if (['progress'].includes(element.type)) {
+            element.valueObj = value;
         } else {
             element.value = (element.prefixText || '')
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)

@@ -41,6 +41,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     selectedFieldName: string | number | null = null;
     selectedFieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | number | null = null;
     actionType: 'input'|'output';
+    note: string;
     loading = false;
     submitted = false;
     urlParts: string[] = [];
