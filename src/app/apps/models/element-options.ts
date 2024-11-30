@@ -919,6 +919,40 @@ export class ElementOptions {
                     enabled: options?.isBoolean || false
                 });
                 break;
+            case 'progress':
+                // operationDurationSeconds: 0,
+                output.push({
+                    name: 'statusCompleted',
+                    label: $localize `Completed Status Value`,
+                    type: 'input-text',
+                    value: options?.statusCompleted || ''
+                });
+                output.push({
+                    name: 'statusError',
+                    label: $localize `Error Status Value`,
+                    type: 'input-text',
+                    value: options?.statusError || ''
+                });
+                output.push({
+                    name: 'statusFieldName',
+                    label: $localize `Status field`,
+                    type: 'input-text',
+                    value: options?.statusFieldName || ''
+                });
+                output.push({
+                    name: 'queueNumberFieldName',
+                    label: $localize `Queue number field`,
+                    type: 'input-text',
+                    value: options?.queueNumberFieldName || ''
+                });
+                output.push({
+                    name: 'operationDurationSeconds',
+                    label: $localize `Operation execution time (in seconds)`,
+                    type: 'input-number',
+                    min: 0,
+                    value: options?.operationDurationSeconds || 0
+                });
+                break;
             case 'table':
                 output.push({
                     name: 'label',
@@ -1290,6 +1324,19 @@ export class ElementOptions {
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
                     isBoolean: false,
+                    value: null
+                });
+                break;
+            case 'progress':
+                Object.assign(output, {
+                    name: 'progress',
+                    note: 'Please select the object that contains data about the queue number, duration and status of the operation.',
+                    statusCompleted: 'completed',
+                    statusError: 'error',
+                    statusFieldName: 'status',
+                    queueNumberFieldName: 'number',
+                    operationDurationSeconds: 0,
+                    valueObj: null,
                     value: null
                 });
                 break;

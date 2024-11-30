@@ -349,6 +349,9 @@
         "4149517812851430818": "Clone API",
         "5610927330871568989": "Load value into field",
         "3005446654035362844": "Align to center",
-        "3841110511541708235": "Progress Indicator"
+        "3841110511541708235": "Progress Indicator",
+        "3456324663343828815": "Status field",
+        "6442607566220172763": "Queue number field",
+        "3212567735394666652": "Operation execution time (in seconds)"
     }
 }

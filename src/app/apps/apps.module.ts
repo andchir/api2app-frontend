@@ -23,7 +23,7 @@ import { ApplicationImportComponent } from './app-import/app-import.component';
 import { RenameComponent } from '../shared/rename/rename.component';
 import { TableElementComponent } from './components/elements/table-element.component';
 import { SelectImageComponent } from './components/elements/select-image.component';
-import {PercentComponent} from "../shared/percent/percent.component";
+import { ProgressElementComponent } from './components/elements/progress-element.component';
 
 @NgModule({
     declarations: [
@@ -47,7 +47,7 @@ import {PercentComponent} from "../shared/percent/percent.component";
         NgApexchartsModule,
         TableElementComponent,
         SelectImageComponent,
-        PercentComponent
+        ProgressElementComponent
     ],
     exports: [
         ApplicationSharedComponent

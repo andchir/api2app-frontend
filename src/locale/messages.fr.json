@@ -349,6 +349,9 @@
         "4149517812851430818": "API de clonage",
         "5610927330871568989": "Charger la valeur dans le champ",
         "3005446654035362844": "Aligner le centre",
-        "3841110511541708235": "Indicateur de progression"
+        "3841110511541708235": "Indicateur de progression",
+        "3456324663343828815": "Champ d'état",
+        "6442607566220172763": "Champ Numéro de file d'attente",
+        "3212567735394666652": "Temps d'exécution de l'opération (en secondes)"
     }
 }
