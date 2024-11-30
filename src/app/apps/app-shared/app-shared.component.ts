@@ -481,7 +481,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
                 const element = currentElements.find((item) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
                         && fieldType === 'input';
@@ -611,9 +611,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         // Api URL
         const elements = currentElements.filter((item) => {
-            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
             return apiUuid === apiItem.uuid && fieldType === 'url';
         });
+
         apiItem.urlPartIndex = 0;
         apiItem.urlPartValue = null;
         elements.forEach((el) => {
