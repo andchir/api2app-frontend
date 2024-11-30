@@ -388,8 +388,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     saveData(): void {
         const data = Object.assign({}, this.data, {language: this.locale});
-        data.hidden = data.hidden || false;
         data.shared = data.shared || false;
+        data.hidden = data.hidden || false;
         let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
         blocks = blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);
@@ -413,6 +413,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.loading = true;
         this.saving = true;
         this.cdr.detectChanges();
+
+        if (data.id) {
+            delete data.shared;
+            delete data.hidden;
+        }
 
         const formData = this.dataService.creteFormData(data, this.files);
         const itemId = data.id || 0;
