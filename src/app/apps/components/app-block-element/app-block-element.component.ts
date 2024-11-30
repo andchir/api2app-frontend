@@ -52,6 +52,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-chart-line', title: $localize `Line Chart`, icon: 'bi-graph-up'},
         {name: 'input-pagination', title: $localize `Pagination`, icon: 'bi-segmented-nav'},
         {name: 'status', title: $localize `Status Indicator`, icon: 'bi-check-circle'},
+        {name: 'progress', title: $localize `Progress Indicator`, icon: 'bi-percent'},
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
         {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
