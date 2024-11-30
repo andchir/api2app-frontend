@@ -47,7 +47,10 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     @Input() data: any[] = [];
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() updateData: EventEmitter<string> = new EventEmitter<string>();
 
+    queueNumber: number = 0;
+    delay: number = 10000;
     isError: boolean = false;
     timer: any;
     private destroyed$ = new Subject<void>();
@@ -87,14 +90,14 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
         console.log('onDataUpdated', this.data);
         clearTimeout(this.timer);
         const status = this.data[this.statusFieldName] || 'processing';
-        const queueNumber = this.data[this.queueNumberFieldName] || 0;
+        this.queueNumber = this.data[this.queueNumberFieldName] || 0;
         if ([this.statusCompleted, this.statusError].includes(status)) {
             this.isError = status === this.statusError;
             this.value = 100;
             return;
         }
         console.log('status', status);
-        console.log('queueNumber', queueNumber);
+        console.log('queueNumber', this.queueNumber);
     }
 
     onChange(_: any) {}

@@ -353,6 +353,7 @@
         "3456324663343828815": "Status field",
         "6442607566220172763": "Queue number field",
         "3212567735394666652": "Operation execution time (in seconds)",
-        "7978853143345712010": "Please select an object that contains data about the queue number and the operation status."
+        "7978853143345712010": "Please select an object that contains data about the queue number and the operation status.",
+        "7736925984965927105": "Your number in the queue:"
     }
 }

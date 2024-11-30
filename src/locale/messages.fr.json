@@ -353,6 +353,7 @@
         "3456324663343828815": "Champ d'état",
         "6442607566220172763": "Champ Numéro de file d'attente",
         "3212567735394666652": "Temps d'exécution de l'opération (en secondes)",
-        "7978853143345712010": "Veuillez sélectionner un objet contenant des informations sur le numéro de file d'attente et l'état de l'opération."
+        "7978853143345712010": "Veuillez sélectionner un objet contenant des informations sur le numéro de file d'attente et l'état de l'opération.",
+        "7736925984965927105": "Votre numéro de file d'attente:"
     }
 }
