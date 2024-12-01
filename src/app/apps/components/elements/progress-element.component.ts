@@ -142,6 +142,9 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
             const dateString = window.localStorage.getItem(`${taskUuid}-progress-start`);
             if (taskUuid) {
                 this.processStartedAt = dateString ? new Date(dateString) : new Date();
+                if (!dateString) {
+                    window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
+                }
             }
         }
         if (!this.processStartedAt) {
