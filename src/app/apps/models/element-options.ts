@@ -926,7 +926,6 @@ export class ElementOptions {
                 });
                 break;
             case 'progress':
-                // operationDurationSeconds: 0,
                 output.push({
                     name: 'statusCompleted',
                     label: $localize `Completed Status Value`,
@@ -950,6 +949,12 @@ export class ElementOptions {
                     label: $localize `Queue number field`,
                     type: 'input-text',
                     value: options?.queueNumberFieldName || ''
+                });
+                output.push({
+                    name: 'taskIdFieldName',
+                    label: $localize `Queue ID field`,
+                    type: 'input-text',
+                    value: options?.taskIdFieldName || ''
                 });
                 output.push({
                     name: 'operationDurationSeconds',
@@ -1341,6 +1346,7 @@ export class ElementOptions {
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusFieldName: 'status',
+                    taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 0,
                     valueObj: null,
