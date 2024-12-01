@@ -176,28 +176,24 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!apiUuid) {
             return Promise.resolve();
         }
-        return new Promise((resolve, reject) => {
-            const key = `${element.type}-${element.name}`;
-            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-                vkBridge.send('VKWebAppStorageGet', {keys: [key]})
-                    .then((data) => {
-                        if (data.keys && data.keys.length > 0) {
-                            element.value = data.keys[0].value;
-                        }
-                        resolve();
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        resolve();
-                    });
-            } else {
-                const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-                if (obj[key]) {
-                    element.value = obj[key];
-                }
-                resolve();
+        const key = `${element.type}-${element.name}`;
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            return vkBridge.send('VKWebAppStorageGet', {keys: [key]})
+                .then((data) => {
+                    if (data.keys && data.keys.length > 0) {
+                        element.value = data.keys[0].value;
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        } else {
+            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+            if (obj[key]) {
+                element.value = obj[key];
             }
-        });
+            return Promise.resolve();
+        }
     }
 
     static dataURItoFile(dataURI: string): File {
