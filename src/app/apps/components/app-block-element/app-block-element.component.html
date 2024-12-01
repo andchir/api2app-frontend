@@ -602,6 +602,7 @@
                         [operationDurationSeconds]="options?.operationDurationSeconds"
                         [index]="index"
                         [dataJson]="options.valueObj | json"
+                        (progressUpdate)="onProgressUpdate(options)"
                         [(ngModel)]="options.value"></app-progress>
                 </div>
             </div>

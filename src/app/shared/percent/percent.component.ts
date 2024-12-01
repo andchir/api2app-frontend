@@ -38,7 +38,6 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log('ngOnChanges', changes);
         if (changes['valueCurrent']) {
             this.percentCurrent = this.getPercent(this.valueCurrent, this.valueTotal);
             this.drawPercentAnimateStart();

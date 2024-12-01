@@ -40,6 +40,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     isLoggedIn = false;
     isShared = true;
+    progressUpdating = false;
     loading = false;
     submitted = false;
     previewMode = true;
@@ -273,6 +274,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.appsAutoStarted.includes(apiUuid)) {
                         this.afterAutoStarted(apiUuid);
                     }
+                    this.progressUpdating = false;
                     this.loading = false;
                     this.submitted = false;
 
@@ -422,7 +424,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if ((showMessage && block.options?.autoClear) || clearBlock) {
                 this.clearElementsValues(block);
             }
-            block.loading = loading;
+            if (block.options?.showLoading && !this.progressUpdating) {
+                block.loading = loading;
+            }
         });
         this.cdr.detectChanges();
     }
@@ -954,6 +958,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         // console.log('onItemSelected', element);
+        this.appSubmit(apiUuid, 'input', element);
+    }
+
+    onProgressUpdate(element: AppBlockElement): void {
+        this.progressUpdating = true;
+        const apiUuid = element.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
         this.appSubmit(apiUuid, 'input', element);
     }
 

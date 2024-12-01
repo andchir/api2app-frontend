@@ -39,19 +39,20 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     @Input() name: string;
     @Input() parentIndex: number;
     @Input() index: number;
-    @Input() statusCompleted: 'completed';
-    @Input() statusError: 'error';
-    @Input() statusFieldName: 'status';
-    @Input() queueNumberFieldName: 'number';
+    @Input() statusCompleted: string = 'completed';
+    @Input() statusError: string = 'error';
+    @Input() statusFieldName: string = 'status';
+    @Input() queueNumberFieldName: string = 'number';
     @Input() operationDurationSeconds: 0;
     @Input() data: any = {};
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
+    @Output() progressUpdate: EventEmitter<void> = new EventEmitter<void>();
 
+    processStartedAt: Date;
+    status: string = '';
     queueNumber: number = 0;
     delay: number = 10000;
-    isError: boolean = false;
     timer: any;
     private destroyed$ = new Subject<void>();
 
@@ -80,7 +81,6 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
         if (this.editorMode) {
             return;
         }
-        console.log('ngOnChanges', changes);
         if (this.dataJson) {
             this.data = JSON.parse(this.dataJson);
         }
@@ -88,21 +88,62 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     }
 
     onDataUpdated(): void {
-        console.log('onDataUpdated', this.data);
         clearTimeout(this.timer);
         if (!this.data) {
             this.data = {};
         }
-        const status = this.data[this.statusFieldName] || 'processing';
-        this.queueNumber = this.data[this.queueNumberFieldName] || 0;
-        if ([this.statusCompleted, this.statusError].includes(status)) {
-            this.isError = status === this.statusError;
+        this.delay = 10000;
+        this.status = this.data[this.statusFieldName] || 'processing';
+        const queueNumber = this.data[this.queueNumberFieldName] || 0;
+        const processStarted = queueNumber === 0 && this.queueNumber > 0;
+        console.log('status', this.status);
+        console.log('queueNumber', this.queueNumber);
+        console.log('processStarted?', processStarted);
+        if (processStarted) {
+            this.processStartedAt = new Date();
+        }
+        this.queueNumber = queueNumber;
+        if ([this.statusCompleted, this.statusError].includes(this.status)) {
             this.writeValue(100);
             return;
         }
         this.writeValue(0);
-        console.log('status', status);
-        console.log('queueNumber', this.queueNumber);
+        if (this.queueNumber > 0) {
+            this.pollingStatus();
+        } else {
+            this.pollingProgress();
+        }
+    }
+
+    private pollingStatus(): void {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.progressUpdate.emit();
+            this.pollingStatus();
+        }, this.delay);
+    }
+
+    pollingProgress(currentMs: number = 0): void {
+        console.log('pollingProgress', currentMs);
+        clearTimeout(this.timer);
+        if (!this.processStartedAt) {
+            return;
+        }
+        const UPDATE_DELAY = 1000;
+        const now = new Date();
+        this.timer = setTimeout(() => {
+            const diff = Math.min(this.operationDurationSeconds, (now.getTime() - this.processStartedAt.getTime()) / 1000);
+            const percent = diff / this.operationDurationSeconds * 100;
+            this.writeValue(Math.min(99, percent));
+            if (percent < 100) {
+                if (currentMs % this.delay === 0) {
+                    this.progressUpdate.emit();
+                }
+                this.pollingProgress(currentMs + UPDATE_DELAY);
+            } else {
+                this.progressUpdate.emit();
+            }
+        }, UPDATE_DELAY);
     }
 
     onChange(_: any) {}
@@ -110,7 +151,6 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     onTouched(_: any) {}
 
     writeValue(value: number) {
-        console.log('writeValue', value);
         this.value = value || 0;
     }
 

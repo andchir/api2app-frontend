@@ -1185,11 +1185,12 @@ export class ElementOptions {
                 break;
             case 'input-hidden':
                 Object.assign(output, {
-                    name: 'name',
-                    label: $localize `Name`,
+                    name: 'hidden',
+                    label: $localize `Hidden`,
                     type: 'input-text',
                     prefixText: '',
                     suffixText: '',
+                    required: true,
                     storeValue: false,
                     value: ''
                 });
