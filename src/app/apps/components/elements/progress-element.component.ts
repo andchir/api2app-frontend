@@ -124,7 +124,6 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     }
 
     pollingProgress(currentMs: number = 0): void {
-        console.log('pollingProgress', currentMs);
         clearTimeout(this.timer);
         if (!this.processStartedAt) {
             return;

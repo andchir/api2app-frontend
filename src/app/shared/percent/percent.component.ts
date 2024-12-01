@@ -22,7 +22,7 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
     @Input() percentCurrent = 0;
     @Input() textColor = '#6875f5';
     @Input() currentColor = '#6875f5';
-    @Input() totalColor = '#dedede';
+    @Input() totalColor = '#d9dbde';
     @Input() circleLineWidth = 5;
     @Input() fontSize = 20;
 

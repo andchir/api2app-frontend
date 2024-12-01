@@ -274,13 +274,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.appsAutoStarted.includes(apiUuid)) {
                         this.afterAutoStarted(apiUuid);
                     }
+
+                    // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
+                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                    this.createAppResponse(currentApi, res, currentElement);
+
                     this.progressUpdating = false;
                     this.loading = false;
                     this.submitted = false;
-
-                    // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
-                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-                    this.createAppResponse(currentApi, res, currentElement);
                 },
                 error: (err) => {
                     // console.log('ERROR', err);
