@@ -26,9 +26,9 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
     @Input() circleLineWidth = 5;
     @Input() fontSize = 20;
 
-    percent = 0;
     timestampStart: number;
     isPaused = false;
+    private percent = 0;
     private destroyed$ = new Subject<void>();
 
     ngOnInit(): void {
@@ -38,6 +38,7 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
+        console.log('ngOnChanges', changes);
         if (changes['valueCurrent']) {
             this.percentCurrent = this.getPercent(this.valueCurrent, this.valueTotal);
             this.drawPercentAnimateStart();
@@ -89,10 +90,11 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     drawPercentAnimateStart(): void {
-        if (this.isPaused) {
+        if (this.isPaused || this.percentCurrent === this.percent) {
             return;
         }
-        window.requestAnimationFrame(this.drawPercentAnimate.bind(this));
+        // window.requestAnimationFrame(this.drawPercentAnimate.bind(this));
+        this.drawPercentAnimate(0);
     }
 
     drawPercentAnimate(timestamp: number): void {
@@ -107,10 +109,18 @@ export class PercentComponent implements OnInit, OnDestroy, OnChanges {
         const progress = timestamp - this.timestampStart;
         const animationPercent = progress ? Math.min(1, progress / ANIMATION_DURATION) : 0;
 
-        const value = (this.percentCurrent - this.percent) * animationPercent;
-        if (value > 0) {
-            this.drawPercent(this.percent + value);
+        if (this.percentCurrent >= this.percent) {
+            const value = (this.percentCurrent - this.percent) * animationPercent;
+            if (value > 0) {
+                this.drawPercent(this.percent + value);
+            }
+        } else {
+            const value = (this.percent - this.percentCurrent) * animationPercent;
+            if (value > 0) {
+                this.drawPercent(this.percent - value);
+            }
         }
+
         if (progress < ANIMATION_DURATION) {
             window.requestAnimationFrame(this.drawPercentAnimate.bind(this));
         } else {

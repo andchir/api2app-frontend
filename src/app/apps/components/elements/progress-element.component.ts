@@ -44,10 +44,10 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     @Input() statusFieldName: 'status';
     @Input() queueNumberFieldName: 'number';
     @Input() operationDurationSeconds: 0;
-    @Input() data: any[] = [];
+    @Input() data: any = {};
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() updateData: EventEmitter<string> = new EventEmitter<string>();
+    @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
 
     queueNumber: number = 0;
     delay: number = 10000;
@@ -73,13 +73,14 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     ) {}
 
     ngOnInit(): void {
+        // console.log('ngOnInit');
     }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.editorMode) {
             return;
         }
-        console.log(changes);
+        console.log('ngOnChanges', changes);
         if (this.dataJson) {
             this.data = JSON.parse(this.dataJson);
         }
@@ -89,13 +90,17 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     onDataUpdated(): void {
         console.log('onDataUpdated', this.data);
         clearTimeout(this.timer);
+        if (!this.data) {
+            this.data = {};
+        }
         const status = this.data[this.statusFieldName] || 'processing';
         this.queueNumber = this.data[this.queueNumberFieldName] || 0;
         if ([this.statusCompleted, this.statusError].includes(status)) {
             this.isError = status === this.statusError;
-            this.value = 100;
+            this.writeValue(100);
             return;
         }
+        this.writeValue(0);
         console.log('status', status);
         console.log('queueNumber', this.queueNumber);
     }
@@ -105,15 +110,16 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     onTouched(_: any) {}
 
     writeValue(value: number) {
-        this.value = value;
+        console.log('writeValue', value);
+        this.value = value || 0;
     }
 
     registerOnChange(fn: (_: any) => void) {
-        this.onChange = fn;
+        // this.onChange = fn;
     }
 
     registerOnTouched(fn: (_: any) => void) {
-        this.onTouched = fn;
+        // this.onTouched = fn;
     }
 
     ngOnDestroy(): void {

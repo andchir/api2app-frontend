@@ -4,3 +4,7 @@
     <span i18n>Your number in the queue:</span>&nbsp;<b>{{ queueNumber }}</b>.
     <div i18n>Please wait...</div>
 </div>
+
+<div class="pt-2 text-green-500 text-center text-sm" *ngIf="value === 100">
+    <span i18n>Done</span>!
+</div>

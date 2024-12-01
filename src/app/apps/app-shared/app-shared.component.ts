@@ -281,7 +281,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.createAppResponse(currentApi, res, currentElement);
                 },
                 error: (err) => {
-                    // console.log(err);
+                    // console.log('ERROR', err);
                     this.loading = false;
                     this.submitted = false;
                     if (err?.error instanceof Blob) {
