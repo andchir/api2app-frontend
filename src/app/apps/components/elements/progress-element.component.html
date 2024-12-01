@@ -1,7 +1,6 @@
 <app-percent [percentCurrent]="value"></app-percent>
 
-<div class="pt-3 text-gray-600 text-center text-sm" *ngIf="queueNumber">
-    <span i18n>Your number in the queue:</span>&nbsp;
-    <b>{{ queueNumber }}</b>.&nbsp;
-    <span i18n>Please wait...</span>
+<div class="pt-2 text-gray-600 text-center text-sm" *ngIf="queueNumber">
+    <span i18n>Your number in the queue:</span>&nbsp;<b>{{ queueNumber }}</b>.
+    <div i18n>Please wait...</div>
 </div>

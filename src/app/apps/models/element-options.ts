@@ -478,6 +478,12 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
+                });
                 break;
             case 'input-switch':
                 output.push({
@@ -1179,6 +1185,7 @@ export class ElementOptions {
                     type: 'input-text',
                     prefixText: '',
                     suffixText: '',
+                    storeValue: false,
                     value: ''
                 });
                 break;
