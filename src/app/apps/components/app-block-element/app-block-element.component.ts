@@ -30,6 +30,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
+    @Output() progressCompleted: EventEmitter<string> = new EventEmitter<string>();
 
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
         {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
@@ -303,6 +304,14 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
         if (taskId) {
             this.progressUpdate.emit(taskId);
+        }
+    }
+
+    onProgressCompleted(options: any): void {
+        const taskIdField = options.taskIdFieldName || 'uuid';
+        const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
+        if (taskId) {
+            this.progressCompleted.emit(taskId);
         }
     }
 

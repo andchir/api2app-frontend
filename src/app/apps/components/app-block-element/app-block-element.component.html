@@ -598,11 +598,13 @@
                         [statusCompleted]="options?.statusCompleted"
                         [statusError]="options?.statusError"
                         [statusFieldName]="options?.statusFieldName"
+                        [taskIdFieldName]="options?.taskIdFieldName"
                         [queueNumberFieldName]="options?.queueNumberFieldName"
                         [operationDurationSeconds]="options?.operationDurationSeconds"
                         [index]="index"
                         [dataJson]="options.valueObj | json"
                         (progressUpdate)="onProgressUpdate(options)"
+                        (progressCompleted)="onProgressCompleted(options)"
                         [(ngModel)]="options.value"></app-progress>
                 </div>
             </div>

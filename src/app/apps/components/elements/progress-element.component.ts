@@ -42,12 +42,14 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     @Input() statusCompleted: string = 'completed';
     @Input() statusError: string = 'error';
     @Input() statusFieldName: string = 'status';
+    @Input() taskIdFieldName: string = 'uuid';
     @Input() queueNumberFieldName: string = 'number';
     @Input() operationDurationSeconds: 0;
     @Input() data: any = {};
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() progressUpdate: EventEmitter<void> = new EventEmitter<void>();
+    @Output() progressCompleted: EventEmitter<void> = new EventEmitter<void>();
 
     processStartedAt: Date;
     status: string = '';
@@ -94,17 +96,18 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
         }
         this.delay = 10000;
         this.status = this.data[this.statusFieldName] || 'processing';
+        const taskUuid = this.data[this.taskIdFieldName] || '';
         const queueNumber = this.data[this.queueNumberFieldName] || 0;
         const processStarted = queueNumber === 0 && this.queueNumber > 0;
-        console.log('status', this.status);
-        console.log('queueNumber', this.queueNumber);
-        console.log('processStarted?', processStarted);
         if (processStarted) {
             this.processStartedAt = new Date();
+            if (taskUuid) {
+                window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
+            }
         }
         this.queueNumber = queueNumber;
         if ([this.statusCompleted, this.statusError].includes(this.status)) {
-            this.writeValue(100);
+            this.onCompleted();
             return;
         }
         this.writeValue(0);
@@ -113,6 +116,15 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
         } else {
             this.pollingProgress();
         }
+    }
+
+    onCompleted(): void {
+        this.writeValue(100);
+        const taskUuid = this.data[this.taskIdFieldName] || '';
+        if (taskUuid) {
+            window.localStorage.removeItem(`${taskUuid}-progress-start`);
+        }
+        this.progressCompleted.emit();
     }
 
     private pollingStatus(): void {
@@ -126,6 +138,13 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     pollingProgress(currentMs: number = 0): void {
         clearTimeout(this.timer);
         if (!this.processStartedAt) {
+            const taskUuid = this.data[this.taskIdFieldName] || '';
+            const dateString = window.localStorage.getItem(`${taskUuid}-progress-start`);
+            if (taskUuid) {
+                this.processStartedAt = dateString ? new Date(dateString) : new Date();
+            }
+        }
+        if (!this.processStartedAt) {
             return;
         }
         const UPDATE_DELAY = 1000;
@@ -134,14 +153,10 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
             const diff = Math.min(this.operationDurationSeconds, (now.getTime() - this.processStartedAt.getTime()) / 1000);
             const percent = diff / this.operationDurationSeconds * 100;
             this.writeValue(Math.min(99, percent));
-            if (percent < 100) {
-                if (currentMs % this.delay === 0) {
-                    this.progressUpdate.emit();
-                }
-                this.pollingProgress(currentMs + UPDATE_DELAY);
-            } else {
+            if (currentMs % this.delay === 0) {
                 this.progressUpdate.emit();
             }
+            this.pollingProgress(currentMs + UPDATE_DELAY);
         }, UPDATE_DELAY);
     }
 

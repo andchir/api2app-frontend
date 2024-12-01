@@ -962,13 +962,31 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.appSubmit(apiUuid, 'input', element);
     }
 
-    onProgressUpdate(element: AppBlockElement): void {
+    onProgressUpdate(currentElement: AppBlockElement): void {
         this.progressUpdating = true;
-        const apiUuid = element.options?.outputApiUuid;
+        const apiUuid = currentElement.options?.outputApiUuid;
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(apiUuid, 'input', element);
+        this.appSubmit(apiUuid, 'input', currentElement);
+    }
+
+    onProgressCompleted(currentElement: AppBlockElement): void {
+        this.progressUpdating = true;
+        const apiUuid = currentElement.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
+        const elements = this.findElements(apiUuid, 'input', currentElement, true);
+        const storeElements = elements.filter((elem) => {
+            return elem.storeValue;
+        });
+        storeElements.forEach((elem) => {
+            elem.value = null;
+            elem.valueObj = null;
+            elem.valueArr = null;
+            ApplicationService.localStoreValue(elem);
+        });
     }
 
     isJson(str: string): boolean {

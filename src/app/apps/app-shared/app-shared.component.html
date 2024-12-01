@@ -65,6 +65,7 @@
                                                    (elementValueChange)="onElementValueChanged(element)"
                                                    (itemSelected)="onItemSelected(element, $event)"
                                                    (progressUpdate)="onProgressUpdate(element)"
+                                                   (progressCompleted)="onProgressCompleted(element)"
                                                    (message)="onMessage($event)"></app-block-element>
                                 <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
                                     <div class="w-full max-w-[600px] mx-auto">

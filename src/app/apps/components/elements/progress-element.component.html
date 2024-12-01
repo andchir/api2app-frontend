@@ -1,15 +1,19 @@
-<div class="py-2 bg-gray-200 rounded-xl">
-    <app-percent [percentCurrent]="value"></app-percent>
+<div class="p-2 bg-gray-100 rounded-xl">
+    <div class="p-2 rounded-lg border-2 border-dotted border-gray-300">
+        <app-percent [percentCurrent]="value"></app-percent>
 
-    <div class="pt-2 text-gray-600 text-center text-sm" *ngIf="queueNumber">
-        <span i18n>Your number in the queue:</span>&nbsp;<b>{{ queueNumber }}</b>.
-        <div i18n>Please wait...</div>
-    </div>
+        <div class="pt-2 text-gray-400 text-center text-sm" *ngIf="!['completed', 'error'].includes(status)">
+            <div *ngIf="queueNumber">
+                <span i18n>Your number in the queue:</span>&nbsp;<b>{{ queueNumber }}</b>.
+            </div>
+            <div i18n>Please wait...</div>
+        </div>
 
-    <div class="pt-2 text-green-500 text-center text-sm" *ngIf="status == 'completed'">
-        <span i18n>Done</span>!
-    </div>
-    <div class="pt-2 text-red-500 text-center text-sm" *ngIf="status == 'error'">
-        <span i18n>Error</span>
+        <div class="pt-2 text-green-500 text-center text-sm" *ngIf="status == 'completed'">
+            <span i18n>Done</span>!
+        </div>
+        <div class="pt-2 text-red-500 text-center text-sm" *ngIf="status == 'error'">
+            <span i18n>Error</span>
+        </div>
     </div>
 </div>

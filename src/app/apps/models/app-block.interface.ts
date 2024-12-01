@@ -68,6 +68,7 @@ export interface AppBlockElement {
     rows?: number;
     loadValueInto?: string;
     note?: string;
+    storeValue?: boolean;
 }
 
 export interface AppBlockOptions {

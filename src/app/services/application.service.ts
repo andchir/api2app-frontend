@@ -140,7 +140,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'input-slider':
                 return parseInt(String(element.value));
         }
-        return String(element.value);
+        return element.value ? String(element.value) : null;
     }
 
     static localStoreValue(element: AppBlockElement): void {
