@@ -168,31 +168,36 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
     }
 
-    static applyLocalStoredValue(element: AppBlockElement): void {
+    static applyLocalStoredValue(element: AppBlockElement): Promise<void> {
         if (!element['storeValue']) {
-            return;
+            return Promise.resolve();
         }
         const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
         if (!apiUuid) {
-            return;
+            return Promise.resolve();
         }
-        const key = `${element.type}-${element.name}`;
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            vkBridge.send('VKWebAppStorageGet', {keys: [key]})
-                .then((data) => {
-                    if (data.keys && data.keys.length > 0) {
-                        element.value = data.keys[0].value;
-                    }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        } else {
-            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-            if (obj[key]) {
-                element.value = obj[key];
+        return new Promise((resolve, reject) => {
+            const key = `${element.type}-${element.name}`;
+            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+                vkBridge.send('VKWebAppStorageGet', {keys: [key]})
+                    .then((data) => {
+                        if (data.keys && data.keys.length > 0) {
+                            element.value = data.keys[0].value;
+                        }
+                        resolve();
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                        resolve();
+                    });
+            } else {
+                const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
+                if (obj[key]) {
+                    element.value = obj[key];
+                }
+                resolve();
             }
-        }
+        });
     }
 
     static dataURItoFile(dataURI: string): File {

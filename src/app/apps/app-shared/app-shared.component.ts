@@ -130,7 +130,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data) {
             return;
         }
-        const buttons = [];
+        const promises = [];
         this.data.blocks.forEach((block, blockIndex) => {
             if (typeof block.tabIndex === 'undefined') {
                 block.tabIndex = 0;
@@ -171,18 +171,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
-                ApplicationService.applyLocalStoredValue(element);
+                promises.push(ApplicationService.applyLocalStoredValue(element));
             });
         });
 
         // API auto start
         if (!this.data.maintenance) {
-            this.getApiList('output').then((items) => {
-                this.apiItems['output'] = items;
-                Object.keys(this.appElements.output).forEach((uuid) => {
-                    if (!this.appElements.buttons[uuid]) {
-                        this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
-                    }
+            Promise.all(promises).then(() => {
+                this.getApiList('output').then((items) => {
+                    this.apiItems['output'] = items;
+                    Object.keys(this.appElements.output).forEach((uuid) => {
+                        if (!this.appElements.buttons[uuid]) {
+                            this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
+                        }
+                    });
                 });
             });
         }
