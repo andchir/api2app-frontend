@@ -33,7 +33,7 @@ import { PercentComponent } from '../../../shared/percent/percent.component';
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ProgressElementComponent implements ControlValueAccessor, OnInit, OnDestroy, OnChanges {
+export class ProgressElementComponent implements ControlValueAccessor, OnDestroy, OnChanges {
 
     @Input() editorMode = false;
     @Input() name: string;
@@ -66,6 +66,9 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
 
     @Input()
     set value(val) {
+        if (this.editorMode) {
+            val = 65;
+        }
         this._value = val || 0;
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -74,10 +77,6 @@ export class ProgressElementComponent implements ControlValueAccessor, OnInit, O
     constructor(
         private cdr: ChangeDetectorRef
     ) {}
-
-    ngOnInit(): void {
-        // console.log('ngOnInit');
-    }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.editorMode) {
