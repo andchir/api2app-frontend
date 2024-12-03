@@ -5,8 +5,8 @@ import {
     ElementRef,
     EventEmitter,
     forwardRef,
-    Input,
-    Output,
+    Input, OnChanges, OnInit,
+    Output, SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -24,38 +24,54 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementInputTextComponent implements ControlValueAccessor {
+export class ElementInputTextComponent implements OnInit, OnChanges, ControlValueAccessor {
 
     @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
     @Input() editorMode = false;
-    @Input() type: string;
+    @Input() type: 'input-text'|'input-textarea';
     @Input() name: string;
     @Input() label: string;
     @Input() icon: string;
     @Input() placeholder: string;
     @Input() parentIndex: number;
     @Input() index: number;
+    @Input() rows: number = 6;
+    @Input() maxLength: number = 0;
     @Input() readOnly: boolean;
     @Input() storeValue: boolean;
-    @Input() speechRecognitionEnabled = false;
-    @Input() speechSynthesisEnabled = false;
-    @Input() copyToClipboardEnabled = false;
+    @Input() speechRecognitionEnabled: boolean = false;
+    @Input() speechSynthesisEnabled: boolean = false;
+    @Input() copyToClipboardEnabled: boolean = false;
+    @Input() autoHeight: boolean = true;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
-    private _value;
+    private _value = '';
     isChanged = false;
     isTouched = false;
     microphoneActive = false;
     speechSynthesisActive = false;
+    paddingRight = '0.625rem';
+    paddingBottom = '0';
     // @ts-ignore
     recognition: SpeechRecognition;
 
+    ngOnInit(): void {
+        this.calculatePadding();
+    }
+
+    ngOnChanges(changes: SimpleChanges): void {
+        this.calculatePadding();
+    }
+
     get value() {
-        return this._value;
+        return this._value || '';
     }
 
     @Input()
     set value(val) {
+        if (this.maxLength && val.length > this.maxLength) {
+            val = val.substring(0, this.maxLength);
+        }
         this._value = val;
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -64,6 +80,22 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     constructor(
         private cdr: ChangeDetectorRef
     ) {}
+
+    calculatePadding(): void {
+        const buttonWidth = 2;
+        let paddingRightRem = 0.625;
+        if (this.speechRecognitionEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        if (this.speechSynthesisEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        if (this.copyToClipboardEnabled) {
+            paddingRightRem += buttonWidth;
+        }
+        this.paddingRight = `${paddingRightRem}rem`;
+        this.paddingBottom = this.speechRecognitionEnabled || this.speechSynthesisEnabled || this.copyToClipboardEnabled ? '2.3rem' : '0';
+    }
 
     microphoneEnableToggle(): void {
         if (this.editorMode) {
@@ -206,12 +238,17 @@ export class ElementInputTextComponent implements ControlValueAccessor {
     onTouched(_: any) {}
 
     writeValue(value: any) {
+        value = value || '';
+        if (this.maxLength && value.length > this.maxLength) {
+            value = value.substring(0, this.maxLength);
+        }
         if (this.value && value && this.value !== value) {
             this.isChanged = true;
         }
         this.value = value;
-        if (this.inputControl.nativeElement) {
+        if (this.inputControl?.nativeElement) {
             this.inputControl.nativeElement.value = value;
+            this.onInput();
         }
     }
 
@@ -223,7 +260,31 @@ export class ElementInputTextComponent implements ControlValueAccessor {
         this.onTouched = fn;
     }
 
+    onInput(event?: Event|InputEvent): void {
+        if (!this.autoHeight || this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
+            return;
+        }
+        const textAreaEl = this.inputControl.nativeElement;
+        if (!textAreaEl) {
+            return;
+        }
+        const MAX_HEIGHT = 400;
+        textAreaEl.style.overflowY = 'hidden';
+        textAreaEl.style.height = 'auto';
+        const scrollHeight = textAreaEl.scrollHeight;
+        if (scrollHeight > MAX_HEIGHT) {
+            textAreaEl.style.height = MAX_HEIGHT + 'px';
+            textAreaEl.style.overflowY = 'auto';
+            return;
+        }
+        textAreaEl.style.overflowY = 'hidden';
+        textAreaEl.style.height = `${scrollHeight}px`;
+    }
+
     onKeyUp(event: KeyboardEvent) {
+        if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
+            (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
+        }
         this.value = (event.target as HTMLInputElement).value;
         this.isChanged = true;
     }

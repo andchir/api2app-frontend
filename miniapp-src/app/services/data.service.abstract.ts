@@ -93,7 +93,7 @@ export abstract class DataService<T extends {id: number}> {
     updateItem(item: T|FormData, itemId?: number): Observable<T> {
         return iif(
             () => !!itemId,
-            this.putItem(item, itemId),
+            this.patchItem(item, itemId),
             this.postItem(item)
         )
     }
@@ -106,6 +106,8 @@ export abstract class DataService<T extends {id: number}> {
             }
             if (data[key] && typeof data[key] === 'object') {
                 formData.append(key, JSON.stringify(data[key]));
+            } else if (typeof data[key] === 'boolean') {
+                formData.append(key, data[key] ? '1' : '0');
             } else {
                 formData.append(key, String(data[key] || ''));
             }
@@ -132,6 +134,15 @@ export abstract class DataService<T extends {id: number}> {
         const url = `${this.requestUrl}/${itemId}`;
         const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
         return this.httpClient.put<T>(url, item, httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    patchItem(item: T|FormData, itemId: number = 0): Observable<T> {
+        const url = `${this.requestUrl}/${itemId}`;
+        const httpOptions = item instanceof FormData ? this.httpOptionsFormData : this.httpOptions;
+        return this.httpClient.patch<T>(url, item, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

@@ -29,16 +29,18 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
+    @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
+    @Output() progressCompleted: EventEmitter<string> = new EventEmitter<string>();
 
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
         {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
         {name: 'text', title: $localize `Text`, icon: 'bi-fonts'},
         {name: 'button', title: $localize `Button`, icon: 'bi-app'},
         {name: 'input-text', title: $localize `Text Field`, icon: 'bi-input-cursor-text'},
+        {name: 'input-hidden', title: $localize `Hidden Text Field`, icon: 'bi-input-cursor'},
         {name: 'input-textarea', title: $localize `Text Area`, icon: 'bi-textarea-resize'},
         {name: 'input-number', title: $localize `Number Field`, icon: 'bi-1-square'},
         {name: 'input-slider', title: $localize `Range Slider`, icon: 'bi-sliders'},
-        {name: 'input-hidden', title: $localize `Hidden Text Field`, icon: 'bi-input-cursor'},
         {name: 'input-switch', title: $localize `Switch`, icon: 'bi-toggle-off'},
         {name: 'input-select', title: $localize `Select`, icon: 'bi-menu-button'},
         {name: 'input-tags', title: $localize `Tags`, icon: 'bi-tag'},
@@ -52,6 +54,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'input-chart-line', title: $localize `Line Chart`, icon: 'bi-graph-up'},
         {name: 'input-pagination', title: $localize `Pagination`, icon: 'bi-segmented-nav'},
         {name: 'status', title: $localize `Status Indicator`, icon: 'bi-check-circle'},
+        {name: 'progress', title: $localize `Progress Indicator`, icon: 'bi-percent'},
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
         {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
@@ -294,6 +297,22 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 link.click();
             })
             .catch(console.error);
+    }
+
+    onProgressUpdate(options: any): void {
+        const taskIdField = options.taskIdFieldName || 'uuid';
+        const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
+        if (taskId) {
+            this.progressUpdate.emit(taskId);
+        }
+    }
+
+    onProgressCompleted(options: any): void {
+        const taskIdField = options.taskIdFieldName || 'uuid';
+        const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
+        if (taskId) {
+            this.progressCompleted.emit(taskId);
+        }
     }
 
     onMessage(msg: string[]) {

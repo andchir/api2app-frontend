@@ -13,8 +13,9 @@ export class ShareItemComponent implements OnInit {
     @Input() isHidden: boolean = false;
     @Input() readOnly: boolean = false;
     @Input() itemUuid: string = '';
+    @Input() language: string = 'en';
     @Input() itemEmbedUuid: string = '';
-    @Input() shareUrl: string = 'https://example.com/item/shared/';
+    @Input() shareUrl: string = '/item/shared/';
     @Output() isActiveChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() isSharedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() isHiddenChange: EventEmitter<boolean> = new EventEmitter<boolean>();
@@ -24,6 +25,10 @@ export class ShareItemComponent implements OnInit {
 
     ngOnInit(): void {
         this.embedUrl = this.shareUrl.replace('/shared/', '/embed/');
+    }
+
+    get baseUrl(): string {
+        return `${window.location.protocol}//${window.location.host}`;
     }
 
     closeModal(): void {

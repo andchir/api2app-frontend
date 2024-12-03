@@ -3,16 +3,20 @@
          [ngClass]="{'!ring-green-400 !opacity-100': value === item.name}"
          [style.background-image]="'url(' + item.imageUrl + ')'"
          *ngFor="let item of data"
-        (click)="selectItem(item)">
+         (contextmenu)="$event.preventDefault()"
+         (click)="selectItem(item)">
         <div class="absolute right-3 top-3 w-8 h-8 leading-8 rounded-full bg-green-500 text-white text-center pointer-events-none"
              *ngIf="value === item.name">
             <i class="bi bi-check-lg"></i>
         </div>
-        <div class="absolute max-w-[80%] bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded overflow-hidden bg-black bg-opacity-50 text-white text-center text-sm px-2 py-1 pointer-events-none select-none"
-             [ngClass]="{'!bg-green-500': value === item.name}"
-             *ngIf="showTitle">
-            {{ item.name }}
+        <div class="absolute w-full flex justify-center left-0 bottom-3"
+            *ngIf="showTitle">
+            <div class="max-w-[80%] rounded bg-black bg-opacity-50 text-white text-center text-sm px-2 py-1 pointer-events-none select-none"
+                 [ngClass]="{'!bg-green-500': value === item.name}">
+                {{ item.name }}
+            </div>
         </div>
+
     </div>
 </div>
 <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"

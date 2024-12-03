@@ -85,6 +85,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-switch',
             enabled: options?.autoClear || false
         });
+        output.push({
+            name: 'showLoading',
+            label: $localize `Show loading`,
+            type: 'input-switch',
+            enabled: options?.showLoading
+        });
         return output;
     }
 
@@ -96,7 +102,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 orderIndex: 0,
                 gridColumnSpan: 1,
                 messageSuccess: $localize `The form has been submitted successfully.`,
-                autoClear: false
+                autoClear: false,
+                showLoading: true
             }
         };
     }
@@ -116,7 +123,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File[]|null {
+    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
         switch (element.type) {
             case 'input-tags':
                 return Array.isArray(element?.value) ? element?.value : [];
@@ -124,6 +131,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 const dateFormat = element?.format;
                 const date = moment(String(element?.value));
                 return date.format(dateFormat);
+            case 'audio':
+                if (element.value && element.value['changingThisBreaksApplicationSecurity']) {
+                    const value = element.value['changingThisBreaksApplicationSecurity'];
+                    if (value.includes('data:audio')) {
+                        return ApplicationService.dataURItoFile(value);
+                    }
+                    return String(value);
+                }
+                return String(element.value);
             case 'input-file':
                 if ((element.value as File[]).length === 0) {
                     return null;
@@ -133,7 +149,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'input-slider':
                 return parseInt(String(element.value));
         }
-        return String(element.value);
+        return element.value ? String(element.value) : null;
     }
 
     static localStoreValue(element: AppBlockElement): void {
@@ -147,7 +163,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         const key = `${element.type}-${element.name}`;
         if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            vkBridge.send('VKWebAppStorageSet', {key, value})
+            vkBridge.send('VKWebAppStorageSet', {key, value: value || ''})
                 .then((data) => {
                     // console.log('VKWebAppStorageSet', data);
                 })
@@ -161,17 +177,17 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
     }
 
-    static applyLocalStoredValue(element: AppBlockElement): void {
+    static applyLocalStoredValue(element: AppBlockElement): Promise<void> {
         if (!element['storeValue']) {
-            return;
+            return Promise.resolve();
         }
         const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
         if (!apiUuid) {
-            return;
+            return Promise.resolve();
         }
         const key = `${element.type}-${element.name}`;
         if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-            vkBridge.send('VKWebAppStorageGet', {keys: [key]})
+            return vkBridge.send('VKWebAppStorageGet', {keys: [key]})
                 .then((data) => {
                     if (data.keys && data.keys.length > 0) {
                         element.value = data.keys[0].value;
@@ -185,8 +201,36 @@ export class ApplicationService extends DataService<ApplicationItem> {
             if (obj[key]) {
                 element.value = obj[key];
             }
+            return Promise.resolve();
         }
     }
+
+    static dataURItoFile(dataURI: string): File {
+        const blob = ApplicationService.dataUriToBlob(dataURI);
+        const mimeType = blob.type;
+        const ext = mimeType.split('/')[1];
+        return ApplicationService.dataBlobToFile(blob, `file.${ext}`);
+    }
+
+    static dataBlobToFile(blob: Blob, fileName: string = ''): File {
+        return new File(
+            [blob],
+            fileName,
+            {
+                lastModified: new Date().getTime(),
+                type: blob.type
+            });
+    }
+
+    static dataUriToBlob(dataUri: string): Blob {
+        const binary = atob(dataUri.split(',')[1]);
+        const mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+        const arr = [];
+        for (let i = 0; i < binary.length; i++) {
+            arr.push(binary.charCodeAt(i));
+        }
+        return new Blob([new Uint8Array(arr)], { type: mimeString });
+    };
 
     static getDefault(): ApplicationItem {
         return {
@@ -195,6 +239,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             uuid: '',
             shared: false,
             hidden: false,
+            advertising: true,
             gridColumns: 3,
             language: '',
             image: '',

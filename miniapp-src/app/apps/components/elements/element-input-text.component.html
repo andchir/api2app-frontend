@@ -2,56 +2,67 @@
     <label for="{{ name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
         {{ label }}
     </label>
-    <ng-container [ngSwitch]="type">
-        <ng-container *ngSwitchCase="'input-text'">
-            <div class="relative" *ngIf="icon">
-                <div class="absolute left-3 top-2">
-                    <i class="bi" [ngClass]="icon"></i>
-                </div>
+    <div class="relative">
+        <div class="absolute h-full pl-3 left-0 top-0 flex items-center" *ngIf="icon">
+            <i class="bi" [ngClass]="icon"></i>
+        </div>
+        <div class="absolute flex gap-3 justify-between px-2"
+             [ngClass]="{'top-0 right-0 h-full pr-3 items-center': type === 'input-text', 'bottom-2 right-2': type === 'input-textarea'}"
+             *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
+            <div *ngIf="copyToClipboardEnabled">
+                <button type="button" class="cursor-pointer text-xl"
+                        (click)="copyToClipboard(inputControl.nativeElement)"
+                        title="Copy to clipboard"
+                        i18n-title>
+                    <i class="bi bi-copy"></i>
+                </button>
             </div>
-            <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                   [ngClass]="{
-                   'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
-                   'pl-9': icon
-                   }"
-                   [placeholder]="placeholder || ''"
-                   (keyup)="onKeyUp($event)"
-                   (focus)="onFocus($event)"
-                   [readonly]="readOnly" #inputControl>
-        </ng-container>
-        <ng-container *ngSwitchCase="'input-textarea'">
-            <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}" rows="4" class="block p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+            <div *ngIf="speechSynthesisEnabled">
+                <button type="button" class="cursor-pointer text-xl"
+                        (click)="speechSynthesisPlayToggle()"
+                        title="Voice the text"
+                        i18n-title>
+                    <i class="bi bi-volume-up-fill" [ngClass]="{'text-blue-700': speechSynthesisActive, 'text-gray-700': !speechSynthesisActive}"></i>
+                </button>
+            </div>
+            <div *ngIf="speechRecognitionEnabled">
+                <button type="button" class="cursor-pointer text-xl"
+                        (click)="microphoneEnableToggle()"
+                        title="Voice typing"
+                        i18n-title>
+                    <i class="bi bi-mic-fill text-red-700" *ngIf="microphoneActive"></i>
+                    <i class="bi bi-mic-mute-fill text-gray-700" *ngIf="!microphoneActive"></i>
+                </button>
+            </div>
+            <div class="inline-block leading-5 py-1 px-2 text-xs rounded bg-black text-white bg-opacity-50 pointer-events-none" *ngIf="maxLength">
+                {{ value.length }} / {{ maxLength }}
+            </div>
+        </div>
+        <ng-container [ngSwitch]="type">
+            <ng-container *ngSwitchCase="'input-text'">
+                <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                       [style.padding-right]="paddingRight"
+                       [ngClass]="{
+                       'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
+                       'pl-9': icon
+                       }"
+                       [placeholder]="placeholder || ''"
+                       (keyup)="onKeyUp($event)"
+                       (focus)="onFocus($event)"
+                       [readonly]="readOnly" #inputControl>
+            </ng-container>
+            <ng-container *ngSwitchCase="'input-textarea'">
+            <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}"
+                      [style.padding-bottom]="paddingBottom"
+                      class="block min-h-[110px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                       [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                       [placeholder]="placeholder || ''"
+                      [rows]="rows"
+                      (input)="onInput($event)"
                       (keyup)="onKeyUp($event)"
                       (focus)="onFocus($event)"
                       [readonly]="readOnly" #inputControl></textarea>
+            </ng-container>
         </ng-container>
-    </ng-container>
-    <div class="relative">
-        <div class="absolute bottom-1.5 right-2" *ngIf="speechRecognitionEnabled || speechSynthesisEnabled || copyToClipboardEnabled">
-            <button type="button" class="cursor-pointer text-xl ml-3"
-                    (click)="copyToClipboard(inputControl.nativeElement)"
-                    title="Copy to clipboard"
-                    i18n-title
-                    *ngIf="copyToClipboardEnabled && (value || editorMode)">
-                <i class="bi bi-copy"></i>
-            </button>
-            <button type="button" class="cursor-pointer text-xl ml-3"
-                    (click)="speechSynthesisPlayToggle()"
-                    title="Voice the text"
-                    i18n-title
-                    *ngIf="speechSynthesisEnabled">
-                <i class="bi bi-volume-up-fill" [ngClass]="{'text-blue-700': speechSynthesisActive, 'text-gray-700': !speechSynthesisActive}"></i>
-            </button>
-            <button type="button" class="cursor-pointer text-xl ml-3"
-                    (click)="microphoneEnableToggle()"
-                    title="Voice typing"
-                    i18n-title
-                    *ngIf="speechRecognitionEnabled">
-                <i class="bi bi-mic-fill text-red-700" *ngIf="microphoneActive"></i>
-                <i class="bi bi-mic-mute-fill text-gray-700" *ngIf="!microphoneActive"></i>
-            </button>
-        </div>
     </div>
 </div>

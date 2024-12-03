@@ -51,6 +51,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 break;
@@ -87,6 +88,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 output.push({
@@ -132,6 +134,13 @@ export class ElementOptions {
                     ]
                 });
                 output.push({
+                    name: 'alignCenter',
+                    label: $localize `Align to center`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.alignCenter || false
+                });
+                output.push({
                     name: 'whiteSpacePre',
                     label: $localize `Use line break`,
                     type: 'input-switch',
@@ -151,6 +160,13 @@ export class ElementOptions {
                     type: 'input-switch',
                     value: true,
                     enabled: options?.border
+                });
+                output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth
                 });
                 output.push({
                     name: 'showOnlyInVK',
@@ -296,6 +312,19 @@ export class ElementOptions {
                 break;
             case 'input-textarea':
                 output.push({
+                    name: 'max',
+                    label: $localize `Maximum text length`,
+                    type: 'input-number',
+                    rows: 6,
+                    value: options?.max || 0
+                });
+                output.push({
+                    name: 'rows',
+                    label: $localize `Number of lines`,
+                    type: 'input-number',
+                    value: options?.rows || 6
+                });
+                output.push({
                     name: 'label',
                     label: $localize `Label`,
                     type: 'input-text',
@@ -323,6 +352,7 @@ export class ElementOptions {
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-textarea',
+                    rows: 6,
                     value: options?.value
                 });
                 output.push({
@@ -448,6 +478,12 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
+                });
                 break;
             case 'input-switch':
                 output.push({
@@ -490,6 +526,19 @@ export class ElementOptions {
                     value: options?.itemFieldNameForValue
                 });
                 output.push({
+                    name: 'valueArr',
+                    label: $localize `Values`,
+                    type: 'table',
+                    headers: [$localize `Name`, $localize `Value`],
+                    keys: ['name', 'value'],
+                    editable: true,
+                    valueArr: options?.valueArr
+                        ? options.valueArr.map((item) => {
+                            return Object.assign({}, item)
+                        })
+                        : null
+                });
+                output.push({
                     name: 'choices',
                     label: $localize `Choices`,
                     type: 'input-tags',
@@ -501,6 +550,12 @@ export class ElementOptions {
                     label: $localize `Placeholder`,
                     type: 'input-text',
                     value: options?.placeholder
+                });
+                output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
                 });
                 output.push({
                     name: 'value',
@@ -681,6 +736,12 @@ export class ElementOptions {
             case 'audio':
             case 'video':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
                     type: 'input-text',
@@ -698,6 +759,14 @@ export class ElementOptions {
                         label: $localize `Poster URL`,
                         type: 'input-text',
                         value: options?.posterUrl || ''
+                    });
+                }
+                if (type === 'audio') {
+                    output.push({
+                        name: 'required',
+                        label: $localize `Required`,
+                        type: 'input-switch',
+                        enabled: options?.required || false
                     });
                 }
                 break;
@@ -856,7 +925,52 @@ export class ElementOptions {
                     enabled: options?.isBoolean || false
                 });
                 break;
+            case 'progress':
+                output.push({
+                    name: 'statusCompleted',
+                    label: $localize `Completed Status Value`,
+                    type: 'input-text',
+                    value: options?.statusCompleted || ''
+                });
+                output.push({
+                    name: 'statusError',
+                    label: $localize `Error Status Value`,
+                    type: 'input-text',
+                    value: options?.statusError || ''
+                });
+                output.push({
+                    name: 'statusFieldName',
+                    label: $localize `Status field`,
+                    type: 'input-text',
+                    value: options?.statusFieldName || ''
+                });
+                output.push({
+                    name: 'queueNumberFieldName',
+                    label: $localize `Queue number field`,
+                    type: 'input-text',
+                    value: options?.queueNumberFieldName || ''
+                });
+                output.push({
+                    name: 'taskIdFieldName',
+                    label: $localize `Queue ID field`,
+                    type: 'input-text',
+                    value: options?.taskIdFieldName || ''
+                });
+                output.push({
+                    name: 'operationDurationSeconds',
+                    label: $localize `Operation execution time (in seconds)`,
+                    type: 'input-number',
+                    min: 0,
+                    value: options?.operationDurationSeconds || 0
+                });
+                break;
             case 'table':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
                 output.push({
                     name: 'headers',
                     label: $localize `Columns headers`,
@@ -899,9 +1013,9 @@ export class ElementOptions {
                 });
                 output.push({
                     name: 'data',
-                    label: $localize `Name`,
+                    label: $localize `Values`,
                     type: 'table',
-                    headers: ['Название', 'URL изображения'],
+                    headers: [$localize `Name`, $localize `Image URL`],
                     keys: ['name', 'imageUrl'],
                     editable: true,
                     valueArr: options?.data
@@ -991,8 +1105,10 @@ export class ElementOptions {
                     icon: '',
                     keys: [],
                     whiteSpacePre: false,
+                    alignCenter: false,
                     markdown: false,
                     hiddenByDefault: false,
+                    fullWidth: true,
                     border: false,
                     showOnlyInVK: false
                 });
@@ -1031,6 +1147,8 @@ export class ElementOptions {
                     label: $localize `Content`,
                     type: 'input-textarea',
                     placeholder: $localize `Enter your message here`,
+                    rows: 6,
+                    max: 0,
                     prefixText: '',
                     suffixText: '',
                     readOnly: false,
@@ -1040,6 +1158,7 @@ export class ElementOptions {
                     speechSynthesisEnabled: false,
                     copyToClipboardEnabled: false,
                     storeValue: false,
+                    autoHeight: false,
                     value: null
                 });
                 break;
@@ -1066,11 +1185,13 @@ export class ElementOptions {
                 break;
             case 'input-hidden':
                 Object.assign(output, {
-                    name: 'name',
-                    label: $localize `Name`,
+                    name: 'hidden',
+                    label: $localize `Hidden`,
                     type: 'input-text',
                     prefixText: '',
                     suffixText: '',
+                    required: true,
+                    storeValue: false,
                     value: ''
                 });
                 break;
@@ -1089,16 +1210,18 @@ export class ElementOptions {
                     label: $localize `Example Select`,
                     type: 'input-select',
                     placeholder: $localize `Please Select`,
-                    itemFieldNameForTitle: '',
-                    itemFieldNameForValue: '',
+                    itemFieldNameForTitle: 'name',
+                    itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
+                    LoadValueInto: '',
                     required: true,
                     clearable: true,
                     searchable: true,
                     addTag: false,
                     selectDefaultFirst: true,
                     hiddenByDefault: false,
-                    value: 'Value1'
+                    value: 'Value1',
+                    valueArr: null
                 });
                 break;
             case 'input-tags':
@@ -1165,9 +1288,11 @@ export class ElementOptions {
             case 'audio':
                 Object.assign(output, {
                     name: type,
+                    label: '',
                     prefixText: '',
                     value: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    required: false
                 });
                 break;
             case 'video':
@@ -1215,9 +1340,24 @@ export class ElementOptions {
                     value: null
                 });
                 break;
+            case 'progress':
+                Object.assign(output, {
+                    name: 'progress',
+                    note: $localize `Please select an object that contains data about the queue number and the operation status.`,
+                    statusCompleted: 'completed',
+                    statusError: 'error',
+                    statusFieldName: 'status',
+                    taskIdFieldName: 'uuid',
+                    queueNumberFieldName: 'number',
+                    operationDurationSeconds: 0,
+                    valueObj: null,
+                    value: null
+                });
+                break;
             case 'table':
                 Object.assign(output, {
                     name: 'table',
+                    label: '',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
                     isHTML: false,

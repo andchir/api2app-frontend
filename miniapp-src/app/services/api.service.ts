@@ -7,6 +7,7 @@ import { catchError, iif, Observable } from 'rxjs';
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
 import { DataService } from './data.service.abstract';
+import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 
 @Injectable()
 export class ApiService extends DataService<ApiItem> {
@@ -34,6 +35,7 @@ export class ApiService extends DataService<ApiItem> {
             sendAsFormData: false,
             dailyLimitUsage: 0,
             dailyLimitForUniqueUsers: false,
+            paidOnly: false,
             responseBody: '',
             responseHeaders: [],
             responseContentType: 'json',
@@ -105,7 +107,7 @@ export class ApiService extends DataService<ApiItem> {
         return responseTypeValue;
     }
 
-    apiRequest(data: ApiItem, isApiTesting = true): Observable<HttpResponse<any>> {
+    apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
         const bodyDataSource = data.bodyDataSource;
@@ -173,8 +175,9 @@ export class ApiService extends DataService<ApiItem> {
                                 } else {
                                     if ((item.value as any) instanceof File) {
                                         formData.append(item.name, (item.value as any));
-                                    } else {
-                                        formData.append(item.name, String(item.value) || '');
+                                    }
+                                    else {
+                                        formData.append(item.name, String(item.value || ''));
                                     }
                                 }
                             }
@@ -224,6 +227,9 @@ export class ApiService extends DataService<ApiItem> {
                     formData.append('opt__responseContentType', data?.responseContentType || '');
                     formData.append('opt__sendAsFormData', data?.sendAsFormData ? '1' : '0');
                 }
+                if (vkAppOptions?.appLaunchParamsJson) {
+                    formData.append('opt__vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
+                }
             } else {
                 body = Object.assign({}, {
                     body,
@@ -231,6 +237,9 @@ export class ApiService extends DataService<ApiItem> {
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid
                 });
+                if (vkAppOptions?.appLaunchParamsJson) {
+                    body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
+                }
                 if (data?.urlPartIndex && data?.urlPartValue) {
                     Object.assign(body, {
                         opt__urlPartIndex: data.urlPartIndex,
@@ -393,6 +402,14 @@ export class ApiService extends DataService<ApiItem> {
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
         const url = `${BASE_URL}${this.locale}/api/v1/api_import_from_curl`;
         return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    cloneItem(uuid: string): Observable<{success: boolean}> {
+        const url = `${this.requestUrl}/${uuid}/clone`
+        return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

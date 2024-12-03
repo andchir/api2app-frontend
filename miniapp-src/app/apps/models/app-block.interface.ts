@@ -2,7 +2,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text' |'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
-    |'audio'|'video'|'input-chart-line'|'input-slider'|'input-color'|'input-pagination'|'status'|'table'
+    |'audio'|'video'|'input-chart-line'|'input-slider'|'input-color'|'input-pagination'|'status'|'progress'|'table'
     |'input-select-image'|'user-subscription';
 
 export interface AppOptions {
@@ -65,6 +65,10 @@ export interface AppBlockElement {
     keys?: string[];
     headers?: string[];
     subscriptionId?: string;
+    rows?: number;
+    loadValueInto?: string;
+    note?: string;
+    storeValue?: boolean;
 }
 
 export interface AppBlockOptions {
@@ -72,6 +76,7 @@ export interface AppBlockOptions {
     orderIndex?: number;
     tabIndex?: number;
     autoClear?: boolean;
+    showLoading?: boolean;
     messageSuccess?: string;
 }
 

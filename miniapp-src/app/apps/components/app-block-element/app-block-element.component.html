@@ -34,7 +34,7 @@
                 </ng-container>
 
                 <ng-template let-item #templateImageItem>
-                    <div class="flex gap-2 items-center w-full max-w-[600px] mx-auto"
+                    <div class="flex gap-2 items-center w-full"
                          [ngClass]="{
                         'whitespace-pre-line': options?.whiteSpacePre,
                         'min-h-[20px]': editorMode,
@@ -52,25 +52,36 @@
                         'text-violet-500': options?.color == 'Violet',
                         'text-cyan-500': options?.color == 'Cyan',
                         'text-sm': options?.fontSize == 'Small',
-                        'text-lg': options?.fontSize == 'Large'
+                        'text-lg': options?.fontSize == 'Large',
+                        'max-w-[600px] mx-auto': !options.fullWidth
                     }">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                        <div class="max-w-full overflow-hidden">
+                        <div class="max-w-full overflow-hidden text-content"
+                            [ngClass]="{'w-full text-center': options?.alignCenter}">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
                             <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
                                 <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                <span *ngIf="options?.markdown" [innerHTML]="item[options.itemFieldName] | markdown : { disableSanitizer: true } | async"></span>
+                                <markdown ngPreserveWhitespaces
+                                    [data]="item[options.itemFieldName]"
+                                    *ngIf="options?.markdown">
+                                </markdown>
                             </ng-container>
                             <ng-container *ngIf="!options?.itemFieldName || !item">
                                 <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                                <span *ngIf="options?.value && options?.markdown" [innerHTML]="options?.value | markdown : { disableSanitizer: true } | async"></span>
+                                <markdown ngPreserveWhitespaces
+                                          [data]="options?.value"
+                                          *ngIf="options?.value && options?.markdown">
+                                </markdown>
                             </ng-container>
                             <ng-container *ngIf="options?.keys && item">
                                 <div *ngFor="let key of options?.keys">
                                     <div class="mb-3" *ngIf="item[key]">
                                         <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
-                                        <span *ngIf="options?.markdown" [innerHTML]="item[key] | markdown : { disableSanitizer: true } | async"></span>
+                                        <markdown ngPreserveWhitespaces
+                                                  [data]="item[key]"
+                                                  *ngIf="options?.markdown">
+                                        </markdown>
                                     </div>
                                 </div>
                             </ng-container>
@@ -86,6 +97,7 @@
 
         <ng-container *ngSwitchCase="'text-header'">
             <h4 class="text-2xl font-bold min-h-[20px] mb-3"
+                [id]="options?.name"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <span class="flex gap-2 items-center">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
@@ -111,9 +123,10 @@
                     'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color == 'Red',
                     'border border-gray-500 bg-gray-400 hover:bg-gray-600 focus:ring-gray-200': options?.color == 'Gray'
                     }"
-                    (click)="onClick()">
+                    (click)="onClick()"
+                    (contextmenu)="$event.preventDefault()">
                     <span class="flex gap-2 w-full justify-center items-center">
-                        <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
+                        <span *ngIf="options?.icon"><i class="text-lg leading-3 bi" [ngClass]="options?.icon"></i></span>
                         <span>
                             {{ options?.text }}
                         </span>
@@ -157,10 +170,13 @@
                     [name]="options.name"
                     [label]="options.label"
                     [placeholder]="options.placeholder"
+                    [rows]="options?.rows"
+                    [maxLength]="options?.max"
                     [readOnly]="options.readOnly"
                     [storeValue]="options?.storeValue"
                     [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
                     [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
+                    [copyToClipboardEnabled]="options?.copyToClipboardEnabled"
                     [parentIndex]="parentIndex"
                     [index]="index"
                     (message)="onMessage($event)"
@@ -208,7 +224,7 @@
                     <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                         {{ options?.label }}
                     </label>
-                    <ng-container *ngIf="options?.valueArr; else templateSelectSimple">
+                    <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateSelectSimple">
                         <ng-select class="ng-select-custom"
                                    [items]="options.valueArr"
                                    [bindLabel]="options?.itemFieldNameForTitle"
@@ -223,18 +239,7 @@
                                    i18n-addTagText
                                    labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    (change)="onFieldValueChanged()"
-                                   [(ngModel)]="options.value">
-                            <ng-template ng-label-tmp let-item="item">
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
-                            </ng-template>
-                            <ng-template ng-option-tmp let-item="item">
-                                <span class="capitalize" *ngIf="options?.itemFieldNameForTitle">{{ item[options.itemFieldNameForTitle] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && options?.itemFieldNameForValue">{{ item[options.itemFieldNameForValue] || '' }}</span>
-                                <span class="capitalize" *ngIf="!options?.itemFieldNameForTitle && !options.itemFieldNameForValue">{{ item }}</span>
-                            </ng-template>
-                        </ng-select>
+                                   [(ngModel)]="options.value"></ng-select>
                     </ng-container>
                     <ng-template #templateSelectSimple>
                         <ng-select class="ng-select-custom"
@@ -250,10 +255,10 @@
                                    (change)="onFieldValueChanged()"
                                    [(ngModel)]="options.value">
                             <ng-template ng-label-tmp let-item="item">
-                                <span class="capitalize">{{ item }}</span>
+                                <span class="first-letter-uppercase">{{ item }}</span>
                             </ng-template>
                             <ng-template ng-option-tmp let-item="item">
-                                <span class="capitalize">{{ item }}</span>
+                                <span class="first-letter-uppercase">{{ item }}</span>
                             </ng-template>
                         </ng-select>
                     </ng-template>
@@ -429,7 +434,6 @@
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <audio class="block w-full" [src]="options?.value" controls
-                           controlsList="nodownload"
                            *ngIf="options?.value"></audio>
                     <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
                          *ngIf="!options?.value && editorMode">
@@ -584,11 +588,37 @@
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'progress'">
+            <div role="status" class="mb-3 rounded-[0.7rem]"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode, 'hidden': options?.valueObj === null && !editorMode}">
+                <div class="block w-full max-w-[600px] mx-auto">
+                    <app-progress
+                        [editorMode]="editorMode"
+                        [parentIndex]="parentIndex"
+                        [statusCompleted]="options?.statusCompleted"
+                        [statusError]="options?.statusError"
+                        [statusFieldName]="options?.statusFieldName"
+                        [taskIdFieldName]="options?.taskIdFieldName"
+                        [queueNumberFieldName]="options?.queueNumberFieldName"
+                        [operationDurationSeconds]="options?.operationDurationSeconds"
+                        [index]="index"
+                        [dataJson]="options.valueObj | json"
+                        (progressUpdate)="onProgressUpdate(options)"
+                        (progressCompleted)="onProgressCompleted(options)"
+                        [(ngModel)]="options.value"></app-progress>
+                </div>
+            </div>
+            <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
         <ng-container *ngSwitchCase="'table'">
             <div class="min-h-[20px] max-w-full overflow-auto mb-3"
                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
                 *ngIf="editorMode || !options?.hiddenByDefault || (options?.hiddenByDefault && options.valueArr)">
-
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                       class="block mb-2 text-sm font-medium text-gray-900" *ngIf="options?.label">
+                    {{ options?.label }}
+                </label>
                 <app-table-element
                     [editorMode]="editorMode"
                     [parentIndex]="parentIndex"
@@ -623,7 +653,8 @@
 
         <ng-container *ngSwitchCase="'user-subscription'">
             <div role="status" class="mb-3 rounded-[0.7rem]"
-                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}"
+                 *ngIf="!options?.hidden || editorMode">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md"
                         [ngClass]="{'!border-green-300 !text-green-400': options.value}">
@@ -671,7 +702,7 @@
                 title="Input Action"
                 i18n-title
                 (click)="elementActionSelect('input', $event)"
-                *ngIf="type.includes('input-') || type === 'button'">
+                *ngIf="type.includes('input-') || ['button', 'audio'].includes(type)">
             <i class="bi bi-arrow-down text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
