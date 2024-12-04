@@ -3,8 +3,8 @@
         <div class="flex gap-3 items-center"
             [ngClass]="{'pl-8 xl:pl-0': needBackButton}">
             <div *ngIf="data?.image">
-                <div class="w-24 h-24 border rounded-full border-gray-400 overflow-hidden">
-                    <img class="w-24 h-24 rounded-full no-pointer-events" [src]="data.image" [alt]="data?.name">
+                <div class="w-16 h-16 sm:w-24 sm:h-24 border rounded-full border-gray-400 overflow-hidden">
+                    <img class="w-16 h-16 sm:w-24 sm:h-24 rounded-full no-pointer-events" [src]="data.image" [alt]="data?.name">
                 </div>
             </div>
             <div class="py-3">
@@ -22,11 +22,10 @@
 </header>
 
 <main>
-    <div [className]="noBorder ? '' : 'mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8'">
+    <div [className]="noBorder ? '' : 'mx-auto max-w-7xl p-3 sm:p-6 lg:p-8'">
 
-        <div class="w-full mb-4">
-            <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300"
-                *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+        <div class="w-full mb-4" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+            <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300">
                 <li class="me-0 md:me-2" *ngFor="let tabName of data.tabs; index as index">
                     <button type="button"
                             class="relative block md:inline-block w-full md:w-auto md:whitespace-nowrap z-10 top-[1px] px-4 py-3 rounded-lg md:rounded-none md:rounded-t-lg border mb-3 md:mb-0"

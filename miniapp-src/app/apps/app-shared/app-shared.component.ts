@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
@@ -14,9 +14,9 @@ import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
-import { environment } from '../../../environments/environment';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
+import { environment } from '../../../environments/environment';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -29,15 +29,19 @@ declare const vkBridge: any;
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
+    @Input('itemUuid') itemUuid: string;
+    @Input('showHeader') showHeader: boolean = true;
+    @Input('needBackButton') needBackButton: boolean|null = null;
+    @Input('noBorder') noBorder: boolean = false;
     errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
     isLoggedIn = false;
     isShared = true;
+    progressUpdating = false;
     loading = false;
     submitted = false;
     previewMode = true;
-    needBackButton = false;
     maintenanceModalActive = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
@@ -47,7 +51,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
     appElements: {input: AppBlockElement[], output: AppBlockElement[], buttons: AppBlockElement[]} = {input: [], output: [], buttons: []};
 
-    itemUuid: string;
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
@@ -86,6 +89,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.data = res;
+                    this.data.blocks.forEach((block, blockIndex) => {
+                        if (typeof block.options.showLoading === 'undefined') {
+                            block.options.showLoading = true;
+                        }
+                    });
                     this.titleService.setTitle(`${this.data.name} - ${APP_NAME}`);
                     this.loading = false;
                     if (this.data.maintenance) {
@@ -105,17 +113,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppOptions(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+            this.isVkApp = true;
+            this.vkAppInit();
+        }
         if (!this.data) {
             return;
         }
-        const buttons = [];
+        const promises = [];
         this.data.blocks.forEach((block, blockIndex) => {
             if (typeof block.tabIndex === 'undefined') {
                 block.tabIndex = 0;
             }
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
-                element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
+                if (typeof element.hidden === 'undefined') {
+                    element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
+                }
                 if (element.type === 'status' && window['isVKApp'] && element.statusCompletedTextForVK) {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }
@@ -147,18 +161,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
-                ApplicationService.applyLocalStoredValue(element);
+                promises.push(ApplicationService.applyLocalStoredValue(element));
             });
         });
 
         // API auto start
         if (!this.data.maintenance) {
-            this.getApiList('output').then((items) => {
-                this.apiItems['output'] = items;
-                Object.keys(this.appElements.output).forEach((uuid) => {
-                    if (!this.appElements.buttons[uuid]) {
-                        this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
-                    }
+            Promise.all(promises).then(() => {
+                this.getApiList('output').then((items) => {
+                    this.apiItems['output'] = items;
+                    Object.keys(this.appElements.output).forEach((uuid) => {
+                        if (!this.appElements.buttons[uuid]) {
+                            this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
+                        }
+                    });
                 });
             });
         }
@@ -243,22 +259,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.stateLoadingUpdate(blocks, true, false);
 
-        this.apiService.apiRequest(apiItem, false)
+        this.apiService.apiRequest(apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     if (this.appsAutoStarted.includes(apiUuid)) {
                         this.afterAutoStarted(apiUuid);
                     }
-                    this.loading = false;
-                    this.submitted = false;
 
                     // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
-                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
+                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
                     this.createAppResponse(currentApi, res, currentElement);
+
+                    this.progressUpdating = false;
+                    this.loading = false;
+                    this.submitted = false;
                 },
                 error: (err) => {
-                    // console.log(err);
+                    // console.log('ERROR', err);
                     this.loading = false;
                     this.submitted = false;
                     if (err?.error instanceof Blob) {
@@ -377,7 +395,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
-                errors[element.name] = $localize `This field is required.`;
+                errors[element.name] = element.label
+                    ? `${element.label} - ` + ($localize `required`)
+                    : $localize `This field is required.`;
             }
         });
         if (createErrorMessages) {
@@ -397,7 +417,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if ((showMessage && block.options?.autoClear) || clearBlock) {
                 this.clearElementsValues(block);
             }
-            block.loading = loading;
+            if (block.options?.showLoading && !this.progressUpdating) {
+                block.loading = loading;
+            }
         });
         this.cdr.detectChanges();
     }
@@ -435,10 +457,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = [];
             } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
                 && !element['storeValue']) {
-                    element.value = null;
-                    element.valueArr = null;
-                    element.valueObj = null;
-                }
+                element.value = null;
+                element.valueArr = null;
+                element.valueObj = null;
+            }
         });
     }
 
@@ -456,7 +478,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
                 const element = currentElements.find((item) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
                     return apiUuid === apiItem.uuid
                         && fieldName === bodyField.name
                         && fieldType === 'input';
@@ -586,9 +608,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         // Api URL
         const elements = currentElements.filter((item) => {
-            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
             return apiUuid === apiItem.uuid && fieldType === 'url';
         });
+
         apiItem.urlPartIndex = 0;
         apiItem.urlPartValue = null;
         elements.forEach((el) => {
@@ -668,7 +691,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.isVkApp && data?.result_data?.vk_file_to_save) {
                     this.vkSaveFile(data.result_data.vk_file_to_save, elements);
                 }
-                if (this.isVkApp && currentElement.type === 'button') {
+                if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
                     this.vkBridgeService.showAds(this.vkAppOptions);
                 }
                 this.cdr.detectChanges();
@@ -740,6 +763,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (errorMessage === 'Task not found.') {
             errorMessage = $localize `Task not found.`;
+        }
+        if (errorMessage === 'Sorry, access is for subscribers only.') {
+            errorMessage = $localize `Sorry, access is for subscribers only.`;
+        }
+        if (errorMessage === 'The video is too long.') {
+            errorMessage = $localize `The video is too long.`;
+        }
+        if (errorMessage === 'Video not found.') {
+            errorMessage = $localize `Video not found.`;
         }
         return errorMessage;
     }
@@ -829,6 +861,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
+        } else if (['progress'].includes(element.type)) {
+            element.valueObj = value;
         } else {
             element.value = (element.prefixText || '')
                 + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
@@ -878,22 +912,34 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onElementValueChanged(element: AppBlockElement): void {
         if (!this.previewMode
             || this.data.maintenance
-            || !element.options?.inputApiUuid
             || !element.value
             || (Array.isArray(element.value) && element.value.length === 0)) {
-                return;
-            }
-        const inputApiUuid = element.options.inputApiUuid;
-        const buttonElement = this.findButtonElement(inputApiUuid);
-        if (inputApiUuid && this.errors[inputApiUuid]) {
-            delete this.errors[inputApiUuid][element.name];
-        }
-        if (buttonElement && !['input-pagination'].includes(element.type)) {
             return;
         }
-        this.removeAutoStart(inputApiUuid);
-        // this.appAutoStart(inputApiUuid, 'input', element);
-        this.appSubmit(inputApiUuid, 'input', element);
+        if (element.loadValueInto) {
+            const allElements = this.getAllElements();
+            const targetElement = allElements.find((elem) => {
+                return elem.name === element.loadValueInto;
+            });
+            if (targetElement) {
+                targetElement.value = element.value;
+            }
+            return;
+        }
+        const inputApiUuid = element.options?.inputApiUuid;
+        if (inputApiUuid) {
+            const buttonElement = this.findButtonElement(inputApiUuid);
+            if (inputApiUuid && this.errors[inputApiUuid]) {
+                delete this.errors[inputApiUuid][element.name];
+            }
+            if (buttonElement && !['input-pagination'].includes(element.type)) {
+                return;
+            }
+            this.removeAutoStart(inputApiUuid);
+            // this.appAutoStart(inputApiUuid, 'input', element);
+            this.appSubmit(inputApiUuid, 'input', element);
+        }
+
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {
@@ -906,6 +952,33 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         // console.log('onItemSelected', element);
         this.appSubmit(apiUuid, 'input', element);
+    }
+
+    onProgressUpdate(currentElement: AppBlockElement): void {
+        this.progressUpdating = true;
+        const apiUuid = currentElement.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
+        this.appSubmit(apiUuid, 'input', currentElement);
+    }
+
+    onProgressCompleted(currentElement: AppBlockElement): void {
+        this.progressUpdating = true;
+        const apiUuid = currentElement.options?.outputApiUuid;
+        if (!apiUuid) {
+            return;
+        }
+        const elements = this.findElements(apiUuid, 'input', currentElement, true);
+        const storeElements = elements.filter((elem) => {
+            return elem.storeValue;
+        });
+        storeElements.forEach((elem) => {
+            elem.value = null;
+            elem.valueObj = null;
+            elem.valueArr = null;
+            ApplicationService.localStoreValue(elem);
+        });
     }
 
     isJson(str: string): boolean {
@@ -1013,7 +1086,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                if (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad')) {
+                if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad'))) {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
