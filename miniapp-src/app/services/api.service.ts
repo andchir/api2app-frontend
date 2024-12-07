@@ -55,7 +55,8 @@ export class ApiService extends DataService<ApiItem> {
             queryParams: [
                 {name: '', value: ''}
             ],
-            bodyContent: ''
+            bodyContent: '',
+            bodyContentFlatten: ''
         };
     }
 
@@ -114,9 +115,7 @@ export class ApiService extends DataService<ApiItem> {
         const sendAsFormData = (data?.sendAsFormData || false) && bodyDataSource === 'fields';
 
         if (data.sender === 'server') {
-            requestUrl = isApiTesting
-                ? `${BASE_URL}api/v1/proxy`
-                : `${BASE_URL}api/v1/inference`;
+            requestUrl = isApiTesting ? `${BASE_URL}api/v1/proxy` : `${BASE_URL}api/v1/inference`;
             requestMethod = 'POST';
         }
 
@@ -140,9 +139,13 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         // Request body
-        const bodyContent = data.requestContentType === 'json' ? JSON.parse(data.bodyContent || '{}') : data.bodyContent;
+        const bodyContent = data.requestContentType === 'json' && data.bodyContent
+            ? JSON.parse(data.bodyContent)
+            : data.bodyContent || null;
+        const bodyContentFlatten = data.requestContentType === 'json' && data.bodyContentFlatten ? JSON.parse(data.bodyContentFlatten) : {};
         const formData = new FormData();
         const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
+        const bodyRawFlatten = bodyDataSource === 'raw' ? bodyContentFlatten : null;
         let body: any = null;
         if (bodyDataSource === 'fields') {
             body = {};
@@ -234,6 +237,7 @@ export class ApiService extends DataService<ApiItem> {
                 body = Object.assign({}, {
                     body,
                     bodyRaw,
+                    bodyRawFlatten,
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid
                 });

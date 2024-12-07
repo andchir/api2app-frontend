@@ -20,6 +20,7 @@ export interface ApiItem {
 
     bodyFields: RequestDataField[];
     bodyContent: string;
+    bodyContentFlatten: string;
     headers: RequestDataField[];
     queryParams: RequestDataField[];
 
