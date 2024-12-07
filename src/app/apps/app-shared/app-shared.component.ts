@@ -545,8 +545,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const outputData = this.flattenObj(inputData);
 
                 Object.keys(outputData).forEach((key: string) => {
-                    const element = currentElements.find((item) => {
-                        const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, actionType);
+                    const element = currentElements.find((elem) => {
+                        const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType);
                         return apiUuid === apiItem.uuid
                             && fieldName === key
                             && fieldType === 'input';
@@ -565,6 +565,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
 
                 apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
+            } else {
+                const outputData = {};
+                currentElements.forEach((elem) => {
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType);
+                    if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
+                        return;
+                    }
+                    ApplicationService.localStoreValue(elem);
+                    const value = elem.value ? ApplicationService.getElementValue(elem) as string : '';
+                    const enabled = elem.type !== 'input-switch' || elem?.enabled;
+                    if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
+                        return;
+                    }
+                    outputData[fieldName] = value;
+                });
+                apiItem.bodyContentFlatten = JSON.stringify(outputData);
             }
         }
 
