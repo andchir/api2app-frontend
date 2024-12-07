@@ -95,14 +95,12 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         }
         this.delay = 10000;
         this.status = this.data[this.statusFieldName] || 'processing';
-        const taskUuid = this.data[this.taskIdFieldName] || '';
+        const taskUuid = this.data[this.taskIdFieldName] || 'app';
         const queueNumber = this.data[this.queueNumberFieldName] || 0;
         const processStarted = queueNumber === 0 && this.queueNumber > 0;
         if (processStarted) {
             this.processStartedAt = new Date();
-            if (taskUuid) {
-                window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
-            }
+            window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
         }
         this.queueNumber = queueNumber;
         if ([this.statusCompleted, this.statusError].includes(this.status)) {
