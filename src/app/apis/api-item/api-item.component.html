@@ -110,6 +110,7 @@
                 </span>
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 cursor-pointer"
                       title="Private/Public"
+                      i18n-title
                       [ngClass]="{'text-red-700': item.private}"
                       (click)="item.private = !item.private" *ngIf="authorized">
                     <i class="bi bi-lock-fill" *ngIf="item.private"></i>
@@ -157,8 +158,18 @@
 
         </div>
 
-        <div class="mb-6" [ngClass]="{'hidden': apiItem.bodyDataSource !== 'raw'}">
+        <div class="mb-6 group" [ngClass]="{'hidden': apiItem.bodyDataSource !== 'raw'}">
             <div class="app-ace-editor w-full h-60 rounded-md border border-gray-200 shadow-sm" #editorRequest></div>
+            <div class="relative z-10">
+                <div class="hidden group-hover:block absolute right-5 bottom-5 px-2 py-1 text-sm text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
+                      title="Private/Public"
+                      i18n-title
+                      [ngClass]="{'text-red-700': apiItem.bodyContentPrivate}"
+                      (click)="apiItem.bodyContentPrivate = !apiItem.bodyContentPrivate" *ngIf="authorized">
+                    <i class="bi bi-lock-fill" *ngIf="apiItem.bodyContentPrivate"></i>
+                    <i class="bi bi-unlock-fill" *ngIf="!apiItem.bodyContentPrivate"></i>
+                </div>
+            </div>
         </div>
 
         <hr class="mb-4">
@@ -176,9 +187,10 @@
                 <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>
             </span>
             <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 cursor-pointer"
-              title="Private/Public"
-              [ngClass]="{'text-red-700': item.private}"
-              (click)="item.private = !item.private" *ngIf="authorized">
+                title="Private/Public"
+                i18n-title
+                [ngClass]="{'text-red-700': item.private}"
+                (click)="item.private = !item.private" *ngIf="authorized">
                 <i class="bi bi-lock-fill" *ngIf="item.private"></i>
                 <i class="bi bi-unlock-fill" *ngIf="!item.private"></i>
             </span>
