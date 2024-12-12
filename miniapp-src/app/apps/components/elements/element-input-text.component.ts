@@ -121,8 +121,7 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
                 if (currentValue) {
                     transcripts.unshift(currentValue);
                 }
-                this.value = transcripts.join('. ') + '.';
-                this.cdr.detectChanges();
+                this.writeValue(transcripts.join('. ') + '.');
             });
             this.recognition.addEventListener('end', (event) => {
                 // console.log('end', event);
