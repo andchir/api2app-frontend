@@ -162,6 +162,13 @@ export class ElementOptions {
                     enabled: options?.border
                 });
                 output.push({
+                    name: 'borderShadow',
+                    label: $localize `Shadow`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.borderShadow
+                });
+                output.push({
                     name: 'fullWidth',
                     label: $localize `Full width`,
                     type: 'input-switch',
@@ -796,6 +803,13 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'roundedCorners',
+                    label: $localize `Rounded corners`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.roundedCorners
+                });
+                output.push({
                     name: 'useLink',
                     label: $localize `Use link`,
                     type: 'input-switch',
@@ -1110,6 +1124,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     fullWidth: true,
                     border: false,
+                    borderShadow: false,
                     showOnlyInVK: false
                 });
                 break;
@@ -1282,7 +1297,8 @@ export class ElementOptions {
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,
-                    useLink: true
+                    useLink: true,
+                    roundedCorners: false
                 });
                 break;
             case 'audio':
