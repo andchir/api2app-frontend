@@ -267,13 +267,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.afterAutoStarted(apiUuid);
                     }
 
-                    // this.stateLoadingUpdate(blocks, false, this.appsAutoStarted.length === 0);
-                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                    this.createAppResponse(currentApi, res, currentElement);
-
                     this.progressUpdating = false;
                     this.loading = false;
                     this.submitted = false;
+
+                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                    this.createAppResponse(currentApi, res, currentElement);
                 },
                 error: (err) => {
                     // console.log('ERROR', err);
@@ -396,7 +395,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
                 errors[element.name] = element.label
-                    ? `${element.label} - ` + ($localize `required`)
+                    ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
             }
         });
