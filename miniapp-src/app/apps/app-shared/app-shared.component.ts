@@ -279,6 +279,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     // console.log('ERROR', err);
                     this.loading = false;
                     this.submitted = false;
+                    this.progressUpdating = false;
                     if (err?.error instanceof Blob) {
                         this.createErrorMessage(currentApi, err.error);
                     } else {
@@ -980,7 +981,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onProgressCompleted(currentElement: AppBlockElement): void {
-        this.progressUpdating = true;
+        this.progressUpdating = false;
         const apiUuid = currentElement.options?.outputApiUuid;
         if (!apiUuid) {
             return;
