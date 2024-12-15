@@ -193,7 +193,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             element.hidden = true;
             return;
         }
-        if ((['text', 'text-header', 'status', 'progress', 'input-select-image'].includes(element.type) || element?.hiddenByDefault)
+        if ((['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element?.hiddenByDefault)
             && !element?.value
             && !element?.valueObj
             && !element?.valueArr
