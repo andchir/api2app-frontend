@@ -113,7 +113,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppOptions(): void {
-        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
             this.vkAppInit();
         }
@@ -127,9 +127,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             block.elements.forEach((element) => {
                 element.blockIndex = blockIndex;
-                if (typeof element.hidden === 'undefined') {
-                    element.hidden = element.showOnlyInVK && (!window['isVKApp'] || !this.previewMode);
-                }
                 if (element.type === 'status' && window['isVKApp'] && element.statusCompletedTextForVK) {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }
@@ -161,6 +158,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
+                this.elementHiddenStateUpdate(element);
                 promises.push(ApplicationService.applyLocalStoredValue(element));
             });
         });
@@ -178,6 +176,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
             });
         }
+    }
+
+    elementHiddenStateUpdate(element: AppBlockElement): void {
+        if (((!window['isVKApp'] && element?.showOnlyInVK) ||['input-hidden'].includes(element.type)) && this.previewMode) {
+            element.hidden = true;
+            return;
+        }
+        if ((['text', 'text-header', 'status', 'progress', 'input-select-image'].includes(element.type) || element?.hiddenByDefault)
+            && !element?.value
+            && !element?.valueObj
+            && !element?.valueArr
+            && this.previewMode) {
+                element.hidden = true;
+                return;
+            }
+        element.hidden = false;
     }
 
     switchTab(tabIndex: number): void {
@@ -425,7 +439,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.cdr.detectChanges();
     }
 
-    onError(apiUuid: string): void {
+    onError(apiUuid: string, updateHiddenValue = true): void {
         // console.log('onError', apiUuid);
         const currentApiUuid = apiUuid;
         const blocks = this.data.blocks.filter((item) => {
@@ -440,18 +454,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }).forEach((element) => {
                 if (element?.options?.outputApiUuid !== currentApiUuid) {
                     element.value = null;
+                    if (updateHiddenValue) {
+                        this.elementHiddenStateUpdate(element);
+                    }
                     return;
                 }
                 element.value = element?.statusError;
+                if (updateHiddenValue) {
+                    this.elementHiddenStateUpdate(element);
+                }
             });
         });
     }
 
-    clearElementsValues(block: AppBlock): void {
+    clearElementsValues(block: AppBlock, updateHiddenValue = true): void {
         block.elements.forEach((element) => {
             const inputApiUuid = element.options?.inputApiUuid;
             const outputApiUuid = element.options?.outputApiUuid;
             if (!inputApiUuid && !outputApiUuid) {
+                if (updateHiddenValue) {
+                    this.elementHiddenStateUpdate(element);
+                }
                 return;
             }
             if (['input-file'].includes(element.type)) {
@@ -462,6 +485,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.valueArr = null;
                     element.valueObj = null;
                 }
+            if (updateHiddenValue) {
+                this.elementHiddenStateUpdate(element);
+            }
         });
     }
 
@@ -702,6 +728,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     } else {
                         this.blockElementValueApply(element, valuesObj, data);
                     }
+                    this.elementHiddenStateUpdate(element);
                 });
 
                 // Save file to VK files section
