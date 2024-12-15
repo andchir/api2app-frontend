@@ -153,6 +153,7 @@
                     [parentIndex]="parentIndex"
                     [index]="index"
                     (message)="onMessage($event)"
+                    (valueChange)="onFieldValueChanged()"
                     [(ngModel)]="options.value"></app-element-input-text>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -176,6 +177,7 @@
                     [parentIndex]="parentIndex"
                     [index]="index"
                     (message)="onMessage($event)"
+                    (valueChange)="onFieldValueChanged()"
                     [(ngModel)]="options.value"></app-element-input-text>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -278,6 +280,7 @@
                                addTagText="Add item"
                                i18n-addTagText
                                labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                               (change)="onFieldValueChanged()"
                                [(ngModel)]="options.value">
                     </ng-select>
                 </div>
@@ -299,7 +302,8 @@
                                    name="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
                                    class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
                                    [value]="option"
-                                   [(ngModel)]="options.value">
+                                   [(ngModel)]="options.value"
+                                   (ngModelChange)="onFieldValueChanged()">
                             <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
                                    class="block ms-2  text-sm font-medium text-gray-900">
                                 {{ option }}
@@ -328,7 +332,8 @@
                                class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5"
                                [min]="options?.min"
                                [max]="options?.max"
-                               [(ngModel)]="options.value">
+                               [(ngModel)]="options.value"
+                               (ngModelChange)="onFieldValueChanged()">
                         <button type="button" data-input-counter-increment="quantity-input" class="bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-e-lg p-3 h-11 focus:ring-gray-100 focus:ring-2 focus:outline-none"
                                 (click)="numberIncrease('value', options?.max)">
                             <svg class="w-3 h-3 text-gray-900" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
@@ -626,7 +631,8 @@
                     [parentIndex]="parentIndex"
                     [index]="index"
                     [dataJson]="options.data | json"
-                    [(ngModel)]="options.value"></app-select-image>
+                    [(ngModel)]="options.value"
+                    (ngModelChange)="onFieldValueChanged()"></app-select-image>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>

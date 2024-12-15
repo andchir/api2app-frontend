@@ -45,6 +45,8 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
     @Input() autoHeight: boolean = true;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
+
+    private timer: any;
     private _value = '';
     isChanged = false;
     isTouched = false;
@@ -286,6 +288,10 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
         }
         this.value = (event.target as HTMLInputElement).value;
         this.isChanged = true;
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.valueChange.emit(this.value);
+        }, 700);
     }
 
     onFocus(event: FocusEvent) {
