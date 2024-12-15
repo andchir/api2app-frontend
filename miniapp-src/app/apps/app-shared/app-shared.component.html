@@ -68,7 +68,7 @@
                                                        (message)="onMessage($event)"></app-block-element>
                                     <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
                                         <div class="pt-3 w-full max-w-[600px] mx-auto">
-                                            <div class="relative -top-2 mb-2 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
+                                            <div class="relative -top-2 mb-1 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
                                         </div>
                                     </ng-container>
                                 </div>
