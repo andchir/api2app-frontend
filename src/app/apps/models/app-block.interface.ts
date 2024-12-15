@@ -59,6 +59,7 @@ export interface AppBlockElement {
     itemThumbnailFieldName?: string;
     blockIndex?: number;
     hidden?: boolean;
+    hiddenByDefault?: boolean;
     showOnlyInVK?: boolean;
     statusCompletedText?: string;
     statusCompletedTextForVK?: string;
