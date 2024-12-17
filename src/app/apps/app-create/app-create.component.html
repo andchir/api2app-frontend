@@ -207,7 +207,8 @@
                             <div class="min-h-6 flex flex-col gap-3" [ngClass]="{'opacity-20 pointer-events-none': block.loading}">
                                 <ng-container *ngFor="let element of block.elements; index as ind">
                                     <div [ngClass]="{'hidden': element?.hidden}">
-                                        <app-block-element [type]="element.type"
+                                        <app-block-element [locale]="data?.language"
+                                                           [type]="element.type"
                                                            [parentIndex]="index"
                                                            [index]="ind"
                                                            [options]="element"

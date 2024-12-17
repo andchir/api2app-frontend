@@ -1166,7 +1166,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     vkSaveFile(fileDataString: string, outputElements: AppBlockElement[]): void {
-        this.vkBridgeService.saveFile(this.data.name, this.vkAppOptions, fileDataString)
+        this.vkBridgeService.saveFile(this.data.name, this.data.language, this.vkAppOptions, fileDataString)
             .then((docUrl: string) => {
                 this.message = $localize `The result has been successfully saved to your files.`;
                 this.messageType = 'success';

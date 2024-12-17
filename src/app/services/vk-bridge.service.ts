@@ -174,7 +174,8 @@ export class VkBridgeService {
             });
     }
 
-    async saveFile(appName: string, options: VkAppOptions, fileDataString: string): Promise<string> {
+    async saveFile(appName: string, locale: string, options: VkAppOptions, fileDataString: string): Promise<string> {
+        locale = locale || window.document.documentElement.lang;
         return this.getUserToken(options)
             .then((userToken) => {
                 return userToken;
@@ -188,7 +189,7 @@ export class VkBridgeService {
                         user_ids: options.userId,
                         access_token: options.userToken,
                         file: fileDataString,
-                        title: appName + ' - ' + date.toLocaleString()
+                        title: appName + ' - ' + date.toLocaleString(locale)
                     }})
                     .then((data: any) => {
                         return data.response?.doc?.url;

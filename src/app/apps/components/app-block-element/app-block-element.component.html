@@ -140,7 +140,9 @@
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <app-element-input-text
                     [editorMode]="editorMode"
+                    [locale]="locale"
                     [type]="options?.type"
+                    [maxLength]="options?.max"
                     [name]="options?.name"
                     [label]="options?.label"
                     [icon]="options?.icon"
@@ -163,6 +165,7 @@
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <app-element-input-text
                     [editorMode]="editorMode"
+                    [locale]="locale"
                     [type]="options.type"
                     [name]="options.name"
                     [label]="options.label"

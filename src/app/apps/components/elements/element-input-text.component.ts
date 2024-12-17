@@ -1,4 +1,5 @@
 import {
+    AfterViewInit,
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
@@ -24,11 +25,12 @@ const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecogni
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementInputTextComponent implements OnInit, OnChanges, ControlValueAccessor {
+export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
 
     @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
     @Input() editorMode = false;
     @Input() type: 'input-text'|'input-textarea';
+    @Input() locale: string;
     @Input() name: string;
     @Input() label: string;
     @Input() icon: string;
@@ -57,8 +59,18 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
     // @ts-ignore
     recognition: SpeechRecognition;
 
+    constructor(
+        private cdr: ChangeDetectorRef
+    ) {}
+
     ngOnInit(): void {
         this.calculatePadding();
+    }
+
+    ngAfterViewInit(): void {
+        if (this.maxLength && this.inputControl?.nativeElement) {
+            this.inputControl?.nativeElement.setAttribute('maxlength', String(this.maxLength));
+        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -78,10 +90,6 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
-
-    constructor(
-        private cdr: ChangeDetectorRef
-    ) {}
 
     calculatePadding(): void {
         const buttonWidth = 2;
@@ -112,7 +120,7 @@ export class ElementInputTextComponent implements OnInit, OnChanges, ControlValu
         if (this.microphoneActive) {
             const currentValue = (this.value || '').trim();
             this.recognition = new SpeechRecognition();
-            this.recognition.lang = window.document.documentElement.lang;
+            this.recognition.lang = this.locale || window.document.documentElement.lang;
             this.recognition.interimResults = true;
             this.recognition.continuous = true;
             this.recognition.addEventListener('result', (event) => {
