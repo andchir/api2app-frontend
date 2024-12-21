@@ -11,9 +11,10 @@ import {
 } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { SafeResourceUrl } from '@angular/platform-browser';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 import { Subject } from 'rxjs';
+import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
     selector: 'app-image-elem',
@@ -21,7 +22,8 @@ import { Subject } from 'rxjs';
     standalone: true,
     imports: [
         NgIf,
-        NgClass
+        NgClass,
+        ImageCropperComponent
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -47,6 +49,15 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
     @Input() valueFieldName: string;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
+    isCropped: boolean = false;
+    imageWidth: number = 0;
+    imageHeight: number = 0;
+    imageOutputWidth: number = 0;
+    imageOutputHeight: number = 0;
+    loading: boolean = false;
+    imageChangedEvent: Event | null = null;
+    croppedImage: SafeUrl  = '';
+
     private destroyed$ = new Subject<void>();
     private _value: number = 0;
 
@@ -65,6 +76,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
     }
 
     constructor(
+        private sanitizer: DomSanitizer,
         private cdr: ChangeDetectorRef
     ) {}
 
@@ -123,19 +135,43 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
         // this.onFieldValueChanged();
     }
 
-    onChange(_: any) {}
+    imageLoaded(image: LoadedImage): void {
+        this.imageWidth = image.original.size.width;
+        this.imageHeight = image.original.size.height;
+        this.imageOutputWidth = this.imageWidth;
+        this.imageOutputHeight = this.imageHeight;
+        this.isCropped = false;
+    }
 
-    onTouched(_: any) {}
+    imageCropped(event: ImageCroppedEvent): void {
+        this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
+        // event.blob can be used to upload the cropped image
+        this.imageOutputWidth = event.width;
+        this.imageOutputHeight = event.height;
+        this.isCropped = this.imageWidth !== this.imageOutputWidth || this.imageHeight !== this.imageOutputHeight;
+    }
 
-    writeValue(value: number) {
+    cropperReady(): void {
+        this.loading = false;
+    }
+
+    loadImageFailed(): void {
+        this.loading = false;
+    }
+
+    onChange(_: any): void {}
+
+    onTouched(_: any): void {}
+
+    writeValue(value: number): void {
         this.value = value || 0;
     }
 
-    registerOnChange(fn: (_: any) => void) {
+    registerOnChange(fn: (_: any) => void): void {
         // this.onChange = fn;
     }
 
-    registerOnTouched(fn: (_: any) => void) {
+    registerOnTouched(fn: (_: any) => void): void {
         // this.onTouched = fn;
     }
 
@@ -143,4 +179,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
         this.destroyed$.next();
         this.destroyed$.complete();
     }
+
+    protected readonly String = String;
 }
