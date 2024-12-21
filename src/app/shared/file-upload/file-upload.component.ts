@@ -18,8 +18,9 @@ export class FileUploadComponent implements ControlValueAccessor {
     private _value: File[];
     @ViewChild('fileInput') fileInput: ElementRef<HTMLInputElement>;
     @Input() fileInputAccept: string;
-    @Input() multiple = true;
-    @Input() placeholder = 'Upload File';
+    @Input() multiple: boolean = true;
+    @Input() placeholder: string = 'Upload File';
+    @Input() usePreview: boolean = true;
     disabled = false;
     files: File[] = [];
     imageBlobsUrls: string[] = [];
@@ -152,8 +153,8 @@ export class FileUploadComponent implements ControlValueAccessor {
     }
 
     writeValue(value: File[]): void {
-        this.value = value;
         this.imageBlobsUrls = [];
+        this.value = value;
         if (value) {
             value.forEach((file, index) => {
                 this.imageBlobsUrls[index] = this.createImageUrl(file);

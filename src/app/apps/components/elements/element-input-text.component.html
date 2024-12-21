@@ -1,5 +1,7 @@
 <div class="w-full max-w-[600px] mx-auto">
-    <label for="{{ name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+    <label for="{{ name }}-{{ parentIndex }}-{{ index }}"
+           class="block mb-2 text-sm font-medium text-gray-900"
+           *ngIf="label">
         {{ label }}
     </label>
     <div class="relative">

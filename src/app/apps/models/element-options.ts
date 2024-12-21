@@ -735,6 +735,12 @@ export class ElementOptions {
                     value: options?.accept
                 });
                 output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
+                });
+                output.push({
                     name: 'multiple',
                     label: $localize `Multiple`,
                     type: 'input-switch',
@@ -1250,7 +1256,7 @@ export class ElementOptions {
                     itemFieldNameForTitle: 'name',
                     itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
-                    LoadValueInto: '',
+                    loadValueInto: '',
                     required: true,
                     clearable: true,
                     searchable: true,
@@ -1307,6 +1313,7 @@ export class ElementOptions {
                     multiple: false,
                     accept: 'image/*',
                     placeholder: $localize `Upload File`,
+                    loadValueInto: '',
                     required: true,
                     value: []
                 });

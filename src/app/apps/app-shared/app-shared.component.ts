@@ -976,7 +976,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return elem.name === element.loadValueInto;
             });
             if (targetElement) {
-                targetElement.value = element.value;
+                this.loadValueToElement(targetElement, element.value);
             }
             return;
         }
@@ -993,7 +993,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(inputApiUuid, 'input', element);
         }
+    }
 
+    loadValueToElement(targetElement: AppBlockElement, newValue: any): void {
+        if (['image'].includes(targetElement.type) && typeof newValue !== 'string') {
+            if (Array.isArray(newValue) && newValue[0] instanceof File) {
+                newValue = newValue[0];
+            }
+            if (newValue instanceof File) {
+                if (!newValue.type.includes('image/') && !newValue.type.includes('djvu')) {
+                    return;
+                }
+                newValue = URL.createObjectURL(newValue);
+            }
+            targetElement.value = newValue;
+            this.elementHiddenStateUpdate(targetElement);
+            this.cdr.markForCheck();
+            return;
+        }
+        targetElement.value = newValue;
+        this.elementHiddenStateUpdate(targetElement);
+        this.cdr.markForCheck();
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {

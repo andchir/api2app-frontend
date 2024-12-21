@@ -280,7 +280,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
             url = url.changingThisBreaksApplicationSecurity;
         }
-        if (typeof url === 'string' && url.match(/^https?:\/\//)) {
+        if (typeof url === 'string' && (url.match(/^https?:\/\//) || url.includes('blob:') )) {
             return;
         }
         if (event) {

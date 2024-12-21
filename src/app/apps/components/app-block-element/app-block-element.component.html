@@ -219,7 +219,9 @@
         <ng-container *ngSwitchCase="'input-select'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateSelectSimple">
@@ -268,7 +270,9 @@
         <ng-container *ngSwitchCase="'input-tags'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <ng-select class="ng-select-custom"
@@ -409,13 +413,16 @@
         <ng-container *ngSwitchCase="'input-file'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <app-file-upload
                         [multiple]="options?.multiple"
                         [fileInputAccept]="options?.accept"
                         [placeholder]="options?.placeholder"
+                        [usePreview]="!options?.loadValueInto"
                         [(ngModel)]="options.value"
                         (ngModelChange)="onFieldValueChanged()"></app-file-upload>
                 </div>
