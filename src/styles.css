@@ -50,3 +50,6 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
 .text-content ul:not(:last-child) { margin-bottom: 15px;  }
 .text-content ol > li,
 .text-content ul > li { margin-bottom: 15px; }
+
+/* ngx-cropper */
+.ngx-ic-source-image { display: inline-block; }

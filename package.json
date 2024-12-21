@@ -31,6 +31,7 @@
     "marked": "^12.0.2",
     "moment": "^2.29.4",
     "ng-apexcharts": "^1.10.0",
+    "ngx-image-cropper": "^9.0.0",
     "ngx-markdown": "^17.2.1",
     "ngx-pagination": "^6.0.3",
     "prismjs": "^1.29.0",
