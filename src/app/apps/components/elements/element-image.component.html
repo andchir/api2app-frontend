@@ -1,28 +1,28 @@
-<ng-container *ngIf="!useCropper else cropperToolTemplate">
-    <div class="block w-full text-center"
-         [ngClass]="{'min-h-[50px] loading-bg-image': imageUrl, 'max-w-[600px] mx-auto': !fullWidth}"
-         #imageContainer>
+<div class="block w-full text-center"
+     [ngClass]="{'min-h-[50px] loading-bg-image': imageUrl, 'max-w-[600px] mx-auto': !fullWidth}"
+     #imageContainer>
+    <ng-container *ngIf="!useCropper else cropperToolTemplate">
         <a class="inline-block"
-           [ngClass]="{'cursor-default': !useLink, 'cursor-pointer': useLink}"
-           (click)="download($event)"
-           [href]="imageLargeUrl || imageUrl"
-           target="_blank" *ngIf="imageUrl">
+            [ngClass]="{'cursor-default': !useLink, 'cursor-pointer': useLink}"
+            (click)="download($event)"
+            [href]="imageLargeUrl || imageUrl"
+            target="_blank" *ngIf="imageUrl">
             <img class="inline-block max-w-full" loading="lazy"
                  [ngClass]="{'rounded-lg': roundedCorners, 'shadow-gray-500 shadow-md': borderShadow}"
                  (load)="imageContainer.classList.remove('loading-bg-image')"
                  (error)="onImageError(imageContainer)"
                  [src]="imageUrl" alt="">
         </a>
-        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-             *ngIf="!imageUrl && editorMode">
-            <i class="bi bi-image mr-2"></i>
-            <span i18n>Image</span>
-        </div>
+    </ng-container>
+    <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
+         *ngIf="!imageUrl && editorMode">
+        <i class="bi bi-image mr-2"></i>
+        <span i18n>Image</span>
     </div>
-</ng-container>
+</div>
 
 <ng-template #cropperToolTemplate>
-    <div class="relative" [ngClass]="{'opacity-50 pointer-events-none': loading}">
+    <div class="relative" [ngClass]="{'opacity-50 pointer-events-none': loading}" *ngIf="imageUrl">
         <div class="bg-gray-100">
             <image-cropper
                 [imageChangedEvent]="imageChangedEvent"
