@@ -830,6 +830,13 @@ export class ElementOptions {
                     enabled: options?.fullWidth
                 });
                 output.push({
+                    name: 'borderShadow',
+                    label: $localize `Shadow`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.borderShadow
+                });
+                output.push({
                     name: 'useCropper',
                     label: $localize `Use the crop tool`,
                     type: 'input-switch',
@@ -1329,6 +1336,7 @@ export class ElementOptions {
                     useLink: true,
                     useCropper: false,
                     fullWidth: true,
+                    borderShadow: true,
                     roundedCorners: false
                 });
                 break;

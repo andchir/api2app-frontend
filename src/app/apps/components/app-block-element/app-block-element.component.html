@@ -449,46 +449,32 @@
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <ng-container *ngFor="let image of options.valueArr; let index = index">
-                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-lg"
-                                 [ngClass]="{'max-w-[600px] mx-auto': !options.fullWidth}"
-                                 #imageContainer>
-                                <a class="block"
-                                   [ngClass]="{'pointer-events-none': !options?.useLink}"
-                                   [href]="image[options?.itemFieldName] || image"
-                                   target="_blank">
-                                    <img class="w-full h-auto max-w-full" loading="lazy"
-                                         [ngClass]="{'rounded-lg': options?.roundedCorners}"
-                                         (load)="imageContainer.classList.remove('loading-bg-image')"
-                                         (error)="onImageError(imageContainer, options, index)"
-                                         [src]="image[options?.itemThumbnailFieldName] || image" alt="">
-                                </a>
-                            </div>
+                        <ng-container *ngFor="let image of options.valueArr; let ind = index">
+                            <app-image-elem
+                                [editorMode]="editorMode"
+                                [parentIndex]="parentIndex"
+                                [index]="ind"
+                                [imageUrl]="image[options?.itemThumbnailFieldName] || image"
+                                [imageLargeUrl]="image[options?.itemFieldName] || image"
+                                [fullWidth]="options?.fullWidth"
+                                [borderShadow]="options?.borderShadow"
+                                [roundedCorners]="options?.roundedCorners"
+                                [useCropper]="options?.useCropper"
+                                [useLink]="options?.useLink"></app-image-elem>
                         </ng-container>
                     </div>
                 </ng-container>
                 <ng-template #templateImageItem>
-                    <div class="block w-full text-center"
-                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value, 'max-w-[600px] mx-auto': !options.fullWidth}"
-                         #imageContainer>
-                        <a class="inline-block"
-                           [ngClass]="{'pointer-events-none': !options?.useLink}"
-                           (click)="download(options?.value, '', $event)"
-                           [href]="options?.value"
-                           target="_blank"
-                           *ngIf="options?.value">
-                            <img class="inline-block max-w-full" loading="lazy"
-                                 [ngClass]="{'rounded-lg': options?.roundedCorners}"
-                                 (load)="imageContainer.classList.remove('loading-bg-image')"
-                                 (error)="onImageError(imageContainer, options)"
-                                 [src]="options?.value" alt="">
-                        </a>
-                        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-                             *ngIf="!options?.value && editorMode">
-                            <i class="bi bi-image mr-2"></i>
-                            <span i18n>Image</span>
-                        </div>
-                    </div>
+                    <app-image-elem
+                        [editorMode]="editorMode"
+                        [parentIndex]="parentIndex"
+                        [index]="index"
+                        [imageUrl]="options?.value"
+                        [fullWidth]="options?.fullWidth"
+                        [borderShadow]="options?.borderShadow"
+                        [roundedCorners]="options?.roundedCorners"
+                        [useCropper]="options?.useCropper"
+                        [useLink]="options?.useLink"></app-image-elem>
                 </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

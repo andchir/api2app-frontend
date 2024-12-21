@@ -276,7 +276,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }, 100);
     }
 
-    download(url: any, filename = '', event?: MouseEvent): void {
+    download(url: any, filename = '', preventClick: boolean = false, event?: MouseEvent): void {
+        if (event && preventClick) {
+            event.preventDefault();
+            return;
+        }
         if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
             url = url.changingThisBreaksApplicationSecurity;
         }

@@ -24,6 +24,7 @@ import { RenameComponent } from '../shared/rename/rename.component';
 import { TableElementComponent } from './components/elements/table-element.component';
 import { SelectImageComponent } from './components/elements/select-image.component';
 import { ProgressElementComponent } from './components/elements/progress-element.component';
+import { ElementImageComponent } from './components/elements/element-image.component';
 
 @NgModule({
     declarations: [
@@ -47,7 +48,8 @@ import { ProgressElementComponent } from './components/elements/progress-element
         NgApexchartsModule,
         TableElementComponent,
         SelectImageComponent,
-        ProgressElementComponent
+        ProgressElementComponent,
+        ElementImageComponent
     ],
     exports: [
         ApplicationSharedComponent
