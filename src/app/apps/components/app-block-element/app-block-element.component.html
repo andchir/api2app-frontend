@@ -579,7 +579,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'progress'">
-            <div role="status" class="rounded-[0.7rem]"
+            <div role="progress" class="rounded-[0.7rem]"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <app-progress
@@ -622,7 +622,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-select-image'">
-            <div role="status" class="rounded-[0.7rem] p-2"
+            <div class="rounded-[0.7rem] p-2"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                     {{ options?.label }}
@@ -641,7 +641,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'user-subscription'">
-            <div role="status" class="rounded-[0.7rem]"
+            <div class="rounded-[0.7rem]"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md"
@@ -666,6 +666,13 @@
                 </div>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'image-crop'">
+            <div class="rounded-[0.7rem]"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+
+            </div>
         </ng-container>
 
         <ng-container *ngSwitchDefault>
