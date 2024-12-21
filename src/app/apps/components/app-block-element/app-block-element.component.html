@@ -443,7 +443,9 @@
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                         <ng-container *ngFor="let image of options.valueArr; let index = index">
-                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-lg" #imageContainer>
+                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-lg"
+                                 [ngClass]="{'max-w-[600px] mx-auto': !options.fullWidth}"
+                                 #imageContainer>
                                 <a class="block"
                                    [ngClass]="{'pointer-events-none': !options?.useLink}"
                                    [href]="image[options?.itemFieldName] || image"
@@ -459,8 +461,9 @@
                     </div>
                 </ng-container>
                 <ng-template #templateImageItem>
-                    <div class="block w-full max-w-[600px] mx-auto text-center"
-                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value}" #imageContainer>
+                    <div class="block w-full text-center"
+                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value, 'max-w-[600px] mx-auto': !options.fullWidth}"
+                         #imageContainer>
                         <a class="inline-block"
                            [ngClass]="{'pointer-events-none': !options?.useLink}"
                            (click)="download(options?.value, '', $event)"

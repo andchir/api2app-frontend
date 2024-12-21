@@ -817,6 +817,20 @@ export class ElementOptions {
                     enabled: options?.roundedCorners
                 });
                 output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth
+                });
+                output.push({
+                    name: 'useCropper',
+                    label: $localize `Use the crop tool`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useCropper
+                });
+                output.push({
                     name: 'useLink',
                     label: $localize `Use link`,
                     type: 'input-switch',
@@ -1306,6 +1320,8 @@ export class ElementOptions {
                     value: '',
                     hiddenByDefault: false,
                     useLink: true,
+                    useCropper: false,
+                    fullWidth: true,
                     roundedCorners: false
                 });
                 break;

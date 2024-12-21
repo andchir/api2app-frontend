@@ -58,8 +58,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'progress', title: $localize `Progress Indicator`, icon: 'bi-percent'},
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
-        {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'},
-        {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
+        {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
+        // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
     ];
 
     chartOptions: ChartOptions;
