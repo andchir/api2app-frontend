@@ -792,6 +792,12 @@ export class ElementOptions {
                 break;
             case 'image':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
                     name: 'itemFieldName',
                     label: $localize `Field name in the array`,
                     type: 'input-text',
@@ -1328,6 +1334,7 @@ export class ElementOptions {
             case 'image':
                 Object.assign(output, {
                     name: 'image',
+                    label: $localize `Image`,
                     itemFieldName: '',
                     itemThumbnailFieldName: '',
                     prefixText: '',

@@ -416,7 +416,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line'].includes(element.type))) {
+            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line', 'image'].includes(element.type))) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -1006,6 +1006,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 newValue = URL.createObjectURL(newValue);
             }
+            targetElement.valueObj = newValue;
             targetElement.value = newValue;
             this.elementHiddenStateUpdate(targetElement);
             this.cdr.markForCheck();

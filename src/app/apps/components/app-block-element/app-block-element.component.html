@@ -469,12 +469,14 @@
                         [editorMode]="editorMode"
                         [parentIndex]="parentIndex"
                         [index]="index"
-                        [imageUrl]="options?.value"
+                        [imageUrl]="options?.valueObj"
                         [fullWidth]="options?.fullWidth"
                         [borderShadow]="options?.borderShadow"
                         [roundedCorners]="options?.roundedCorners"
                         [useCropper]="options?.useCropper"
-                        [useLink]="options?.useLink"></app-image-elem>
+                        [useLink]="options?.useLink"
+                        [(ngModel)]="options.value"
+                        (ngModelChange)="onFieldValueChanged()"></app-image-elem>
                 </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -695,7 +697,7 @@
                 title="Input Action"
                 i18n-title
                 (click)="elementActionSelect('input', $event)"
-                *ngIf="type.includes('input-') || ['button', 'audio'].includes(type)">
+                *ngIf="type.includes('input-') || ['button', 'audio', 'image'].includes(type)">
             <i class="bi bi-arrow-down text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>

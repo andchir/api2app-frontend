@@ -6,9 +6,9 @@ import {
     forwardRef,
     Input, OnChanges, OnInit,
     Output, SimpleChanges
-} from "@angular/core";
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
-import {NgClass, NgForOf, NgIf} from "@angular/common";
+} from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-select-image',

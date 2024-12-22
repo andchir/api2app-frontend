@@ -32,7 +32,7 @@ import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementImageComponent implements ControlValueAccessor, OnDestroy, OnChanges {
+export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input() editorMode = false;
     @Input() name: string;
@@ -56,21 +56,18 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
     imageOutputHeight: number = 0;
     loading: boolean = false;
     imageChangedEvent: Event | null = null;
-    croppedImage: SafeUrl  = '';
+    croppedImage: SafeUrl | string = '';
 
-    private destroyed$ = new Subject<void>();
-    private _value: number = 0;
+    private _value: SafeUrl | File | string = '';
 
-    get value(): number {
+    get value(): SafeUrl | File | string {
         return this._value;
     }
 
     @Input()
-    set value(val) {
-        if (this.editorMode) {
-            val = 65;
-        }
-        this._value = val || 0;
+    set value(val: SafeUrl | File | string) {
+        console.log('VALUE', val);
+        this._value = val || '';
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
@@ -83,6 +80,10 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
     ngOnChanges(changes: SimpleChanges): void {
         if (this.editorMode) {
             return;
+        }
+        console.log('ngOnChanges', changes);
+        if (changes['imageUrl'] && this.useCropper) {
+            this.loading = true;
         }
     }
 
@@ -145,10 +146,10 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
 
     imageCropped(event: ImageCroppedEvent): void {
         this.croppedImage = this.sanitizer.bypassSecurityTrustUrl(event.objectUrl);
-        // event.blob can be used to upload the cropped image
         this.imageOutputWidth = event.width;
         this.imageOutputHeight = event.height;
         this.isCropped = this.imageWidth !== this.imageOutputWidth || this.imageHeight !== this.imageOutputHeight;
+        this.writeValue(event.objectUrl);
     }
 
     cropperReady(): void {
@@ -163,22 +164,39 @@ export class ElementImageComponent implements ControlValueAccessor, OnDestroy, O
 
     onTouched(_: any): void {}
 
-    writeValue(value: number): void {
-        this.value = value || 0;
+    blobToFile(blobUrl: string): void {
+        var reader = new FileReader();
+        reader.onload = function() {
+            console.log(reader.result);
+        }
+        // reader.readAsText(blobString);
     }
 
-    registerOnChange(fn: (_: any) => void): void {
-        // this.onChange = fn;
+    async createFile(imageUrl: string, fileName: string = 'file'): Promise<void|File> {
+        return fetch(imageUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                return new File([blob], 'image', {type: blob.type});
+            })
+            .catch(console.error);
     }
 
-    registerOnTouched(fn: (_: any) => void): void {
-        // this.onTouched = fn;
+    writeValue(value: SafeUrl | File | string): void {
+        if (typeof value === 'string' && value.indexOf('blob:') === 0) {
+            this.createFile(value)
+                .then((file) => {
+                    this.value = file ? file as File : '';
+                });
+            return;
+        }
+        this.value = value || '';
     }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
+    registerOnChange(fn: (_: any) => void) {
+        this.onChange = fn;
     }
 
-    protected readonly String = String;
+    registerOnTouched(fn: (_: any) => void) {
+        this.onTouched = fn;
+    }
 }
