@@ -1348,8 +1348,8 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     useLink: true,
                     useCropper: false,
-                    fullWidth: true,
-                    borderShadow: true,
+                    fullWidth: false,
+                    borderShadow: false,
                     roundedCorners: false
                 });
                 break;
