@@ -40,7 +40,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input() index: number;
     @Input() imageUrl: string | SafeResourceUrl | null;
     @Input() imageLargeUrl: string | SafeResourceUrl | null;
-    @Input() valueArr: string;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -71,8 +70,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
             this.imageUrl = val;
         }
         if (this.useLink) {
-            let downloadUrl = String(this.imageLargeUrl || this.imageUrl);
-            this.downloadUrl = downloadUrl.indexOf('data:') === -1 ? downloadUrl : '#download';
+            this.createLinkUrl();
         }
         this._value = val || '';
         this.onChange(this._value);
@@ -88,9 +86,17 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        if (changes['imageUrl'] && this.useCropper) {
+        if (this.useCropper && changes['imageUrl']) {
             this.loading = true;
         }
+        if (this.useLink && (changes['imageUrl'] || changes['imageLargeUrl'])) {
+            this.createLinkUrl();
+        }
+    }
+
+    createLinkUrl(): void {
+        let downloadUrl = String(this.imageLargeUrl || this.imageUrl);
+        this.downloadUrl = downloadUrl.indexOf('data:') === -1 ? downloadUrl : '#download';
     }
 
     download(event?: MouseEvent): void {
@@ -99,9 +105,9 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
             return;
         }
         let imageUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
-        if (imageUrl && imageUrl.changingThisBreaksApplicationSecurity) {
-            imageUrl = imageUrl.changingThisBreaksApplicationSecurity;
-        }
+        // if (imageUrl && imageUrl.changingThisBreaksApplicationSecurity) {
+        //     imageUrl = imageUrl.changingThisBreaksApplicationSecurity;
+        // }
         if (typeof imageUrl === 'string' && (imageUrl.match(/^https?:\/\//) || imageUrl.includes('blob:') )) {
             return;
         }
