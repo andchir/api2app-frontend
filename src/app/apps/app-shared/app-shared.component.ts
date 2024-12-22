@@ -893,8 +893,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
-        if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
-            element.value = (element.prefixText || '') + value;
+        if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl((element.prefixText || '') + value);
             this.cdr.detectChanges();
             return;
         }
