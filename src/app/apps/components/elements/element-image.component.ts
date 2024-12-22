@@ -5,15 +5,13 @@ import {
     EventEmitter, forwardRef,
     Input,
     OnChanges,
-    OnDestroy,
-    Output,
+    Output, SecurityContext,
     SimpleChanges
 } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
-import { Subject } from 'rxjs';
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 
 @Component({
@@ -48,7 +46,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input() valueFieldName: string;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
-    downloadUrl: string = '#';
+    downloadUrl: string | SafeResourceUrl | null = '#';
     isCropped: boolean = false;
     imageWidth: number = 0;
     imageHeight: number = 0;
@@ -67,7 +65,9 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input()
     set value(val: SafeUrl | File | string) {
         if (!this.imageUrl && val) {
-            this.imageUrl = val;
+            this.imageUrl = typeof val === 'string'
+                ? this.sanitizer.bypassSecurityTrustUrl(val)
+                : val;
         }
         if (this.useLink) {
             this.createLinkUrl();
@@ -95,8 +95,14 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     }
 
     createLinkUrl(): void {
-        let downloadUrl = String(this.imageLargeUrl || this.imageUrl);
-        this.downloadUrl = downloadUrl.indexOf('data:') === -1 ? downloadUrl : '#download';
+        let downloadUrl = this.imageLargeUrl || this.imageUrl;
+        if (downloadUrl && typeof downloadUrl === 'object' && downloadUrl['changingThisBreaksApplicationSecurity']) {
+            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
+            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
+        }
+        this.downloadUrl = typeof downloadUrl === 'string' && downloadUrl.indexOf('data:') === -1
+            ? this.sanitizer.bypassSecurityTrustUrl(downloadUrl)
+            : '#download';
     }
 
     download(event?: MouseEvent): void {
@@ -104,20 +110,21 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
             event.preventDefault();
             return;
         }
-        let imageUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
-        // if (imageUrl && imageUrl.changingThisBreaksApplicationSecurity) {
-        //     imageUrl = imageUrl.changingThisBreaksApplicationSecurity;
-        // }
-        if (typeof imageUrl === 'string' && (imageUrl.match(/^https?:\/\//) || imageUrl.includes('blob:') )) {
+        let downloadUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
+        if (downloadUrl && downloadUrl['changingThisBreaksApplicationSecurity']) {
+            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
+            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
+        }
+        if (typeof downloadUrl === 'string' && (downloadUrl.match(/^https?:\/\//) || downloadUrl.includes('blob:') )) {
             return;
         }
         if (event) {
             event.preventDefault();
         }
-        const matches = imageUrl.match(/data:image\/([^;]+)/);
+        const matches = downloadUrl.match(/data:image\/([^;]+)/);
         const filename = (new Date().valueOf()) + '.' + matches[1];
 
-        fetch(imageUrl)
+        fetch(downloadUrl)
             .then(response => response.blob())
             .then(blob => {
                 const link = document.createElement('a');
