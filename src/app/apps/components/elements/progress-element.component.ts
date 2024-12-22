@@ -44,7 +44,8 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     @Input() statusFieldName: string = 'status';
     @Input() taskIdFieldName: string = 'uuid';
     @Input() queueNumberFieldName: string = 'number';
-    @Input() operationDurationSeconds: 0;
+    @Input() operationDurationSeconds: number = 0;
+    @Input() isBooleanValue: boolean = false;
     @Input() data: any = {};
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();

@@ -1,12 +1,12 @@
-<div class="relative block w-full text-center min-h-[40px]"
+<div class="relative block w-full text-center min-h-[50px]"
      [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
-        <div [ngClass]="{'loading-bg-image': imageUrl}"
+        <div class="min-h-[50px] loading-bg-image" [ngClass]="{'hidden': !imageUrl}"
             #imageContainer>
             <a class="inline-block"
                [ngClass]="{'cursor-default': !useLink, 'cursor-pointer': useLink}"
                (click)="download($event)"
-               [href]="imageLargeUrl || imageUrl"
+               [href]="downloadUrl"
                target="_blank" *ngIf="imageUrl">
                 <img class="inline-block max-w-full" loading="lazy"
                      [ngClass]="{'rounded-lg': roundedCorners, 'shadow-gray-500 shadow-md': borderShadow}"
@@ -16,7 +16,7 @@
             </a>
         </div>
     </ng-container>
-    <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
+    <div class="px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
          *ngIf="!imageUrl && editorMode">
         <i class="bi bi-image mr-2"></i>
         <span i18n>Image</span>

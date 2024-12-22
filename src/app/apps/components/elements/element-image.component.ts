@@ -49,6 +49,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input() valueFieldName: string;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
+    downloadUrl: string = '#';
     isCropped: boolean = false;
     imageWidth: number = 0;
     imageHeight: number = 0;
@@ -66,7 +67,13 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        console.log('VALUE', val);
+        if (!this.imageUrl && val) {
+            this.imageUrl = val;
+        }
+        if (this.useLink) {
+            let downloadUrl = String(this.imageLargeUrl || this.imageUrl);
+            this.downloadUrl = downloadUrl.indexOf('data:') === -1 ? downloadUrl : '#download';
+        }
         this._value = val || '';
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -81,7 +88,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        console.log('ngOnChanges', changes);
         if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
@@ -163,14 +169,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     onChange(_: any): void {}
 
     onTouched(_: any): void {}
-
-    blobToFile(blobUrl: string): void {
-        var reader = new FileReader();
-        reader.onload = function() {
-            console.log(reader.result);
-        }
-        // reader.readAsText(blobString);
-    }
 
     async createFile(imageUrl: string, fileName: string = 'file'): Promise<void|File> {
         return fetch(imageUrl)

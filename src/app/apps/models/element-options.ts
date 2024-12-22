@@ -973,10 +973,10 @@ export class ElementOptions {
                     value: options?.statusErrorText || ''
                 });
                 output.push({
-                    name: 'isBoolean',
+                    name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
-                    enabled: options?.isBoolean || false
+                    enabled: options?.isBooleanValue || false
                 });
                 break;
             case 'progress':
@@ -1016,6 +1016,12 @@ export class ElementOptions {
                     type: 'input-number',
                     min: 0,
                     value: options?.operationDurationSeconds || 0
+                });
+                output.push({
+                    name: 'isBooleanValue',
+                    label: $localize `Boolean Value (true/false)`,
+                    type: 'input-switch',
+                    enabled: options?.isBooleanValue || false
                 });
                 break;
             case 'table':
@@ -1398,7 +1404,7 @@ export class ElementOptions {
                     statusCompletedTextForVK: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
-                    isBoolean: false,
+                    isBooleanValue: false,
                     value: null
                 });
                 break;
@@ -1412,6 +1418,7 @@ export class ElementOptions {
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 0,
+                    isBooleanValue: false,
                     valueObj: null,
                     value: null
                 });
