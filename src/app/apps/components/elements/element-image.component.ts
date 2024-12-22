@@ -64,7 +64,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if (!this.imageUrl && val) {
+        if ((!this.imageUrl || !this.useCropper) && val) {
             this.imageUrl = typeof val === 'string'
                 ? this.sanitizer.bypassSecurityTrustUrl(val)
                 : val;
