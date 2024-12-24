@@ -479,26 +479,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     clearElementsValues(block: AppBlock, updateHiddenValue = true): void {
         block.elements.forEach((element) => {
-            const inputApiUuid = element.options?.inputApiUuid;
-            const outputApiUuid = element.options?.outputApiUuid;
-            if (!inputApiUuid && !outputApiUuid) {
-                if (updateHiddenValue) {
-                    this.elementHiddenStateUpdate(element);
-                }
-                return;
-            }
-            if (['input-file'].includes(element.type)) {
-                element.value = [];
-            } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
-                && !element['storeValue']) {
-                    element.value = null;
-                    element.valueArr = null;
-                    element.valueObj = null;
-                }
+            this.clearElementValue(element, updateHiddenValue);
+        });
+    }
+
+    clearElementValue(element: AppBlockElement, updateHiddenValue = true): void {
+        const inputApiUuid = element.options?.inputApiUuid;
+        const outputApiUuid = element.options?.outputApiUuid;
+        if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
             if (updateHiddenValue) {
                 this.elementHiddenStateUpdate(element);
             }
-        });
+            return;
+        }
+        if (['input-file'].includes(element.type)) {
+            element.value = [];
+        } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
+            && !element['storeValue']) {
+            element.value = null;
+            element.valueArr = null;
+            element.valueObj = null;
+        }
+        if (updateHiddenValue) {
+            this.elementHiddenStateUpdate(element);
+        }
     }
 
     prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
@@ -977,6 +981,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             if (targetElement) {
                 this.loadValueToElement(targetElement, element.value);
+                this.clearElementValue(element, true);
+                this.cdr.markForCheck();
             }
             return;
         }
