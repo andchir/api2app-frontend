@@ -11,6 +11,7 @@ import { AuthLoginComponent } from './auth/auth-login.component';
 import { AuthRegisterComponent } from './auth/auth-register.component';
 import { AuthPasswordResetComponent } from './auth/auth-password-reset.component';
 import { AuthUserActivateComponent } from './auth/auth-activate.component';
+import { AuthSessionComponent } from './auth/auth-session.component';
 import { AuthPasswordResetConfirmComponent } from './auth/auth-password-reset-confirm.component';
 import { AuthLogoutComponent } from './auth/auth-logout.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -31,6 +32,7 @@ import { SharedModule } from './shared.module';
         AuthUserActivateComponent,
         AuthPasswordResetConfirmComponent,
         AuthLogoutComponent,
+        AuthSessionComponent,
         HomeComponent,
         DashboardComponent,
         MyProfileComponent,

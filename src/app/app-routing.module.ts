@@ -12,6 +12,7 @@ import { AuthUserActivateComponent } from './auth/auth-activate.component';
 import { AuthPasswordResetConfirmComponent } from './auth/auth-password-reset-confirm.component';
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { DocumentationComponent } from './docs/documentation.component';
+import { AuthSessionComponent } from './auth/auth-session.component';
 
 const routes: Routes = [
     {
@@ -46,6 +47,11 @@ const routes: Routes = [
                 path: 'activate/:uid/:token',
                 component: AuthUserActivateComponent,
                 title: $localize `User Activation`
+            },
+            {
+                path: 'session',
+                component: AuthSessionComponent,
+                title: $localize `Please wait...`
             },
             {
                 path: 'password_reset_confirm/:uid/:token',

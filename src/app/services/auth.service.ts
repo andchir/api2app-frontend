@@ -37,7 +37,7 @@ export class AuthService {
     }
 
     getHeaders(): HttpHeaders {
-        const csrfToken = '';// this.getCookie('csrftoken');
+        const csrfToken = this.getCookie('csrftoken');
         return new HttpHeaders({
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken || window['csrf_token'] || '',
@@ -90,6 +90,18 @@ export class AuthService {
         return this.httpClient.post(`${this.requestUrl}users/activation/`, {
             uid, token
         }, this.httpOptions);
+    }
+
+    userGetToken(): Observable<{access: string, refresh: string}> {
+        return this.httpClient.post<{access: string, refresh: string}>(`${BASE_URL}${this.locale}/auth_session`, {}, {
+            headers: this.getHeaders()
+        });
+    }
+
+    userSessionDelete(): Observable<any> {
+        return this.httpClient.delete<{access: string, refresh: string}>(`${BASE_URL}${this.locale}/_allauth/browser/v1/auth/session`, {
+            headers: this.getHeaders()
+        });
     }
 
     changePassword(uid: string, token: string, new_password: string): Observable<any> {
