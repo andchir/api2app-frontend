@@ -22,7 +22,16 @@ export abstract class DataService<T extends {id: number}> {
 
     constructor(
         protected httpClient: HttpClient
-    ) {}
+    ) {
+        this.httpOptions.headers = this.addCsrfToken(this.httpOptions.headers);
+        this.httpOptionsFormData.headers = this.addCsrfToken(this.httpOptionsFormData.headers);
+    }
+
+    addCsrfToken(headers: HttpHeaders): HttpHeaders {
+        const csrfToken = window['csrf_token'] || this.getCookie('csrftoken') || '';
+        headers = headers.append('X-CSRFToken', csrfToken);
+        return headers.append('Mode', 'same-origin');
+    }
 
     getList(page = 1, search?: string): Observable<{count: number, results: T[]}> {
         const url = this.requestUrl;
