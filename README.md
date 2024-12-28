@@ -23,3 +23,7 @@ Extract localization:
 ~~~
 npm run extract-i18n
 ~~~
+
+~~~
+npx tailwindcss -i ./src/styles.css -o public/assets/css/styles.css
+~~~
