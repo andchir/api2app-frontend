@@ -34,6 +34,8 @@ export class AuthService {
         private httpClient: HttpClient
     ) {
         this.requestUrl = `${BASE_URL}${this.locale}/api/v1/auth/`;
+        this.httpOptions.headers = this.addCsrfToken(this.httpOptions.headers);
+        this.httpOptionsFormData.headers = this.addCsrfToken(this.httpOptionsFormData.headers);
     }
 
     getHeaders(): HttpHeaders {
@@ -43,6 +45,12 @@ export class AuthService {
             'X-CSRFToken': csrfToken,
             'Mode': 'same-origin'
         });
+    }
+
+    addCsrfToken(headers: HttpHeaders): HttpHeaders {
+        const csrfToken = window['csrf_token'] || this.getCookie('csrftoken') || '';
+        headers = headers.append('X-CSRFToken', csrfToken);
+        return headers.append('Mode', 'same-origin');
     }
 
     login(username: string, password: string): Observable<{access: string, refresh: string}> {
