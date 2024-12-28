@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -25,18 +25,43 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     groups: string[] = [];
     destroyed$: Subject<void> = new Subject();
 
+    social_auth_items: {name: string, icon: string, url: string}[] = [];
+
     form = this.formBuilder.group({
         username: ['', Validators.required],
         password: ['', Validators.required]
     });
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         private router: Router,
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private tokenStorageService: TokenStorageService,
         private userService: UserService
     ) {
+        this.social_auth_items = [
+            {
+                name: 'Google',
+                icon: 'bi bi-google me-2',
+                url: `/${locale}/accounts/google/login/`
+            },
+            {
+                name: 'GitHub',
+                icon: 'bi bi-github me-2',
+                url: `/${locale}/accounts/github/login/`
+            },
+            {
+                name: 'Yandex',
+                icon: 'bi me-2',
+                url: `/${locale}/accounts/yandex/login/`
+            },
+            {
+                name: 'VK',
+                icon: 'bi me-2',
+                url: `/${locale}/accounts/vk/login/`
+            }
+        ];
     }
 
     ngOnInit(): void {

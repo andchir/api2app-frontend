@@ -12,7 +12,7 @@
 
                         <h2 class="text-2xl tracking-tight text-gray-900 text-center mb-4" i18n>Log in</h2>
 
-                        <form [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoggedIn; else templateLoggedIn">
+                        <form class="mb-5" [formGroup]="form" (ngSubmit)="onSubmit()" *ngIf="!isLoggedIn; else templateLoggedIn">
                             <div class="mb-3">
                                 <label for="formFieldUsername" class="block mb-2 text-sm font-medium text-gray-900" i18n>Username</label>
                                 <input type="text" id="formFieldUsername"
@@ -31,7 +31,7 @@
                             </div>
                             <div>
                                 <button type="submit"
-                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center"
                                         [disabled]="submitted">
                                     <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg" *ngIf="submitted">
                                         <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
@@ -42,11 +42,79 @@
                             </div>
                         </form>
 
-                        <div class="pt-4" *ngIf="message">
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+                            <a [href]="social_auth_items[0].url"
+                               class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200">
+                                <span class="block w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                    <span class="flex gap-1 items-center justify-center">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-google">
+                                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                              <path d="M20.945 11a9 9 0 1 1 -3.284 -5.997l-2.655 2.392a5.5 5.5 0 1 0 2.119 6.605h-4.125v-3h7.945z" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            Google
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a [href]="social_auth_items[1].url"
+                               class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200">
+                                <span class="block w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                    <span class="flex gap-1 items-center justify-center">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-github">
+                                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                              <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            GitHub
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a [href]="social_auth_items[2].url"
+                                class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200">
+                                <span class="block w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                    <span class="flex gap-1 items-center justify-center">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-yandex">
+                                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                              <path d="M15 20v-16h-2a4 4 0 0 0 -4 4v1a4 4 0 0 0 4 4h2" />
+                                              <path d="M9 20l3 -7" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            Yandex
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                            <a [href]="social_auth_items[3].url"
+                                class="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200">
+                                <span class="block w-full relative px-5 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
+                                    <span class="flex gap-1 items-center justify-center">
+                                        <span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-brand-vk">
+                                              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                              <path d="M14 19h-4a8 8 0 0 1 -8 -8v-5h4v5a4 4 0 0 0 4 4h0v-9h4v4.5l.03 0a4.531 4.531 0 0 0 3.97 -4.496h4l-.342 1.711a6.858 6.858 0 0 1 -3.658 4.789h0a5.34 5.34 0 0 1 3.566 4.111l.434 2.389h0h-4a4.531 4.531 0 0 0 -3.97 -4.496v4.5z" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            VK
+                                        </span>
+                                    </span>
+                                </span>
+                            </a>
+                        </div>
+
+                        <div class="mb-4" *ngIf="message">
                             <app-alert [(message)]="message" [type]="messageType" [closable]="false" position="static"></app-alert>
                         </div>
 
-                        <div class="pt-4">
+                        <div>
                             <a class="text-teal-600 underline transition hover:text-teal-600/75 cursor-pointer"
                                [routerLink]="['/auth', 'register']">
                                 <span i18n>Register</span>
