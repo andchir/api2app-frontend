@@ -113,7 +113,7 @@
                             </button -->
 
                             <!-- Profile dropdown -->
-                            <div class="dropdown relative z-10" *ngIf="userSubject$ | async">
+                            <div class="dropdown relative z-10" *ngIf="(userSubject$ | async) else buttonAuthTemplate">
                                 <div>
                                     <button type="button"
                                             class="relative flex max-w-xs items-center rounded-full bg-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -153,6 +153,7 @@
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
 
@@ -187,6 +188,11 @@
         <div id="mobile-menu"
              [ngClass]="{'md:hidden': isMobileMenuActive, 'hidden': !isMobileMenuActive, 'pointer-events-none opacity-70': navigationLoading}">
             <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+                <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
+                   aria-current="page"
+                   routerLink="/auth/login"
+                   [routerLinkActiveOptions]="{exact: true}"
+                   routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" *ngIf="!(userSubject$ | async)" i18n>Log in</a>
                 <a href="#" class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
                    aria-current="page"
                    routerLink=""
@@ -276,3 +282,10 @@
         </div>
     </footer>
 </div>
+
+<ng-template #buttonAuthTemplate>
+    <a routerLink="/auth/login"
+       class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-md text-xs px-4 py-2">
+        <span i18n>Log in</span>
+    </a>
+</ng-template>
