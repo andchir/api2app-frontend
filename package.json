@@ -6,11 +6,12 @@
     "start-": "ng serve",
     "start": "ng serve api2app-frontend --configuration=ru",
     "start-miniapp": "ng serve miniapp --configuration=ru",
-    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:localize": "ng build --localize",
-    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale"
+    "extract-i18n": "ng extract-i18n --format=json --output-path src/locale",
+    "build": "ng build api2app-frontend --configuration=production",
+    "build:mini-app": "ng build miniapp --configuration=production"
   },
   "private": true,
   "dependencies": {
