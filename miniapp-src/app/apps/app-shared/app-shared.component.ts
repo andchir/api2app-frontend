@@ -406,7 +406,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line'].includes(element.type))) {
+            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line', 'image'].includes(element.type))) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -469,26 +469,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     clearElementsValues(block: AppBlock, updateHiddenValue = true): void {
         block.elements.forEach((element) => {
-            const inputApiUuid = element.options?.inputApiUuid;
-            const outputApiUuid = element.options?.outputApiUuid;
-            if (!inputApiUuid && !outputApiUuid) {
-                if (updateHiddenValue) {
-                    this.elementHiddenStateUpdate(element);
-                }
-                return;
-            }
-            if (['input-file'].includes(element.type)) {
-                element.value = [];
-            } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
-                && !element['storeValue']) {
-                    element.value = null;
-                    element.valueArr = null;
-                    element.valueObj = null;
-                }
+            this.clearElementValue(element, updateHiddenValue);
+        });
+    }
+
+    clearElementValue(element: AppBlockElement, updateHiddenValue = true): void {
+        const inputApiUuid = element.options?.inputApiUuid;
+        const outputApiUuid = element.options?.outputApiUuid;
+        if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
             if (updateHiddenValue) {
                 this.elementHiddenStateUpdate(element);
             }
-        });
+            return;
+        }
+        if (['input-file'].includes(element.type)) {
+            element.value = [];
+        } else if (['input-text', 'input-textarea', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
+            && !element['storeValue']) {
+            element.value = null;
+            element.valueArr = null;
+            element.valueObj = null;
+        }
+        if (updateHiddenValue) {
+            this.elementHiddenStateUpdate(element);
+        }
     }
 
     prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
@@ -883,7 +887,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
-        if (['image', 'audio'].includes(element.type) && typeof value === 'string') {
+        if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = this.sanitizer.bypassSecurityTrustResourceUrl((element.prefixText || '') + value);
             this.cdr.detectChanges();
             return;
@@ -966,7 +970,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return elem.name === element.loadValueInto;
             });
             if (targetElement) {
-                targetElement.value = element.value;
+                this.loadValueToElement(targetElement, element.value);
+                this.clearElementValue(element, true);
+                this.cdr.markForCheck();
             }
             return;
         }
@@ -983,7 +989,28 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(inputApiUuid, 'input', element);
         }
+    }
 
+    loadValueToElement(targetElement: AppBlockElement, newValue: any): void {
+        if (['image'].includes(targetElement.type) && typeof newValue !== 'string') {
+            if (Array.isArray(newValue) && newValue[0] instanceof File) {
+                newValue = newValue[0];
+            }
+            if (newValue instanceof File) {
+                if (!newValue.type.includes('image/') && !newValue.type.includes('djvu')) {
+                    return;
+                }
+                newValue = URL.createObjectURL(newValue);
+            }
+            targetElement.valueObj = newValue;
+            targetElement.value = newValue;
+            this.elementHiddenStateUpdate(targetElement);
+            this.cdr.markForCheck();
+            return;
+        }
+        targetElement.value = newValue;
+        this.elementHiddenStateUpdate(targetElement);
+        this.cdr.markForCheck();
     }
 
     onItemSelected(element: AppBlockElement, index: number): void {
