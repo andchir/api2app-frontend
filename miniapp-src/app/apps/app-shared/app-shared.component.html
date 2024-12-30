@@ -52,7 +52,7 @@
                          *ngIf="block.elements.length > 0">
                         <div class="min-h-6 flex flex-col gap-3" [ngClass]="{'opacity-20 pointer-events-none': block.loading && block.options?.showLoading}">
                             <ng-container *ngFor="let element of block.elements; index as ind">
-                                <div [ngClass]="{'hidden': element?.hidden}">
+                                <div [ngClass]="{'hidden': element?.hidden || !element.type}">
                                     <app-block-element [locale]="data?.language"
                                                        [type]="element.type"
                                                        [parentIndex]="index"
