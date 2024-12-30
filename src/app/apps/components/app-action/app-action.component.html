@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="relative bg-white p-3 rounded border mb-4"
-                     [ngClass]="{'border-green-400 shadow-md': selectedUuid && selectedFieldName, 'border-gray-200 shadow': !selectedUuid || !selectedFieldName}"
+                     [ngClass]="{'border-green-400 shadow-md': selectedUuid && selectedFieldName !== null, 'border-gray-200 shadow': !selectedUuid || selectedFieldName === null}"
                      *ngIf="selectedApi; else templateEmptyApi">
                     <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
                         {{ selectedApi.name }}

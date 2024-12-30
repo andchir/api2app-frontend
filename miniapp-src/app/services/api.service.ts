@@ -213,7 +213,7 @@ export class ApiService extends DataService<ApiItem> {
                 formData.append('opt__uuid', data.uuid || '');
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
 
-                if (data?.urlPartIndex && data?.urlPartValue) {
+                if (data?.urlPartIndex !== null && data?.urlPartValue) {
                     formData.append('opt__urlPartIndex', String(data.urlPartIndex));
                     formData.append('opt__urlPartValue', String(data.urlPartValue));
                 }
@@ -245,7 +245,7 @@ export class ApiService extends DataService<ApiItem> {
                 if (vkAppOptions?.appLaunchParamsJson) {
                     body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
                 }
-                if (data?.urlPartIndex && data?.urlPartValue) {
+                if (data?.urlPartIndex !== null && data?.urlPartValue) {
                     Object.assign(body, {
                         opt__urlPartIndex: data.urlPartIndex,
                         opt__urlPartValue: data.urlPartValue

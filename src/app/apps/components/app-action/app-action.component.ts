@@ -25,7 +25,7 @@ import { filter, switchMap, take } from 'rxjs/operators';
 import { ApiItem } from '../../../apis/models/api-item.interface';
 import { ApiService } from '../../../services/api.service';
 import { ApplicationService } from '../../../services/application.service';
-import {AppBlockElementType} from "../../models/app-block.interface";
+import { AppBlockElementType } from '../../models/app-block.interface';
 
 @Component({
     selector: 'app-element-action',

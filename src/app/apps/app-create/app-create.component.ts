@@ -473,13 +473,13 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 next: (reason) => {
                     if (reason === 'submit') {
                         if (actionType === 'input') {
-                            element.options.inputApiUuid = this.modalService.content.selectedFieldName
+                            element.options.inputApiUuid = this.modalService.content.selectedFieldName !== null
                                 ? this.modalService.content.selectedApi?.uuid
                                 : null;
                             element.options.inputApiFieldName = this.modalService.content.selectedFieldName;
                             element.options.inputApiFieldType = this.modalService.content.selectedFieldType;
                         } else {
-                            element.options.outputApiUuid = this.modalService.content.selectedFieldName
+                            element.options.outputApiUuid = this.modalService.content.selectedFieldName !== null
                                 ? this.modalService.content.selectedApi?.uuid
                                 : null;
                             element.options.outputApiFieldName = this.modalService.content.selectedFieldName;
