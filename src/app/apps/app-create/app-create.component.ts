@@ -393,6 +393,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         let blocks = data.blocks.map(obj => (this.cloneBlock(obj)));
         blocks = blocks.filter((block) => {
             const emptyElements = this.findEmptyElements(block);
+            block.elements = block.elements.filter((el) => {
+                return el.type;
+            });
             return block.elements.length > emptyElements.length;
         });
         blocks.forEach((block) => {
