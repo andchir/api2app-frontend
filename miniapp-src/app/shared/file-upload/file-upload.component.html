@@ -18,10 +18,10 @@
         <span class="pointer-events-none">{{ placeholder }}</span>
     </button>
 </div>
-<div class="flex gap-3 flex-wrap items-start pt-2" *ngIf="files.length > 0">
+<div class="flex gap-3 flex-wrap items-start pt-2" *ngIf="files.length > 0 && usePreview">
     <div class="p-1 inline-flex flex-col px-1 text-gray-500 text-xs rounded ring-gray-400 hover:ring-gray-500 ring-1 max-w-[130px] cursor-default"
          *ngFor="let file of files; let index=index">
-        <div class="flex gap-1 items-center">
+        <div class="flex gap-1 justify-between">
             <div class="max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                 {{ file.name }}
             </div>

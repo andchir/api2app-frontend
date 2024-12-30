@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
@@ -59,6 +59,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
         {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
+        // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
     ];
 
     chartOptions: ChartOptions;
@@ -275,11 +276,15 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }, 100);
     }
 
-    download(url: any, filename = '', event?: MouseEvent): void {
+    download(url: any, filename = '', preventClick: boolean = false, event?: MouseEvent): void {
+        if (event && preventClick) {
+            event.preventDefault();
+            return;
+        }
         if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
             url = url.changingThisBreaksApplicationSecurity;
         }
-        if (typeof url === 'string' && url.match(/^https?:\/\//)) {
+        if (typeof url === 'string' && (url.match(/^https?:\/\//) || url.includes('blob:') )) {
             return;
         }
         if (event) {

@@ -21,7 +21,16 @@ export abstract class DataService<T extends {id: number}> {
 
     constructor(
         protected httpClient: HttpClient
-    ) {}
+    ) {
+        this.httpOptions.headers = this.addCsrfToken(this.httpOptions.headers);
+        this.httpOptionsFormData.headers = this.addCsrfToken(this.httpOptionsFormData.headers);
+    }
+
+    addCsrfToken(headers: HttpHeaders): HttpHeaders {
+        const csrfToken = window['csrf_token'] || this.getCookie('csrftoken') || '';
+        headers = headers.append('X-CSRFToken', csrfToken);
+        return headers.append('Mode', 'same-origin');
+    }
 
     getList(page = 1, search?: string): Observable<{count: number, results: T[]}> {
         const url = this.requestUrl;
@@ -57,10 +66,14 @@ export abstract class DataService<T extends {id: number}> {
             );
     }
 
-    getItemByUuidShared(itemUuid: string): Observable<T> {
+    getItemByUuidShared(itemUuid: string, isPreview: boolean = false): Observable<T> {
         // const url = `${this.requestUrl}/${itemUuid}/shared`;
         const url = `${this.requestUrl}${itemUuid}.json`;
-        return this.httpClient.get<T>(url, this.httpOptions)
+        let params = new HttpParams();
+        if (isPreview) {
+            params = params.append('is_preview', '1');
+        }
+        return this.httpClient.get<T>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );

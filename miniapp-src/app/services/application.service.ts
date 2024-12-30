@@ -141,10 +141,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 }
                 return String(element.value);
             case 'input-file':
-                if ((element.value as File[]).length === 0) {
+            case 'image':
+                if (Array.isArray(element.value) && (element.value as File[]).length === 0) {
                     return null;
                 }
-                return element.multiple ? element.value : element.value[0];
+                return element.multiple || !Array.isArray(element.value) ? element.value : element.value[0];
             case 'input-number':
             case 'input-slider':
                 return parseInt(String(element.value));

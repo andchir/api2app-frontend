@@ -56,7 +56,8 @@ export class ApiService extends DataService<ApiItem> {
                 {name: '', value: ''}
             ],
             bodyContent: '',
-            bodyContentFlatten: ''
+            bodyContentFlatten: '',
+            bodyContentPrivate: false
         };
     }
 

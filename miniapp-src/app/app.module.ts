@@ -18,6 +18,7 @@ import { ModalService } from './services/modal.service';
 import { TableElementComponent } from './apps/components/elements/table-element.component';
 import { SelectImageComponent } from './apps/components/elements/select-image.component';
 import { ProgressElementComponent } from './apps/components/elements/progress-element.component';
+import { ElementImageComponent } from './apps/components/elements/element-image.component';
 
 @NgModule({
     declarations: [
@@ -40,7 +41,8 @@ import { ProgressElementComponent } from './apps/components/elements/progress-el
         NgApexchartsModule,
         TableElementComponent,
         SelectImageComponent,
-        ProgressElementComponent
+        ProgressElementComponent,
+        ElementImageComponent
     ],
     providers: [ApplicationService, ApiService, ModalService],
     bootstrap: [AppComponent]

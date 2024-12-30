@@ -735,6 +735,12 @@ export class ElementOptions {
                     value: options?.accept
                 });
                 output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
+                });
+                output.push({
                     name: 'multiple',
                     label: $localize `Multiple`,
                     type: 'input-switch',
@@ -786,6 +792,12 @@ export class ElementOptions {
                 break;
             case 'image':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
                     name: 'itemFieldName',
                     label: $localize `Field name in the array`,
                     type: 'input-text',
@@ -815,6 +827,27 @@ export class ElementOptions {
                     type: 'input-switch',
                     value: true,
                     enabled: options?.roundedCorners
+                });
+                output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth
+                });
+                output.push({
+                    name: 'borderShadow',
+                    label: $localize `Shadow`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.borderShadow
+                });
+                output.push({
+                    name: 'useCropper',
+                    label: $localize `Use the crop tool`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useCropper
                 });
                 output.push({
                     name: 'useLink',
@@ -940,10 +973,10 @@ export class ElementOptions {
                     value: options?.statusErrorText || ''
                 });
                 output.push({
-                    name: 'isBoolean',
+                    name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
-                    enabled: options?.isBoolean || false
+                    enabled: options?.isBooleanValue || false
                 });
                 break;
             case 'progress':
@@ -983,6 +1016,12 @@ export class ElementOptions {
                     type: 'input-number',
                     min: 0,
                     value: options?.operationDurationSeconds || 0
+                });
+                output.push({
+                    name: 'isBooleanValue',
+                    label: $localize `Boolean Value (true/false)`,
+                    type: 'input-switch',
+                    enabled: options?.isBooleanValue || false
                 });
                 break;
             case 'table':
@@ -1236,7 +1275,7 @@ export class ElementOptions {
                     itemFieldNameForTitle: 'name',
                     itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
-                    LoadValueInto: '',
+                    loadValueInto: '',
                     required: true,
                     clearable: true,
                     searchable: true,
@@ -1293,6 +1332,7 @@ export class ElementOptions {
                     multiple: false,
                     accept: 'image/*',
                     placeholder: $localize `Upload File`,
+                    loadValueInto: '',
                     required: true,
                     value: []
                 });
@@ -1300,12 +1340,16 @@ export class ElementOptions {
             case 'image':
                 Object.assign(output, {
                     name: 'image',
+                    label: $localize `Image`,
                     itemFieldName: '',
                     itemThumbnailFieldName: '',
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,
                     useLink: true,
+                    useCropper: false,
+                    fullWidth: false,
+                    borderShadow: false,
                     roundedCorners: false
                 });
                 break;
@@ -1360,7 +1404,7 @@ export class ElementOptions {
                     statusCompletedTextForVK: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
-                    isBoolean: false,
+                    isBooleanValue: false,
                     value: null
                 });
                 break;
@@ -1374,6 +1418,7 @@ export class ElementOptions {
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 0,
+                    isBooleanValue: false,
                     valueObj: null,
                     value: null
                 });

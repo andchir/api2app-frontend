@@ -219,7 +219,9 @@
         <ng-container *ngSwitchCase="'input-select'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateSelectSimple">
@@ -268,7 +270,9 @@
         <ng-container *ngSwitchCase="'input-tags'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <ng-select class="ng-select-custom"
@@ -409,13 +413,16 @@
         <ng-container *ngSwitchCase="'input-file'">
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="w-full max-w-[600px] mx-auto">
-                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                    <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
+                           class="block mb-2 text-sm font-medium text-gray-900"
+                           *ngIf="options?.label">
                         {{ options?.label }}
                     </label>
                     <app-file-upload
                         [multiple]="options?.multiple"
                         [fileInputAccept]="options?.accept"
                         [placeholder]="options?.placeholder"
+                        [usePreview]="!options?.loadValueInto"
                         [(ngModel)]="options.value"
                         (ngModelChange)="onFieldValueChanged()"></app-file-upload>
                 </div>
@@ -428,7 +435,7 @@
                 <div class="block w-full max-w-[600px] mx-auto">
                     <audio class="block w-full" [src]="options?.value" controls
                            *ngIf="options?.value"></audio>
-                    <div class="px-4 py-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
+                    <div class="px-4 py-3 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
                          *ngIf="!options?.value && editorMode">
                         <i class="bi bi-music-note-beamed mr-2"></i>
                         <span i18n>Audio</span>
@@ -442,43 +449,34 @@
             <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        <ng-container *ngFor="let image of options.valueArr; let index = index">
-                            <div class="p-3 min-h-[50px] loading-bg-image bg-gray-100 rounded border border-slate-300 shadow-lg" #imageContainer>
-                                <a class="block"
-                                   [ngClass]="{'pointer-events-none': !options?.useLink}"
-                                   [href]="image[options?.itemFieldName] || image"
-                                   target="_blank">
-                                    <img class="w-full h-auto max-w-full" loading="lazy"
-                                         [ngClass]="{'rounded-lg': options?.roundedCorners}"
-                                         (load)="imageContainer.classList.remove('loading-bg-image')"
-                                         (error)="onImageError(imageContainer, options, index)"
-                                         [src]="image[options?.itemThumbnailFieldName] || image" alt="">
-                                </a>
-                            </div>
+                        <ng-container *ngFor="let image of options.valueArr; let ind = index">
+                            <app-image-elem
+                                [editorMode]="editorMode"
+                                [parentIndex]="parentIndex"
+                                [index]="ind"
+                                [imageUrl]="image[options?.itemThumbnailFieldName] || image"
+                                [imageLargeUrl]="image[options?.itemFieldName] || image"
+                                [fullWidth]="options?.fullWidth"
+                                [borderShadow]="options?.borderShadow"
+                                [roundedCorners]="options?.roundedCorners"
+                                [useCropper]="options?.useCropper"
+                                [useLink]="options?.useLink"></app-image-elem>
                         </ng-container>
                     </div>
                 </ng-container>
                 <ng-template #templateImageItem>
-                    <div class="block w-full max-w-[600px] mx-auto text-center"
-                         [ngClass]="{'min-h-[50px] loading-bg-image': options?.value}" #imageContainer>
-                        <a class="inline-block"
-                           [ngClass]="{'pointer-events-none': !options?.useLink}"
-                           (click)="download(options?.value, '', $event)"
-                           [href]="options?.value"
-                           target="_blank"
-                           *ngIf="options?.value">
-                            <img class="inline-block max-w-full" loading="lazy"
-                                 [ngClass]="{'rounded-lg': options?.roundedCorners}"
-                                 (load)="imageContainer.classList.remove('loading-bg-image')"
-                                 (error)="onImageError(imageContainer, options)"
-                                 [src]="options?.value" alt="">
-                        </a>
-                        <div class="px-4 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-                             *ngIf="!options?.value && editorMode">
-                            <i class="bi bi-image mr-2"></i>
-                            <span i18n>Image</span>
-                        </div>
-                    </div>
+                    <app-image-elem
+                        [editorMode]="editorMode"
+                        [parentIndex]="parentIndex"
+                        [index]="index"
+                        [imageUrl]="options?.valueObj"
+                        [fullWidth]="options?.fullWidth"
+                        [borderShadow]="options?.borderShadow"
+                        [roundedCorners]="options?.roundedCorners"
+                        [useCropper]="options?.useCropper"
+                        [useLink]="options?.useLink"
+                        [(ngModel)]="options.value"
+                        (ngModelChange)="onFieldValueChanged()"></app-image-elem>
                 </ng-template>
             </div>
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -543,7 +541,7 @@
                 <div class="block w-full max-w-[600px] mx-auto">
 
                     <div class="px-3 py-2 text-green-500 border border-green-500 rounded-[0.7rem] bg-green-50"
-                         *ngIf="(options?.isBoolean && options?.value === true) || (!options?.isBoolean && options?.value === options.statusCompleted) else templateStatusProcessing">
+                         *ngIf="(options?.isBooleanValue && options?.value === true) || (!options?.isBooleanValue && options?.value === options.statusCompleted) else templateStatusProcessing">
                         <div class="flex gap-2 items-center">
                             <div>
                                 <i class="bi bi-check-circle"></i>
@@ -579,7 +577,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'progress'">
-            <div role="status" class="rounded-[0.7rem]"
+            <div role="progress" class="rounded-[0.7rem]"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <app-progress
@@ -591,6 +589,7 @@
                         [taskIdFieldName]="options?.taskIdFieldName"
                         [queueNumberFieldName]="options?.queueNumberFieldName"
                         [operationDurationSeconds]="options?.operationDurationSeconds"
+                        [isBooleanValue]="options?.isBooleanValue"
                         [index]="index"
                         [dataJson]="options.valueObj | json"
                         (progressUpdate)="onProgressUpdate(options)"
@@ -622,7 +621,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'input-select-image'">
-            <div role="status" class="rounded-[0.7rem] p-2"
+            <div class="rounded-[0.7rem] p-2"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
                     {{ options?.label }}
@@ -641,7 +640,7 @@
         </ng-container>
 
         <ng-container *ngSwitchCase="'user-subscription'">
-            <div role="status" class="rounded-[0.7rem]"
+            <div class="rounded-[0.7rem]"
                  [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
                 <div class="block w-full max-w-[600px] mx-auto">
                     <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md"
@@ -668,6 +667,13 @@
             <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
         </ng-container>
 
+        <ng-container *ngSwitchCase="'image-crop'">
+            <div class="rounded-[0.7rem]"
+                 [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+
+            </div>
+        </ng-container>
+
         <ng-container *ngSwitchDefault>
             <div>
                 <div class="min-h-[20px]"
@@ -692,7 +698,7 @@
                 title="Input Action"
                 i18n-title
                 (click)="elementActionSelect('input', $event)"
-                *ngIf="type.includes('input-') || ['button', 'audio'].includes(type)">
+                *ngIf="type.includes('input-') || ['button', 'audio', 'image'].includes(type)">
             <i class="bi bi-arrow-down text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
