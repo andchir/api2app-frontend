@@ -125,6 +125,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         if (taskUuid) {
             window.localStorage.removeItem(`${taskUuid}-progress-start`);
         }
+        this.processStartedAt = null;
         this.progressCompleted.emit();
     }
 
