@@ -216,7 +216,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         this.cdr.detectChanges();
     }
 
-    getSentences(text: string, maxlength = 220): string[] {
+    getSentences(text: string, maxlength = 210): string[] {
         const sentenceRegex = /[^.!?]+[.!?]*/g;
         const sentences = text.match(sentenceRegex) || [];
 
