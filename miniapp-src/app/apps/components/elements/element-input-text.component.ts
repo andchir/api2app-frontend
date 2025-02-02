@@ -217,25 +217,54 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     }
 
     getSentences(text: string, maxlength = 220): string[] {
-        const sentences = this.value.split('. ')
-            .filter((s: string) => {
-                return s.trim();
-            })
-            .map((s: string, index: number, array: string[]) => {
-                return s.trim() + (index + 1 < array.length ? '.' : '');
-            });
+        const sentenceRegex = /[^.!?]+[.!?]*/g;
+        const sentences = text.match(sentenceRegex) || [];
 
-        const sentencesOut = [];
-        sentences.forEach((s: string) => {
-            if (s.length > maxlength) {
-                const index = s.indexOf(' ', Math.floor(s.length / 2))
-                sentencesOut.push(s.substring(0, index).trim());
-                sentencesOut.push(s.substring(index).trim());
-                return;
+        const result = [];
+        let currentChunk = '';
+
+        for (let i = 0; i < sentences.length; i++) {
+            const sentence = sentences[i].trim();
+
+            // If the current chunk plus the new sentence fits into maxlength
+            if (currentChunk.length + sentence.length + 1 <= maxlength) {
+                currentChunk += (currentChunk ? ' ' : '') + sentence;
+            } else {
+                // If the current chunk is not empty, add it to the result
+                if (currentChunk) {
+                    result.push(currentChunk);
+                    currentChunk = '';
+                }
+
+                // If the sentence is too long, break it into parts
+                if (sentence.length > maxlength) {
+                    const words = sentence.split(' ');
+                    let tempChunk = '';
+
+                    for (const word of words) {
+                        if (tempChunk.length + word.length + 1 <= maxlength) {
+                            tempChunk += (tempChunk ? ' ' : '') + word;
+                        } else {
+                            if (tempChunk) {
+                                result.push(tempChunk);
+                                tempChunk = '';
+                            }
+                            tempChunk = word;
+                        }
+                    }
+
+                    if (tempChunk) {
+                        result.push(tempChunk);
+                    }
+                } else {
+                    currentChunk = sentence;
+                }
             }
-            sentencesOut.push(s);
-        });
-        return sentencesOut;
+        }
+        if (currentChunk) {
+            result.push(currentChunk);
+        }
+        return result;
     }
 
     capitalize(word: string): string {
