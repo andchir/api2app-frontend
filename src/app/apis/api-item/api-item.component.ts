@@ -27,6 +27,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     @Input() apiItem: ApiItem;
     @Input() authorized = true;
     @Output() senderChange: EventEmitter<string> = new EventEmitter<string>();
+    @Output() urlEnter: EventEmitter<string> = new EventEmitter<string>();
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
@@ -81,6 +82,13 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
             this.aceEditor.session.setValue(this.apiItem.responseBody);
             this.aceEditorRequest.session.setValue(this.apiItem.bodyContent);
         }
+    }
+
+    onKeyUp(event: KeyboardEvent): void {
+        clearTimeout(this.timer);
+        this.timer = setTimeout(() => {
+            this.urlEnter.emit((event.target as HTMLInputElement).value);
+        }, 600);
     }
 
     aceEditorInit(): void {

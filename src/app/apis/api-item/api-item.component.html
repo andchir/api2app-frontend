@@ -24,7 +24,8 @@
                i18n-placeholder
                [readOnly]="!authorized"
                [disabled]="loading"
-               [(ngModel)]="apiItem.requestUrl">
+               [(ngModel)]="apiItem.requestUrl"
+               (keyup)="onKeyUp($event)">
     </div>
 
     <div>

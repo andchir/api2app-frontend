@@ -86,7 +86,9 @@
                 </div>
             </div>
 
-            <app-api-item [apiItem]="data" (senderChange)="onSenderChange($event)"></app-api-item>
+            <app-api-item [apiItem]="data"
+                          (senderChange)="onSenderChange($event)"
+                          (urlEnter)="onUrlEnter($event)"></app-api-item>
 
         </div>
 

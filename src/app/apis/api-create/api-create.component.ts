@@ -143,6 +143,14 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         }
     }
 
+    onUrlEnter(url: string): void {
+        if (!this.data.name) {
+            this.data.name = url.replace('http://', '')
+                .replace('https://', '')
+                .replace('/', ' - ');
+        }
+    }
+
     onSenderChange(sender: string) {
         this.senderValue = sender;
     }
