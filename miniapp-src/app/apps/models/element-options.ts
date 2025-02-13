@@ -472,6 +472,12 @@ export class ElementOptions {
                     value: options?.value,
                     min: 0
                 });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
                 break;
             case 'input-hidden':
                 output.push({
@@ -1239,6 +1245,7 @@ export class ElementOptions {
                     name: 'range',
                     label: $localize `Range`,
                     type: 'input-slider',
+                    hiddenByField: '',
                     min: 0,
                     max: 100,
                     step: 1,

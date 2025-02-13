@@ -158,7 +158,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
-                this.elementHiddenStateUpdate(element);
+                this.elementHiddenStateUpdate(element, block);
                 promises.push(ApplicationService.applyLocalStoredValue(element));
             });
         });
@@ -178,15 +178,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    elementHiddenStateUpdate(element: AppBlockElement): void {
-        if (((!window['isVKApp'] && element?.showOnlyInVK) ||['input-hidden'].includes(element.type)) && this.previewMode) {
+    elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
+        if (((!window['isVKApp'] && element.showOnlyInVK) ||['input-hidden'].includes(element.type)) && this.previewMode) {
             element.hidden = true;
             return;
         }
-        if ((['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element?.hiddenByDefault)
-            && !element?.value
-            && !element?.valueObj
-            && !element?.valueArr
+        if (element.hiddenByField && this.previewMode) {
+            if (!block) {
+                block = this.findBlock(element);
+            }
+            const targetElement = this.findElementByName(block, element.hiddenByField);
+            if (targetElement) {
+                if (['input-switch'].includes(targetElement.type)) {
+                    element.hidden = !targetElement.enabled;
+                    return;
+                }
+            }
+        }
+        if ((['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element.hiddenByDefault)
+            && !element.value
+            && !element.valueObj
+            && !element.valueArr
             && this.previewMode) {
                 element.hidden = true;
                 return;
@@ -367,6 +379,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
         return blocks;
+    }
+
+    findElementByName(block: AppBlock, elementName: string): AppBlockElement {
+        return block.elements.find((element) => {
+            return element.name === elementName;
+        });
     }
 
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
@@ -960,7 +978,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onElementValueChanged(element: AppBlockElement): void {
         if (!this.previewMode
             || this.data.maintenance
-            || !element.value
+            || (!element.value && !['input-switch'].includes(element.type))
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
@@ -975,6 +993,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.cdr.markForCheck();
             }
             return;
+        }
+        // Hidden by field switch
+        if (['input-switch'].includes(element.type)) {
+            const enabled = element.enabled;
+            const block = this.findBlock(element);
+            if (block) {
+                block.elements.forEach((elem) => {
+                    this.elementHiddenStateUpdate(elem, block);
+                });
+            }
         }
         const inputApiUuid = element.options?.inputApiUuid;
         if (inputApiUuid) {
