@@ -54,6 +54,12 @@ export class ElementOptions {
                     rows: 6,
                     value: options?.value
                 });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
                 break;
             case 'text':
                 output.push({
@@ -132,6 +138,12 @@ export class ElementOptions {
                         {label: $localize `Medium`, value: 'Medium'},
                         {label: $localize `Large`, value: 'Large'}
                     ]
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'alignCenter',
@@ -222,6 +234,12 @@ export class ElementOptions {
                     ]
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -274,6 +292,12 @@ export class ElementOptions {
                     label: $localize `Suffix Text`,
                     type: 'input-text',
                     value: options?.suffixText
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -363,6 +387,12 @@ export class ElementOptions {
                     value: options?.suffixText
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-textarea',
@@ -430,6 +460,12 @@ export class ElementOptions {
                     label: $localize `Maximum Value`,
                     type: 'input-number',
                     value: options?.max
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -578,6 +614,12 @@ export class ElementOptions {
                     value: options?.loadValueInto || ''
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -632,6 +674,12 @@ export class ElementOptions {
                     label: $localize `Placeholder`,
                     type: 'input-text',
                     value: options?.placeholder
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -694,6 +742,12 @@ export class ElementOptions {
                     value: options?.offset
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'useDefault',
                     label: $localize `Use Default Value`,
                     type: 'input-switch',
@@ -713,6 +767,12 @@ export class ElementOptions {
                     label: $localize `Label`,
                     type: 'input-text',
                     value: options?.label
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -745,6 +805,12 @@ export class ElementOptions {
                     label: $localize `Load value into field`,
                     type: 'input-text',
                     value: options?.loadValueInto || ''
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'multiple',
@@ -787,6 +853,12 @@ export class ElementOptions {
                         value: options?.posterUrl || ''
                     });
                 }
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
                 if (type === 'audio') {
                     output.push({
                         name: 'required',
@@ -820,6 +892,12 @@ export class ElementOptions {
                     label: $localize `Prefix Text`,
                     type: 'input-text',
                     value: options?.prefixText || ''
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -906,6 +984,12 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.itemFieldName
                 });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
                 break;
             case 'input-pagination':
                 output.push({
@@ -979,6 +1063,12 @@ export class ElementOptions {
                     value: options?.statusErrorText || ''
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
@@ -1024,6 +1114,12 @@ export class ElementOptions {
                     value: options?.operationDurationSeconds || 0
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
@@ -1050,6 +1146,12 @@ export class ElementOptions {
                     type: 'input-tags',
                     value: options?.keys || [],
                     choices: []
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'isHTML',
@@ -1089,6 +1191,12 @@ export class ElementOptions {
                             return Object.assign({}, item)
                         })
                         : []
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
                 });
                 output.push({
                     name: 'value',
@@ -1156,7 +1264,8 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'header',
                     value: $localize `Header Example Text`,
-                    icon: ''
+                    icon: '',
+                    hiddenByField: ''
                 });
                 break;
             case 'text':
@@ -1170,6 +1279,7 @@ export class ElementOptions {
                     itemFieldName: '',
                     icon: '',
                     keys: [],
+                    hiddenByField: '',
                     whiteSpacePre: false,
                     alignCenter: false,
                     markdown: false,
@@ -1186,6 +1296,7 @@ export class ElementOptions {
                     text: $localize `Submit`,
                     icon: '',
                     color: 'Green',
+                    hiddenByField: '',
                     hiddenByDefault: false
                 });
                 break;
@@ -1199,6 +1310,7 @@ export class ElementOptions {
                     icon: '',
                     prefixText: '',
                     suffixText: '',
+                    hiddenByField: '',
                     readOnly: false,
                     required: true,
                     hiddenByDefault: false,
@@ -1225,6 +1337,7 @@ export class ElementOptions {
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
                     copyToClipboardEnabled: false,
+                    hiddenByField: '',
                     storeValue: false,
                     autoHeight: false,
                     value: null
@@ -1235,6 +1348,7 @@ export class ElementOptions {
                     name: 'number',
                     label: $localize `Number`,
                     type: 'input-number',
+                    hiddenByField: '',
                     min: 0,
                     max: 10,
                     value: 1
@@ -1283,6 +1397,7 @@ export class ElementOptions {
                     itemFieldNameForValue: 'value',
                     choices: ['Value1', 'Value2', 'Value3'],
                     loadValueInto: '',
+                    hiddenByField: '',
                     required: true,
                     clearable: true,
                     searchable: true,
@@ -1299,6 +1414,7 @@ export class ElementOptions {
                     label: $localize `Tags`,
                     type: 'input-select',
                     placeholder: $localize `Please Add Tags`,
+                    hiddenByField: '',
                     required: true,
                     hiddenByDefault: false,
                     choices: [],
@@ -1318,6 +1434,7 @@ export class ElementOptions {
                     name: 'date',
                     label: $localize `Date`,
                     format: 'YYYY-MM-DD HH:mm',
+                    hiddenByField: '',
                     offset: 0,
                     useDefault: false,
                     required: true,
@@ -1329,6 +1446,7 @@ export class ElementOptions {
                     name: 'color',
                     label: $localize `Color`,
                     type: 'input-color',
+                    hiddenByField: '',
                     value: ''
                 });
                 break;
@@ -1340,6 +1458,7 @@ export class ElementOptions {
                     accept: 'image/*',
                     placeholder: $localize `Upload File`,
                     loadValueInto: '',
+                    hiddenByField: '',
                     required: true,
                     value: []
                 });
@@ -1350,6 +1469,7 @@ export class ElementOptions {
                     label: $localize `Image`,
                     itemFieldName: '',
                     itemThumbnailFieldName: '',
+                    hiddenByField: '',
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,
@@ -1364,6 +1484,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: type,
                     label: '',
+                    hiddenByField: '',
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,
@@ -1373,6 +1494,7 @@ export class ElementOptions {
             case 'video':
                 Object.assign(output, {
                     name: type,
+                    hiddenByField: '',
                     prefixText: '',
                     value: '',
                     posterUrl: '',
@@ -1386,6 +1508,7 @@ export class ElementOptions {
                     itemTitle: $localize `Item Title`,
                     fieldNameAxisX: '',
                     fieldNameAxisY: '',
+                    hiddenByField: '',
                     itemFieldName: 'id',
                     isXAxisDate: false,
                     format: 'MMM DD, HH:mm',
@@ -1407,6 +1530,7 @@ export class ElementOptions {
                     name: 'status',
                     statusCompleted: 'completed',
                     statusError: 'error',
+                    hiddenByField: '',
                     statusCompletedText: $localize `Completed`,
                     statusCompletedTextForVK: $localize `Completed`,
                     statusProcessingText: $localize `Performing an operation...`,
@@ -1425,6 +1549,7 @@ export class ElementOptions {
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 0,
+                    hiddenByField: '',
                     isBooleanValue: false,
                     valueObj: null,
                     value: null
@@ -1436,6 +1561,7 @@ export class ElementOptions {
                     label: '',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
+                    hiddenByField: '',
                     isHTML: false,
                     hiddenByDefault: false,
                     editable: false
@@ -1446,6 +1572,7 @@ export class ElementOptions {
                     name: 'select-image',
                     label: $localize `Select image`,
                     data: [],
+                    hiddenByField: '',
                     showTitle: true,
                     required: false,
                     value: null
@@ -1457,6 +1584,7 @@ export class ElementOptions {
                     name: 'user-subscription',
                     label: $localize `My subscription`,
                     subscriptionId: '',
+                    hiddenByField: '',
                     showOnlyInVK: true,
                     value: null
                 });
