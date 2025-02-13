@@ -187,6 +187,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             const sentences = this.getSentences(this.value);// Browser Chrome bug fix https://issues.chromium.org/issues/41346274
             const speechSynthesisUtterance = new SpeechSynthesisUtterance(sentences[0]);
             speechSynthesisUtterance.addEventListener('end', () => {
+                // console.log('END', speechSynthesisUtterance.text);
                 sentences.shift();
                 if (this.speechSynthesisActive && sentences.length > 0) {
                     speechSynthesisUtterance.text = sentences[0];
@@ -198,9 +199,10 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
                 }
             });
             speechSynthesisUtterance.addEventListener('start', () => {
-                // console.log('start', speechSynthesisUtterance.text);
+                // console.log('START', speechSynthesisUtterance.text);
             });
             speechSynthesisUtterance.addEventListener('error', (e) => {
+                console.log('ERROR', e);
                 if (this.speechSynthesisActive) {
                     console.log('error', e.error);
                     window.speechSynthesis.cancel();
@@ -216,7 +218,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         this.cdr.detectChanges();
     }
 
-    getSentences(text: string, maxlength = 210): string[] {
+    getSentences(text: string, maxlength = 180): string[] {
         const sentenceRegex = /[^.!?]+[.!?]*/g;
         const sentences = text.match(sentenceRegex) || [];
 
