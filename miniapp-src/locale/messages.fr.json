@@ -254,8 +254,8 @@
         "8200820842258472590": "Valeur D'État d'Erreur",
         "8459070725086107409": "Texte d'état terminé",
         "2486496242239618561": "Texte d'état terminé pour VK",
-        "5380758074849416105": "Traitement Du Texte d'État",
-        "5710793086333825335": "Texte D'État D'Erreur",
+        "5380758074849416105": "Signification du statut \"En cours d'exécution\"",
+        "5710793086333825335": "Signification du statut \"Erreur\"",
         "87508574155167029": "Valeur booléenne (vrai / faux)",
         "1358239534403218079": "Tableau",
         "6510063013870816675": "En-têtes de colonnes",
@@ -361,6 +361,8 @@
         "7004715234881997037": "Ombre",
         "8887880308581579311": "Recadrer l'image",
         "9130460138582183532": "Utiliser l'outil de recadrage",
-        "7240414814192038746": "Masquer par champ"
+        "7240414814192038746": "Masquer par champ",
+        "5706229195083054442": "Signification du statut \"Traitement en cours\"",
+        "8393370281066949125": "Signification du statut \"En attente\""
     }
 }

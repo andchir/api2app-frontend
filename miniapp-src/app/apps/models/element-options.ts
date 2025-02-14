@@ -1023,6 +1023,18 @@ export class ElementOptions {
                 break;
             case 'status':
                 output.push({
+                    name: 'statusPending',
+                    label: $localize `Pending Status Value`,
+                    type: 'input-text',
+                    value: options?.statusPending || ''
+                });
+                output.push({
+                    name: 'statusProcessing',
+                    label: $localize `Processing Status Value`,
+                    type: 'input-text',
+                    value: options?.statusProcessing || ''
+                });
+                output.push({
                     name: 'statusCompleted',
                     label: $localize `Completed Status Value`,
                     type: 'input-text',
@@ -1076,6 +1088,18 @@ export class ElementOptions {
                 });
                 break;
             case 'progress':
+                output.push({
+                    name: 'statusPending',
+                    label: $localize `Pending Status Value`,
+                    type: 'input-text',
+                    value: options?.statusPending || ''
+                });
+                output.push({
+                    name: 'statusProcessing',
+                    label: $localize `Processing Status Value`,
+                    type: 'input-text',
+                    value: options?.statusProcessing || ''
+                });
                 output.push({
                     name: 'statusCompleted',
                     label: $localize `Completed Status Value`,
@@ -1530,6 +1554,8 @@ export class ElementOptions {
                     name: 'status',
                     statusCompleted: 'completed',
                     statusError: 'error',
+                    statusProcessing: 'processing',
+                    statusPending: 'pending',
                     hiddenByField: '',
                     statusCompletedText: $localize `Completed`,
                     statusCompletedTextForVK: $localize `Completed`,
@@ -1545,6 +1571,8 @@ export class ElementOptions {
                     note: $localize `Please select an object that contains data about the queue number and the operation status.`,
                     statusCompleted: 'completed',
                     statusError: 'error',
+                    statusProcessing: 'processing',
+                    statusPending: 'pending',
                     statusFieldName: 'status',
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
