@@ -39,6 +39,8 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     @Input() name: string;
     @Input() parentIndex: number;
     @Input() index: number;
+    @Input() statusPending: string = '';
+    @Input() statusProcessing: string = '';
     @Input() statusCompleted: string = 'completed';
     @Input() statusError: string = 'error';
     @Input() statusFieldName: string = 'status';
@@ -95,11 +97,17 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
             this.data = {};
         }
         this.delay = 10000;
-        this.status = this.data[this.statusFieldName] || 'processing';
-        const taskUuid = this.data[this.taskIdFieldName] || 'app';
-        const queueNumber = this.data[this.queueNumberFieldName] || 0;
-        const processStarted = queueNumber === 0 && this.queueNumber > 0;
-        if (processStarted) {
+        const prevStatus = this.status;
+        this.status = this.statusFieldName ? (this.data[this.statusFieldName] || 'processing') : 'processing';
+        const isStatusChanged = prevStatus !== this.status;
+        const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
+        let queueNumber = this.queueNumberFieldName ? (this.data[this.queueNumberFieldName] || 0) : 0;
+        if ((this.statusPending && this.status === this.statusPending) || (this.statusProcessing && this.status !== this.statusProcessing)) {
+            queueNumber++;
+        }
+        const isProcessStarted = (queueNumber === 0 && this.queueNumber > 0)
+            || (queueNumber === 0 && !window.localStorage.getItem(`${taskUuid}-progress-start`));
+        if (isProcessStarted) {
             this.processStartedAt = new Date();
             window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
         }
@@ -118,10 +126,11 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
 
     onCompleted(): void {
         this.writeValue(100);
-        const taskUuid = this.data[this.taskIdFieldName] || '';
+        const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
         if (taskUuid) {
             window.localStorage.removeItem(`${taskUuid}-progress-start`);
         }
+        this.processStartedAt = null;
         this.progressCompleted.emit();
     }
 
@@ -136,7 +145,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     pollingProgress(currentMs: number = 0): void {
         clearTimeout(this.timer);
         if (!this.processStartedAt) {
-            const taskUuid = this.data[this.taskIdFieldName] || '';
+            const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
             const dateString = window.localStorage.getItem(`${taskUuid}-progress-start`);
             if (taskUuid) {
                 this.processStartedAt = dateString ? new Date(dateString) : new Date();
