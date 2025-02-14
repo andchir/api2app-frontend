@@ -105,8 +105,11 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         if ((this.statusPending && this.status === this.statusPending) || (this.statusProcessing && this.status !== this.statusProcessing)) {
             queueNumber++;
         }
+        console.log('status', this.status, this.statusPending);
+        console.log('queueNumber', queueNumber);
         const isProcessStarted = (queueNumber === 0 && this.queueNumber > 0)
             || (queueNumber === 0 && !window.localStorage.getItem(`${taskUuid}-progress-start`));
+        console.log('isProcessStarted', isProcessStarted);
         if (isProcessStarted) {
             this.processStartedAt = new Date();
             window.localStorage.setItem(`${taskUuid}-progress-start`, this.processStartedAt.toISOString());
