@@ -250,7 +250,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const elements = this.findElements(apiUuid, 'input', currentElement, true);
         const blocks = this.findBlocksByElements(elements);
         const input_file = elements.find((elem) => {
-            return elem.type === 'input-file';
+            return ['input-file', 'image'].includes(elem.type);
         });
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
