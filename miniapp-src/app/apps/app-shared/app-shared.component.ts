@@ -554,15 +554,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             // Inject VK file upload URL
             if (isVKFileUploadingMode) {
                 let dataField = bodyFields.find((field) => {
-                    return field.name === 'data';
+                    return field.name === 'opt_vk_data';
                 });
                 if (!dataField) {
-                    dataField = {name: 'data', value: '', hidden: false};
+                    dataField = {name: 'opt_vk_data', value: '', hidden: false};
                     bodyFields.push(dataField);
                 }
-                dataField.value = dataField.value
-                    ? JSON.stringify({'input': dataField.value, 'upload_url': this.vkAppOptions.userFileUploadUrl})
-                    : JSON.stringify({'upload_url': this.vkAppOptions.userFileUploadUrl});
+                dataField.value = JSON.stringify({upload_url: this.vkAppOptions?.userFileUploadUrl || ''});
             }
 
             apiItem.bodyFields = bodyFields;

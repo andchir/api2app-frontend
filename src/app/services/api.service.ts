@@ -149,47 +149,75 @@ export class ApiService extends DataService<ApiItem> {
         let body: any = null;
         if (bodyDataSource === 'fields') {
             body = {};
+            const vkDataField = data.bodyFields.find((item) => {
+                return item.name === 'opt_vk_data';
+            });
+            // Inject VK data
+            if (vkDataField && vkDataField.value) {
+                let dataField = data.bodyFields.find((field) => {
+                    return field.name === 'data';
+                });
+                if (!dataField) {
+                    dataField = {name: 'data', value: '', hidden: false};
+                    data.bodyFields.push(dataField);
+                }
+                if (dataField.value !== '[RAW]') {
+                    const vkData = JSON.parse(vkDataField.value as string) || {};
+                    dataField.value = dataField.value
+                        ? JSON.stringify(Object.assign({}, {'input': dataField.value}, vkData))
+                        : JSON.stringify(vkData);
+                }
+            }
             data.bodyFields.forEach((item) => {
-                if (item.name && ((typeof item.value === 'string' && item.value) || typeof item.value !== 'string' || item.files) && !item.hidden) {
-                    let value = typeof item.value === 'string' ? (item.value || '') : item.value;
-                    if (!sendAsFormData && typeof value === 'string') {
-                        if (value === '[]') {
-                            value = [];
-                        } else if (['true', 'false'].includes(String(value))) {
-                            value = value === 'true';
-                        } else if (!Number.isNaN(Number(value))) {
-                            value = Number(value);
-                        }
+                if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value)) {
+                    return;
+                }
+                let value = typeof item.value === 'string'
+                    ? (item.value || '')
+                    : item.value;
+                if (!sendAsFormData && typeof value === 'string') {
+                    if (value === '[]') {
+                        value = [];
+                    } else if (['true', 'false'].includes(String(value))) {
+                        value = value === 'true';
+                    } else if (!Number.isNaN(Number(value))) {
+                        value = Number(value);
                     }
-                    body[item.name] = value;
-                    if (data.sendAsFormData) {
-                        if (item.isFile) {
-                            if (item.files) {
-                                if (Array.isArray(item.files)) {
-                                    item.files.forEach((file) => {
-                                        formData.append(item.name, file, file.name);
-                                    });
-                                }
-                            } else {
-                                if (Array.isArray(item.value)) {
-                                    item.value.forEach((file) => {
-                                        formData.append(item.name, file);
-                                    });
-                                } else {
-                                    if ((item.value as any) instanceof File) {
-                                        formData.append(item.name, (item.value as any));
-                                    }
-                                    else {
-                                        formData.append(item.name, String(item.value || ''));
-                                    }
-                                }
+                }
+                body[item.name] = value;
+                if (data.sendAsFormData) {
+                    if (item.isFile) {
+                        if (item.files) {
+                            if (Array.isArray(item.files)) {
+                                item.files.forEach((file) => {
+                                    formData.append(item.name, file, file.name);
+                                });
                             }
                         } else {
-                            if (item.value === '[RAW]') {
-                                formData.append('opt__body', JSON.stringify(bodyContent));
+                            if (Array.isArray(item.value)) {
+                                item.value.forEach((file) => {
+                                    formData.append(item.name, file);
+                                });
+                            } else {
+                                if ((item.value as any) instanceof File) {
+                                    formData.append(item.name, (item.value as any));
+                                }
+                                else {
+                                    formData.append(item.name, String(item.value || ''));
+                                }
                             }
-                            formData.append(item.name, String(item.value) || '');
                         }
+                    } else {
+                        if (item.value === '[RAW]') {
+                            if (vkDataField && vkDataField.value && typeof vkDataField.value === 'string') {
+                                const vkData = JSON.parse(vkDataField.value as string);
+                                if (vkData) {
+                                    Object.assign(bodyContent, vkData);
+                                }
+                            }
+                            formData.append('opt__body', JSON.stringify(bodyContent));
+                        }
+                        formData.append(item.name, String(item.value) || '');
                     }
                 }
             });
