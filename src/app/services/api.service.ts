@@ -209,6 +209,7 @@ export class ApiService extends DataService<ApiItem> {
                         }
                     } else {
                         if (item.value === '[RAW]') {
+                            // Inject VK data
                             if (vkDataField && vkDataField.value && typeof vkDataField.value === 'string') {
                                 const vkData = JSON.parse(vkDataField.value as string);
                                 if (vkData) {
