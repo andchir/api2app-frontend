@@ -538,7 +538,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.localStoreValue(element);
                 bodyField.value = ApplicationService.getElementValue(element);
 
-                if (element.type === 'input-file' && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
+                if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
                 }
                 if (element.type === 'input-switch') {
