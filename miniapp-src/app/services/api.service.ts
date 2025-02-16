@@ -170,7 +170,7 @@ export class ApiService extends DataService<ApiItem> {
                 }
             }
             data.bodyFields.forEach((item) => {
-                if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value)) {
+                if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value && !item.files)) {
                     return;
                 }
                 let value = typeof item.value === 'string'
@@ -210,6 +210,7 @@ export class ApiService extends DataService<ApiItem> {
                         }
                     } else {
                         if (item.value === '[RAW]') {
+                            // Inject VK data
                             if (vkDataField && vkDataField.value && typeof vkDataField.value === 'string') {
                                 const vkData = JSON.parse(vkDataField.value as string);
                                 if (vkData) {
