@@ -250,7 +250,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const elements = this.findElements(apiUuid, 'input', currentElement, true);
         const blocks = this.findBlocksByElements(elements);
         const input_file = elements.find((elem) => {
-            return ['input-file', 'image'].includes(elem.type);
+            return ['input-file'].includes(elem.type) || (elem.type === 'image' && elem.useCropper);
         });
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
@@ -598,7 +598,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         delete inputData[key];
                         return;
                     }
-                    outputData[key] = value || enabled;
+                    outputData[key] = ['input-switch'].includes(element.type) ? (value || enabled) : value;
                 });
 
                 apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));

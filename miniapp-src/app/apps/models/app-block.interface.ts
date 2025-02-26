@@ -71,6 +71,7 @@ export interface AppBlockElement {
     loadValueInto?: string;
     note?: string;
     storeValue?: boolean;
+    useCropper?: boolean;
 }
 
 export interface AppBlockOptions {

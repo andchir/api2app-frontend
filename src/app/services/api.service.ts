@@ -142,7 +142,9 @@ export class ApiService extends DataService<ApiItem> {
         const bodyContent = data.requestContentType === 'json' && data.bodyContent
             ? JSON.parse(data.bodyContent)
             : data.bodyContent || null;
-        const bodyContentFlatten = data.requestContentType === 'json' && data.bodyContentFlatten ? JSON.parse(data.bodyContentFlatten) : {};
+        const bodyContentFlatten = data.requestContentType === 'json' && data.bodyContentFlatten
+            ? JSON.parse(data.bodyContentFlatten)
+            : {};
         const formData = new FormData();
         const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
         const bodyRawFlatten = bodyDataSource === 'raw' ? bodyContentFlatten : null;

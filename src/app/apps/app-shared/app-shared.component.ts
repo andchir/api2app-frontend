@@ -608,7 +608,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         delete inputData[key];
                         return;
                     }
-                    outputData[key] = value || enabled;
+                    outputData[key] = ['input-switch'].includes(element.type) ? (value || enabled) : value;
                 });
 
                 apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
