@@ -918,7 +918,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
-        if (this.isJson(value)) {
+        if (ApiService.isJson(value)) {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
@@ -1021,6 +1021,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (buttonElement && !['input-pagination'].includes(element.type)) {
                 return;
             }
+            console.log('buttonElement', inputApiUuid);
             this.removeAutoStart(inputApiUuid);
             // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(inputApiUuid, 'input', element);
@@ -1067,6 +1068,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
+        console.log('onProgressUpdate', apiUuid);
         this.appSubmit(apiUuid, 'input', currentElement);
     }
 
@@ -1088,18 +1090,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    isJson(str: string): boolean {
-        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
-            return false;
-        }
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            return false;
-        }
-        return true;
-    }
-
     flattenObjInArray(inputArr: any[]): any[] {
         return inputArr.map((item) => {
             return this.flattenObj(item);
@@ -1112,7 +1102,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         valueArr = valueArr.filter((item) => {
             const value = item[itemFieldName] || '';
-            return !!value && !this.isJson(value);
+            return !!value && !ApiService.isJson(value);
         });
         return valueArr;
     }
