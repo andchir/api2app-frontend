@@ -13,7 +13,7 @@
                 [ngClass]="{'py-2 px-3': !editable}"
                 *ngFor="let key of keys; let colIndex = index">
                 <ng-container *ngIf="!editable; else inputField">
-                    <div *ngIf="isHTML" [innerHTML]="item[key]"></div>
+                    <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key]"></div>
                     <div *ngIf="!isHTML">{{ item[key] }}</div>
                 </ng-container>
                 <ng-template #inputField>
