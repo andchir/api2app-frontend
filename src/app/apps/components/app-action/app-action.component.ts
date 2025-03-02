@@ -147,7 +147,10 @@ export class AppActionComponent implements OnInit, OnDestroy {
             // Input fields
             if (this.selectedApi.bodyDataSource === 'fields') {
                 this.inputFields = this.getArrayValues('bodyFields');
+                this.inputAddJsonFields();
             }
+
+            // Add fields from RAW JSON field
             const rawFields = this.dataService.getRawDataFields(this.selectedApi);
             let isRawData = (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') || rawFields.length > 0;
             if (isRawData) {
@@ -184,6 +187,17 @@ export class AppActionComponent implements OnInit, OnDestroy {
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
         this.cdr.detectChanges();
+    }
+
+    inputAddJsonFields(): void {
+        this.selectedApi['bodyFields'].forEach((item) => {
+            if (ApiService.isJson(item.value)) {
+                const valueObj = JSON.parse(item.value as string);
+                Object.keys(valueObj).forEach((key) => {
+                    this.inputFields.push(`${item.name}.${key}`);
+                });
+            }
+        });
     }
 
     getArrayValues(inputKey: string, targetKey: string = 'name'): string[] {
