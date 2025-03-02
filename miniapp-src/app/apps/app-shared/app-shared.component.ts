@@ -531,12 +531,32 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
-                const element = currentElements.find((item) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
-                    return apiUuid === apiItem.uuid
-                        && fieldName === bodyField.name
-                        && fieldType === 'input';
-                });
+                let element;
+                // JSON field value
+                if (ApiService.isJson(bodyField.value)) {
+                    const valueObj = JSON.parse(bodyField.value as string);
+                    Object.keys(valueObj).forEach((key) => {
+                        element = currentElements.find((item) => {
+                            const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
+                            return apiUuid === apiItem.uuid
+                                && fieldName === `${bodyField.name}.${key}`
+                                && fieldType === 'input';
+                        });
+                        if (element) {
+                            valueObj[key] = element.value;
+                        }
+                    });
+                    bodyField.value = JSON.stringify(valueObj);
+                    return;
+                // Normal field value
+                } else {
+                    element = currentElements.find((item) => {
+                        const {apiUuid, fieldName, fieldType} = this.getElementOptions(item, 'input');
+                        return apiUuid === apiItem.uuid
+                            && fieldName === bodyField.name
+                            && fieldType === 'input';
+                    });
+                }
                 if (!element) {
                     return;
                 }
