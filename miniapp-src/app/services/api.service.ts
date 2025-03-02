@@ -95,6 +95,18 @@ export class ApiService extends DataService<ApiItem> {
         return output;
     }
 
+    static isJson(str: any): boolean {
+        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
+            return false;
+        }
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};

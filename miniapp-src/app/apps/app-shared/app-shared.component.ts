@@ -221,7 +221,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
-            if (!this.isShared && this.isLoggedIn) {
+            const apiItem = (actionType === 'input' ? this.apiItems['output'] : this.apiItems['input'])
+                .find((item) => {
+                    return item.uuid === uuid;
+                });
+            if (apiItem) {
+                promises.push(Promise.resolve(apiItem));
+            } else if (!this.isShared && this.isLoggedIn) {
                 promises.push(firstValueFrom(this.apiService.getItemByUuid(uuid)));
             } else {
                 promises.push(firstValueFrom(this.apiService.getItemByUuidShared(uuid)));
@@ -239,7 +245,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.submitted = true;
         this.cdr.detectChanges();
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
-            this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
                 this.appSubmit(apiUuid, actionType, currentElement, showMessages);
@@ -908,7 +913,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
-        if (this.isJson(value)) {
+        if (ApiService.isJson(value)) {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
@@ -1078,18 +1083,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    isJson(str: string): boolean {
-        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
-            return false;
-        }
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            return false;
-        }
-        return true;
-    }
-
     flattenObjInArray(inputArr: any[]): any[] {
         return inputArr.map((item) => {
             return this.flattenObj(item);
@@ -1102,7 +1095,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         valueArr = valueArr.filter((item) => {
             const value = item[itemFieldName] || '';
-            return !!value && !this.isJson(value);
+            return !!value && !ApiService.isJson(value);
         });
         return valueArr;
     }

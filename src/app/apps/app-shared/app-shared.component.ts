@@ -231,7 +231,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
         const promises = [];
         this.apiUuidsList[actionType].forEach((uuid) => {
-            if (!this.isShared && this.isLoggedIn) {
+            const apiItem = (actionType === 'input' ? this.apiItems['output'] : this.apiItems['input'])
+                .find((item) => {
+                    return item.uuid === uuid;
+                });
+            if (apiItem) {
+                promises.push(Promise.resolve(apiItem));
+            } else if (!this.isShared && this.isLoggedIn) {
                 promises.push(firstValueFrom(this.apiService.getItemByUuid(uuid)));
             } else {
                 promises.push(firstValueFrom(this.apiService.getItemByUuidShared(uuid)));
@@ -249,7 +255,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.submitted = true;
         this.cdr.detectChanges();
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
-            this.apiItems[actionType] = [];
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
                 this.appSubmit(apiUuid, actionType, currentElement, showMessages);
@@ -1021,7 +1026,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (buttonElement && !['input-pagination'].includes(element.type)) {
                 return;
             }
-            console.log('buttonElement', inputApiUuid);
             this.removeAutoStart(inputApiUuid);
             // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(inputApiUuid, 'input', element);
@@ -1068,7 +1072,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        console.log('onProgressUpdate', apiUuid);
         this.appSubmit(apiUuid, 'input', currentElement);
     }
 
