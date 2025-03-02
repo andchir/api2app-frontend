@@ -63,7 +63,7 @@ export class TableElementComponent implements ControlValueAccessor {
         }
         val.forEach((row) => {
             for (const [key, value] of Object.entries(row)) {
-                if (typeof value === 'object' && !Array.isArray(value)) {
+                if (value && typeof value === 'object' && !Array.isArray(value)) {
                     row[key] = '';
                     Object.keys(value).forEach(function(k) {
                         row[key] += k + ":\n";
