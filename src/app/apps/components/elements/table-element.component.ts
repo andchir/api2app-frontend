@@ -48,7 +48,7 @@ export class TableElementComponent implements ControlValueAccessor {
 
     @Input()
     set value(val) {
-        this._value = val;
+        this._value = this.stringifyValues(val);
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
@@ -56,6 +56,22 @@ export class TableElementComponent implements ControlValueAccessor {
     constructor(
         private cdr: ChangeDetectorRef
     ) {}
+
+    stringifyValues(val: any): any {
+        if (!val) {
+            return null;
+        }
+        val.forEach((row) => {
+            for (const [key, value] of Object.entries(row)) {
+                if (row[key] && typeof value === 'object') {
+                    row[key] = JSON.stringify(value);
+                } else {
+                    row[key] = value === null ? '' : String(value);
+                }
+            }
+        });
+        return val;
+    }
 
     onChange(_: any) {}
 

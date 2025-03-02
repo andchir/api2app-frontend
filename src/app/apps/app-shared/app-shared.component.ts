@@ -923,7 +923,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             element.valueArr = this.flattenObjInArray(value);
-            if (element?.itemFieldName) { // Filter array values
+            if (element.itemFieldName) { // Filter array values
                 element.valueArr = this.filterArrayValues(element.valueArr, element.itemFieldName);
             }
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
@@ -1125,10 +1125,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (obj.length > 0) {
                 obj.forEach((item, index) => {
                     let propName = parent ? parent + '.' + index : String(index);
+                    res[propName] = item;
                     if (typeof item === 'object') {
                         this.flattenObj(item, propName, res);
-                    } else {
-                        res[propName] = item;
                     }
                 });
             } else {
@@ -1139,10 +1138,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         for (let key in obj) {
             if (!obj.hasOwnProperty(key)) continue;
             let propName = parent ? parent + '.' + key : key;
+            res[propName] = obj[key];
             if (typeof obj[key] === 'object') {
                 this.flattenObj(obj[key], propName, res);
-            } else {
-                res[propName] = obj[key];
             }
         }
         return res;
