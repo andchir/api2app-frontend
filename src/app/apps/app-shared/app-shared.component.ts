@@ -552,7 +552,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 && fieldName === `${bodyField.name}.${key}`
                                 && fieldType === 'input';
                         });
-                        if (element) {
+                        if (!element) {
+                            return;
+                        }
+                        if (element.type === 'input-switch') {
+                            if (element.enabled) {
+                                valueObj[key] = element.value;
+                            }
+                        } else {
                             valueObj[key] = element.value;
                         }
                     });
