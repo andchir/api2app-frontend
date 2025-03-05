@@ -56,7 +56,7 @@
                             'max-w-[600px] mx-auto': !options.fullWidth
                         }">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                        <div class="max-w-full overflow-hidden text-content"
+                        <div class="grow max-w-full overflow-hidden text-content"
                              [ngClass]="{'w-full text-center': options?.alignCenter}">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
