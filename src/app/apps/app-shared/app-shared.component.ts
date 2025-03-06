@@ -557,7 +557,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                         if (element.type === 'input-switch') {
                             if (element.enabled) {
-                                valueObj[key] = element.value;
+                                valueObj[key] = element.value || true;
                             }
                         } else {
                             valueObj[key] = element.value;
