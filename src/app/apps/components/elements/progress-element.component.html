@@ -1,4 +1,4 @@
-<div class="p-2 bg-gray-100 rounded-xl">
+<div class="relative p-2 bg-gray-100 rounded-xl">
     <div class="p-2 rounded-lg border-2 border-dotted border-gray-300">
         <app-percent [percentCurrent]="value"></app-percent>
 
@@ -16,4 +16,8 @@
             <span i18n>Error</span>
         </div>
     </div>
+    <button type="button" class="absolute top-5 right-5 text-xs text-gray-700 px-2 py-1 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"
+            (click)="cancel()"
+            *ngIf="status === 'processing'"
+            i18n>Cancel</button>
 </div>

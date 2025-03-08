@@ -170,6 +170,13 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         }, UPDATE_DELAY);
     }
 
+    cancel(): void {
+        clearTimeout(this.timer);
+        this.status = 'pending';
+        const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
+        window.localStorage.removeItem(`${taskUuid}-progress-start`);
+    }
+
     onChange(_: any) {}
 
     onTouched(_: any) {}
