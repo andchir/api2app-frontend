@@ -1166,14 +1166,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return res;
     }
 
-    unFlattenObject(obj: any): any {
+    unFlattenObject(flatObj: any): any {
         const result = {};
-        for (const i in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, i)) {
-                const keys = i.match(/(?:^\.+)?(?:\.{2,}|[^.])+(?:\.+$)?/g);
-                keys.reduce((r, e, j) => {
-                    return r[e] || (r[e] = isNaN(Number(keys[j + 1])) ? (keys.length - 1 === j ? obj[i] : {}) : []);
-                }, result);
+        for (const key in flatObj) {
+            if (flatObj.hasOwnProperty(key)) {
+                const keys = key.split('.');
+                let current = result;
+                for (let i = 0; i < keys.length; i++) {
+                    const part = keys[i];
+                    if (i === keys.length - 1) {
+                        current[part] = flatObj[key];
+                    } else {
+                        if (!current[part]) {
+                            current[part] = {};
+                        }
+                        current = current[part];
+                    }
+                }
             }
         }
         return result;
