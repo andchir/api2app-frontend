@@ -5,6 +5,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class ToHtmlPipe implements PipeTransform {
     transform(text: string): any {
+        if (typeof text === 'object') {
+            return '<div class="whitespace-pre">' + JSON.stringify(text, null, 2) + '</div>';
+        }
         if (typeof text !== 'string') {
             return text;
         }
@@ -17,6 +20,19 @@ export class ToHtmlPipe implements PipeTransform {
             const target = value.includes('#') ? '_self' : '_blank';
             return `<a class="inline-block max-w-full whitespace-nowrap overflow-hidden text-ellipsis text-blue-500 underline align-top hover:text-blue-700" rel="nofollow" href="${value}" target="${target}">${value}</a>`;
         });
+
         return text;
+    }
+
+    isJson(str: any): boolean {
+        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
+            return false;
+        }
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
     }
 }
