@@ -23,16 +23,4 @@ export class ToHtmlPipe implements PipeTransform {
 
         return text;
     }
-
-    isJson(str: any): boolean {
-        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
-            return false;
-        }
-        try {
-            JSON.parse(str);
-        } catch (e) {
-            return false;
-        }
-        return true;
-    }
 }
