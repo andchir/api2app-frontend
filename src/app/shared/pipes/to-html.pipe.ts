@@ -6,7 +6,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class ToHtmlPipe implements PipeTransform {
     transform(text: string): any {
         if (typeof text === 'object') {
-            return '<div class="whitespace-pre overflow-auto">' + JSON.stringify(text, null, 2) + '</div>';
+            text = JSON.stringify(text, null, 2);
         }
         if (typeof text !== 'string') {
             return text;
