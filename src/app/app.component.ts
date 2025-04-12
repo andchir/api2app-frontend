@@ -40,6 +40,7 @@ export class AppComponent implements OnInit {
                     this.isSharedPageUrl = e.url.includes('/shared/') || e.url.includes('/embed/');
                     this.isPersonalPageUrl = e.url.includes('/apps/personal') || e.url.includes('/apis/personal');
                     this.navigationLoading = false;
+                    this.isMobileMenuActive = false;
                 }
             });
     }
