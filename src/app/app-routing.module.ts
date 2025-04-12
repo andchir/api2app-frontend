@@ -13,6 +13,7 @@ import { AuthPasswordResetConfirmComponent } from './auth/auth-password-reset-co
 import { MyProfileComponent } from './my-profile/my-profile.component';
 import { DocumentationComponent } from './docs/documentation.component';
 import { AuthSessionComponent } from './auth/auth-session.component';
+import { DownloadComponent } from './download/download.component';
 
 const routes: Routes = [
     {
@@ -68,6 +69,10 @@ const routes: Routes = [
     {
         path: 'dashboard',
         component: DashboardComponent
+    },
+    {
+        path: 'download',
+        component: DownloadComponent
     },
     {
         path: 'my-profile',

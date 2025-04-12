@@ -39,12 +39,20 @@
                     </div>
                 </div>
 
-                <div class="flex gap-3 items-center">
+                <div class="flex gap-2 lg:gap-3 items-center">
+
+                    <a class="inline-block p-1 text-center text-xl text-slate-400 hover:text-slate-300"
+                        [routerLink]="'/download'"
+                        routerLinkActive="active text-slate-300"
+                        title="Download"
+                        i18n-title>
+                        <i class="bi bi-arrow-down-circle-fill"></i>
+                    </a>
 
                     <a class="inline-block p-1 text-center text-xl text-slate-400 hover:text-slate-300" href="https://t.me/api2app"
-                        target="_blank"
-                        title="Telegram group"
-                        i18n-title>
+                       target="_blank"
+                       title="Telegram group"
+                       i18n-title>
                         <i class="bi bi-telegram"></i>
                     </a>
 
