@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { DragulaModule } from 'ng2-dragula';
 
 import { authInterceptorProviders } from '../helpers/auth.interceptor';
 import { SharedModule } from '../shared.module';
@@ -49,7 +50,8 @@ import { ElementImageComponent } from './components/elements/element-image.compo
         TableElementComponent,
         SelectImageComponent,
         ProgressElementComponent,
-        ElementImageComponent
+        ElementImageComponent,
+        DragulaModule.forRoot()
     ],
     exports: [
         ApplicationSharedComponent

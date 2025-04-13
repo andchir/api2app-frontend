@@ -10,8 +10,9 @@ import {
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { takeUntil } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { DragulaService } from 'ng2-dragula';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppBlock, AppBlockElement, AppBlockElementType } from '../models/app-block.interface';
@@ -54,6 +55,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     selectedBlockIndex: number;
     selectedItemOptionsFields: AppBlockElement[] = [];
 
+    subs = new Subscription();
+
     constructor(
         @Inject(LOCALE_ID) public locale: string,
         titleService: Title,
@@ -66,9 +69,41 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         apiService: ApiService,
         modalService: ModalService,
         routerEventsService: RouterEventsService,
-        vkBridgeService: VkBridgeService
+        vkBridgeService: VkBridgeService,
+        private dragulaService: DragulaService
     ) {
         super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService, vkBridgeService);
+        dragulaService.createGroup('BLOCK_ELEMENTS', {
+            removeOnSpill: false,
+            moves: (el, container, handle) => {
+                return handle.className.includes('drag-handle');
+            },
+            accepts: (el, target, source, sibling) => {
+                return target === source;
+            }
+        });
+        this.subs.add(dragulaService.drag('BLOCK_ELEMENTS')
+            .subscribe(({ el }) => {
+                this.deleteEmptyElements();
+                this.cdr.markForCheck();
+            })
+        );
+        this.subs.add(dragulaService.drop('BLOCK_ELEMENTS')
+            .subscribe((e) => {
+                this.message = 'Элемент перемещен.';
+                this.messageType = 'success';
+            })
+        );
+        this.subs.add(dragulaService.dropModel('BLOCK_ELEMENTS')
+            .subscribe(({ el, target, source, sourceModel, targetModel, item }) => {
+                console.log('dropModel:');
+                console.log(sourceModel);
+                console.log(targetModel);
+                console.log(item);
+
+                // this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
+            })
+        );
     }
 
     get optionsTitle(): string {
@@ -183,7 +218,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
-        this.cdr.detectChanges();
+        this.cdr.markForCheck();
     }
 
     deleteEmptyElements(blockCurrent?: AppBlock): void {
@@ -626,5 +661,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             }
         }
         return files;
+    }
+
+    override ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.subs.unsubscribe();
     }
 }
