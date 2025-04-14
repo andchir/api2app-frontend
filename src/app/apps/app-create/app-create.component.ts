@@ -57,6 +57,37 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     subs = new Subscription();
 
+    newElementBlockIndex: number = -1;
+    newElementType: string = null;
+    inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
+        {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
+        {name: 'text', title: $localize `Text`, icon: 'bi-fonts'},
+        {name: 'button', title: $localize `Button`, icon: 'bi-app'},
+        {name: 'input-text', title: $localize `Text Field`, icon: 'bi-input-cursor-text'},
+        {name: 'input-hidden', title: $localize `Hidden Text Field`, icon: 'bi-input-cursor'},
+        {name: 'input-textarea', title: $localize `Text Area`, icon: 'bi-textarea-resize'},
+        {name: 'input-number', title: $localize `Number Field`, icon: 'bi-1-square'},
+        {name: 'input-slider', title: $localize `Range Slider`, icon: 'bi-sliders'},
+        {name: 'input-switch', title: $localize `Switch`, icon: 'bi-toggle-off'},
+        {name: 'input-select', title: $localize `Select`, icon: 'bi-menu-button'},
+        {name: 'input-tags', title: $localize `Tags`, icon: 'bi-tag'},
+        {name: 'input-radio', title: $localize `Radio Buttons`, icon: 'bi-ui-radios'},
+        {name: 'input-color', title: $localize `Color Picker`, icon: 'bi-palette'},
+        {name: 'input-date', title: $localize `Calendar`, icon: 'bi-calendar3'},
+        {name: 'input-file', title: $localize `Upload File`, icon: 'bi-upload'},
+        {name: 'image', title: $localize `Image`, icon: 'bi-image'},
+        {name: 'audio', title: $localize `Audio`, icon: 'bi-music-note-beamed'},
+        {name: 'video', title: $localize `Video`, icon: 'bi-play-btn'},
+        {name: 'input-chart-line', title: $localize `Line Chart`, icon: 'bi-graph-up'},
+        {name: 'input-pagination', title: $localize `Pagination`, icon: 'bi-segmented-nav'},
+        {name: 'status', title: $localize `Status Indicator`, icon: 'bi-check-circle'},
+        {name: 'progress', title: $localize `Progress Indicator`, icon: 'bi-percent'},
+        {name: 'table', title: $localize `Table`, icon: 'bi-table'},
+        {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
+        {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
+        // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
+    ];
+
     constructor(
         @Inject(LOCALE_ID) public locale: string,
         titleService: Title,
@@ -84,8 +115,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         });
         this.subs.add(dragulaService.drag('BLOCK_ELEMENTS')
             .subscribe(({ el }) => {
-                this.deleteEmptyElements();
-                this.cdr.markForCheck();
+                // this.deleteEmptyElements();
+                // this.newElementBlockIndex = -1;
+                // this.newElementType = null;
+                // this.cdr.markForCheck();
             })
         );
         this.subs.add(dragulaService.drop('BLOCK_ELEMENTS')
@@ -102,6 +135,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 console.log(item);
 
                 // this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
+                this.cdr.detectChanges();
             })
         );
     }
@@ -207,14 +241,34 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
-    blockAddElement(block: AppBlock): void {
+    onNewElementTypeSelected(type: AppBlockElementType, blockIndex: number): void {
+        const block = this.data.blocks[blockIndex];
+        const newElement = block.elements.find((elem) => {
+            return elem.type === null;
+        });
+        if (!newElement) {
+            return;
+        }
+        newElement.type = type;
+        this.onElementUpdate(newElement, type);
+
+        this.newElementBlockIndex = -1;
+        this.newElementType = null;
+        this.cdr.markForCheck();
+    }
+
+    blockAddElement(blockIndex: number): void {
+        const block = this.data.blocks[blockIndex];
         const emptyElements = this.findEmptyElements(block);
-        // console.log('blockAddElement', block, 'emptyElements:', emptyElements.length, emptyElements);
         if (emptyElements.length > 0) {
             return;
         }
         block.tabIndex = this.tabIndex;
+
         block.elements.push({type: null});
+        this.newElementBlockIndex = blockIndex;
+        this.newElementType = null;
+
         this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
