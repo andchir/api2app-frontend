@@ -91,7 +91,7 @@
     </ng-container>
 
     <ng-container *ngSwitchCase="'button'">
-        <div [ngClass]="{'rounded-full ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center"
                     [ngClass]="{
                         'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color == 'Green',
@@ -657,7 +657,7 @@
 </ng-container>
 
 <ng-template #templateButtonOptions>
-    <div class="absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
+    <div class="app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Options"
                 i18n-title

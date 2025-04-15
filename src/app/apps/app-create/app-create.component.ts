@@ -107,35 +107,37 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         dragulaService.createGroup('BLOCK_ELEMENTS', {
             removeOnSpill: false,
             moves: (el, container, handle) => {
-                return handle.className.includes('drag-handle');
+                return handle.className.includes('app-element-drag-handle');
             },
-            accepts: (el, target, source, sibling) => {
-                return target === source;
-            }
+            // accepts: (el, target, source, sibling) => {
+            //     return target === source;
+            // }
         });
         this.subs.add(dragulaService.drag('BLOCK_ELEMENTS')
-            .subscribe(({ el }) => {
-                // this.deleteEmptyElements();
-                // this.newElementBlockIndex = -1;
-                // this.newElementType = null;
-                // this.cdr.markForCheck();
+            .subscribe((e) => {
+                e.el.classList.add('shadow-lg', 'bg-white');
             })
         );
         this.subs.add(dragulaService.drop('BLOCK_ELEMENTS')
             .subscribe((e) => {
-                this.message = 'Элемент перемещен.';
+                this.message = $localize `The element has been moved`;
                 this.messageType = 'success';
+                e.el.classList.remove('shadow-lg', 'bg-white');
             })
         );
-        this.subs.add(dragulaService.dropModel('BLOCK_ELEMENTS')
-            .subscribe(({ el, target, source, sourceModel, targetModel, item }) => {
-                console.log('dropModel:');
-                console.log(sourceModel);
-                console.log(targetModel);
-                console.log(item);
-
-                // this.updateElementOrder(this.selectedElementIndex, this.selectedElement.orderIndex, this.selectedBlockIndex);
-                this.cdr.detectChanges();
+        this.subs.add(dragulaService.over('BLOCK_ELEMENTS')
+            .subscribe((e) => {
+                Array.from(e.container.querySelectorAll('.app-element-buttons')).forEach((el) => {
+                    el.classList.add('hidden');
+                });
+            })
+        );
+        this.subs.add(dragulaService.out('BLOCK_ELEMENTS')
+            .subscribe((e) => {
+                e.el.classList.remove('shadow-lg', 'bg-white');
+                Array.from(e.container.querySelectorAll('.app-element-buttons')).forEach((el) => {
+                    el.classList.remove('hidden');
+                });
             })
         );
     }

@@ -65,6 +65,8 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
     filter: alpha(opacity=80);
     pointer-events: none;
+    padding: 2px;
+    height: auto !important;
 }
 /* high-performance display:none; helper */
 .gu-hide {
@@ -79,7 +81,7 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
 }
 /* added to the source element while its mirror is dragged */
 .gu-transit {
-    opacity: 0.2;
+    /* opacity: 0.2;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-    filter: alpha(opacity=20);
+    filter: alpha(opacity=20); */
 }
