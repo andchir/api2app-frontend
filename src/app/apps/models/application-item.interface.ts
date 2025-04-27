@@ -21,5 +21,6 @@ export interface ApplicationItem {
     maintenance?: boolean;
     vkAppId?: string;
     vkSecretKey?: string;
+    tgBotToken?: string;
     advertising?: boolean;
 }
