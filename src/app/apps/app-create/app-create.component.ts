@@ -722,5 +722,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     override ngOnDestroy(): void {
         super.ngOnDestroy();
         this.subs.unsubscribe();
+        this.dragulaService.destroy('BLOCK_ELEMENTS');
     }
 }
