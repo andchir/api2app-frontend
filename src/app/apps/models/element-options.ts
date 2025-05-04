@@ -63,6 +63,12 @@ export class ElementOptions {
                 break;
             case 'text':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
                     name: 'icon',
                     label: $localize `Icon`,
                     type: 'input-text',
@@ -1295,6 +1301,7 @@ export class ElementOptions {
             case 'text':
                 Object.assign(output, {
                     name: 'text',
+                    label: '',
                     value: $localize `Example Text`,
                     prefixText: '',
                     suffixText: '',
