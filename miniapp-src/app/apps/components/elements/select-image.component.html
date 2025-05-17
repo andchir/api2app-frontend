@@ -1,5 +1,5 @@
 <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" *ngIf="data.length > 0">
-    <div class="relative h-[140px] lg:h-[200px] border border-gray-300 rounded-lg bg-cover bg-center cursor-pointer ring-offset-2 ring-2 ring-white opacity-80 hover:opacity-100"
+    <div class="relative h-[140px] lg:h-[200px] border border-gray-300 rounded-lg bg-cover bg-top cursor-pointer ring-offset-2 ring-2 ring-white opacity-80 hover:opacity-100"
          [ngClass]="{'!ring-green-400 !opacity-100': value === item.name}"
          [style.background-image]="'url(' + item.imageUrl + ')'"
          *ngFor="let item of data"

@@ -53,6 +53,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() progressUpdate: EventEmitter<void> = new EventEmitter<void>();
     @Output() progressCompleted: EventEmitter<void> = new EventEmitter<void>();
+    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     processStartedAt: Date;
     status: string = '';
@@ -114,6 +115,9 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         this.queueNumber = queueNumber;
         if ([this.statusCompleted, this.statusError].includes(this.status)) {
             this.onCompleted();
+            if (this.status == this.statusError && this.data?.result_data?.message) {
+                this.onError(this.data.result_data.message);
+            }
             return;
         }
         this.writeValue(0);
@@ -130,6 +134,10 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         window.localStorage.removeItem(`${taskUuid}-progress-start`);
         this.processStartedAt = null;
         this.progressCompleted.emit();
+    }
+
+    onError(message: string): void {
+        this.message.emit([message, 'error']);
     }
 
     private pollingStatus(): void {

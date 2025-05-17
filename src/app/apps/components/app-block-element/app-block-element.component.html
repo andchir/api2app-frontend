@@ -574,6 +574,7 @@
                     [dataJson]="options.valueObj | json"
                     (progressUpdate)="onProgressUpdate(options)"
                     (progressCompleted)="onProgressCompleted(options)"
+                    (message)="onMessage($event)"
                     [(ngModel)]="options.value"></app-progress>
             </div>
         </div>

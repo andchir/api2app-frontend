@@ -1196,7 +1196,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onMessage(msg: string[]) {
-        this.message = msg[0];
+        this.message = this.localizeServerMessages(msg[0]);
         this.messageType = msg[1] as 'error'|'success';
     }
 
