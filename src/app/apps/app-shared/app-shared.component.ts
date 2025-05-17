@@ -879,6 +879,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (errorMessage === 'Video not found.') {
             errorMessage = $localize `Video not found.`;
         }
+        if (errorMessage === 'No human face found in the photo.') {
+            errorMessage = $localize `No human face found in the photo.`;
+        }
         return errorMessage;
     }
 
