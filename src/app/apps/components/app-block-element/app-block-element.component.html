@@ -77,8 +77,8 @@
         <div>
             <h4 class="text-2xl font-bold min-h-[20px]"
                 [id]="options?.name"
-                [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-                <span class="flex gap-2 items-center">
+                [ngClass]="{'w-full text-center': options?.alignCenter, 'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+                <span class="flex gap-2 items-center" [ngClass]="{'justify-center': options?.alignCenter}">
                     <span *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></span>
                     <span>
                         <span *ngIf="options?.value">{{ options?.value }}</span>
@@ -276,21 +276,21 @@
     <ng-container *ngSwitchCase="'input-radio'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="w-full max-w-[600px] mx-auto">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-lg font-medium text-gray-900">
                     {{ options?.label }}
                 </label>
                 <fieldset>
                     <legend class="sr-only">Countries</legend>
-                    <div class="flex items-center mb-4" *ngFor="let option of options.choices; index as optIndex">
+                    <div class="flex items-center mb-4 cursor-pointer" *ngFor="let option of options.choices; index as optIndex">
                         <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
                                type="radio"
                                name="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                               class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300"
+                               class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 cursor-pointer"
                                [value]="option"
                                [(ngModel)]="options.value"
                                (ngModelChange)="onFieldValueChanged()">
                         <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}-{{ optIndex }}"
-                               class="block ms-2  text-sm font-medium text-gray-900">
+                               class="block ms-2 text-gray-900 cursor-pointer">
                             {{ option }}
                         </label>
                     </div>

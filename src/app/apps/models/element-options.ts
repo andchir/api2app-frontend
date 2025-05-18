@@ -55,6 +55,13 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'alignCenter',
+                    label: $localize `Align to center`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.alignCenter || false
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -1301,7 +1308,8 @@ export class ElementOptions {
                     name: 'header',
                     value: $localize `Header Example Text`,
                     icon: '',
-                    hiddenByField: ''
+                    hiddenByField: '',
+                    alignCenter: false
                 });
                 break;
             case 'text':
