@@ -32,12 +32,14 @@ export class SelectImageComponent implements ControlValueAccessor, OnInit, OnCha
     @Input() name: string;
     @Input() showTitle: boolean = true;
     @Input() parentIndex: number;
+    @Input() maxHeight: number;
     @Input() index: number;
     @Input() data: any[] = [];
     @Input() dataJson: string|null = null;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     private _value: string;
+    maxHeightValue = 'none'
 
     get value(): string {
         return this._value;
@@ -58,11 +60,15 @@ export class SelectImageComponent implements ControlValueAccessor, OnInit, OnCha
         if (this.dataJson) {
             this.data = JSON.parse(this.dataJson);
         }
+        this.maxHeightValue = this.maxHeight ? this.maxHeight + 'px' : 'none';
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['dataJson'] && changes['dataJson'].currentValue) {
             this.data = JSON.parse(changes['dataJson'].currentValue);
+        }
+        if (changes['maxHeight']) {
+            this.maxHeightValue = this.maxHeight ? this.maxHeight + 'px' : 'none';
         }
     }
 

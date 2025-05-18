@@ -1223,6 +1223,12 @@ export class ElementOptions {
                         : []
                 });
                 output.push({
+                    name: 'maxHeight',
+                    label: $localize `Maximum container height`,
+                    type: 'input-number',
+                    value: options?.maxHeight || 0
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -1607,6 +1613,7 @@ export class ElementOptions {
                     name: 'select-image',
                     label: $localize `Select image`,
                     data: [],
+                    maxHeight: 0,
                     hiddenByField: '',
                     showTitle: true,
                     required: false,
