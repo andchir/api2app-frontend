@@ -148,7 +148,7 @@ export class VkBridgeService {
     }
 
     showAds(options: VkAppOptions): void {
-        if (!options.adAvailableInterstitial || options.userSubscriptions.includes('remove_ad')) {
+        if (!options.adAvailableInterstitial || this.hasAnyString(options.userSubscriptions, ['remove_ad', 'premium_20', 'premium_30'])) {
             return;
         }
         const now = Date.now();
@@ -212,6 +212,10 @@ export class VkBridgeService {
             .catch((e) => {
                 console.log('Error!', e);
             });
+    }
+
+    hasAnyString(mainArray: string[], searchStrings: string[]): boolean {
+        return searchStrings.some(str => mainArray.includes(str));
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {
