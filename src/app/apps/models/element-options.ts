@@ -728,6 +728,12 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
             case 'input-date':
                 output.push({
@@ -1471,6 +1477,7 @@ export class ElementOptions {
                     name: 'radio',
                     label: $localize `Example Radio Buttons`,
                     value: 'Value1',
+                    required: true,
                     choices: ['Value1', 'Value2', 'Value3']
                 });
                 break;
