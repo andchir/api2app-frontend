@@ -231,7 +231,7 @@
                                             </div>
                                         </ng-container>
                                         <div class="app-element-drag-handle absolute flex-col justify-center left-[1px] top-1/2 -translate-y-1/2 w-6 h-6 bg-gray-300 text-gray-600 rounded text-center cursor-move hidden group-hover/element:flex"
-                                            *ngIf="element.type">
+                                            *ngIf="element.type && !previewMode">
                                             <i class="bi bi-arrows-move no-pointer-events"></i>
                                         </div>
                                     </div>
@@ -354,12 +354,22 @@
                     </div>
                 </div>
 
-                <div class="flex justify-center mb-3">
+                <div class="flex mb-3 w-[210px] mx-auto">
                     <div>
                         <label class="inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer" [(ngModel)]="data.advertising">
                             <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                             <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Enable advertising</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex mb-3 w-[210px] mx-auto">
+                    <div>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer" [(ngModel)]="data.adultsOnly">
+                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Only for 18+</span>
                         </label>
                     </div>
                 </div>

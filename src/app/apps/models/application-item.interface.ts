@@ -23,4 +23,5 @@ export interface ApplicationItem {
     vkSecretKey?: string;
     tgBotToken?: string;
     advertising?: boolean;
+    adultsOnly?: boolean;
 }
