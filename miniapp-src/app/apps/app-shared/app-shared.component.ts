@@ -43,6 +43,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     submitted = false;
     previewMode = true;
     maintenanceModalActive = false;
+    adultsOnlyRestricted = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
@@ -1218,9 +1219,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
+                if (this.data.adultsOnly) {
+                    this.adultVkRestrict();
+                }
             })
             .catch(() => {
                 this.vkAppOptions = {};
+            });
+    }
+
+    adultVkRestrict(): void {
+        this.vkBridgeService.getUserInfo()
+            .then((data) => {
+                if (!data.bdate) {
+                    this.adultsOnlyRestricted = true;
+                    return;
+                }
+                const age = this.vkBridgeService.calculateFullAge(data.bdate);
+                if (age < 18) {
+                    this.adultsOnlyRestricted = true;
+                }
             });
     }
 
