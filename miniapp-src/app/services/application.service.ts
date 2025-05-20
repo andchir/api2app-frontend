@@ -241,6 +241,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             shared: false,
             hidden: false,
             advertising: true,
+            adultsOnly: false,
             gridColumns: 3,
             language: '',
             image: '',
