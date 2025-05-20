@@ -1213,7 +1213,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
-                if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions || !this.vkAppOptions.userSubscriptions.includes('remove_ad'))) {
+                if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions
+                    || !this.vkBridgeService.hasAnyString(this.vkAppOptions.userSubscriptions, ['remove_ad', 'premium_20', 'premium_30']))) {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
