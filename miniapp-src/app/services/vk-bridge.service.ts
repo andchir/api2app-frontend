@@ -174,6 +174,16 @@ export class VkBridgeService {
             });
     }
 
+    async getUserInfo(): Promise<any> {
+        return vkBridge.send('VKWebAppGetUserInfo')
+            .then((data: any) => {
+                return data;
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
     async saveFile(appName: string, locale: string, options: VkAppOptions, fileDataString: string): Promise<string> {
         locale = locale || window.document.documentElement.lang;
         return this.getUserToken(options)

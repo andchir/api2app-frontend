@@ -174,6 +174,16 @@ export class VkBridgeService {
             });
     }
 
+    async getUserInfo(): Promise<any> {
+        return vkBridge.send('VKWebAppGetUserInfo')
+            .then((data: any) => {
+                return data;
+            })
+            .catch((error: any) => {
+                console.log(error);
+            });
+    }
+
     async saveFile(appName: string, locale: string, options: VkAppOptions, fileDataString: string): Promise<string> {
         locale = locale || window.document.documentElement.lang;
         return this.getUserToken(options)
@@ -216,6 +226,21 @@ export class VkBridgeService {
 
     hasAnyString(mainArray: string[], searchStrings: string[]): boolean {
         return searchStrings.some(str => mainArray.includes(str));
+    }
+
+    calculateFullAge(dateStr: string): number {
+        const parts = dateStr.split('.');
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        const birthDate = new Date(year, month, day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {
