@@ -146,3 +146,11 @@
     </div>
 </div>
 <div class="bg-gray-300 fixed inset-0 z-40" *ngIf="adultsOnlyRestricted"></div>
+
+<div class="fixed right-5 bottom-20 opacity-100 transition-all" [ngClass]="{'pointer-events-none !opacity-0': !windowScrolled}">
+    <button type="button"
+            class="p-1 rounded-md border border-blue-500 text-blue-500 hover:border-blue-700 hover:text-blue-700 text-4xl cursor-pointer"
+            (click)="scrollToTop()">
+        <i class="bi bi-arrow-up-short"></i>
+    </button>
+</div>

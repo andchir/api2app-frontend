@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
+    Component,
+    HostListener,
+    Input,
+    OnDestroy,
+    OnInit
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
@@ -38,14 +46,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     errors: AppErrors = {};
     message: string = '';
     messageType: 'error'|'success' = 'error';
-    isLoggedIn = false;
-    isShared = true;
-    progressUpdating = false;
-    loading = false;
-    submitted = false;
-    previewMode = true;
-    maintenanceModalActive = false;
-    adultsOnlyRestricted = false;
+    isLoggedIn: boolean = false;
+    isShared: boolean = true;
+    progressUpdating: boolean = false;
+    loading: boolean = false;
+    submitted: boolean = false;
+    previewMode: boolean = true;
+    maintenanceModalActive: boolean = false;
+    adultsOnlyRestricted: boolean = false;
+    windowScrolled: boolean = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
@@ -90,6 +99,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.itemUuid) {
             this.getData();
         }
+    }
+
+    @HostListener('window:scroll', [])
+    onWindowScroll() {
+        const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+        this.windowScrolled = currentScroll > 100;
+    }
+
+    scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     getData(): void {
