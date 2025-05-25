@@ -142,11 +142,16 @@
                     <label for="field-user-age">Пожалуйста, укажите Вашу дату рождения</label>
                 </div>
                 <div class="mb-5 flex gap-3 justify-center">
-                    <div class="px-6 py-1 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
-                        <input type="date" id="field-user-age" class="block border-0 w-full bg-transparent"
-                               [min]="userDobMin"
-                               [max]="userDobMax"
-                               [(ngModel)]="userDob">
+                    <div class="flex gap-2 items-center px-6 py-1 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
+                        <div class="text-2xl text-blue-500">
+                            <i class="bi bi-calendar2-date"></i>
+                        </div>
+                        <div>
+                            <input type="date" id="field-user-age" class="block border-0 w-full bg-transparent"
+                                   [min]="userDobMin"
+                                   [max]="userDobMax"
+                                   [(ngModel)]="userDob">
+                        </div>
                     </div>
                 </div>
                 <div>
