@@ -4,7 +4,6 @@ import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 
 import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 import { BASE_URL } from '../../environments/environment';
-import {AppBlockElement} from "../apps/models/app-block.interface";
 
 declare const vkBridge: any;
 
@@ -93,9 +92,9 @@ export class VkBridgeService {
             return Promise.resolve(options.userToken);
         }
         return vkBridge.send('VKWebAppGetAuthToken', {
-            app_id: options.appId,
-            scope: 'docs'
-        })
+                app_id: options.appId,
+                scope: 'docs'
+            })
             .then((data: any) => {
                 options.userToken = data?.access_token;
                 return data?.access_token;
@@ -226,6 +225,21 @@ export class VkBridgeService {
 
     hasAnyString(mainArray: string[], searchStrings: string[]): boolean {
         return searchStrings.some(str => mainArray.includes(str));
+    }
+
+    calculateFullAgeIso(dateStr: string): number {
+        const parts = dateStr.split('-');
+        const day = parseInt(parts[2], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[0], 10);
+        const birthDate = new Date(year, month, day);
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
     }
 
     calculateFullAge(dateStr: string): number {

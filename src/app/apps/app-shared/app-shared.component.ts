@@ -53,11 +53,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     submitted: boolean = false;
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
+    adultsOnlyModalActive: boolean = false;
     adultsOnlyRestricted: boolean = false;
     windowScrolled: boolean = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
+
+    userDob: string;
+    userDobMin: string;
+    userDobMax: string;
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -95,7 +100,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.needBackButton === null) {
             this.needBackButton = !!this.routerEventsService.getPreviousUrl();
         }
-
         if (this.itemUuid) {
             this.getData();
         }
@@ -146,6 +150,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
             this.vkAppInit();
+        }
+        if (this.data.adultsOnly && (!window.localStorage.getItem('ageVerified') || window.localStorage.getItem('ageRestricted'))) {
+            this.adultAppRestrict();
         }
         if (!this.data) {
             return;
@@ -1248,14 +1255,40 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
-                if (this.data.adultsOnly) {
-                    this.adultVkRestrict();
-                }
+                // if (this.data.adultsOnly) {
+                //     this.adultVkRestrict();
+                // }
             })
             .catch(() => {
                 this.vkAppOptions = {};
             });
     }
+
+    submitUserDate(): void {
+        if (!this.userDob) {
+            return;
+        }
+        this.adultsOnlyModalActive = false;
+        const age = this.vkBridgeService.calculateFullAgeIso(this.userDob);
+        window.localStorage.setItem('ageVerified', '1');
+        if (age < 18) {
+            this.adultsOnlyRestricted = true;
+            window.localStorage.setItem('ageRestricted', '1');
+        } else {
+            window.localStorage.removeItem('ageRestricted');
+        }
+    }
+
+    adultAppRestrict(): void {
+        const now = new Date();
+        const hundredYearsAgo = new Date(now);
+        hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
+        this.userDob = null;
+        this.userDobMin = hundredYearsAgo.toISOString().substring(0, 10);
+        this.userDobMax = now.toISOString().substring(0, 10);
+        this.adultsOnlyModalActive = true;
+    }
+
 
     adultVkRestrict(): void {
         this.vkBridgeService.getUserInfo()
