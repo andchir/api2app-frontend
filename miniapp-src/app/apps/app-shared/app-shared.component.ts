@@ -51,11 +51,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     submitted: boolean = false;
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
+    adultsOnlyModalActive: boolean = false;
     adultsOnlyRestricted: boolean = false;
     windowScrolled: boolean = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
+
+    userDob: string;
+    userDobDay: string;
+    userDobMonth: string;
+    userDobYear: string;
+    userDobMin: string;
+    userDobMax: string;
+    calendarDays: string[] = [];
+    calendarMonths: string[] = [];
+    calendarYears: string[] = [];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -80,7 +91,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected apiService: ApiService,
         protected modalService: ModalService,
         protected vkBridgeService: VkBridgeService
-    ) {}
+    ) {
+        this.calendarDays = this.createPaddedNumberArray(1, 31);
+        this.calendarMonths = this.createPaddedNumberArray(1, 12);
+        this.calendarYears = this.createPaddedNumberArray(1910, 2010);
+    }
 
     ngOnInit(): void {
         this.itemUuid = 'data';
@@ -136,6 +151,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
             this.vkAppInit();
+        }
+        if (this.data.adultsOnly && (!window.localStorage.getItem('appUserDob') || window.localStorage.getItem('ageRestricted'))) {
+            this.adultAppRestrict();
         }
         if (!this.data) {
             return;
@@ -1238,14 +1256,41 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
-                if (this.data.adultsOnly) {
-                    this.adultVkRestrict();
-                }
+                // if (this.data.adultsOnly) {
+                //     this.adultVkRestrict();
+                // }
             })
             .catch(() => {
                 this.vkAppOptions = {};
             });
     }
+
+    submitUserDate(): void {
+        if (!this.userDobDay || !this.userDobMonth || !this.userDobYear) {
+            return;
+        }
+        this.adultsOnlyModalActive = false;
+        const dateString = `${this.userDobYear}-${this.userDobMonth}-${this.userDobDay}`;
+        const age = this.vkBridgeService.calculateFullAgeIso(dateString);
+        window.localStorage.setItem('appUserDob', dateString);
+        if (age < 18) {
+            this.adultsOnlyRestricted = true;
+            window.localStorage.setItem('ageRestricted', '1');
+        } else {
+            window.localStorage.removeItem('ageRestricted');
+        }
+    }
+
+    adultAppRestrict(): void {
+        const now = new Date();
+        const hundredYearsAgo = new Date(now);
+        hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
+        this.userDob = null;
+        this.userDobMin = hundredYearsAgo.toISOString().substring(0, 10);
+        this.userDobMax = now.toISOString().substring(0, 10);
+        this.adultsOnlyModalActive = true;
+    }
+
 
     adultVkRestrict(): void {
         this.vkBridgeService.getUserInfo()
@@ -1294,6 +1339,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 }
             });
+    }
+
+    createPaddedNumberArray(start: number, end: number): string[] {
+        const result = [];
+        for (let i = start; i <= end; i++) {
+            const paddedNumber = i < 10 ? `0${i}` : `${i}`;
+            result.push(paddedNumber);
+        }
+        return result;
     }
 
     ngOnDestroy(): void {
