@@ -20,7 +20,7 @@
     </div>
 </header>
 
-<main [ngClass]="{'overflow-hidden w-full h-full absolute left-0 top-0': adultsOnlyRestricted}">
+<main [ngClass]="{'overflow-hidden w-full h-full absolute left-0 top-0': adultsOnlyRestricted || adultsOnlyModalActive}">
     <div [className]="noBorder ? '' : 'mx-auto max-w-7xl p-3 sm:p-6 lg:p-8'">
 
         <div class="w-full mb-4" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
@@ -121,7 +121,7 @@
 <div class="bg-gray-900/50 fixed inset-0 z-40" *ngIf="maintenanceModalActive"></div>
 
 <div tabindex="-1"
-     class="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+     class="flex overflow-y-auto overflow-x-hidden fixed top-0 left-0 z-50 justify-center items-center w-full h-full"
      *ngIf="adultsOnlyModalActive">
     <div class="relative p-4 w-full max-w-md max-h-full">
         <div class="relative bg-white rounded-lg shadow">
