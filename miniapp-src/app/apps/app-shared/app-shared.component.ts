@@ -1291,6 +1291,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.adultsOnlyModalActive = true;
     }
 
+    selectUserDob(number: string, target = 'day', drobdownEl: HTMLElement = null): void {
+        if (target == 'day') {
+            this.userDobDay = number;
+        } else if (target === 'month') {
+            this.userDobMonth = number;
+        } else if (target === 'year') {
+            this.userDobYear = number;
+        }
+        if (drobdownEl) {
+            drobdownEl.style.display = 'none';
+            setTimeout(() => {
+                drobdownEl.style.display = 'block';
+            }, 500);
+        }
+    }
 
     adultVkRestrict(): void {
         this.vkBridgeService.getUserInfo()
