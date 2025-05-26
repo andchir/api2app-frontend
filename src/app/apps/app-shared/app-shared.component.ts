@@ -1309,10 +1309,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.userDobYear = number;
         }
         if (drobdownEl) {
-            drobdownEl.style.display = 'none';
-            setTimeout(() => {
-                drobdownEl.style.display = 'block';
-            }, 500);
+            drobdownEl.classList.add('hidden');
         }
     }
 

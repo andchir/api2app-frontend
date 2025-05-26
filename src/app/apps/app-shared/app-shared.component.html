@@ -147,18 +147,20 @@
                             <i class="bi bi-calendar3"></i>
                         </div>
                         <div>
-                            <div class="dropdown inline-block">
-                                <button class="h-[35px] w-[60px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                            <div class="group inline-block"
+                                 (mouseenter)="dropdownCalendarDayEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarDayEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
                                     <span class="block w-[25px]">{{ userDobDay }}</span>
                                     <span>
                                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
                                     </span>
                                 </button>
-                                <div class="dropdown-menu fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarDayEl>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarDayEl>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                         <li class="" *ngFor="let number of calendarDays; index as index">
                                             <button type="button"
-                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white text-center py-2 whitespace-no-wrap rounded"
                                                     (click)="selectUserDob(number, 'day', dropdownCalendarDayEl)">
                                                 {{ number }}
                                             </button>
@@ -168,18 +170,20 @@
                             </div>
                         </div>
                         <div>
-                            <div class="dropdown inline-block">
-                                <button class="h-[35px] w-[60px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                            <div class="group inline-block"
+                                 (mouseenter)="dropdownCalendarMonthEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarMonthEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
                                     <span class="block w-[25px]">{{ userDobMonth }}</span>
                                     <span>
                                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
                                     </span>
                                 </button>
-                                <div class="dropdown-menu fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarMonthEl>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarMonthEl>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2">
                                         <li class="" *ngFor="let number of calendarMonths; index as index">
                                             <button type="button"
-                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white text-center py-2 whitespace-no-wrap rounded"
                                                     (click)="selectUserDob(number, 'month', dropdownCalendarMonthEl)">
                                                 {{ number }}
                                             </button>
@@ -189,18 +193,20 @@
                             </div>
                         </div>
                         <div>
-                            <div class="dropdown inline-block">
-                                <button class="h-[35px] w-[80px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                            <div class="group inline-block"
+                                 (mouseenter)="dropdownCalendarYearEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarYearEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[80px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
                                     <span class="block w-[25px] mr-1 uppercase">{{ userDobYear }}</span>
                                     <span>
                                         <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
                                     </span>
                                 </button>
-                                <div class="dropdown-menu fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarYearEl>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarYearEl>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                         <li class="" *ngFor="let number of calendarYears; index as index">
                                             <button type="button"
-                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white text-center py-2 whitespace-no-wrap rounded"
                                                     (click)="selectUserDob(number, 'year', dropdownCalendarYearEl)">
                                                 {{ number }}
                                             </button>
