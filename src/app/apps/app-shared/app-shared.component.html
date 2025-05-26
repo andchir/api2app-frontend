@@ -147,7 +147,7 @@
                             <i class="bi bi-calendar3"></i>
                         </div>
                         <div>
-                            <div class="group inline-block"
+                            <div class="group inline-block text-left"
                                  (mouseenter)="dropdownCalendarDayEl.classList.remove('hidden')"
                                  (mouseleave)="dropdownCalendarDayEl.classList.add('hidden')">
                                 <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
@@ -157,6 +157,7 @@
                                     </span>
                                 </button>
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarDayEl>
+                                    <div class="text-sm mb-2">День:</div>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                         <li class="" *ngFor="let number of calendarDays; index as index">
                                             <button type="button"
@@ -170,7 +171,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="group inline-block"
+                            <div class="group inline-block text-left"
                                  (mouseenter)="dropdownCalendarMonthEl.classList.remove('hidden')"
                                  (mouseleave)="dropdownCalendarMonthEl.classList.add('hidden')">
                                 <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
@@ -180,6 +181,7 @@
                                     </span>
                                 </button>
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarMonthEl>
+                                    <div class="text-sm mb-2">Месяц:</div>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2">
                                         <li class="" *ngFor="let number of calendarMonths; index as index">
                                             <button type="button"
@@ -193,7 +195,7 @@
                             </div>
                         </div>
                         <div>
-                            <div class="group inline-block"
+                            <div class="group inline-block text-left"
                                  (mouseenter)="dropdownCalendarYearEl.classList.remove('hidden')"
                                  (mouseleave)="dropdownCalendarYearEl.classList.add('hidden')">
                                 <button class="h-[35px] w-[80px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
@@ -203,6 +205,7 @@
                                     </span>
                                 </button>
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md" #dropdownCalendarYearEl>
+                                    <div class="text-sm mb-2">Год:</div>
                                     <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                         <li class="" *ngFor="let number of calendarYears; index as index">
                                             <button type="button"
