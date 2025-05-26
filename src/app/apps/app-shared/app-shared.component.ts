@@ -61,8 +61,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStartPending: string[] = [];
 
     userDob: string;
+    userDobDay: string;
+    userDobMonth: string;
+    userDobYear: string;
     userDobMin: string;
     userDobMax: string;
+    calendarDays: string[] = [];
+    calendarMonths: string[] = [];
+    calendarYears: string[] = [];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -89,7 +95,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected modalService: ModalService,
         protected routerEventsService: RouterEventsService,
         protected vkBridgeService: VkBridgeService
-    ) {}
+    ) {
+        this.calendarDays = this.createPaddedNumberArray(1, 31);
+        this.calendarMonths = this.createPaddedNumberArray(1, 12);
+        this.calendarYears = this.createPaddedNumberArray(1910, 2010);
+    }
 
     ngOnInit(): void {
         this.data.blocks = [];
@@ -151,7 +161,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
-        if (this.data.adultsOnly && (!window.localStorage.getItem('ageVerified') || window.localStorage.getItem('ageRestricted'))) {
+        if (this.data.adultsOnly && (!window.localStorage.getItem('appUserDob') || window.localStorage.getItem('ageRestricted'))) {
             this.adultAppRestrict();
         }
         if (!this.data) {
@@ -1265,12 +1275,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     submitUserDate(): void {
-        if (!this.userDob) {
+        if (!this.userDobDay || !this.userDobMonth || !this.userDobYear) {
             return;
         }
         this.adultsOnlyModalActive = false;
-        const age = this.vkBridgeService.calculateFullAgeIso(this.userDob);
-        window.localStorage.setItem('ageVerified', '1');
+        const dateString = `${this.userDobYear}-${this.userDobMonth}-${this.userDobDay}`;
+        const age = this.vkBridgeService.calculateFullAgeIso(dateString);
+        window.localStorage.setItem('appUserDob', dateString);
         if (age < 18) {
             this.adultsOnlyRestricted = true;
             window.localStorage.setItem('ageRestricted', '1');
@@ -1337,6 +1348,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 }
             });
+    }
+
+    createPaddedNumberArray(start: number, end: number): string[] {
+        const result = [];
+        for (let i = start; i <= end; i++) {
+            const paddedNumber = i < 10 ? `0${i}` : `${i}`;
+            result.push(paddedNumber);
+        }
+        return result;
     }
 
     navigateBack(event?: MouseEvent) {

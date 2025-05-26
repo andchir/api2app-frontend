@@ -139,18 +139,75 @@
             <div class="p-4 md:p-5 text-center">
                 <h3 class="mb-5 text-lg font-normal text-gray-500">Подтверждение возраста</h3>
                 <div class="mb-5">
-                    <label for="field-user-age">Пожалуйста, укажите Вашу дату рождения</label>
+                    <label>Пожалуйста, укажите Вашу дату рождения</label>
                 </div>
                 <div class="mb-5 flex gap-3 justify-center">
-                    <div class="flex gap-2 items-center px-6 py-1 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
+                    <div class="flex gap-2 items-center px-3 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
                         <div class="text-2xl text-blue-500">
                             <i class="bi bi-calendar3"></i>
                         </div>
                         <div>
-                            <input type="date" id="field-user-age" class="block border-0 w-full bg-transparent"
-                                   [min]="userDobMin"
-                                   [max]="userDobMax"
-                                   [(ngModel)]="userDob">
+                            <div class="dropdown inline-block">
+                                <button class="h-[35px] w-[60px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px]">{{ userDobDay }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu absolute left-1/2 -translate-x-1/2 z-10 w-[400px] bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                    <ul class="text-gray-700 grid grid-cols-5 gap-2">
+                                        <li class="" *ngFor="let number of calendarDays; index as index">
+                                            <button type="button"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    (click)="userDobDay = number">
+                                                {{ number }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dropdown inline-block">
+                                <button class="h-[35px] w-[60px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px]">{{ userDobMonth }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu absolute left-1/2 -translate-x-1/2 z-10 w-[400px] bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                    <ul class="text-gray-700 grid grid-cols-5 gap-2">
+                                        <li class="" *ngFor="let number of calendarMonths; index as index">
+                                            <button type="button"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    (click)="userDobMonth = number">
+                                                {{ number }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="dropdown inline-block">
+                                <button class="h-[35px] w-[80px] bg-gray-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px] mr-1 uppercase">{{ userDobYear }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="dropdown-menu absolute left-1/2 -translate-x-1/2 z-10 w-[400px] bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                    <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[300px] overflow-y-auto">
+                                        <li class="" *ngFor="let number of calendarYears; index as index">
+                                            <button type="button"
+                                                    class="block w-full bg-blue-200 hover:bg-blue-500 hover:text-white py-2 px-4 whitespace-no-wrap rounded"
+                                                    (click)="userDobYear = number">
+                                                {{ number }}
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -158,7 +215,7 @@
                     <button type="button"
                             class="bg-white text-blue-600 hover:text-blue-500 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg px-5 py-2.5 cursor-pointer"
                             (click)="submitUserDate()">
-                        <span class="mr-1">Продолжить</span>
+                        <span class="mr-1" i18n>Continue</span>
                         <i class="bi bi-arrow-right"></i>
                     </button>
                 </div>
