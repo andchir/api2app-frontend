@@ -258,6 +258,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
                 });
+                output.push({
+                    name: 'isClearForm',
+                    label: $localize `Reset all values`,
+                    type: 'input-switch',
+                    enabled: options?.isClearForm || false
+                });
                 break;
             case 'input-text':
                 // output.push({
@@ -733,6 +739,12 @@ export class ElementOptions {
                     label: $localize `Required`,
                     type: 'input-switch',
                     enabled: options?.required || false
+                });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
                 });
                 break;
             case 'input-date':
@@ -1348,7 +1360,8 @@ export class ElementOptions {
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    isClearForm: false
                 });
                 break;
             case 'input-text':
@@ -1478,6 +1491,7 @@ export class ElementOptions {
                     label: $localize `Example Radio Buttons`,
                     value: 'Value1',
                     required: true,
+                    storeValue: false,
                     choices: ['Value1', 'Value2', 'Value3']
                 });
                 break;

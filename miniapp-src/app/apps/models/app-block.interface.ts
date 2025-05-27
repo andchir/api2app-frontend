@@ -72,6 +72,7 @@ export interface AppBlockElement {
     note?: string;
     storeValue?: boolean;
     useCropper?: boolean;
+    isClearForm?: boolean;
 }
 
 export interface AppBlockOptions {

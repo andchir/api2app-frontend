@@ -55,6 +55,13 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'alignCenter',
+                    label: $localize `Align to center`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.alignCenter || false
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -62,6 +69,12 @@ export class ElementOptions {
                 });
                 break;
             case 'text':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
                 output.push({
                     name: 'icon',
                     label: $localize `Icon`,
@@ -244,6 +257,12 @@ export class ElementOptions {
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
                     enabled: options?.hiddenByDefault || false
+                });
+                output.push({
+                    name: 'isClearForm',
+                    label: $localize `Reset all values`,
+                    type: 'input-switch',
+                    enabled: options?.isClearForm || false
                 });
                 break;
             case 'input-text':
@@ -714,6 +733,18 @@ export class ElementOptions {
                     label: $localize `Default Value`,
                     type: 'input-text',
                     value: options?.value
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
                 });
                 break;
             case 'input-date':
@@ -1217,6 +1248,12 @@ export class ElementOptions {
                         : []
                 });
                 output.push({
+                    name: 'maxHeight',
+                    label: $localize `Maximum container height`,
+                    type: 'input-number',
+                    value: options?.maxHeight || 0
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -1289,12 +1326,14 @@ export class ElementOptions {
                     name: 'header',
                     value: $localize `Header Example Text`,
                     icon: '',
-                    hiddenByField: ''
+                    hiddenByField: '',
+                    alignCenter: false
                 });
                 break;
             case 'text':
                 Object.assign(output, {
                     name: 'text',
+                    label: '',
                     value: $localize `Example Text`,
                     prefixText: '',
                     suffixText: '',
@@ -1321,7 +1360,8 @@ export class ElementOptions {
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    isClearForm: false
                 });
                 break;
             case 'input-text':
@@ -1450,6 +1490,8 @@ export class ElementOptions {
                     name: 'radio',
                     label: $localize `Example Radio Buttons`,
                     value: 'Value1',
+                    required: true,
+                    storeValue: false,
                     choices: ['Value1', 'Value2', 'Value3']
                 });
                 break;
@@ -1600,6 +1642,7 @@ export class ElementOptions {
                     name: 'select-image',
                     label: $localize `Select image`,
                     data: [],
+                    maxHeight: 0,
                     hiddenByField: '',
                     showTitle: true,
                     required: false,

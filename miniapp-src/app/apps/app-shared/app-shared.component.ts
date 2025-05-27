@@ -528,13 +528,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    clearElementsValues(block: AppBlock, updateHiddenValue = true): void {
+    clearAllValues(): void {
+        this.data.blocks.forEach((block) => {
+            this.clearElementsValues(block, true, true);
+        });
+        this.cdr.detectChanges();
+    }
+
+    clearElementsValues(block: AppBlock, updateHiddenValue = true, clearStored = false): void {
         block.elements.forEach((element) => {
-            this.clearElementValue(element, updateHiddenValue);
+            this.clearElementValue(element, updateHiddenValue, clearStored);
         });
     }
 
-    clearElementValue(element: AppBlockElement, updateHiddenValue = true): void {
+    clearElementValue(element: AppBlockElement, updateHiddenValue = true, clearStored = false): void {
         const inputApiUuid = element.options?.inputApiUuid;
         const outputApiUuid = element.options?.outputApiUuid;
         if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
@@ -546,13 +553,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (['input-file'].includes(element.type)) {
             element.value = [];
         } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
-            && !element['storeValue']) {
+            && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
             element.valueObj = null;
         }
         if (updateHiddenValue) {
             this.elementHiddenStateUpdate(element);
+        }
+        if (clearStored) {
+            ApplicationService.localStoreValueClear(element);
         }
     }
 
@@ -1016,7 +1026,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (element.type === 'button') {
-            if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
+            if (element.isClearForm) {
+                this.clearAllValues();
+            } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
                 if (this.data.maintenance) {
                     this.maintenanceModalToggle();
                 } else {
