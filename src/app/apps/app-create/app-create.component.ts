@@ -3,9 +3,7 @@ import {
     ChangeDetectorRef,
     Component, Inject, LOCALE_ID,
     OnDestroy,
-    OnInit,
-    ViewChild,
-    ViewContainerRef
+    OnInit
 } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -38,8 +36,6 @@ const APP_NAME = environment.appName;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationCreateComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
-
-    @ViewChild('dynamic', { read: ViewContainerRef }) private viewRef: ViewContainerRef;
 
     override isShared = false;
     override previewMode = false;
