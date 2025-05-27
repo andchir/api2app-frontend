@@ -5,13 +5,14 @@ import {
     HostListener,
     Input,
     OnDestroy,
-    OnInit
+    OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import { take } from 'rxjs/operators';
 import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
@@ -25,6 +26,7 @@ import { ModalService } from '../../services/modal.service';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
+import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -36,6 +38,8 @@ declare const vkBridge: any;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
+
+    @ViewChild('dynamic', { read: ViewContainerRef }) protected viewRef: ViewContainerRef;
 
     @Input('itemUuid') itemUuid: string;
     @Input('showHeader') showHeader: boolean = true;
@@ -529,10 +533,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     clearAllValues(): void {
-        this.data.blocks.forEach((block) => {
-            this.clearElementsValues(block, true, true);
-        });
-        this.cdr.detectChanges();
+        const initialData = {
+            message: $localize `Are you sure you want to reset all values?`,
+            isActive: true
+        };
+        this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'confirmed') {
+                        this.data.blocks.forEach((block) => {
+                            this.clearElementsValues(block, true, true);
+                        });
+                        this.message = $localize `All values have been cleared successfully.`;
+                        this.messageType = 'success';
+                    }
+                }
+            });
     }
 
     clearElementsValues(block: AppBlock, updateHiddenValue = true, clearStored = false): void {
