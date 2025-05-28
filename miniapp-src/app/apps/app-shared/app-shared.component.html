@@ -128,9 +128,9 @@
     <div class="relative p-4 w-full max-w-md max-h-full">
         <div class="relative bg-white rounded-lg shadow">
             <div class="p-4 md:p-5 text-center">
-                <h3 class="mb-5 text-lg font-normal text-gray-500">Подтверждение возраста</h3>
+                <h3 class="mb-5 text-lg font-normal text-gray-500" i18n>Age verification</h3>
                 <div class="mb-5">
-                    <label>Пожалуйста, укажите Вашу дату рождения</label>
+                    <label i18n>Please enter your date of birth</label>
                 </div>
                 <div class="mb-5 flex gap-3 justify-center">
                     <div class="flex gap-2 items-center px-3 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
@@ -150,7 +150,7 @@
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
                                      #dropdownCalendarDayEl>
                                     <div class="bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
-                                        <div class="text-sm mb-2">День:</div>
+                                        <div class="text-sm mb-2"><span i18n>Day</span>:</div>
                                         <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                             <li class="" *ngFor="let number of calendarDays; index as index">
                                                 <button type="button"
@@ -177,7 +177,7 @@
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
                                      #dropdownCalendarMonthEl>
                                     <div class="bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
-                                        <div class="text-sm mb-2">Месяц:</div>
+                                        <div class="text-sm mb-2"><span i18n>Month</span>:</div>
                                         <ul class="text-gray-700 grid grid-cols-5 gap-2">
                                             <li class="" *ngFor="let number of calendarMonths; index as index">
                                                 <button type="button"
@@ -204,7 +204,7 @@
                                 <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
                                      #dropdownCalendarYearEl>
                                     <div class="sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
-                                        <div class="text-sm mb-2">Год:</div>
+                                        <div class="text-sm mb-2"><span i18n>Year</span>:</div>
                                         <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
                                             <li class="" *ngFor="let number of calendarYears; index as index">
                                                 <button type="button"
@@ -239,11 +239,11 @@
      *ngIf="adultsOnlyRestricted">
     <div class="relative p-4 w-full max-w-md max-h-full">
         <div class="relative bg-white rounded-lg shadow">
-            <div class="p-4 md:p-5 text-center">
+            <div class="px-4 py-6 text-center">
                 <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
                 </svg>
-                <h3 class="mb-5 text-lg font-normal text-gray-500" i18n>Sorry, you are under 18 years old. The application is for adults only.</h3>
+                <h3 class="text-lg font-normal text-gray-500" i18n>Sorry, you are under 18 years old. The application is for adults only.</h3>
             </div>
         </div>
     </div>
