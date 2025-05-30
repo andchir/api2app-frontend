@@ -1400,6 +1400,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return result;
     }
 
+    startPayment(): void {
+        console.log('startPayment');
+    }
+
     navigateBack(event?: MouseEvent) {
         if (event) {
             event.preventDefault();

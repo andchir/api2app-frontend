@@ -19,6 +19,19 @@
             </div>
         </div>
     </div>
+    <div class="absolute right-4 top-4" *ngIf="data.paymentEnabled && !isVkApp">
+        <div class="flex gap-3 items-center">
+            <div class="text-sm">0 руб.</div>
+            <div>
+                <button type="button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-4 py-2 text-center"
+                        (click)="startPayment()">
+                    <span></span>
+                    <span>Пополнить счёт</span>
+                </button>
+            </div>
+        </div>
+    </div>
 </header>
 
 <main [ngClass]="{'overflow-hidden w-full h-full absolute left-0 top-0': adultsOnlyRestricted || adultsOnlyModalActive}">

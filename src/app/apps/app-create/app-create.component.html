@@ -314,7 +314,7 @@
 <div tabindex="-1"
      class="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
      *ngIf="isSettingsActive">
-    <div class="relative p-4 w-full max-w-md max-h-full">
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
         <div class="relative bg-white rounded-lg shadow">
             <button type="button"
                     class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -327,30 +327,59 @@
             <div class="p-4 md:p-5">
                 <h3 class="mb-5 text-lg font-normal text-gray-500 text-center" i18n>Settings</h3>
 
-                <div class="mb-4">
+                <div class="grid gap-3 md:grid-cols-2 mb-4">
                     <div>
-                        <label for="settings-vk-app-id" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Application ID</label>
-                        <input type="text" id="settings-vk-app-id"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                               [(ngModel)]="data.vkAppId">
-                    </div>
-                </div>
+                        <div class="mb-4">
+                            <div>
+                                <label for="settings-vk-app-id" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Application ID</label>
+                                <input type="text" id="settings-vk-app-id"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       [(ngModel)]="data.vkAppId">
+                            </div>
+                        </div>
 
-                <div class="mb-4">
-                    <div>
-                        <label for="settings-vk-secret-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Secret key</label>
-                        <input type="text" id="settings-vk-secret-key"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                               [(ngModel)]="data.vkSecretKey">
-                    </div>
-                </div>
+                        <div class="mb-4">
+                            <div>
+                                <label for="settings-vk-secret-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Secret key</label>
+                                <input type="text" id="settings-vk-secret-key"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       [(ngModel)]="data.vkSecretKey">
+                            </div>
+                        </div>
 
-                <div class="mb-4">
+                        <div>
+                            <div>
+                                <label for="settings-tg-token" class="block mb-2 text-sm font-medium text-gray-900" i18n>Telegram Bot Token</label>
+                                <input type="text" id="settings-tg-token"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       [(ngModel)]="data.tgBotToken">
+                            </div>
+                        </div>
+                    </div>
                     <div>
-                        <label for="settings-tg-token" class="block mb-2 text-sm font-medium text-gray-900" i18n>Telegram Bot Token</label>
-                        <input type="text" id="settings-tg-token"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                               [(ngModel)]="data.tgBotToken">
+                        <label class="block mb-2 text-sm font-medium text-gray-900">ЮКасса</label>
+                        <div class="border border-gray-200 p-3 rounded-lg">
+                            <div class="mb-4">
+                                <div>
+                                    <label for="settings-yookassa-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
+                                        ID магазина
+                                    </label>
+                                    <input type="text" id="settings-yookassa-shop-id"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           [(ngModel)]="data.ykShopId">
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label for="settings-yookassa-secret-key" class="block mb-2 text-sm font-medium text-gray-900">
+                                        Секретный ключ
+                                    </label>
+                                    <input type="text" id="settings-yookassa-secret-key"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           [(ngModel)]="data.ykSecretKey">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
