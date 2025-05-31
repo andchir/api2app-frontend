@@ -94,6 +94,15 @@ export class AuthService {
         return this.httpClient.put(url, formData, this.httpOptionsFormData);
     }
 
+    updatePaymentsSettings(username: string, ykShopId: string, ykSecretKey: string): Observable<any> {
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('userprofile.ykShopId', ykShopId);
+        formData.append('userprofile.ykSecretKey', ykSecretKey);
+        const url = `${this.requestUrl}users/me/`
+        return this.httpClient.put(url, formData, this.httpOptionsFormData);
+    }
+
     activateUser(uid: string, token: string): Observable<any> {
         return this.httpClient.post(`${this.requestUrl}users/activation/`, {
             uid, token

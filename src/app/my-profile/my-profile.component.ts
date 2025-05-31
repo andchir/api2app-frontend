@@ -24,7 +24,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     messageType = 'error';
     errors: {[key: string]: string} = {};
     user: User;
-    action: 'update_profile'|'change_password' = 'update_profile';
+    action: 'update_profile'|'change_password'|'payments' = 'update_profile';
     destroyed$: Subject<void> = new Subject();
     imageFile: File;
 
@@ -48,6 +48,11 @@ export class MyProfileComponent implements OnInit, OnDestroy {
         confirmPassword: ['', [
             matchValidator('password')
         ]]
+    });
+
+    formPayments = this.formBuilder.group({
+        ykShopId: ['', [Validators.required]],
+        ykSecretKey: ['', [Validators.required]]
     });
 
     constructor(
@@ -77,10 +82,12 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     }
 
     onSubmit(): void {
+        this.message = '';
         if (!this.form.valid || this.submitted) {
+            this.messageType = 'error';
+            this.message = $localize `Please correct errors in filling out the form.`;
             return;
         }
-        this.message = '';
         this.submitted = true;
         this.errors = {};
 
@@ -111,10 +118,12 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     }
 
     onSubmitPassword(): void {
+        this.message = '';
         if (!this.formChangePassword.valid || this.submitted) {
+            this.messageType = 'error';
+            this.message = $localize `Please correct errors in filling out the form.`;
             return;
         }
-        this.message = '';
         this.submitted = true;
         this.errors = {};
 
@@ -140,7 +149,43 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             });
     }
 
-    updateAction(action: 'update_profile'|'change_password', event?: MouseEvent): void {
+    onSubmitPayments(): void {
+        this.message = '';
+        if (!this.formPayments.valid || this.submitted) {
+            this.messageType = 'error';
+            this.message = $localize `Please correct errors in filling out the form.`;
+            return;
+        }
+        this.submitted = true;
+        this.errors = {};
+
+        const {ykShopId, ykSecretKey} = this.formPayments.value;
+
+        this.authService.updatePaymentsSettings(this.user.username, ykShopId, ykSecretKey)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.messageType = 'success';
+                    this.message = $localize `Your profile has been successfully changed.`;
+                    // this.tokenStorageService.saveUser(Object.assign({}, this.user, res));
+                    // this.authService.userSubject.next(res);
+                    this.submitted = false;
+                },
+                error: (err) => {
+                    this.messageType = 'error';
+                    this.message = err?.error?.detail;
+                    if (err?.error?.email) {
+                        this.errors['email'] = err?.error.email.join(' ');
+                    }
+                    if (err?.error?.userprofile) {
+                        this.errors['userprofile'] = err?.error.userprofile.join(' ');
+                    }
+                    this.submitted = false;
+                }
+            });
+    }
+
+    updateAction(action: 'update_profile'|'change_password'|'payments', event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
         }

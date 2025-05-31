@@ -327,7 +327,7 @@
             <div class="p-4 md:p-5">
                 <h3 class="mb-5 text-lg font-normal text-gray-500 text-center" i18n>Settings</h3>
 
-                <div class="grid gap-3 md:grid-cols-2 mb-4">
+                <div class="grid gap-4 md:grid-cols-2 mb-4">
                     <div>
                         <div class="mb-4">
                             <div>
@@ -356,50 +356,38 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="block mb-2 text-sm font-medium text-gray-900">ЮКасса</label>
-                        <div class="border border-gray-200 p-3 rounded-lg">
-                            <div class="mb-4">
-                                <div>
-                                    <label for="settings-yookassa-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
-                                        ID магазина
-                                    </label>
-                                    <input type="text" id="settings-yookassa-shop-id"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           [(ngModel)]="data.ykShopId">
-                                </div>
-                            </div>
+                    <div class="md:pt-7">
+
+                        <div class="flex mb-4">
                             <div>
-                                <div>
-                                    <label for="settings-yookassa-secret-key" class="block mb-2 text-sm font-medium text-gray-900">
-                                        Секретный ключ
-                                    </label>
-                                    <input type="text" id="settings-yookassa-secret-key"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                           [(ngModel)]="data.ykSecretKey">
-                                </div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.paymentEnabled">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Payments</span>
+                                </label>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="flex mb-3 w-[210px] mx-auto">
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" [(ngModel)]="data.advertising">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Enable advertising</span>
-                        </label>
-                    </div>
-                </div>
+                        <div class="flex mb-4">
+                            <div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.advertising">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Enable advertising</span>
+                                </label>
+                            </div>
+                        </div>
 
-                <div class="flex mb-3 w-[210px] mx-auto">
-                    <div>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" [(ngModel)]="data.adultsOnly">
-                            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Only for 18+</span>
-                        </label>
+                        <div class="flex">
+                            <div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.adultsOnly">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Only for 18+</span>
+                                </label>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
