@@ -1,0 +1,127 @@
+<div class="bg-gray-300 fixed inset-0 z-40"></div>
+
+<div tabindex="-1"
+     class="flex overflow-y-auto overflow-x-hidden fixed top-0 left-0 z-50 justify-center items-center w-full h-full"
+     *ngIf="adultsOnlyModalActive">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="p-4 md:p-5 text-center">
+                <h3 class="mb-5 text-lg font-normal text-gray-500" i18n>Age verification</h3>
+                <div class="mb-5">
+                    <label i18n>Please enter your date of birth</label>
+                </div>
+                <div class="mb-5 flex gap-3 justify-center">
+                    <div class="flex gap-2 items-center px-3 py-2 bg-gray-100 rounded border border-slate-300 shadow-md text-center">
+                        <div class="text-2xl text-blue-500">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <div>
+                            <div class="group inline-block text-left"
+                                 (mouseenter)="dropdownCalendarDayEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarDayEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px]">{{ userDobDay }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
+                                     #dropdownCalendarDayEl>
+                                    <div class="bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                        <div class="text-sm mb-2"><span i18n>Day</span>:</div>
+                                        <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
+                                            <li class="" *ngFor="let number of calendarDays; index as index">
+                                                <button type="button"
+                                                        class="block w-full bg-blue-200 hover:bg-blue-400 hover:text-white text-center py-2 whitespace-no-wrap rounded-md transition-colors"
+                                                        (click)="selectUserDob(number, 'day', dropdownCalendarDayEl)">
+                                                    {{ number }}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="group inline-block text-left"
+                                 (mouseenter)="dropdownCalendarMonthEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarMonthEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[60px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px]">{{ userDobMonth }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
+                                     #dropdownCalendarMonthEl>
+                                    <div class="bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                        <div class="text-sm mb-2"><span i18n>Month</span>:</div>
+                                        <ul class="text-gray-700 grid grid-cols-5 gap-2">
+                                            <li class="" *ngFor="let number of calendarMonths; index as index">
+                                                <button type="button"
+                                                        class="block w-full bg-blue-200 hover:bg-blue-400 hover:text-white text-center py-2 whitespace-no-wrap rounded-md transition-colors"
+                                                        (click)="selectUserDob(number, 'month', dropdownCalendarMonthEl)">
+                                                    {{ number }}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="group inline-block text-left"
+                                 (mouseenter)="dropdownCalendarYearEl.classList.remove('hidden')"
+                                 (mouseleave)="dropdownCalendarYearEl.classList.add('hidden')">
+                                <button class="h-[35px] w-[80px] bg-gray-300 group-hover:bg-blue-300 text-gray-700 font-semibold p-2 rounded inline-flex gap-2 items-center justify-between">
+                                    <span class="block w-[25px] mr-1 uppercase">{{ userDobYear }}</span>
+                                    <span>
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/> </svg>
+                                    </span>
+                                </button>
+                                <div class="hidden fixed sm:!absolute bottom-2 left-1/2 sm:!bottom-auto -translate-x-1/2 z-10 w-[400px] max-w-full sm:!max-w-none pt-2"
+                                     #dropdownCalendarYearEl>
+                                    <div class="sm:!max-w-none bg-gray-100 p-3 rounded border border-slate-300 shadow-md">
+                                        <div class="text-sm mb-2"><span i18n>Year</span>:</div>
+                                        <ul class="text-gray-700 grid grid-cols-5 gap-2 max-h-[200px] overflow-y-auto">
+                                            <li class="" *ngFor="let number of calendarYears; index as index">
+                                                <button type="button"
+                                                        class="block w-full bg-blue-200 hover:bg-blue-400 hover:text-white text-center py-2 whitespace-no-wrap rounded-md transition-colors"
+                                                        (click)="selectUserDob(number, 'year', dropdownCalendarYearEl)">
+                                                    {{ number }}
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button"
+                            class="bg-white text-blue-600 hover:text-blue-500 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg px-5 py-2.5 cursor-pointer"
+                            (click)="submitUserDate()">
+                        <span class="mr-1" i18n>Continue</span>
+                        <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div tabindex="-1"
+     class="flex overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+     *ngIf="adultsOnlyRestricted">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="px-4 py-6 text-center">
+                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                </svg>
+                <h3 class="text-lg font-normal text-gray-500" i18n>Sorry, you are under 18 years old. The application is for adults only.</h3>
+            </div>
+        </div>
+    </div>
+</div>
