@@ -97,8 +97,8 @@ export class AuthService {
     updatePaymentsSettings(username: string, ykShopId: string, ykSecretKey: string): Observable<any> {
         const formData = new FormData();
         formData.append('username', username);
-        formData.append('userprofile.ykShopId', ykShopId);
-        formData.append('userprofile.ykSecretKey', ykSecretKey);
+        formData.append('userprofile.ykShopId', ykShopId.trim());
+        formData.append('userprofile.ykSecretKey', ykSecretKey.trim());
         const url = `${this.requestUrl}users/me/`
         return this.httpClient.put(url, formData, this.httpOptionsFormData);
     }

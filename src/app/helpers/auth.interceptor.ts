@@ -78,6 +78,9 @@ export class AuthInterceptor implements HttpInterceptor {
                 catchError((err) => {
                     this.isRefreshing = false;
                     this.tokenStorageService.signOut();
+                    setTimeout(() => {
+                        this.authService.navigateAuthPage('login');
+                    }, 1);
                     return throwError(err);
                 })
             );

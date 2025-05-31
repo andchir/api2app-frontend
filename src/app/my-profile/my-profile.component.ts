@@ -187,10 +187,10 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    if (res.userprofile.ykShopId) {
+                    if (res.userprofile?.ykShopId) {
                         this.formPayments.controls['ykShopId'].setValue(res.userprofile.ykShopId);
                     }
-                    if (res.userprofile.ykSecretKey) {
+                    if (res.userprofile?.ykSecretKey) {
                         this.formPayments.controls['ykSecretKey'].setValue(res.userprofile.ykSecretKey);
                     }
                 },
