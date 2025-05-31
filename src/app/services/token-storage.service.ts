@@ -42,6 +42,10 @@ export class TokenStorageService {
     }
 
     saveUser(user: any): void {
+        if (user.userprofile) {
+            delete user.userprofile.ykShopId;
+            delete user.userprofile.ykSecretKey;
+        }
         window.localStorage.removeItem(USER_KEY);
         window.localStorage.setItem(USER_KEY, JSON.stringify(user));
     }
