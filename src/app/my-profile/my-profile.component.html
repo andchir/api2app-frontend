@@ -172,12 +172,17 @@
 
                             <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Payments</h4>
 
-                            <div class="mb-3">ЮKassa</div>
+                            <div class="mb-3">
+                                <a class="text-teal-600 underline transition hover:text-teal-600/75"
+                                   href="https://yookassa.ru/my/shop-settings"
+                                   target="_blank">ЮKassa</a>
+                            </div>
 
                             <div class="mb-4">
                                 <div>
                                     <label for="settings-yookassa-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
-                                        ID магазина
+                                        <span i18n>Store ID</span>
+                                        (shopId)
                                     </label>
                                     <input type="text" id="settings-yookassa-shop-id"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
@@ -186,9 +191,7 @@
                             </div>
                             <div class="mb-4">
                                 <div>
-                                    <label for="settings-yookassa-secret-key" class="block mb-2 text-sm font-medium text-gray-900">
-                                        Секретный ключ
-                                    </label>
+                                    <label for="settings-yookassa-secret-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>Secret key</label>
                                     <input type="text" id="settings-yookassa-secret-key"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                            formControlName="ykSecretKey" required>

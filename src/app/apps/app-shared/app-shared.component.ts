@@ -63,6 +63,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
+    pricePerUse: number = 0;
 
     userDob: string;
     userDobDay: string;
@@ -219,11 +220,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             Promise.all(promises).then(() => {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
+                    const paidApiItem = items.find((item) => {
+                        return item.pricePerUse;
+                    });
+                    if (paidApiItem) {
+                        this.pricePerUse = paidApiItem.pricePerUse;
+                    }
                     Object.keys(this.appElements.output).forEach((uuid) => {
                         if (!this.appElements.buttons[uuid]) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });
+                    this.cdr.detectChanges();
                 });
             });
         }

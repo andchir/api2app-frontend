@@ -1,6 +1,6 @@
 <header class="bg-white shadow" *ngIf="showHeader">
-    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-        <div class="flex gap-3 items-center"
+    <div class="sm:flex justify-between items-center mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+        <div class="flex justify-center gap-3 items-center"
             [ngClass]="{'pl-8 xl:pl-0': needBackButton}">
             <div *ngIf="data?.image">
                 <div class="w-16 h-16 sm:w-24 sm:h-24 border rounded-full border-gray-400 overflow-hidden">
@@ -18,17 +18,28 @@
                 </h1>
             </div>
         </div>
-    </div>
-    <div class="absolute right-4 top-4" *ngIf="data.paymentEnabled && !isVkApp">
-        <div class="flex gap-3 items-center">
-            <div class="text-sm">0 руб.</div>
-            <div>
-                <button type="button"
-                        class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-4 py-2 text-center"
-                        (click)="startPayment()">
-                    <span></span>
-                    <span>Пополнить счёт</span>
-                </button>
+        <div class="text-center pt-3 sm:pt-0" *ngIf="data.paymentEnabled && !isVkApp">
+            <div class="inline-flex gap-3 items-center">
+                <div class="text-sm">
+                    <span>0</span>&nbsp;
+                    <span>руб.</span>
+                </div>
+                <div>
+                    <button type="button"
+                            class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-4 py-2 text-center"
+                            (click)="startPayment()">
+                        <span *ngIf="isLoggedIn" i18n>Top up balance</span>
+                        <span *ngIf="!isLoggedIn" i18n>Log in</span>
+                    </button>
+                </div>
+            </div>
+            <div class="pt-2 text-sm">
+                <div class="inline-block py-1 px-3 border border-blue-200 rounded">
+                    <span class="text-blue-500"><span i18n>Price per use</span>:</span>
+                    <span class="text-blue-700">
+                        {{ pricePerUse }} руб.
+                    </span>
+                </div>
             </div>
         </div>
     </div>

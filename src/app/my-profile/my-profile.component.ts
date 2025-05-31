@@ -51,8 +51,8 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     });
 
     formPayments = this.formBuilder.group({
-        ykShopId: ['', [Validators.required]],
-        ykSecretKey: ['', [Validators.required]]
+        ykShopId: ['', []],
+        ykSecretKey: ['', []]
     });
 
     constructor(
@@ -76,6 +76,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             if (this.user.last_name) {
                 this.form.controls['lastName'].setValue(this.user.last_name);
             }
+            this.getCurrentUser();
         } else {
             this.router.navigate(['/auth', 'login']);
         }
@@ -151,9 +152,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     onSubmitPayments(): void {
         this.message = '';
-        if (!this.formPayments.valid || this.submitted) {
-            this.messageType = 'error';
-            this.message = $localize `Please correct errors in filling out the form.`;
+        if (this.submitted) {
             return;
         }
         this.submitted = true;
@@ -167,8 +166,6 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     this.messageType = 'success';
                     this.message = $localize `Your profile has been successfully changed.`;
-                    // this.tokenStorageService.saveUser(Object.assign({}, this.user, res));
-                    // this.authService.userSubject.next(res);
                     this.submitted = false;
                 },
                 error: (err) => {
@@ -181,6 +178,25 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                         this.errors['userprofile'] = err?.error.userprofile.join(' ');
                     }
                     this.submitted = false;
+                }
+            });
+    }
+
+    getCurrentUser(): void {
+        this.userService.getCurrentUser()
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    if (res.userprofile.ykShopId) {
+                        this.formPayments.controls['ykShopId'].setValue(res.userprofile.ykShopId);
+                    }
+                    if (res.userprofile.ykSecretKey) {
+                        this.formPayments.controls['ykSecretKey'].setValue(res.userprofile.ykSecretKey);
+                    }
+                },
+                error: (err) => {
+                    this.messageType = 'error';
+                    this.message = err?.error?.detail;
                 }
             });
     }
