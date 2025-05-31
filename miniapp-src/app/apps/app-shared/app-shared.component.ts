@@ -27,6 +27,7 @@ import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
+import { AppAdultValidationComponent } from "../components/app-adult-validation/app-adult-validation.component";
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -55,22 +56,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     submitted: boolean = false;
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
-    adultsOnlyModalActive: boolean = false;
-    adultsOnlyRestricted: boolean = false;
     windowScrolled: boolean = false;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
-
-    userDob: string;
-    userDobDay: string;
-    userDobMonth: string;
-    userDobYear: string;
-    userDobMin: string;
-    userDobMax: string;
-    calendarDays: string[] = [];
-    calendarMonths: string[] = [];
-    calendarYears: string[] = [];
+    pricePerUse: number = 0;
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -95,11 +85,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected apiService: ApiService,
         protected modalService: ModalService,
         protected vkBridgeService: VkBridgeService
-    ) {
-        this.calendarDays = this.createPaddedNumberArray(1, 31);
-        this.calendarMonths = this.createPaddedNumberArray(1, 12);
-        this.calendarYears = this.createPaddedNumberArray(1910, 2010);
-    }
+    ) {}
 
     ngOnInit(): void {
         this.itemUuid = 'data';
@@ -156,7 +142,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
-        if (this.data.adultsOnly && (!window.localStorage.getItem('appUserDob') || window.localStorage.getItem('ageRestricted'))) {
+        if (this.data.adultsOnly && (
+                !window.localStorage.getItem(`${this.data.uuid}-appUserDob`)
+                || window.localStorage.getItem(`${this.data.uuid}-ageRestricted`)
+            )
+        ) {
             this.adultAppRestrict();
         }
         if (!this.data) {
@@ -210,11 +200,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             Promise.all(promises).then(() => {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
+                    const paidApiItem = items.find((item) => {
+                        return item.pricePerUse;
+                    });
+                    if (paidApiItem) {
+                        this.pricePerUse = paidApiItem.pricePerUse;
+                    }
                     Object.keys(this.appElements.output).forEach((uuid) => {
                         if (!this.appElements.buttons[uuid]) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });
+                    this.cdr.detectChanges();
                 });
             });
         }
@@ -1285,64 +1282,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
-                // if (this.data.adultsOnly) {
-                //     this.adultVkRestrict();
-                // }
             })
             .catch(() => {
                 this.vkAppOptions = {};
             });
     }
 
-    submitUserDate(): void {
-        if (!this.userDobDay || !this.userDobMonth || !this.userDobYear) {
-            return;
-        }
-        this.adultsOnlyModalActive = false;
-        const dateString = `${this.userDobYear}-${this.userDobMonth}-${this.userDobDay}`;
-        const age = this.vkBridgeService.calculateFullAgeIso(dateString);
-        window.localStorage.setItem('appUserDob', dateString);
-        if (age < 18) {
-            this.adultsOnlyRestricted = true;
-            window.localStorage.setItem('ageRestricted', '1');
-        } else {
-            window.localStorage.removeItem('ageRestricted');
-        }
-    }
-
     adultAppRestrict(): void {
-        const now = new Date();
-        const hundredYearsAgo = new Date(now);
-        hundredYearsAgo.setFullYear(hundredYearsAgo.getFullYear() - 100);
-        this.userDob = null;
-        this.userDobMin = hundredYearsAgo.toISOString().substring(0, 10);
-        this.userDobMax = now.toISOString().substring(0, 10);
-        this.adultsOnlyModalActive = true;
-    }
-
-    selectUserDob(number: string, target = 'day', drobdownEl: HTMLElement = null): void {
-        if (target == 'day') {
-            this.userDobDay = number;
-        } else if (target === 'month') {
-            this.userDobMonth = number;
-        } else if (target === 'year') {
-            this.userDobYear = number;
-        }
-        if (drobdownEl) {
-            drobdownEl.classList.add('hidden');
-        }
-    }
-
-    adultVkRestrict(): void {
-        this.vkBridgeService.getUserInfo()
-            .then((data) => {
-                if (!data.bdate) {
-                    this.adultsOnlyRestricted = true;
-                    return;
-                }
-                const age = this.vkBridgeService.calculateFullAge(data.bdate);
-                if (age < 18) {
-                    this.adultsOnlyRestricted = true;
+        const initialData = {
+            appUuid: this.data.uuid
+        };
+        this.modalService.showDynamicComponent(this.viewRef, AppAdultValidationComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    // console.log(reason);
                 }
             });
     }
@@ -1382,13 +1336,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    createPaddedNumberArray(start: number, end: number): string[] {
-        const result = [];
-        for (let i = start; i <= end; i++) {
-            const paddedNumber = i < 10 ? `0${i}` : `${i}`;
-            result.push(paddedNumber);
-        }
-        return result;
+    startPayment(): void {
+        console.log('startPayment');
     }
 
     ngOnDestroy(): void {
