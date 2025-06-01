@@ -1,6 +1,11 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgClass, NgIf } from '@angular/common';
+
+import { Subject, takeUntil } from 'rxjs';
+
+import { UserBalanceService } from '../../services/user-balance.service';
+import { SharedModule } from '../../shared.module';
 
 @Component({
     selector: 'app-top-up-balance',
@@ -10,16 +15,28 @@ import { NgClass, NgIf } from '@angular/common';
         ReactiveFormsModule,
         FormsModule,
         NgIf,
-        NgClass
+        NgClass,
+        SharedModule
     ],
-    styleUrls: []
+    styleUrls: [],
+    providers: [UserBalanceService]
 })
 export class ModalTopUpBalanceComponent implements OnInit {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
 
     submitted: boolean = false;
+    appUuid: string = '';
     value: number = 100;
+    messageType: string = 'success';
+    message: string = '';
+    destroyed$: Subject<void> = new Subject();
+
+    constructor(
+        private cdr: ChangeDetectorRef,
+        private userBalanceService: UserBalanceService
+    ) {
+    }
 
     ngOnInit(): void {
 
@@ -33,9 +50,26 @@ export class ModalTopUpBalanceComponent implements OnInit {
     }
 
     confirm(): void {
+        this.message = '';
         this.submitted = true;
-        console.log(this.value);
-
-
+        this.userBalanceService.topUpBalance(this.appUuid, this.value)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    if (res.confirmation_url) {
+                        window.location.href = res.confirmation_url;
+                    } else {
+                        this.submitted = false;
+                    }
+                },
+                error: (err) => {
+                    this.submitted = false;
+                    if (err.message) {
+                        this.messageType = 'error';
+                        this.message = err.message;
+                    }
+                    this.cdr.markForCheck();
+                }
+            });
     }
 }

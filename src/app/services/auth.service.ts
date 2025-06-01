@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BASE_URL } from '../../environments/environment';
 import { User } from '../apis/models/user.interface';
+import { DataService } from './data.service.abstract';
 
 const NEXT_ROUTE_KEY = 'next-route';
 
@@ -39,7 +40,7 @@ export class AuthService {
     }
 
     getHeaders(): HttpHeaders {
-        const csrfToken = window['csrf_token'] || this.getCookie('csrftoken') || '';
+        const csrfToken = window['csrf_token'] || DataService.getCookie('csrftoken') || '';
         return new HttpHeaders({
             'Content-Type': 'application/json',
             'X-CSRFToken': csrfToken,
@@ -48,7 +49,7 @@ export class AuthService {
     }
 
     addCsrfToken(headers: HttpHeaders): HttpHeaders {
-        const csrfToken = window['csrf_token'] || this.getCookie('csrftoken') || '';
+        const csrfToken = window['csrf_token'] || DataService.getCookie('csrftoken') || '';
         headers = headers.append('X-CSRFToken', csrfToken);
         return headers.append('Mode', 'same-origin');
     }
@@ -160,21 +161,5 @@ export class AuthService {
     navigateBack(): void {
         const nextRoute = this.getNextRoute();
         this.router.navigate(nextRoute ? [nextRoute] : ['/']);
-    }
-
-    getCookie(name: string|null): string {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
     }
 }

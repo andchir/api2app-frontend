@@ -27,6 +27,9 @@
                            min="0" step="1"
                            [(ngModel)]="value">
                 </div>
+                <div class="mb-4" *ngIf="message">
+                    <app-alert [(message)]="message" [type]="messageType" [closable]="false" position="static"></app-alert>
+                </div>
                 <div class="text-center"
                      [ngClass]="{'opacity-70 pointer-events-none': submitted}">
                     <button type="button"
