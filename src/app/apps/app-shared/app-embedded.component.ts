@@ -21,6 +21,7 @@ import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
 import { ApplicationSharedComponent } from './app-shared.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
+import { AuthService } from '../../services/auth.service';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -45,9 +46,11 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
         apiService: ApiService,
         modalService: ModalService,
         routerEventsService: RouterEventsService,
-        vkBridgeService: VkBridgeService
+        vkBridgeService: VkBridgeService,
+        authService: AuthService
     ) {
-        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService, vkBridgeService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService,
+            routerEventsService, vkBridgeService, authService);
     }
 
     override getData(): void {

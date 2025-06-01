@@ -29,7 +29,9 @@ import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { AppAdultValidationComponent } from "../components/app-adult-validation/app-adult-validation.component";
+import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
+import { AuthService } from '../../services/auth.service';
+import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -88,7 +90,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected apiService: ApiService,
         protected modalService: ModalService,
         protected routerEventsService: RouterEventsService,
-        protected vkBridgeService: VkBridgeService
+        protected vkBridgeService: VkBridgeService,
+        protected authService: AuthService
     ) {}
 
     ngOnInit(): void {
@@ -1346,7 +1349,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     startPayment(): void {
-        console.log('startPayment');
+        if (!this.isLoggedIn) {
+            this.authService.navigateAuthPage('login');
+            return;
+        }
+        const initialData = {
+            appUuid: this.data.uuid
+        };
+        this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    // console.log(reason);
+                    if (reason === 'confirmed') {
+
+                    }
+                }
+            });
     }
 
     navigateBack(event?: MouseEvent) {

@@ -25,6 +25,7 @@ import { RenameComponent } from '../../shared/rename/rename.component';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
+import { AuthService } from '../../services/auth.service';
 
 const APP_NAME = environment.appName;
 
@@ -97,9 +98,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         modalService: ModalService,
         routerEventsService: RouterEventsService,
         vkBridgeService: VkBridgeService,
+        authService: AuthService,
         private dragulaService: DragulaService
     ) {
-        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService, modalService, routerEventsService, vkBridgeService);
+        super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService,
+            modalService, routerEventsService, vkBridgeService, authService);
         dragulaService.createGroup('BLOCK_ELEMENTS', {
             removeOnSpill: false,
             moves: (el, container, handle) => {
