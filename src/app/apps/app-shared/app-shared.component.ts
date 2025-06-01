@@ -64,6 +64,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
+    userBalance: number = 0;
     pricePerUse: number = 0;
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
@@ -226,6 +227,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 });
             });
+        }
+
+        // Get user balance
+        if (this.data.paymentEnabled) {
+            this.updateUserBalance();
         }
     }
 
@@ -1364,6 +1370,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (reason === 'confirmed') {
 
                     }
+                }
+            });
+    }
+
+    updateUserBalance(): void {
+        if (!this.isLoggedIn) {
+            return;
+        }
+        this.dataService.userBalance(this.data.uuid)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.userBalance = res?.balance || 0;
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    // console.log(err);
                 }
             });
     }

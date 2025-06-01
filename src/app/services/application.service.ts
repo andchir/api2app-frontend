@@ -38,6 +38,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             );
     }
 
+    userBalance(appUuid: string): Observable<{success: boolean, balance?: number}> {
+        const url = `${BASE_URL}user_balance/${appUuid}`;
+        return this.httpClient.get<{success: boolean, balance?: number}>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     static createBlockOptionsFields(options?: any, index = 0, tabIndex = 0): AppBlockElement[] {
         const output = [] as AppBlockElement[];
         output.push({
