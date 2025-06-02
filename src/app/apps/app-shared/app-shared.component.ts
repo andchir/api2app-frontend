@@ -870,6 +870,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
                     this.vkBridgeService.showAds(this.vkAppOptions);
                 }
+
+                if (this.data.paymentEnabled) {
+                    this.updateUserBalance();
+                }
+
                 this.cdr.detectChanges();
             })
             .catch((err) => {
@@ -951,6 +956,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (errorMessage === 'No human face found in the photo.') {
             errorMessage = $localize `No human face found in the photo.`;
+        }
+        if (errorMessage === 'Insufficient funds.') {
+            errorMessage = $localize `Insufficient funds.`;
         }
         return errorMessage;
     }
