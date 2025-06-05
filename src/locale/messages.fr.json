@@ -57,9 +57,9 @@
         "3704426281480438191": "Tous droits réservés.",
         "4651431194327986240": " Termes et Conditions ",
         "4721007402656921350": " Politique de Confidentialité ",
-        "6985001033307944163": "Offer Agreement",
-        "8439955599488894226": "Privacy Policy",
-        "3303852097031321192": "Terms & Conditions",
+        "6985001033307944163": "Accord d'offre",
+        "8439955599488894226": "Politique de confidentialité",
+        "3303852097031321192": "Conditions d'utilisation",
         "4807759288108940937": "Modifier l'Application",
         "8071884458602750019": "Créer une Application",
         "4473628539015862644": "Nom de l'application",
@@ -389,6 +389,7 @@
         "2604092838016078854": "Recharger le solde",
         "5524317351763991090": "Prix par utilisation",
         "6984540085242925648": "Montant de la recharge",
-        "4664106702671272009": "Fonds insuffisants."
+        "4664106702671272009": "Fonds insuffisants.",
+        "5894745684813170419": "Vous n'êtes pas autorisé à accepter des paiements. Pour plus d'informations, vous pouvez contacter l'assistance."
     }
 }

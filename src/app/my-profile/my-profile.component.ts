@@ -27,6 +27,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     action: 'update_profile'|'change_password'|'payments' = 'update_profile';
     destroyed$: Subject<void> = new Subject();
     imageFile: File;
+    paymentStatus: string = 'allowed';
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -192,6 +193,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     }
                     if (res.userprofile?.ykSecretKey) {
                         this.formPayments.controls['ykSecretKey'].setValue(res.userprofile.ykSecretKey);
+                    }
+                    if (res.userprofile?.paymentStatus) {
+                        this.paymentStatus = res.userprofile.paymentStatus;
                     }
                 },
                 error: (err) => {
