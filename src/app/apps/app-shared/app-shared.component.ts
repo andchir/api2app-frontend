@@ -1051,9 +1051,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else if (['progress'].includes(element.type)) {
             element.valueObj = value;
         } else {
-            element.value = (element.prefixText || '')
-                + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
-                + (element.suffixText || '');
+            if (typeof value === 'boolean' && element.prefixText) {
+                element.value = element.prefixText + (element.suffixText || '');
+            } else {
+                element.value = (element.prefixText || '')
+                    + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
+                    + (element.suffixText || '');
+            }
         }
         ApplicationService.localStoreValue(element);
         if ((element.value || element.valueArr || element.valueObj)/* && !['input-select'].includes(element.type)*/) {

@@ -320,7 +320,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             event.stopPropagation();
         }
         if (!block.options) {
-            block.options = {};
+            block.options = ApplicationService.getBlockOptionsDefaults();
         }
         this.selectedBlockIndex = index;
         this.selectedItemOptionsFields = ApplicationService.createBlockOptionsFields(block.options, index, this.tabIndex);

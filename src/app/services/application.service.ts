@@ -7,7 +7,13 @@ import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
+import {
+    AppBlock,
+    AppBlockElement,
+    AppBlockElementType,
+    AppBlockOptions,
+    AppOptions
+} from '../apps/models/app-block.interface';
 
 declare const vkBridge: any;
 
@@ -97,13 +103,17 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return {
             elements: [],
             loading: false,
-            options: {
-                orderIndex: 0,
-                gridColumnSpan: 1,
-                messageSuccess: $localize `The form has been submitted successfully.`,
-                autoClear: false,
-                showLoading: true
-            }
+            options: ApplicationService.getBlockOptionsDefaults()
+        };
+    }
+
+    static getBlockOptionsDefaults(): AppBlockOptions {
+        return {
+            orderIndex: 0,
+            gridColumnSpan: 1,
+            messageSuccess: $localize `The form has been submitted successfully.`,
+            autoClear: false,
+            showLoading: true
         };
     }
 
@@ -259,7 +269,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumns: 3,
             language: '',
             image: '',
-            blocks: [{tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}]
+            blocks: [
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()}
+            ]
         };
     }
 }
