@@ -65,7 +65,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
-    pricePerUse: number = 0;
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -213,12 +212,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             Promise.all(promises).then(() => {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
-                    const paidApiItem = items.find((item) => {
-                        return item.pricePerUse;
-                    });
-                    if (paidApiItem) {
-                        this.pricePerUse = paidApiItem.pricePerUse;
-                    }
                     Object.keys(this.appElements.output).forEach((uuid) => {
                         if (!this.appElements.buttons[uuid]) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);

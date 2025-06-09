@@ -26,4 +26,5 @@ export interface ApplicationItem {
     paymentEnabled?: boolean;
     advertising?: boolean;
     adultsOnly?: boolean;
+    pricePerUse?: number;
 }
