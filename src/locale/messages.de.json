@@ -391,6 +391,7 @@
         "6984540085242925648": "Aufladebetrag",
         "4664106702671272009": "Unzureichende Mittel.",
         "5894745684813170419": "Sie sind nicht berechtigt, Zahlungen anzunehmen. Für weitere Informationen wenden Sie sich bitte an den Support.",
-        "6446188882403579809": "Benutzerkennung zum Weiterleiten von Nachrichten"
+        "6446188882403579809": "Benutzerkennung zum Weiterleiten von Nachrichten",
+        "629832781326289198": "Allgemeiner Preis zur Information. Der Preis eines bestimmten Anrufs wird in den API-Einstellungen angegeben."
     }
 }

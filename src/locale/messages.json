@@ -391,6 +391,7 @@
         "6984540085242925648": "Top-up amount",
         "4664106702671272009": "Insufficient funds.",
         "5894745684813170419": "You do not have permission to accept payments. For more information, you can contact support.",
-        "6446188882403579809": "User ID for forwarding messages"
+        "6446188882403579809": "User ID for forwarding messages",
+        "629832781326289198": "General price for information. The price of a specific call is specified in the API settings."
     }
 }
