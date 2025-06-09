@@ -9,5 +9,6 @@ export interface User {
         ykShopId?: string;
         ykSecretKey?: string;
         paymentStatus?: string;
+        vatCode?: number;
     }
 }

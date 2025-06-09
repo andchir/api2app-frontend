@@ -53,7 +53,8 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     formPayments = this.formBuilder.group({
         ykShopId: ['', []],
-        ykSecretKey: ['', []]
+        ykSecretKey: ['', []],
+        vatCode: [1, []]
     });
 
     constructor(
@@ -159,9 +160,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
         this.submitted = true;
         this.errors = {};
 
-        const {ykShopId, ykSecretKey} = this.formPayments.value;
+        const {ykShopId, ykSecretKey, vatCode} = this.formPayments.value;
 
-        this.authService.updatePaymentsSettings(this.user.username, ykShopId, ykSecretKey)
+        this.authService.updatePaymentsSettings(this.user.username, ykShopId, ykSecretKey, vatCode)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -196,6 +197,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     }
                     if (res.userprofile?.paymentStatus) {
                         this.paymentStatus = res.userprofile.paymentStatus;
+                    }
+                    if (res.userprofile?.vatCode) {
+                        this.formPayments.controls['vatCode'].setValue(res.userprofile.vatCode);
                     }
                 },
                 error: (err) => {
