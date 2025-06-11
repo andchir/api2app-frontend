@@ -8,6 +8,9 @@ export interface User {
         avatar?: string;
         ykShopId?: string;
         ykSecretKey?: string;
+        rkLogin?: string;
+        rkPassword1?: string;
+        rkPassword2?: string;
         paymentStatus?: string;
         vatCode?: number;
     }

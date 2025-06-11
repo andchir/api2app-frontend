@@ -28,6 +28,8 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
     imageFile: File;
     paymentStatus: string = 'allowed';
+    passwordShow1: boolean = false;
+    passwordShow2: boolean = false;
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -52,8 +54,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     });
 
     formPayments = this.formBuilder.group({
-        ykShopId: ['', []],
-        ykSecretKey: ['', []],
+        rkLogin: ['', []],
+        rkPassword1: ['', []],
+        rkPassword2: ['', []],
         vatCode: [1, []]
     });
 
@@ -160,9 +163,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
         this.submitted = true;
         this.errors = {};
 
-        const {ykShopId, ykSecretKey, vatCode} = this.formPayments.value;
+        const {rkLogin, rkPassword1, rkPassword2, vatCode} = this.formPayments.value;
 
-        this.authService.updatePaymentsSettings(this.user.username, ykShopId, ykSecretKey, vatCode)
+        this.authService.updatePaymentsSettings(this.user.username, rkLogin, rkPassword1, rkPassword2, vatCode)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -189,11 +192,14 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    if (res.userprofile?.ykShopId) {
-                        this.formPayments.controls['ykShopId'].setValue(res.userprofile.ykShopId);
+                    if (res.userprofile?.rkLogin) {
+                        this.formPayments.controls['rkLogin'].setValue(res.userprofile.rkLogin);
                     }
-                    if (res.userprofile?.ykSecretKey) {
-                        this.formPayments.controls['ykSecretKey'].setValue(res.userprofile.ykSecretKey);
+                    if (res.userprofile?.rkPassword1) {
+                        this.formPayments.controls['rkPassword1'].setValue(res.userprofile.rkPassword1);
+                    }
+                    if (res.userprofile?.rkPassword2) {
+                        this.formPayments.controls['rkPassword2'].setValue(res.userprofile.rkPassword2);
                     }
                     if (res.userprofile?.paymentStatus) {
                         this.paymentStatus = res.userprofile.paymentStatus;

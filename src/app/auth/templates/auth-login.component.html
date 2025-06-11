@@ -21,14 +21,24 @@
                                        formControlName="username"
                                        required i18n-placeholder>
                             </div>
+
                             <div class="mb-4">
                                 <label for="formFieldPassword" class="block mb-2 text-sm font-medium text-gray-900" i18n>Password</label>
-                                <input type="password" id="formFieldPassword"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       placeholder="Enter your password"
-                                       formControlName="password"
-                                       required i18n-placeholder>
+                                <div class="relative rounded-md shadow-sm">
+                                    <input [type]="passwordShow ? 'text' : 'password'" id="formFieldPassword"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           placeholder="Enter your password"
+                                           formControlName="password"
+                                           required i18n-placeholder>
+                                    <button type="button"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                        (click)="passwordShow = !passwordShow">
+                                        <i class="bi bi-eye text-xl" *ngIf="!passwordShow"></i>
+                                        <i class="bi bi-eye-slash text-xl" *ngIf="passwordShow"></i>
+                                    </button>
+                                </div>
                             </div>
+
                             <div>
                                 <button type="submit"
                                         class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full md:w-auto px-5 py-2.5 text-center"

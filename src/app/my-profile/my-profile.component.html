@@ -174,30 +174,61 @@
 
                             <div class="relative">
                                 <div [ngClass]="{'opacity-30 pointer-events-none': paymentStatus !== 'allowed'}">
-                                    <div class="mb-3">
+                                    <div class="mb-4">
                                         <a class="text-teal-600 underline transition hover:text-teal-600/75"
-                                           href="https://yookassa.ru/my/shop-settings"
-                                           target="_blank">ЮKassa</a>
+                                           href="https://partner.robokassa.ru/"
+                                           target="_blank">Robokassa</a>
                                     </div>
+
                                     <div class="mb-4">
                                         <div>
-                                            <label for="settings-yookassa-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
+                                            <label for="settings-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
                                                 <span i18n>Store ID</span>
-                                                (shopId)
                                             </label>
-                                            <input type="text" id="settings-yookassa-shop-id"
+                                            <input type="text" id="settings-shop-id"
                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                   formControlName="ykShopId" required>
+                                                   formControlName="rkLogin" required>
                                         </div>
                                     </div>
+
                                     <div class="mb-4">
-                                        <div>
-                                            <label for="settings-yookassa-secret-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>Secret key</label>
-                                            <input type="text" id="settings-yookassa-secret-key"
+                                        <label for="formFieldPassword1" class="block mb-2 text-sm font-medium text-gray-900">
+                                            <span i18n>Password</span> 1
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <input [type]="passwordShow1 ? 'text' : 'password'" id="formFieldPassword1"
                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                   formControlName="ykSecretKey" required>
+                                                   placeholder="Enter your password"
+                                                   formControlName="rkPassword1"
+                                                   required i18n-placeholder>
+                                            <button type="button"
+                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                    (click)="passwordShow1 = !passwordShow1">
+                                                <i class="bi bi-eye text-xl" *ngIf="!passwordShow1"></i>
+                                                <i class="bi bi-eye-slash text-xl" *ngIf="passwordShow1"></i>
+                                            </button>
                                         </div>
                                     </div>
+
+                                    <div class="mb-4">
+                                        <label for="formFieldPassword2" class="block mb-2 text-sm font-medium text-gray-900">
+                                            <span i18n>Password</span> 2
+                                        </label>
+                                        <div class="relative rounded-md shadow-sm">
+                                            <input [type]="passwordShow2 ? 'text' : 'password'" id="formFieldPassword2"
+                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                   placeholder="Enter your password"
+                                                   formControlName="rkPassword2"
+                                                   required i18n-placeholder>
+                                            <button type="button"
+                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                    (click)="passwordShow2 = !passwordShow2">
+                                                <i class="bi bi-eye text-xl" *ngIf="!passwordShow2"></i>
+                                                <i class="bi bi-eye-slash text-xl" *ngIf="passwordShow2"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
                                     <div class="mb-4">
                                         <div>
                                             <label for="settings-yookassa-vat" class="block mb-2 text-sm font-medium text-gray-900 ">Ставка НДС</label>

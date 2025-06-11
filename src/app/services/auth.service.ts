@@ -95,11 +95,12 @@ export class AuthService {
         return this.httpClient.put(url, formData, this.httpOptionsFormData);
     }
 
-    updatePaymentsSettings(username: string, ykShopId: string, ykSecretKey: string, vatCode: number): Observable<any> {
+    updatePaymentsSettings(username: string, rkLogin: string, rkPassword1: string, rkPassword2: string, vatCode: number): Observable<any> {
         const formData = new FormData();
         formData.append('username', username);
-        formData.append('userprofile.ykShopId', ykShopId.trim());
-        formData.append('userprofile.ykSecretKey', ykSecretKey.trim());
+        formData.append('userprofile.rkLogin', rkLogin.trim());
+        formData.append('userprofile.rkPassword1', rkPassword1.trim());
+        formData.append('userprofile.rkPassword2', rkPassword2.trim());
         formData.append('userprofile.vatCode', String(vatCode));
         const url = `${this.requestUrl}users/me/`
         return this.httpClient.put(url, formData, this.httpOptionsFormData);

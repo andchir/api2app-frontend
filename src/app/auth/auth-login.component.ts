@@ -24,6 +24,7 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     user: User;
     groups: string[] = [];
     destroyed$: Subject<void> = new Subject();
+    passwordShow: boolean = false;
 
     social_auth_items: {name: string, icon: string, url: string}[] = [];
 
