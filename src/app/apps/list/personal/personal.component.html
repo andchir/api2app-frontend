@@ -67,13 +67,13 @@
                     </button>
                 </div>
                 <div class="absolute right-2 -top-2 flex">
-                <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
-                      *ngIf="item.shared">
-                    <span class="flex w-2 h-2 me-1 rounded-full"
-                          [ngClass]="{'bg-green-400': !item.hidden, 'bg-gray-400': item.hidden}"></span>
-                    <span [ngClass]="{'text-green-700': !item.hidden, 'text-gray-600': item.hidden}"
-                          i18n="@@SharedItem">Shared</span>
-                </span>
+                    <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
+                          *ngIf="item.shared">
+                        <span class="flex w-2 h-2 me-1 rounded-full"
+                              [ngClass]="{'bg-green-400': !item.hidden, 'bg-gray-400': item.hidden}"></span>
+                        <span [ngClass]="{'text-green-700': !item.hidden, 'text-gray-600': item.hidden}"
+                              i18n="@@SharedItem">Shared</span>
+                    </span>
                 </div>
             </div>
         </div>
