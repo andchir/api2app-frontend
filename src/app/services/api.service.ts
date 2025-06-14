@@ -137,8 +137,11 @@ export class ApiService extends DataService<ApiItem> {
         return {outData, innerOptions, innerData};
     }
 
-    applyInnerParams(data: any): any {
+    applyInnerParams(data: any, innerValues: any = null): any {
         const {outData, innerOptions, innerData} = this.getInnerParams(data);
+        if (typeof innerValues === 'object') {
+            Object.assign(innerData, innerValues);
+        }
         if (Object.keys(innerOptions).length > 0) {
             for (const key of Object.keys(outData)) {
                 for (const optKey of Object.keys(innerOptions)) {
@@ -154,9 +157,13 @@ export class ApiService extends DataService<ApiItem> {
                 }
             }
         }
-        for (const dKey of Object.keys(innerData)) {
-            for (const outKey of Object.keys(outData)) {
-                outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
+        for (const outKey of Object.keys(outData)) {
+            if (typeof outData[outKey] === 'object' && !Array.isArray(outData[outKey])) {
+                outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+            } else if (typeof outData[outKey] === 'string') {
+                for (const dKey of Object.keys(innerData)) {
+                    outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
+                }
             }
         }
         return outData;
