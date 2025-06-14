@@ -625,6 +625,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         } else {
                             valueObj[key] = element.value;
                         }
+                        if (typeof valueObj[key] === 'string') {
+                            valueObj[key] = (element.prefixText || '') + valueObj[key] + (element.suffixText || '');
+                        }
                     });
                     bodyField.value = JSON.stringify(valueObj);
                     return;
@@ -704,6 +707,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     outputData[key] = ['input-switch'].includes(element.type) ? (value || enabled) : value;
+                    if (typeof outputData[key] === 'string') {
+                        outputData[key] = (element.prefixText || '') + outputData[key] + (element.suffixText || '');
+                    }
                 });
 
                 apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
