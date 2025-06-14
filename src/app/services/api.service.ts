@@ -121,6 +121,48 @@ export class ApiService extends DataService<ApiItem> {
         return responseTypeValue;
     }
 
+    getInnerParams(data: any): any {
+        const outData = {};
+        const innerOptions = {};
+        const innerData = {};
+        for (const key of Object.keys(data)) {
+            if (key === '__inner') {
+                Object.assign(innerData, data[key]);
+            } else if (key.includes('__')) {
+                innerOptions[key.replace('__', '')] = data[key];
+            } else {
+                outData[key] = data[key];
+            }
+        }
+        return {outData, innerOptions, innerData};
+    }
+
+    applyInnerParams(data: any): any {
+        const {outData, innerOptions, innerData} = this.getInnerParams(data);
+        if (Object.keys(innerOptions).length > 0) {
+            for (const key of Object.keys(outData)) {
+                for (const optKey of Object.keys(innerOptions)) {
+                    if (!optKey.includes(`${key}:`)) {
+                        continue;
+                    }
+                    const [mainKey, optsStr] = optKey.split(':');
+                    for (const dKey of Object.keys(innerData)) {
+                        if (!optsStr.includes(`${dKey}=${innerData[dKey]}`)) {
+                            continue;
+                        }
+                        outData[mainKey] = innerOptions[optKey];
+                    }
+                }
+            }
+        }
+        for (const dKey of Object.keys(innerData)) {
+            for (const outKey of Object.keys(outData)) {
+                outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
+            }
+        }
+        return outData;
+    }
+
     apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
@@ -319,9 +361,13 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         const headers = new HttpHeaders(requestHeaders);
-        const requestData = sendAsFormData ? formData : (body || bodyRaw);
+        let requestData = sendAsFormData ? formData : (body || bodyRaw);
         const responseType = 'blob';
         const params = this.createParams(queryParams);
+
+        if (data.sender !== 'server' && !sendAsFormData) {
+            requestData = this.applyInnerParams(requestData);
+        }
 
         let httpRequest;
         switch (requestMethod) {
