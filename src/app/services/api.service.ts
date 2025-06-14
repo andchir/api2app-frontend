@@ -147,10 +147,9 @@ export class ApiService extends DataService<ApiItem> {
                     }
                     const [mainKey, optsStr] = optKey.split(':');
                     for (const dKey of Object.keys(innerData)) {
-                        if (!optsStr.includes(`${dKey}=${innerData[dKey]}`)) {
-                            continue;
+                        if (optsStr.includes(`${dKey}=${innerData[dKey]}`)) {
+                            outData[mainKey] = innerOptions[optKey];
                         }
-                        outData[mainKey] = innerOptions[optKey];
                     }
                 }
             }
