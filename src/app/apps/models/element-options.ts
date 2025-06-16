@@ -536,6 +536,12 @@ export class ElementOptions {
                 break;
             case 'input-hidden':
                 output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
                     type: 'input-text',
