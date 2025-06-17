@@ -9,6 +9,9 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
 import { User } from '../apis/models/user.interface';
 import { matchValidator } from '../helpers/match-validator';
+import { environment } from '../../environments/environment';
+
+const ROBOKASSA_URL = environment.robokassaUrl;
 
 @Component({
     selector: 'app-dashboard',
@@ -30,6 +33,7 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     paymentStatus: string = 'allowed';
     passwordShow1: boolean = false;
     passwordShow2: boolean = false;
+    robokassaUrl: string = ROBOKASSA_URL;
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],

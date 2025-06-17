@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { catchError, iif, Observable, throwError } from "rxjs";
-import {ApplicationItem} from "../apps/models/application-item.interface";
+
 
 export abstract class DataService<T extends {id: number}> {
 

@@ -174,10 +174,15 @@
 
                             <div class="relative">
                                 <div [ngClass]="{'opacity-30 pointer-events-none': paymentStatus !== 'allowed'}">
-                                    <div class="mb-4">
-                                        <a class="text-teal-600 underline transition hover:text-teal-600/75"
-                                           href="https://partner.robokassa.ru/"
+                                    <div class="mb-2">
+                                        <a class="text-lg text-blue-700 underline transition hover:text-blue-800/75"
+                                           [href]="robokassaUrl"
                                            target="_blank">Robokassa</a>
+                                    </div>
+                                    <div class="mb-5 text-sm text-blue-700">
+                                        Выгодные условия по нашей партнерской ссылке:
+                                        <br>
+                                        Тариф <b>3,3%</b> на <b>3</b> месяца (далее зависит от оборота).
                                     </div>
 
                                     <div class="mb-4">
