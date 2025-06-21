@@ -30,6 +30,8 @@ export class ModalTopUpBalanceComponent implements OnInit {
     value: number = 100;
     messageType: string = 'success';
     message: string = '';
+    promoCode: string = '';
+    tabCurrent: 'balance'|'promo_code' = 'balance';
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -42,6 +44,16 @@ export class ModalTopUpBalanceComponent implements OnInit {
 
     }
 
+    switchTab(tab_name: 'balance'|'promo_code', event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+        }
+        if (this.submitted || this.tabCurrent === tab_name) {
+            return;
+        }
+        this.tabCurrent = tab_name;
+    }
+
     closeModal(reason: string = 'close'): void {
         if (this.submitted) {
             return;
@@ -49,7 +61,40 @@ export class ModalTopUpBalanceComponent implements OnInit {
         this.close.emit(reason);
     }
 
-    confirm(): void {
+    submitPromoCode(): void {
+        if (!this.promoCode) {
+            return;
+        }
+        console.log('submitPromoCode', this.promoCode);
+        this.message = '';
+        this.submitted = true;
+        this.userBalanceService.submitPromoCode(this.promoCode)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.submitted = false;
+                    if (res.success) {
+                        this.closeModal('promo_code_success');
+                    } else {
+                        if (res.message) {
+                            this.messageType = 'error';
+                            this.message = res.message;
+                        }
+                    }
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    this.submitted = false;
+                    if (err.message) {
+                        this.messageType = 'error';
+                        this.message = err.message;
+                    }
+                    this.cdr.markForCheck();
+                }
+            });
+    }
+
+    submit(): void {
         this.message = '';
         this.submitted = true;
         this.userBalanceService.topUpBalance(this.appUuid, this.value)

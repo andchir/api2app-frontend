@@ -37,6 +37,15 @@ export class UserBalanceService {
             );
     }
 
+    submitPromoCode(promoCode: string): Observable<{success: boolean, message: string}> {
+        const url = `${BASE_URL}user_balance_promo_code`;
+        const httpOptions = this.httpOptions;
+        return this.httpClient.post<{success: boolean, message: string}>(url, {promoCode}, httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
     handleError<T>(error: HttpErrorResponse): Observable<any> {
         // if (error.status && [401, 403].indexOf(error.status) > -1) {
         //     window.location.href = '/login';
