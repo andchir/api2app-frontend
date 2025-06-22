@@ -68,7 +68,7 @@ export class ModalTopUpBalanceComponent implements OnInit {
         console.log('submitPromoCode', this.promoCode);
         this.message = '';
         this.submitted = true;
-        this.userBalanceService.submitPromoCode(this.promoCode)
+        this.userBalanceService.submitPromoCode(this.appUuid, this.promoCode)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

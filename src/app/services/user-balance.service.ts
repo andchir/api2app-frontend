@@ -37,10 +37,10 @@ export class UserBalanceService {
             );
     }
 
-    submitPromoCode(promoCode: string): Observable<{success: boolean, message: string}> {
+    submitPromoCode(appUuid: string, promoCode: string): Observable<{success: boolean, message: string}> {
         const url = `${BASE_URL}user_balance_promo_code`;
         const httpOptions = this.httpOptions;
-        return this.httpClient.post<{success: boolean, message: string}>(url, {promoCode}, httpOptions)
+        return this.httpClient.post<{success: boolean, message: string}>(url, {appUuid, promoCode}, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
