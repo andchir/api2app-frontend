@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 import { catchError, Observable, throwError } from 'rxjs';
@@ -17,6 +17,7 @@ export class UserBalanceService {
     };
 
     constructor(
+        @Inject(LOCALE_ID) public locale: string,
         protected httpClient: HttpClient
     ) {
         this.httpOptions.headers = this.addCsrfToken(this.httpOptions.headers);
@@ -38,7 +39,7 @@ export class UserBalanceService {
     }
 
     submitPromoCode(appUuid: string, promoCode: string): Observable<{success: boolean, message: string}> {
-        const url = `${BASE_URL}user_balance_promo_code`;
+        const url = `${BASE_URL}${this.locale}/user_balance_promo_code`;
         const httpOptions = this.httpOptions;
         return this.httpClient.post<{success: boolean, message: string}>(url, {appUuid, promoCode}, httpOptions)
             .pipe(
