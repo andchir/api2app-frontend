@@ -1380,6 +1380,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     // console.log(reason);
                     if (reason === 'confirmed') {
 
+                    } else if (reason === 'promo_code_success') {
+                        this.updateUserBalance();
+                        this.message = $localize `Congratulations! Promo code accepted.`;
+                        this.messageType = 'success';
                     }
                 }
             });
