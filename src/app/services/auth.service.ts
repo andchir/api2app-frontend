@@ -140,8 +140,16 @@ export class AuthService {
         window.sessionStorage.setItem(NEXT_ROUTE_KEY, route);
     }
 
-    getNextRoute(): string | null {
-        return window.sessionStorage.getItem(NEXT_ROUTE_KEY);
+    deleteNextRoute(): void {
+        window.sessionStorage.removeItem(NEXT_ROUTE_KEY);
+    }
+
+    getNextRoute(autoDelete: boolean = false): string | null {
+        const nextRoute = window.sessionStorage.getItem(NEXT_ROUTE_KEY);
+        if (autoDelete && nextRoute) {
+            this.deleteNextRoute();
+        }
+        return nextRoute;
     }
 
     navigateAuthPage(pageName: 'login'|'logout'|'register'): void {
@@ -161,7 +169,14 @@ export class AuthService {
     }
 
     navigateBack(): void {
-        const nextRoute = this.getNextRoute();
-        this.router.navigate(nextRoute ? [nextRoute] : ['/']);
+        const nextRoute = this.getNextRoute(true);
+        this.navigateRoute(nextRoute);
+    }
+
+    navigateRoute(route: string): void {
+        if (route === this.router.url) {
+            return;
+        }
+        this.router.navigate(route ? [route] : ['/']);
     }
 }
