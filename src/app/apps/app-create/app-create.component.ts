@@ -551,7 +551,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             actionType
         };
         if (!initialData.selectedUuid) {
-            const index = this.data.blocks[blockIndex].elements.findIndex((item) => {
+            const index = this.data.blocks[blockIndex].elements.findLastIndex((item) => {
                 return actionType === 'input' ? item.options?.inputApiUuid : item.options?.outputApiUuid;
             });
             if (index > -1) {
