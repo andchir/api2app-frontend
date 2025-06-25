@@ -1154,9 +1154,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!newValue.type.includes('image/') && !newValue.type.includes('djvu')) {
                     return;
                 }
-                newValue = URL.createObjectURL(newValue);
+                targetElement.valueObj = URL.createObjectURL(newValue);
+            } else {
+                targetElement.valueObj = newValue;
             }
-            targetElement.valueObj = newValue;
             targetElement.value = newValue;
             this.elementHiddenStateUpdate(targetElement);
             this.cdr.markForCheck();

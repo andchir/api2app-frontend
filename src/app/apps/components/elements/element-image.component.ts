@@ -64,10 +64,14 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.imageUrl || !this.useCropper) && val) {
-            this.imageUrl = typeof val === 'string'
-                ? this.sanitizer.bypassSecurityTrustUrl(val)
-                : val;
+        if (!this.imageUrl && val) {
+            if (val instanceof File) {
+                this.imageUrl = URL.createObjectURL(val);
+            } else {
+                this.imageUrl = typeof val === 'string'
+                    ? this.sanitizer.bypassSecurityTrustUrl(val)
+                    : val;
+            }
         } else if (!val) {
             this.imageUrl = '';
         }
@@ -88,7 +92,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        if (this.useCropper && changes['imageUrl']) {
+        if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
         if (this.useLink && (changes['imageUrl'] || changes['imageLargeUrl'])) {
@@ -144,7 +148,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        const imageBrokenUrl = 'assets/img/image-broken.png';
+        // const imageBrokenUrl = 'assets/img/image-broken.png';
         // if (typeof index !== 'undefined' && element.valueArr) {
         //     if (element.itemThumbnailFieldName) {
         //         element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
