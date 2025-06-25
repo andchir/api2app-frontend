@@ -98,10 +98,10 @@ export class VkBridgeService {
             .then((data: any) => {
                 options.userToken = data?.access_token;
                 return data?.access_token;
-            })
-            .catch((error: any) => {
-                console.log(error);
             });
+            // .catch((error: any) => {
+            //     console.log(error);
+            // });
     }
 
     async getFileUploadUrl(options: VkAppOptions): Promise<string> {
