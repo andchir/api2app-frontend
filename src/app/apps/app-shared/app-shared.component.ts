@@ -1343,6 +1343,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 console.log(error);
                 this.message = $localize `Unable to obtain permission to upload file.`;
                 this.messageType = 'error';
+                this.cdr.detectChanges();
             });
     }
 
