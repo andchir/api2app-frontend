@@ -577,7 +577,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['input-file'].includes(element.type)) {
             element.value = [];
-        } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
+        } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
+                'status', 'input-hidden'].includes(element.type)
             && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
