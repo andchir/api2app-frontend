@@ -700,7 +700,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(element);
-                    const value = element.value ? ApplicationService.getElementValue(element) as string : '';
+                    const value = ApplicationService.getElementValue(element);
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
                         delete inputData[key];
@@ -721,7 +721,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(elem);
-                    const value = elem.value ? ApplicationService.getElementValue(elem) as string : '';
+                    const value = ApplicationService.getElementValue(elem);
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;

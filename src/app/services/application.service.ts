@@ -133,6 +133,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+        if (!element.value) {
+            return ApplicationService.getFieldDefaultValue(element.type);
+        }
         switch (element.type) {
             case 'input-tags':
                 return Array.isArray(element?.value) ? element?.value : [];
@@ -256,6 +259,21 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         return new Blob([new Uint8Array(arr)], { type: mimeString });
     };
+
+    static getFieldDefaultValue(fieldType: string): string|number|boolean|null {
+        let value: string|number|boolean|null = '';
+        switch (fieldType) {
+            case 'input-number':
+            case 'input-slider':
+                value = 0;
+                break;
+            case 'input-file':
+            case 'image':
+                value = null;
+                break;
+        }
+        return value;
+    }
 
     static getDefault(): ApplicationItem {
         return {
