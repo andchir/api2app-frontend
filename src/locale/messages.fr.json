@@ -395,6 +395,8 @@
         "629832781326289198": "Tarif général à titre indicatif. Le tarif d'un appel spécifique est précisé dans les paramètres de l'API.",
         "8282940047848889809": "Payé",
         "1943153960391120303": "Code promotionnel",
-        "5272586812404339867": "Félicitations! Code promo accepté."
+        "5272586812404339867": "Félicitations! Code promo accepté.",
+        "5672903108660851514": "Préfixe pour la valeur résultante",
+        "6095154778691266590": "Suffixe pour la valeur résultante"
     }
 }

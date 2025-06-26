@@ -216,6 +216,18 @@ export class ElementOptions {
                     value: options?.text
                 });
                 output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix for the resulting value`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix for the resulting value`,
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
                     name: 'icon',
                     label: $localize `Icon`,
                     type: 'input-text',
@@ -1363,6 +1375,8 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'submit',
                     text: $localize `Submit`,
+                    prefixText: '',
+                    suffixText: '',
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
