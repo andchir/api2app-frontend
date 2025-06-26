@@ -280,7 +280,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         const fileExtension = ApplicationService.getFileExtension(url);
         const isImage = imageExtensions.includes(fileExtension);
 
-        if (!isImage) {
+        if (!isImage && !url.includes('https://vk.com/doc')) {
             console.log('Not an image.', url, fileExtension);
             window.open(url, '_blank').focus();
             return false;
