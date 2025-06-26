@@ -1355,16 +1355,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.messageType = 'success';
 
                 // Pass the URL as the value of the download button
-                if (docUrl) {
-                    const buttonElement = outputElements.find((elem) => {
-                        return elem.type === 'button';
-                    });
-                    if (buttonElement) {
-                        buttonElement.value = docUrl;
-                        this.elementHiddenStateUpdate(buttonElement);
-                    }
-                    this.cdr.detectChanges();
-                }
+                // if (docUrl) {
+                //     const buttonElement = outputElements.find((elem) => {
+                //         return elem.type === 'button';
+                //     });
+                //     if (buttonElement) {
+                //         buttonElement.value = docUrl;
+                //         this.elementHiddenStateUpdate(buttonElement);
+                //     }
+                //     this.cdr.detectChanges();
+                // }
             });
     }
 

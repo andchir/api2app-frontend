@@ -276,11 +276,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static async downloadImage(url: string): Promise<boolean> {
-        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+        const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
         const fileExtension = ApplicationService.getFileExtension(url);
-        const isImage = imageExtensions.includes(fileExtension);
+        const isFileUrl = filesExtensions.includes(fileExtension);
 
-        if (!isImage) {
+        if (!isFileUrl) {
             console.log('Not an image.', url, fileExtension);
             window.open(url, '_blank').focus();
             return false;
