@@ -275,6 +275,52 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
+    static async downloadImage(url: string): Promise<boolean> {
+        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+        const isImage = imageExtensions.some(ext => url.toLowerCase().includes(ext));
+
+        if (!isImage) {
+            window.open(url, '_blank').focus();
+            return false;
+        }
+
+        try {
+            const response = await fetch(url, {
+                mode: 'cors',
+                cache: 'no-cache'
+            });
+
+            if (!response.ok) {
+                throw new Error(`Loading error: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+
+            let filename = url.split('/').pop();
+            filename = decodeURIComponent(filename.split('?')[0]);
+
+            link.setAttribute('download', filename);
+            link.style.display = 'none';
+
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            }, 100);
+
+            return true;
+        } catch (error) {
+            console.error(error);
+            window.open(url, '_blank').focus();
+            return false;
+        }
+    }
+
     static getDefault(): ApplicationItem {
         return {
             id: 0,

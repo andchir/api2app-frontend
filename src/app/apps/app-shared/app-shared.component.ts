@@ -1079,7 +1079,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.appSubmit(element.options.inputApiUuid, 'input', element);
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
-                window.open(String(element.value), '_blank').focus();
+                ApplicationService.downloadImage(String(element.value));
             }
         }
         if (element.type === 'user-subscription' && this.isVkApp) {
