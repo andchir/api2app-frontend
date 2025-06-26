@@ -103,9 +103,9 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         const isStatusChanged = prevStatus !== this.status;
         const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
         let queueNumber = this.queueNumberFieldName ? (this.data[this.queueNumberFieldName] || 0) : 0;
-        if ((this.statusPending && this.status === this.statusPending) || (this.statusProcessing && this.status !== this.statusProcessing)) {
-            queueNumber++;
-        }
+        // if ((this.statusPending && this.status === this.statusPending) || (this.statusProcessing && this.status !== this.statusProcessing)) {
+        //     queueNumber++;
+        // }
         const isProcessStarted = (queueNumber === 0 && this.queueNumber > 0)
             || (queueNumber === 0 && !window.localStorage.getItem(`${taskUuid}-progress-start`));
         if (isProcessStarted) {
