@@ -280,6 +280,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         const isImage = imageExtensions.some(ext => url.toLowerCase().includes(ext));
 
         if (!isImage) {
+            console.log('Not an image.');
             window.open(url, '_blank').focus();
             return false;
         }
@@ -315,7 +316,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
             return true;
         } catch (error) {
-            console.error(error);
+            console.log(error);
             window.open(url, '_blank').focus();
             return false;
         }
