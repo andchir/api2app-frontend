@@ -276,11 +276,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static async downloadImage(url: string): Promise<boolean> {
-        const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
-        const isImage = imageExtensions.some(ext => url.toLowerCase().includes(ext));
+        const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'];
+        const fileExtension = ApplicationService.getFileExtension(url);
+        const isImage = imageExtensions.includes(fileExtension);
 
         if (!isImage) {
-            console.log('Not an image.');
+            console.log('Not an image.', url, fileExtension);
             window.open(url, '_blank').focus();
             return false;
         }
@@ -320,6 +321,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
             window.open(url, '_blank').focus();
             return false;
         }
+    }
+
+    static getFileExtension(url: string): string {
+        const base = url.split('?')[0].split('#')[0];
+        const extension = base.split('.').pop();
+        if (!extension || extension.length > 6 || extension === base) {
+            return '';
+        }
+        return extension.toLowerCase();
     }
 
     static getDefault(): ApplicationItem {
