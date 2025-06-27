@@ -275,6 +275,19 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
+    static createStringValue(element: AppBlockElement, value: any): string {
+        if (typeof value === 'object') {
+            value = JSON.stringify(value, null, 2);
+        }
+        if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
+            value = (element.prefixText || '') + encodeURIComponent(value);
+        } else {
+            value = (element.prefixText || '') + value;
+        }
+        value += (element.suffixText || '');
+        return value;
+    }
+
     static async downloadImage(url: string): Promise<boolean> {
         const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
         const fileExtension = ApplicationService.getFileExtension(url);
@@ -304,9 +317,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             let filename = url.split('/').pop();
             filename = decodeURIComponent(filename.split('?')[0]);
 
-            link.setAttribute('download', filename);
+            link.download = String(filename);
             link.style.display = 'none';
-
             document.body.appendChild(link);
             link.click();
 

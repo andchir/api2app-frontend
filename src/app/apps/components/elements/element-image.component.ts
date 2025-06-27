@@ -133,10 +133,18 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         fetch(downloadUrl)
             .then(response => response.blob())
             .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
+                link.href = blobUrl;
                 link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
                 link.click();
+
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                }, 100);
             })
             .catch(console.error);
     }

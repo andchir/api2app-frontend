@@ -276,6 +276,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.isClearForm || false
                 });
+                output.push({
+                    name: 'isDownloadMode',
+                    label: $localize `Download`,
+                    type: 'input-switch',
+                    enabled: options?.isDownloadMode || false
+                });
                 break;
             case 'input-text':
                 // output.push({
@@ -1381,7 +1387,8 @@ export class ElementOptions {
                     color: 'Green',
                     hiddenByField: '',
                     hiddenByDefault: false,
-                    isClearForm: false
+                    isClearForm: false,
+                    isDownloadMode: false
                 });
                 break;
             case 'input-text':

@@ -627,7 +627,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             valueObj[key] = element.value;
                         }
                         if (typeof valueObj[key] === 'string') {
-                            valueObj[key] = (element.prefixText || '') + valueObj[key] + (element.suffixText || '');
+                            valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
                         }
                     });
                     bodyField.value = JSON.stringify(valueObj);
@@ -709,7 +709,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                     outputData[key] = ['input-switch'].includes(element.type) ? (value || enabled) : value;
                     if (typeof outputData[key] === 'string') {
-                        outputData[key] = (element.prefixText || '') + outputData[key] + (element.suffixText || '');
+                        outputData[key] = ApplicationService.createStringValue(element, outputData[key]);
                     }
                 });
 
@@ -1027,7 +1027,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = this.sanitizer.bypassSecurityTrustResourceUrl((element.prefixText || '') + value);
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(ApplicationService.createStringValue(element, value));
             this.cdr.detectChanges();
             return;
         }
@@ -1054,9 +1054,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
             } else {
-                element.value = (element.prefixText || '')
-                    + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
-                    + (element.suffixText || '');
+                element.value = ApplicationService.createStringValue(element, value);
             }
         }
         ApplicationService.localStoreValue(element);
@@ -1079,7 +1077,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.appSubmit(element.options.inputApiUuid, 'input', element);
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
-                ApplicationService.downloadImage(String(element.value));
+                if (element.isDownloadMode) {
+                    ApplicationService.downloadImage(String(element.value));
+                } else {
+                    window.open(String(element.value), '_blank').focus();
+                }
             }
         }
         if (element.type === 'user-subscription' && this.isVkApp) {

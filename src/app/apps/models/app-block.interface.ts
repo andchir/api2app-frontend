@@ -73,6 +73,7 @@ export interface AppBlockElement {
     storeValue?: boolean;
     useCropper?: boolean;
     isClearForm?: boolean;
+    isDownloadMode?: boolean;
 }
 
 export interface AppBlockOptions {
