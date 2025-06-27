@@ -159,8 +159,17 @@ export class ApiService extends DataService<ApiItem> {
             }
         }
         for (const outKey of Object.keys(outData)) {
-            if (typeof outData[outKey] === 'object' && !Array.isArray(outData[outKey])) {
-                outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+            if (typeof outData[outKey] === 'object') {
+                if (Array.isArray(outData[outKey])) {
+                    outData[outKey] = outData[outKey].map((item) => {
+                        if (typeof item === 'object' && !Array.isArray(item)) {
+                            return this.applyInnerParams(item, innerData);
+                        }
+                        return item;
+                    });
+                } else {
+                    outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+                }
             } else if (typeof outData[outKey] === 'string') {
                 for (const dKey of Object.keys(innerData)) {
                     outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
