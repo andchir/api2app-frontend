@@ -276,7 +276,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static createStringValue(element: AppBlockElement, value: any): string {
-        if (typeof value === 'object') {
+        if (typeof value === 'object' && Array.isArray(value)) {
+            value = value.map(item => {
+                if (typeof item === 'object' && item !== null) {
+                    return JSON.stringify(item);
+                }
+                return String(item);
+            }).join('');
+        } else if (typeof value === 'object') {
             value = JSON.stringify(value, null, 2);
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
@@ -285,7 +292,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             value = (element.prefixText || '') + value;
         }
         value += (element.suffixText || '');
-        return value;
+        return value.trim();
     }
 
     static async downloadImage(url: string): Promise<boolean> {

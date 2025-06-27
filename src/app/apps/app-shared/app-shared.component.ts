@@ -1043,8 +1043,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
-            } else {
-                // element.value = null;
+            }
+            if (['input-text', 'input-textarea', 'input-hidden'].includes(element.type)) {
+                element.value = ApplicationService.createStringValue(element, value);
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
