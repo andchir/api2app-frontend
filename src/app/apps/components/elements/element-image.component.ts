@@ -68,7 +68,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
             if (val instanceof File) {
                 this.imageUrl = URL.createObjectURL(val);
             } else {
-                this.imageUrl = typeof val === 'string'
+                this.imageUrl = val && typeof val === 'string'
                     ? this.sanitizer.bypassSecurityTrustUrl(val)
                     : val;
             }
