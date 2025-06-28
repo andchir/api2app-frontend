@@ -64,7 +64,9 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if (!this.imageUrl && val) {
+        if (!val) {
+            this.imageUrl = '';
+        } else if ((!this.imageUrl && val) || !this.useCropper) {
             if (val instanceof File) {
                 this.imageUrl = URL.createObjectURL(val);
             } else {
@@ -72,8 +74,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
                     ? this.sanitizer.bypassSecurityTrustUrl(val)
                     : val;
             }
-        } else if (!val) {
-            this.imageUrl = '';
         }
         if (this.useLink) {
             this.createLinkUrl();
