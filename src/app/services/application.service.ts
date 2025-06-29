@@ -288,10 +288,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
             value = (element.prefixText || '') + encodeURIComponent(value);
-        } else if (element.prefixText && (/[{}]/.test(element.prefixText) && skipTags)) {
+        } else if (element.prefixText && (/[{}]/.test(element.prefixText) || !skipTags)) {
             value = (element.prefixText || '') + value;
         }
-        if (element.suffixText && (/[{}]/.test(element.suffixText) && skipTags)) {
+        if (element.suffixText && (/[{}]/.test(element.suffixText) || !skipTags)) {
             value += (element.suffixText || '');
         }
         return value.trim();
