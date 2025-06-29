@@ -1,6 +1,6 @@
 <header class="bg-white shadow" *ngIf="showHeader">
-    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-        <div class="flex gap-3 items-center">
+    <div class="sm:flex justify-between items-center mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+        <div class="flex justify-center gap-3 items-center">
             <div *ngIf="data?.image">
                 <div class="w-16 h-16 sm:w-24 sm:h-24 border rounded-full border-gray-400 overflow-hidden">
                     <img class="w-16 h-16 sm:w-24 sm:h-24 rounded-full no-pointer-events" [src]="data.image" [alt]="data?.name">
@@ -20,7 +20,7 @@
         <div class="text-center pt-3 sm:pt-0" *ngIf="data.paymentEnabled && !isVkApp">
             <div class="inline-flex gap-3 items-center">
                 <div class="text-sm">
-                    <span>0</span>&nbsp;
+                    <span>{{ userBalance }}</span>&nbsp;
                     <span>руб.</span>
                 </div>
                 <div>
@@ -32,11 +32,11 @@
                     </button>
                 </div>
             </div>
-            <div class="pt-2 text-sm">
-                <div class="inline-block py-1 px-3 border border-blue-200 rounded">
+            <div class="pt-2 text-sm" *ngIf="data.pricePerUse">
+                <div class="inline-block py-1 px-3 border border-blue-200 rounded-md">
                     <span class="text-blue-500"><span i18n>Price per use</span>:</span>
                     <span class="text-blue-700">
-                        {{ pricePerUse }} руб.
+                        {{ data.pricePerUse }} руб.
                     </span>
                 </div>
             </div>

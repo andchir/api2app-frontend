@@ -27,7 +27,7 @@ import { VkBridgeService } from '../../services/vk-bridge.service';
 import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
-import { AppAdultValidationComponent } from "../components/app-adult-validation/app-adult-validation.component";
+import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -60,7 +60,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
-    pricePerUse: number = 0;
+    userBalance: number = 0;
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -200,12 +200,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             Promise.all(promises).then(() => {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
-                    const paidApiItem = items.find((item) => {
-                        return item.pricePerUse;
-                    });
-                    if (paidApiItem) {
-                        this.pricePerUse = paidApiItem.pricePerUse;
-                    }
                     Object.keys(this.appElements.output).forEach((uuid) => {
                         if (!this.appElements.buttons[uuid]) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
@@ -214,6 +208,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.cdr.detectChanges();
                 });
             });
+        }
+
+        // Get user balance
+        if (this.data.paymentEnabled) {
+            this.updateUserBalance();
         }
     }
 
@@ -566,7 +565,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['input-file'].includes(element.type)) {
             element.value = [];
-        } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button', 'status'].includes(element.type)
+        } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
+                'status', 'input-hidden'].includes(element.type)
             && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
@@ -613,6 +613,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             }
                         } else {
                             valueObj[key] = element.value;
+                        }
+                        if (typeof valueObj[key] === 'string') {
+                            valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
                         }
                     });
                     bodyField.value = JSON.stringify(valueObj);
@@ -686,13 +689,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(element);
-                    const value = element.value ? ApplicationService.getElementValue(element) as string : '';
+                    const value = ApplicationService.getElementValue(element);
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
                         delete inputData[key];
                         return;
                     }
                     outputData[key] = ['input-switch'].includes(element.type) ? (value || enabled) : value;
+                    if (typeof outputData[key] === 'string') {
+                        outputData[key] = ApplicationService.createStringValue(element, outputData[key]);
+                    }
                 });
 
                 apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
@@ -704,12 +710,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(elem);
-                    const value = elem.value ? ApplicationService.getElementValue(elem) as string : '';
+                    const value = ApplicationService.getElementValue(elem);
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    outputData[fieldName] = value;
+                    // outputData[fieldName] = value;
+                    outputData[fieldName] = ApplicationService.createStringValue(elem, value);
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
             }
@@ -852,6 +859,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
                     this.vkBridgeService.showAds(this.vkAppOptions);
                 }
+
+                if (this.data.paymentEnabled) {
+                    this.updateUserBalance();
+                }
+
                 this.cdr.detectChanges();
             })
             .catch((err) => {
@@ -934,6 +946,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (errorMessage === 'No human face found in the photo.') {
             errorMessage = $localize `No human face found in the photo.`;
         }
+        if (errorMessage === 'Insufficient funds.') {
+            errorMessage = $localize `Insufficient funds.`;
+        }
         return errorMessage;
     }
 
@@ -1001,7 +1016,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = this.sanitizer.bypassSecurityTrustResourceUrl((element.prefixText || '') + value);
+            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(ApplicationService.createStringValue(element, value));
             this.cdr.detectChanges();
             return;
         }
@@ -1017,17 +1032,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element?.itemFieldNameForValue
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
-            } else {
-                // element.value = null;
+            }
+            if (['input-text', 'input-textarea', 'input-hidden'].includes(element.type)) {
+                element.value = ApplicationService.createStringValue(element, value, true);
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
         } else if (['progress'].includes(element.type)) {
             element.valueObj = value;
         } else {
-            element.value = (element.prefixText || '')
-                + (typeof value === 'object' ? JSON.stringify(value, null, 2) : value)
-                + (element.suffixText || '');
+            if (typeof value === 'boolean' && element.prefixText) {
+                element.value = element.prefixText + (element.suffixText || '');
+            } else {
+                element.value = ApplicationService.createStringValue(element, value, true);
+            }
         }
         ApplicationService.localStoreValue(element);
         if ((element.value || element.valueArr || element.valueObj)/* && !['input-select'].includes(element.type)*/) {
@@ -1049,7 +1067,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.appSubmit(element.options.inputApiUuid, 'input', element);
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
-                window.open(String(element.value), '_blank').focus();
+                if (element.isDownloadMode) {
+                    ApplicationService.downloadImage(String(element.value));
+                } else {
+                    window.open(String(element.value), '_blank').focus();
+                }
             }
         }
         if (element.type === 'user-subscription' && this.isVkApp) {
@@ -1079,14 +1101,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
-        if (element.loadValueInto) {
+        if (element.loadValueInto && element.value) {
             const allElements = this.getAllElements();
             const targetElement = allElements.find((elem) => {
                 return elem.name === element.loadValueInto;
             });
             if (targetElement) {
                 this.loadValueToElement(targetElement, element.value);
-                this.clearElementValue(element, true);
+                setTimeout(() => {
+                    this.clearElementValue(element, true);
+                    if (element.type === 'input-select') {
+                        element.value = null;
+                    }
+                    this.cdr.detectChanges();
+                }, 100);
                 this.cdr.markForCheck();
             }
             return;
@@ -1125,9 +1153,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!newValue.type.includes('image/') && !newValue.type.includes('djvu')) {
                     return;
                 }
-                newValue = URL.createObjectURL(newValue);
+                targetElement.valueObj = URL.createObjectURL(newValue);
+            } else {
+                targetElement.valueObj = newValue;
             }
-            targetElement.valueObj = newValue;
             targetElement.value = newValue;
             this.elementHiddenStateUpdate(targetElement);
             this.cdr.markForCheck();
@@ -1313,6 +1342,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 console.log(error);
                 this.message = $localize `Unable to obtain permission to upload file.`;
                 this.messageType = 'error';
+                this.cdr.detectChanges();
             });
     }
 
@@ -1323,21 +1353,58 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.messageType = 'success';
 
                 // Pass the URL as the value of the download button
-                if (docUrl) {
-                    const buttonElement = outputElements.find((elem) => {
-                        return elem.type === 'button';
-                    });
-                    if (buttonElement) {
-                        buttonElement.value = docUrl;
-                        this.elementHiddenStateUpdate(buttonElement);
-                    }
-                    this.cdr.detectChanges();
-                }
+                // if (docUrl) {
+                //     const buttonElement = outputElements.find((elem) => {
+                //         return elem.type === 'button';
+                //     });
+                //     if (buttonElement) {
+                //         buttonElement.value = docUrl;
+                //         this.elementHiddenStateUpdate(buttonElement);
+                //     }
+                //     this.cdr.detectChanges();
+                // }
             });
     }
 
     startPayment(): void {
-        console.log('startPayment');
+        // if (!this.isLoggedIn) {
+        //     this.authService.navigateAuthPage('login');
+        //     return;
+        // }
+        // const initialData = {
+        //     appUuid: this.data.uuid
+        // };
+        // this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
+        //     .pipe(take(1))
+        //     .subscribe({
+        //         next: (reason) => {
+        //             // console.log(reason);
+        //             if (reason === 'confirmed') {
+        //
+        //             } else if (reason === 'promo_code_success') {
+        //                 this.updateUserBalance();
+        //                 this.message = $localize `Congratulations! Promo code accepted.`;
+        //                 this.messageType = 'success';
+        //             }
+        //         }
+        //     });
+    }
+
+    updateUserBalance(): void {
+        // if (!this.isLoggedIn) {
+        //     return;
+        // }
+        // this.dataService.userBalance(this.data.uuid)
+        //     .pipe(takeUntil(this.destroyed$))
+        //     .subscribe({
+        //         next: (res) => {
+        //             this.userBalance = res?.balance || 0;
+        //             this.cdr.markForCheck();
+        //         },
+        //         error: (err) => {
+        //             // console.log(err);
+        //         }
+        //     });
     }
 
     ngOnDestroy(): void {
