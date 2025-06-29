@@ -64,12 +64,14 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.imageUrl || !this.useCropper) && val) {
-            this.imageUrl = typeof val === 'string'
-                ? this.sanitizer.bypassSecurityTrustUrl(val)
-                : val;
-        } else if (!val) {
-            this.imageUrl = '';
+        if ((!this.imageUrl && val) || !this.useCropper) {
+            if (val instanceof File) {
+                this.imageUrl = URL.createObjectURL(val);
+            } else {
+                this.imageUrl = val && typeof val === 'string'
+                    ? this.sanitizer.bypassSecurityTrustUrl(val)
+                    : val;
+            }
         }
         if (this.useLink) {
             this.createLinkUrl();
@@ -88,7 +90,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        if (this.useCropper && changes['imageUrl']) {
+        if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
         if (this.useLink && (changes['imageUrl'] || changes['imageLargeUrl'])) {
@@ -129,10 +131,18 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         fetch(downloadUrl)
             .then(response => response.blob())
             .then(blob => {
+                const blobUrl = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
+                link.href = blobUrl;
                 link.download = filename;
+                link.style.display = 'none';
+                document.body.appendChild(link);
                 link.click();
+
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                }, 100);
             })
             .catch(console.error);
     }
@@ -144,7 +154,7 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         if (this.editorMode) {
             return;
         }
-        const imageBrokenUrl = 'assets/img/image-broken.png';
+        // const imageBrokenUrl = 'assets/img/image-broken.png';
         // if (typeof index !== 'undefined' && element.valueArr) {
         //     if (element.itemThumbnailFieldName) {
         //         element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
