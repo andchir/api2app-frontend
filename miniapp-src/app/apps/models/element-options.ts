@@ -216,6 +216,18 @@ export class ElementOptions {
                     value: options?.text
                 });
                 output.push({
+                    name: 'prefixText',
+                    label: $localize `Prefix for the resulting value`,
+                    type: 'input-text',
+                    value: options?.prefixText
+                });
+                output.push({
+                    name: 'suffixText',
+                    label: $localize `Suffix for the resulting value`,
+                    type: 'input-text',
+                    value: options?.suffixText
+                });
+                output.push({
                     name: 'icon',
                     label: $localize `Icon`,
                     type: 'input-text',
@@ -263,6 +275,12 @@ export class ElementOptions {
                     label: $localize `Reset all values`,
                     type: 'input-switch',
                     enabled: options?.isClearForm || false
+                });
+                output.push({
+                    name: 'isDownloadMode',
+                    label: $localize `Download`,
+                    type: 'input-switch',
+                    enabled: options?.isDownloadMode || false
                 });
                 break;
             case 'input-text':
@@ -535,6 +553,12 @@ export class ElementOptions {
                 });
                 break;
             case 'input-hidden':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
                 output.push({
                     name: 'prefixText',
                     label: $localize `Prefix Text`,
@@ -1357,11 +1381,14 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'submit',
                     text: $localize `Submit`,
+                    prefixText: '',
+                    suffixText: '',
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
                     hiddenByDefault: false,
-                    isClearForm: false
+                    isClearForm: false,
+                    isDownloadMode: false
                 });
                 break;
             case 'input-text':

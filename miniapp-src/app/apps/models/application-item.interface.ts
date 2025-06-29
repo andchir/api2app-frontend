@@ -22,7 +22,9 @@ export interface ApplicationItem {
     vkAppId?: string;
     vkSecretKey?: string;
     tgBotToken?: string;
+    tgForwardToUserId?: number;
     paymentEnabled?: boolean;
     advertising?: boolean;
     adultsOnly?: boolean;
+    pricePerUse?: number;
 }

@@ -17,6 +17,7 @@ export interface ApiItem {
     dailyLimitUsage: number;
     dailyLimitForUniqueUsers: boolean;
     paidOnly: boolean;
+    pricePerUse: number;
 
     bodyFields: RequestDataField[];
     bodyContent: string;
