@@ -727,7 +727,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    outputData[fieldName] = value;
+                    // outputData[fieldName] = value;
+                    outputData[fieldName] = ApplicationService.createStringValue(elem, value);
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
             }
