@@ -275,7 +275,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static createStringValue(element: AppBlockElement, value: any): string {
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
         if (typeof value === 'object' && Array.isArray(value)) {
             value = value.map(item => {
                 if (typeof item === 'object' && item !== null) {
@@ -288,10 +288,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
             value = (element.prefixText || '') + encodeURIComponent(value);
-        } else if (element.prefixText && !/[{}]/.test(element.prefixText)) {
+        } else if (element.prefixText && (!/[{}]/.test(element.prefixText) || skipTags)) {
             value = (element.prefixText || '') + value;
         }
-        if (element.suffixText && !/[{}]/.test(element.suffixText)) {
+        if (element.suffixText && (!/[{}]/.test(element.suffixText) || skipTags)) {
             value += (element.suffixText || '');
         }
         return value.trim();
