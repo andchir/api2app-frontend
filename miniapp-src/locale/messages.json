@@ -57,6 +57,9 @@
         "3704426281480438191": "All rights reserved.",
         "4651431194327986240": " Terms & Conditions ",
         "4721007402656921350": " Privacy Policy ",
+        "6985001033307944163": "Offer Agreement",
+        "8439955599488894226": "Privacy Policy",
+        "3303852097031321192": "Terms & Conditions",
         "4807759288108940937": "Edit Application",
         "8071884458602750019": "Create Application",
         "4473628539015862644": "Application name",
@@ -384,6 +387,17 @@
         "2976827427836734523": "Store ID",
         "5500685598594641035": "Secret key",
         "2604092838016078854": "Top up balance",
-        "5524317351763991090": "Price per use"
+        "5524317351763991090": "Price per use",
+        "6984540085242925648": "Top-up amount",
+        "4664106702671272009": "Insufficient funds.",
+        "5894745684813170419": "You do not have permission to accept payments. For more information, you can contact support.",
+        "6446188882403579809": "User ID for forwarding messages",
+        "629832781326289198": "General price for information. The price of a specific call is specified in the API settings.",
+        "8282940047848889809": "Paid",
+        "1943153960391120303": "Promo code",
+        "5272586812404339867": "Congratulations! Promo code accepted.",
+        "5672903108660851514": "Prefix for the resulting value",
+        "6095154778691266590": "Suffix for the resulting value",
+        "6831320977219709363": "You can edit the data by removing unnecessary (secret) data. The server response will be filtered according to this data."
     }
 }

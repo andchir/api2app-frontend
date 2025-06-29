@@ -7,7 +7,13 @@ import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
-import { AppBlock, AppBlockElement, AppBlockElementType, AppOptions } from '../apps/models/app-block.interface';
+import {
+    AppBlock,
+    AppBlockElement,
+    AppBlockElementType,
+    AppBlockOptions,
+    AppOptions
+} from '../apps/models/app-block.interface';
 
 declare const vkBridge: any;
 
@@ -42,6 +48,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
     cloneItem(uuid: string): Observable<{success: boolean}> {
         const url = `${this.requestUrl}/${uuid}/clone`
         return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    userBalance(appUuid: string): Observable<{success: boolean, balance?: number}> {
+        const url = `${BASE_URL}user_balance/${appUuid}`;
+        return this.httpClient.get<{success: boolean, balance?: number}>(url, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -98,13 +112,17 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return {
             elements: [],
             loading: false,
-            options: {
-                orderIndex: 0,
-                gridColumnSpan: 1,
-                messageSuccess: $localize `The form has been submitted successfully.`,
-                autoClear: false,
-                showLoading: true
-            }
+            options: ApplicationService.getBlockOptionsDefaults()
+        };
+    }
+
+    static getBlockOptionsDefaults(): AppBlockOptions {
+        return {
+            orderIndex: 0,
+            gridColumnSpan: 1,
+            messageSuccess: $localize `The form has been submitted successfully.`,
+            autoClear: false,
+            showLoading: true
         };
     }
 
@@ -124,6 +142,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+        if (!element.value) {
+            return ApplicationService.getFieldDefaultValue(element.type);
+        }
         switch (element.type) {
             case 'input-tags':
                 return Array.isArray(element?.value) ? element?.value : [];
@@ -248,6 +269,99 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return new Blob([new Uint8Array(arr)], { type: mimeString });
     };
 
+    static getFieldDefaultValue(fieldType: string): string|number|boolean|null {
+        let value: string|number|boolean|null = '';
+        switch (fieldType) {
+            case 'input-number':
+            case 'input-slider':
+                value = 0;
+                break;
+            case 'input-file':
+            case 'image':
+                value = null;
+                break;
+        }
+        return value;
+    }
+
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
+        if (typeof value === 'object' && Array.isArray(value)) {
+            value = value.map(item => {
+                if (typeof item === 'object' && item !== null) {
+                    return JSON.stringify(item);
+                }
+                return String(item);
+            }).join('');
+        } else if (typeof value === 'object') {
+            value = JSON.stringify(value, null, 2);
+        }
+        if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
+            value = (element.prefixText || '') + encodeURIComponent(value);
+        } else if (element.prefixText && (!/[{}]/.test(element.prefixText) || !skipTags)) {
+            value = (element.prefixText || '') + value;
+        }
+        if (element.suffixText && (!/[{}]/.test(element.suffixText) || !skipTags)) {
+            value += (element.suffixText || '');
+        }
+        return value.trim();
+    }
+
+    static async downloadImage(url: string): Promise<boolean> {
+        const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
+        const fileExtension = ApplicationService.getFileExtension(url);
+        const isFileUrl = filesExtensions.includes(fileExtension);
+
+        if (!isFileUrl) {
+            console.log('Not an image.', url, fileExtension);
+            window.open(url, '_blank').focus();
+            return false;
+        }
+
+        try {
+            const response = await fetch(url, {
+                mode: 'cors',
+                cache: 'no-cache'
+            });
+
+            if (!response.ok) {
+                throw new Error(`Loading error: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = blobUrl;
+
+            let filename = url.split('/').pop();
+            filename = decodeURIComponent(filename.split('?')[0]);
+
+            link.download = String(filename);
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(blobUrl);
+            }, 100);
+
+            return true;
+        } catch (error) {
+            console.log(error);
+            window.open(url, '_blank').focus();
+            return false;
+        }
+    }
+
+    static getFileExtension(url: string): string {
+        const base = url.split('?')[0].split('#')[0];
+        const extension = base.split('.').pop();
+        if (!extension || extension.length > 6 || extension === base) {
+            return '';
+        }
+        return extension.toLowerCase();
+    }
+
     static getDefault(): ApplicationItem {
         return {
             id: 0,
@@ -260,7 +374,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumns: 3,
             language: '',
             image: '',
-            blocks: [{tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}, {tabIndex: -1, elements: []}]
+            blocks: [
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
+                {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()}
+            ]
         };
     }
 }

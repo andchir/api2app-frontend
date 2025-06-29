@@ -57,6 +57,9 @@
         "3704426281480438191": "Alle Rechte vorbehalten.",
         "4651431194327986240": " Allgemeine Geschäftsbedingungen ",
         "4721007402656921350": " Datenschutzerklärung ",
+        "6985001033307944163": "Angebotsvereinbarung",
+        "8439955599488894226": "Datenschutzrichtlinie",
+        "3303852097031321192": "Nutzungsbedingungen",
         "4807759288108940937": "Bewerbung bearbeiten",
         "8071884458602750019": "Anwendung erstellen",
         "4473628539015862644": "Anwendungsname",
@@ -384,6 +387,17 @@
         "2976827427836734523": "Geschäfts-ID",
         "5500685598594641035": "Geheimer Schlüssel",
         "2604092838016078854": "Guthaben aufladen",
-        "5524317351763991090": "Preis pro Nutzung"
+        "5524317351763991090": "Preis pro Nutzung",
+        "6984540085242925648": "Aufladebetrag",
+        "4664106702671272009": "Unzureichende Mittel.",
+        "5894745684813170419": "Sie sind nicht berechtigt, Zahlungen anzunehmen. Für weitere Informationen wenden Sie sich bitte an den Support.",
+        "6446188882403579809": "Benutzerkennung zum Weiterleiten von Nachrichten",
+        "629832781326289198": "Allgemeiner Preis zur Information. Der Preis eines bestimmten Anrufs wird in den API-Einstellungen angegeben.",
+        "8282940047848889809": "Bezahlt",
+        "1943153960391120303": "Aktionscode",
+        "5272586812404339867": "Herzlichen Glückwunsch! Promo-Code akzeptiert.",
+        "5672903108660851514": "Präfix für den resultierenden Wert",
+        "6095154778691266590": "Suffix für den resultierenden Wert",
+        "6831320977219709363": "Sie können die Daten bearbeiten, indem Sie unnötige (geheime) Daten entfernen. Die Serverantwort wird entsprechend dieser Daten gefiltert."
     }
 }

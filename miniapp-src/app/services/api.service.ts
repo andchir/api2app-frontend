@@ -36,6 +36,7 @@ export class ApiService extends DataService<ApiItem> {
             dailyLimitUsage: 0,
             dailyLimitForUniqueUsers: false,
             paidOnly: false,
+            pricePerUse: 0,
             responseBody: '',
             responseHeaders: [],
             responseContentType: 'json',
@@ -61,7 +62,10 @@ export class ApiService extends DataService<ApiItem> {
         };
     }
 
-    static getPropertiesRecursively(data: any, string: string = '', outputKeys = [], values = []): {outputKeys: string[], values: string|number|boolean[]} {
+    static getPropertiesRecursively(data: any, string: string = '', outputKeys = [], values = []): {
+        outputKeys: string[],
+        values: string|number|boolean[]
+    } {
         if (typeof data === 'object') {
             if (Array.isArray(data)) {
                 data.forEach((item, index) => {
@@ -72,10 +76,8 @@ export class ApiService extends DataService<ApiItem> {
             } else {
                 for (let prop in data) {
                     if (typeof data[prop] === 'object') {
-                        if (Array.isArray(data[prop])) {
-                            outputKeys.push(string + (string ? '.' : '') + prop);
-                            values.push(data[prop]);
-                        }
+                        outputKeys.push(string + (string ? '.' : '') + prop);
+                        values.push(data[prop]);
                         this.getPropertiesRecursively(data[prop], string + (string ? '.' : '') + prop, outputKeys, values);
                     } else {
                         outputKeys.push(string + (string ? '.' : '') + prop);
@@ -119,6 +121,63 @@ export class ApiService extends DataService<ApiItem> {
             }
         });
         return responseTypeValue;
+    }
+
+    getInnerParams(data: any): any {
+        const outData = {};
+        const innerOptions = {};
+        const innerData = {};
+        for (const key of Object.keys(data)) {
+            if (key === '__inner') {
+                Object.assign(innerData, data[key]);
+            } else if (key.includes('__')) {
+                innerOptions[key.replace('__', '')] = data[key];
+            } else {
+                outData[key] = data[key];
+            }
+        }
+        return {outData, innerOptions, innerData};
+    }
+
+    applyInnerParams(data: any, innerValues: any = null): any {
+        const {outData, innerOptions, innerData} = this.getInnerParams(data);
+        if (typeof innerValues === 'object') {
+            Object.assign(innerData, innerValues);
+        }
+        if (Object.keys(innerOptions).length > 0) {
+            for (const key of Object.keys(outData)) {
+                for (const optKey of Object.keys(innerOptions)) {
+                    if (!optKey.includes(`${key}:`)) {
+                        continue;
+                    }
+                    const [mainKey, optsStr] = optKey.split(':');
+                    for (const dKey of Object.keys(innerData)) {
+                        if (optsStr.includes(`${dKey}=${innerData[dKey]}`)) {
+                            outData[mainKey] = innerOptions[optKey];
+                        }
+                    }
+                }
+            }
+        }
+        for (const outKey of Object.keys(outData)) {
+            if (typeof outData[outKey] === 'object') {
+                if (Array.isArray(outData[outKey])) {
+                    outData[outKey] = outData[outKey].map((item) => {
+                        if (typeof item === 'object' && !Array.isArray(item)) {
+                            return this.applyInnerParams(item, innerData);
+                        }
+                        return item;
+                    });
+                } else {
+                    outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+                }
+            } else if (typeof outData[outKey] === 'string') {
+                for (const dKey of Object.keys(innerData)) {
+                    outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
+                }
+            }
+        }
+        return outData;
     }
 
     apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
@@ -312,16 +371,20 @@ export class ApiService extends DataService<ApiItem> {
                 }
             }
             if (!isDevMode()) {
-                const csrfToken = '';// this.getCookie('csrftoken');
+                const csrfToken = DataService.getCookie('csrftoken');
                 requestHeaders['X-CSRFToken'] = csrfToken || window['csrf_token'] || '';
                 requestHeaders['Mode'] = 'same-origin';
             }
         }
 
         const headers = new HttpHeaders(requestHeaders);
-        const requestData = sendAsFormData ? formData : (body || bodyRaw);
+        let requestData = sendAsFormData ? formData : (body || bodyRaw);
         const responseType = 'blob';
         const params = this.createParams(queryParams);
+
+        if (data.sender !== 'server' && !sendAsFormData) {
+            requestData = this.applyInnerParams(requestData);
+        }
 
         let httpRequest;
         switch (requestMethod) {
@@ -351,7 +414,7 @@ export class ApiService extends DataService<ApiItem> {
 
     apiRequestByProxy(data: any): Observable<HttpResponse<any>> {
         const url = `${BASE_URL}api/v1/proxy`;
-        const csrfToken = '';// this.getCookie('csrftoken');
+        const csrfToken = '';// DataService.getCookie('csrftoken');
         // console.log('csrfToken', csrfToken);
         // console.log('window.csrf_token', window['csrf_token']);
         let headers;
