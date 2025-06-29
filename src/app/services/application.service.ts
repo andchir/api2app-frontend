@@ -288,10 +288,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
             value = (element.prefixText || '') + encodeURIComponent(value);
-        } else {
+        } else if (element.prefixText && !/[{}]/.test(element.prefixText)) {
             value = (element.prefixText || '') + value;
         }
-        value += (element.suffixText || '');
+        if (element.suffixText && !/[{}]/.test(element.suffixText)) {
+            value += (element.suffixText || '');
+        }
         return value.trim();
     }
 
