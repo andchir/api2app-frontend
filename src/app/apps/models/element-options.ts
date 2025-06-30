@@ -282,6 +282,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.isDownloadMode || false
                 });
+                output.push({
+                    name: 'isStickyPosition',
+                    label: $localize `Sticky position`,
+                    type: 'input-switch',
+                    enabled: options?.isStickyPosition || false
+                });
                 break;
             case 'input-text':
                 // output.push({
@@ -1388,7 +1394,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     hiddenByDefault: false,
                     isClearForm: false,
-                    isDownloadMode: false
+                    isDownloadMode: false,
+                    isStickyPosition: false
                 });
                 break;
             case 'input-text':

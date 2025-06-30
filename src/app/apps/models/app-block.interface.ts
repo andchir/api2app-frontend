@@ -74,6 +74,7 @@ export interface AppBlockElement {
     useCropper?: boolean;
     isClearForm?: boolean;
     isDownloadMode?: boolean;
+    isStickyPosition?: boolean;
 }
 
 export interface AppBlockOptions {

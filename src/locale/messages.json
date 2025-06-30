@@ -398,6 +398,7 @@
         "5272586812404339867": "Congratulations! Promo code accepted.",
         "5672903108660851514": "Prefix for the resulting value",
         "6095154778691266590": "Suffix for the resulting value",
-        "6831320977219709363": "You can edit the data by removing unnecessary (secret) data. The server response will be filtered according to this data."
+        "6831320977219709363": "You can edit the data by removing unnecessary (secret) data. The server response will be filtered according to this data.",
+        "7754881083039709737": "Sticky position"
     }
 }
