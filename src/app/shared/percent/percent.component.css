@@ -1,0 +1,6 @@
+
+.progress-circle-fill {
+    stroke-linecap: round;
+    stroke-dashoffset: 283;
+    transition: stroke-dashoffset 0.3s ease;
+}

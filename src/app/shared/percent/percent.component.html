@@ -1,5 +1,12 @@
 <div>
     <div class="relative mx-auto" [style.width]="size+'px'" [style.height]="size+'px'">
-        <canvas [width]="size" [height]="size" #canvas></canvas>
+        <svg class="w-full h-full -rotate-90" viewBox="0 0 100 100">
+            <circle class="progress-circle-background fill-none stroke-[10] stroke-gray-200" cx="50" cy="50" r="45"></circle>
+            <circle class="progress-circle-fill fill-none stroke-[10] stroke-indigo-500" cx="50" cy="50" r="45"
+                    stroke-dasharray="283"
+                    stroke-dashoffset="283"
+                    #progressCircle></circle>
+        </svg>
+        <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-indigo-500">{{ percentCurrent }}%</div>
     </div>
 </div>

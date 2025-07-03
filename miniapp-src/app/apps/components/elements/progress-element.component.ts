@@ -73,7 +73,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         if (this.editorMode) {
             val = 65;
         }
-        this._value = val || 0;
+        this._value = Math.round(val || 0);
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
