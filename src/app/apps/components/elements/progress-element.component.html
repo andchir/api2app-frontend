@@ -2,7 +2,7 @@
     <div class="p-2 rounded-lg border-2 border-dotted border-gray-300">
         <app-percent [percentCurrent]="value"></app-percent>
 
-        <div class="pt-2 text-gray-500 text-center text-sm" *ngIf="![statusCompleted, statusError].includes(status)">
+        <div class="pt-2 text-gray-500 text-center text-sm" *ngIf="![statusCompleted, statusError, 'canceled'].includes(status)">
             <div *ngIf="queueNumber">
                 <span i18n>Your number in the queue:</span>&nbsp;<b>{{ queueNumber }}</b>.
             </div>
@@ -14,6 +14,9 @@
         </div>
         <div class="pt-2 text-red-500 text-center text-sm" *ngIf="status == statusError">
             <span i18n>Error</span>
+        </div>
+        <div class="pt-2 text-red-500 text-center text-sm" *ngIf="status == 'canceled'">
+            <span i18n>Canceled</span>
         </div>
     </div>
     <button type="button" class="absolute top-5 right-5 text-xs text-gray-700 px-2 py-1 border border-gray-300 rounded bg-gray-200 hover:bg-gray-300"

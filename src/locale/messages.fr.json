@@ -399,6 +399,7 @@
         "5672903108660851514": "Préfixe pour la valeur résultante",
         "6095154778691266590": "Suffixe pour la valeur résultante",
         "6831320977219709363": "Vous pouvez modifier les données en supprimant les données inutiles (secrètes). La réponse du serveur sera filtrée en fonction de ces données.",
-        "7754881083039709737": "Positionnement bloqué"
+        "7754881083039709737": "Positionnement bloqué",
+        "4381944803872489731": "Annulé"
     }
 }

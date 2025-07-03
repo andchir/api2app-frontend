@@ -178,7 +178,8 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
 
     cancel(): void {
         clearTimeout(this.timer);
-        this.status = 'pending';
+        this.status = 'canceled';
+        this.queueNumber = 0;
         this.processStartedAt = null;
         const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
         window.localStorage.removeItem(`${taskUuid}-progress-start`);
