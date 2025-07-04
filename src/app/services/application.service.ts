@@ -285,6 +285,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             }).join('');
         } else if (typeof value === 'object') {
             value = JSON.stringify(value, null, 2);
+        } else if (typeof value === 'number') {
+            value = String(value);
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
             value = (element.prefixText || '') + encodeURIComponent(value);

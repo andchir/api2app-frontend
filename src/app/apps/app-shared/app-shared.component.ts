@@ -727,8 +727,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    // outputData[fieldName] = value;
-                    outputData[fieldName] = ApplicationService.createStringValue(elem, value);
+                    if (typeof value === 'string') {
+                        outputData[fieldName] = ApplicationService.createStringValue(elem, value);
+                    } else {
+                        outputData[fieldName] = value;
+                    }
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
             }
@@ -1055,8 +1058,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else {
+            } else if (typeof value === 'string') {
                 element.value = ApplicationService.createStringValue(element, value, true);
+            } else {
+                element.value = value;
             }
         }
         ApplicationService.localStoreValue(element);
