@@ -4,7 +4,7 @@ import {
     Component,
     EventEmitter, forwardRef,
     Input,
-    OnChanges,
+    OnChanges, OnInit,
     Output, SecurityContext,
     SimpleChanges
 } from '@angular/core';
@@ -30,7 +30,7 @@ import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementImageComponent implements ControlValueAccessor, OnChanges {
+export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
 
     @Input() editorMode = false;
     @Input() name: string;
@@ -46,7 +46,6 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input() valueFieldName: string;
     @Input() cropperMaintainAspectRatio: boolean = false;
     @Input() cropperAspectRatio: number = 4 / 3;
-    @Input() cropperAspectRatioString: string = '4:3';
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     downloadUrl: string | SafeResourceUrl | null = '#';
@@ -58,6 +57,24 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     loading: boolean = false;
     imageChangedEvent: Event | null = null;
     croppedImage: SafeUrl | string = '';
+
+    private _cropperAspectRatioString: string = '';
+
+    get cropperAspectRatioString(): string {
+        return this._cropperAspectRatioString;
+    }
+
+    @Input()
+    set cropperAspectRatioString(value: string) {
+        if (typeof value === 'string' && /^\d+:\d+$/.test(value)) {
+            const parts = value.split(':');
+            const num1 = parseInt(parts[0], 10);
+            const num2 = parseInt(parts[1], 10);
+            this.cropperMaintainAspectRatio = true;
+            this.cropperAspectRatio = num1 / num2;
+            this._cropperAspectRatioString = value;
+        }
+    }
 
     private _value: SafeUrl | File | string = '';
 
@@ -88,6 +105,10 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
         private sanitizer: DomSanitizer,
         private cdr: ChangeDetectorRef
     ) {}
+
+    ngOnInit(): void {
+        console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
+    }
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.editorMode) {
