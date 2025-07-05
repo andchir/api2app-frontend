@@ -44,6 +44,9 @@ export class ElementImageComponent implements ControlValueAccessor, OnChanges {
     @Input() useLink: boolean;
     @Input() useCropper: boolean;
     @Input() valueFieldName: string;
+    @Input() cropperMaintainAspectRatio: boolean = false;
+    @Input() cropperAspectRatio: number = 4 / 3;
+    @Input() cropperAspectRatioString: string = '4:3';
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     downloadUrl: string | SafeResourceUrl | null = '#';

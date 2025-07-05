@@ -961,6 +961,20 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'cropperAspectRatioString',
+                    label: ($localize `Aspect ratio when cropping`),
+                    type: 'input-text',
+                    value: options?.cropperAspectRatioString || ''
+                });
+                output.push({
+                    name: 'info',
+                    value: '1:1, 4:3, 3:4, 16:9, 9:16',
+                    type: 'text',
+                    color: 'Gray',
+                    icon: 'bi-info-circle',
+                    fontSize: 'Small'
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -1001,6 +1015,7 @@ export class ElementOptions {
                     value: true,
                     enabled: options?.useLink
                 });
+
                 break;
             case 'input-chart-line':
                 output.push({

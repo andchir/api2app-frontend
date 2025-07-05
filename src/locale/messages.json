@@ -400,6 +400,7 @@
         "6095154778691266590": "Suffix for the resulting value",
         "6831320977219709363": "You can edit the data by removing unnecessary (secret) data. The server response will be filtered according to this data.",
         "7754881083039709737": "Sticky position",
-        "4381944803872489731": "Canceled"
+        "4381944803872489731": "Canceled",
+        "9103250773067744487": "Aspect ratio when cropping"
     }
 }
