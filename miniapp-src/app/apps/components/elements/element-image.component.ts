@@ -107,7 +107,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     ) {}
 
     ngOnInit(): void {
-        console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
+        // console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
     }
 
     ngOnChanges(changes: SimpleChanges): void {
