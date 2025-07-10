@@ -1,7 +1,7 @@
-import {Component, ElementRef, Inject, LOCALE_ID, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, Inject, LOCALE_ID, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { debounceTime, delay, Subject } from 'rxjs';
+import { BehaviorSubject, debounceTime, delay, skip } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { RouterEventsService } from '../../services/router-events.service';
@@ -15,7 +15,7 @@ import { RouterEventsService } from '../../services/router-events.service';
 export class ListApisComponent implements OnInit {
 
     @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
-    searchWord$ = new Subject<string>();
+    searchWord$ = new BehaviorSubject<string>('');
     language: string = '';
     languagesList: {name: string, title: string}[] = [
         {
@@ -35,6 +35,7 @@ export class ListApisComponent implements OnInit {
             title: 'Français'
         }
     ];
+    currentUrl: string = '';
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
@@ -58,8 +59,10 @@ export class ListApisComponent implements OnInit {
             });
 
         this.searchWord$
-            .pipe(debounceTime(700))
+            .pipe(skip(1), debounceTime(700))
             .subscribe(this.onSearchUpdate.bind(this));
+
+        this.currentUrl = this.routerEventsService.getCurrentUrl(true);
     }
 
     onSearchKeyUp(event: Event|KeyboardEvent): void {
@@ -83,5 +86,20 @@ export class ListApisComponent implements OnInit {
                 queryParamsHandling: 'merge'
             }
         );
+    }
+
+    navigateAppSection(parentRoute: string, newRoute: string): void {
+        const queryParams: Params = {
+            search: this.searchWord$.getValue(),
+            language: this.language
+        };
+        this.router.navigate(
+            [parentRoute, newRoute],
+            {
+                queryParams
+            }
+        ).then(() => {
+            this.currentUrl = this.routerEventsService.getCurrentUrl(true);
+        });
     }
 }

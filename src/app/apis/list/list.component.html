@@ -22,18 +22,20 @@
             <div>
 
                 <div class="rounded-md shadow-sm flex lg:inline-flex" role="group">
-                    <a class="block grow text-center items-center px-4 py-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-s-lg hover:bg-gray-900 hover:text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white"
-                        [routerLink]="['/apis', 'shared']"
-                        [routerLinkActive]="'bg-gray-900 text-white'">
+                    <button type="button"
+                            class="block grow text-center items-center px-4 py-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-s-lg hover:bg-gray-900 hover:text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white"
+                            [ngClass]="{'!bg-gray-900 !text-white': currentUrl.includes('/shared')}"
+                            (click)="navigateAppSection('apis', 'shared')">
                         <i class="bi bi-share-fill mr-2"></i>
                         <span i18n="@@SharedHeader">Shared</span>
-                    </a>
-                    <a class="block grow text-center items-center px-4 py-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white"
-                       [routerLink]="['/apis', 'personal']"
-                       [routerLinkActive]="'bg-gray-900 text-white'">
+                    </button>
+                    <button type="button"
+                            class="block grow text-center items-center px-4 py-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-e-lg hover:bg-gray-900 hover:text-white focus:ring-2 focus:ring-gray-500 focus:bg-gray-900 focus:text-white"
+                            [ngClass]="{'!bg-gray-900 !text-white': currentUrl.includes('/personal')}"
+                            (click)="navigateAppSection('apis', 'personal')">
                         <i class="bi bi-person-circle mr-2"></i>
                         <span i18n>My APIs</span>
-                    </a>
+                    </button>
                 </div>
 
             </div>

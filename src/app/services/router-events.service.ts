@@ -25,7 +25,10 @@ export class RouterEventsService {
         return this.previousUrl;
     }
 
-    public getCurrentUrl() {
+    public getCurrentUrl(withoutQueryParams: boolean = false) {
+        if (withoutQueryParams) {
+            return this.currentUrl.split('?')[0];
+        }
         return this.currentUrl;
     }
 }
