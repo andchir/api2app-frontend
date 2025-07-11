@@ -137,7 +137,11 @@ export class AuthService {
     }
 
     saveNextRoute(route: string): void {
-        window.sessionStorage.setItem(NEXT_ROUTE_KEY, route);
+        if (!route) {
+            this.deleteNextRoute();
+            return;
+        }
+        window.sessionStorage.setItem(NEXT_ROUTE_KEY, encodeURIComponent(route));
     }
 
     deleteNextRoute(): void {
@@ -149,7 +153,7 @@ export class AuthService {
         if (autoDelete && nextRoute) {
             this.deleteNextRoute();
         }
-        return nextRoute;
+        return nextRoute ? decodeURIComponent(nextRoute) : '';
     }
 
     navigateAuthPage(pageName: 'login'|'logout'|'register'): void {
@@ -177,6 +181,27 @@ export class AuthService {
         if (route === this.router.url) {
             return;
         }
-        this.router.navigate(route ? [route] : ['/']);
+        const queryParams = this.getQueryParams(route);
+        route = route.split('?')[0];
+        this.router.navigate(
+            route ? [route] : ['/'],
+            {
+                queryParams
+            }
+        );
+    }
+
+    getQueryParams(url: string): any {
+        const queryString = url.split('?')[1];
+        if (!queryString) {
+            return {};
+        }
+        const paramsArray = queryString.split('&');
+        const params = {};
+        paramsArray.forEach(param => {
+            const [key, value] = param.split('=');
+            params[key] = decodeURIComponent(value || '');
+        });
+        return params;
     }
 }

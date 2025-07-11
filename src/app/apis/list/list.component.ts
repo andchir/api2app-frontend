@@ -73,26 +73,36 @@ export class ListApisComponent implements OnInit {
         this.onSearchUpdate(this.searchField.nativeElement.value);
     }
 
-    onSearchUpdate(searchWord: string): void {
-        const queryParams: Params = {
-            search: searchWord || null,
-            language: this.language
-        };
-        this.router.navigate(
-            [],
-            {
-                relativeTo: this.route,
-                queryParams,
-                queryParamsHandling: 'merge'
-            }
-        );
+    onSearchUpdate(searchWord: string = ''): void {
+        const queryParams: Params = {};
+        if (this.language !== this.locale) {
+            queryParams['language'] = this.language;
+        }
+        if (this.searchWord$.getValue()) {
+            queryParams['search'] = this.searchWord$.getValue();
+        }
+        if (Object.keys(queryParams).length > 0) {
+            this.router.navigate(
+                [],
+                {
+                    relativeTo: this.route,
+                    queryParams,
+                    queryParamsHandling: 'merge'
+                }
+            );
+        } else {
+            this.router.navigate([this.currentUrl]);
+        }
     }
 
     navigateAppSection(parentRoute: string, newRoute: string): void {
-        const queryParams: Params = {
-            search: this.searchWord$.getValue(),
-            language: this.language
-        };
+        const queryParams: Params = {};
+        if (this.language !== this.locale) {
+            queryParams['language'] = this.language;
+        }
+        if (this.searchWord$.getValue()) {
+            queryParams['search'] = this.searchWord$.getValue();
+        }
         this.router.navigate(
             [parentRoute, newRoute],
             {
