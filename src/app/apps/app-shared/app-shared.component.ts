@@ -1205,7 +1205,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const element = this.data.blocks[parentIndex].elements[elementIndex];
         const elementCloned = Object.assign({}, element, {options: {}});
 
-        this.data.blocks[parentIndex].elements.splice(elementIndex, 0, elementCloned);
+        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
         this.cdr.markForCheck();
     }
 
