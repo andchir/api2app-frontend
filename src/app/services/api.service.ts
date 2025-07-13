@@ -310,11 +310,13 @@ export class ApiService extends DataService<ApiItem> {
             ? (headersData['Content-Type'] ? {'Content-Type': headersData['Content-Type']} : {})
             : Object.assign({}, headersData);
 
-        if (headersData['Accept']) {
-            delete headersData['Accept'];
-        }
-        if (headersData['Content-Type']) {
-            delete headersData['Content-Type'];
+        if (!isApiTesting) {
+            if (headersData['Accept']) {
+                delete headersData['Accept'];
+            }
+            if (headersData['Content-Type']) {
+                delete headersData['Content-Type'];
+            }
         }
 
         if (data.sender === 'server') {
