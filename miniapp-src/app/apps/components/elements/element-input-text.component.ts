@@ -321,7 +321,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         textAreaEl.style.height = `${scrollHeight}px`;
     }
 
-    onKeyUp(event: KeyboardEvent) {
+    onKeyUp(event: KeyboardEvent|ClipboardEvent) {
         if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
             (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
         }

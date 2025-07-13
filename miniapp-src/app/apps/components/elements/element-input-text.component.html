@@ -50,6 +50,7 @@
                        }"
                        [placeholder]="placeholder || ''"
                        (keyup)="onKeyUp($event)"
+                       (paste)="onKeyUp($event)"
                        (focus)="onFocus($event)"
                        [readonly]="readOnly" #inputControl>
             </ng-container>
@@ -62,6 +63,7 @@
                       [rows]="rows"
                       (input)="onInput($event)"
                       (keyup)="onKeyUp($event)"
+                      (paste)="onKeyUp($event)"
                       (focus)="onFocus($event)"
                       [readonly]="readOnly" #inputControl></textarea>
             </ng-container>
