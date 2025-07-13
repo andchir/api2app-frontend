@@ -665,16 +665,16 @@
 <ng-template #templateButtonOptions>
     <div class="app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
-                title="Clone"
-                i18n-title
-                (click)="elementClone(index, parentIndex, $event)">
-            <i class="bi bi-copy text-base"></i>
-        </button>
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Options"
                 i18n-title
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+                title="Clone"
+                i18n-title
+                (click)="elementClone(index, parentIndex, $event)">
+            <i class="bi bi-copy text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Input Action"

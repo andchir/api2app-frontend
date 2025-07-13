@@ -309,6 +309,14 @@ export class ApiService extends DataService<ApiItem> {
         const requestHeaders = data.sender === 'server'
             ? (headersData['Content-Type'] ? {'Content-Type': headersData['Content-Type']} : {})
             : Object.assign({}, headersData);
+
+        if (headersData['Accept']) {
+            delete headersData['Accept'];
+        }
+        if (headersData['Content-Type']) {
+            delete headersData['Content-Type'];
+        }
+
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__uuid', data.uuid || '');
@@ -324,9 +332,9 @@ export class ApiService extends DataService<ApiItem> {
                     formData.append('opt__authLogin', data.authLogin);
                     formData.append('opt__authPassword', data.authPassword);
                 }
+                formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__headers_values', Object.values(headersData).join(','));
                 if (isApiTesting) {
-                    formData.append('opt__headers', Object.keys(headersData).join(','));
-                    formData.append('opt__headers_values', Object.values(headersData).join(','));
                     formData.append('opt__requestUrl', data?.requestUrl || '');
                     formData.append('opt__requestMethod', data?.requestMethod || 'GET');
                     formData.append('opt__responseContentType', data?.responseContentType || '');
@@ -366,6 +374,10 @@ export class ApiService extends DataService<ApiItem> {
                         opt__requestMethod: data?.requestMethod,
                         opt__responseContentType: data?.responseContentType,
                         opt__sendAsFormData: data?.sendAsFormData
+                    });
+                } else {
+                    Object.assign(body, {
+                        headers: Object.assign({}, headersData)
                     });
                 }
             }
