@@ -49,6 +49,7 @@
                        'pl-9': icon
                        }"
                        [placeholder]="placeholder || ''"
+                       [(ngModel)]="value"
                        (keyup)="onKeyUp($event)"
                        (paste)="onKeyUp($event)"
                        (focus)="onFocus($event)"
@@ -61,6 +62,7 @@
                       [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                       [placeholder]="placeholder || ''"
                       [rows]="rows"
+                      [(ngModel)]="value"
                       (input)="onInput($event)"
                       (keyup)="onKeyUp($event)"
                       (paste)="onKeyUp($event)"

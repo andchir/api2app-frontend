@@ -322,10 +322,14 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     }
 
     onKeyUp(event: KeyboardEvent|ClipboardEvent) {
-        if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
-            (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
-        }
-        this.value = (event.target as HTMLInputElement).value;
+        // if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
+        //     (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
+        // }
+        // if ((event as ClipboardEvent).clipboardData) {
+        //     this.value = (event as ClipboardEvent).clipboardData.getData('text');
+        // } else {
+        //     this.value = (event.target as HTMLInputElement).value;
+        // }
         this.isChanged = true;
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
