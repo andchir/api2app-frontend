@@ -169,20 +169,20 @@
                 <div class="hidden group-hover:block absolute right-5 bottom-5 z-10">
                     <button type="button"
                             class="px-2 py-1 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
+                            title="Private/Public"
+                            i18n-title
+                            (click)="bodyInputFullScreenToggle()">
+                        <i class="bi bi-fullscreen-exit" *ngIf="bodyInputFullScreen"></i>
+                        <i class="bi bi-arrows-fullscreen" *ngIf="!bodyInputFullScreen"></i>
+                    </button>
+                    <button type="button"
+                            class="px-2 py-1 ml-2 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
                             title="Enlarge/Reduce"
                             i18n-title
                             [ngClass]="{'text-red-700': apiItem.bodyContentPrivate}"
                             (click)="apiItem.bodyContentPrivate = !apiItem.bodyContentPrivate" *ngIf="authorized">
                         <i class="bi bi-lock-fill" *ngIf="apiItem.bodyContentPrivate"></i>
                         <i class="bi bi-unlock-fill" *ngIf="!apiItem.bodyContentPrivate"></i>
-                    </button>
-                    <button type="button"
-                            class="px-2 py-1 ml-2 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
-                            title="Private/Public"
-                            i18n-title
-                            (click)="bodyInputFullScreenToggle()">
-                        <i class="bi bi-fullscreen-exit" *ngIf="bodyInputFullScreen"></i>
-                        <i class="bi bi-arrows-fullscreen" *ngIf="!bodyInputFullScreen"></i>
                     </button>
                 </div>
             </div>
