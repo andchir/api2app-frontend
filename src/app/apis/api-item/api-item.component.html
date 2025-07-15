@@ -169,7 +169,7 @@
                 <div class="hidden group-hover:block absolute right-5 bottom-5 z-10">
                     <button type="button"
                             class="px-2 py-1 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
-                            title="Private/Public"
+                            title="Enlarge/Reduce"
                             i18n-title
                             (click)="bodyInputFullScreenToggle()">
                         <i class="bi bi-fullscreen-exit" *ngIf="bodyInputFullScreen"></i>
@@ -177,7 +177,7 @@
                     </button>
                     <button type="button"
                             class="px-2 py-1 ml-2 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
-                            title="Enlarge/Reduce"
+                            title="Private/Public"
                             i18n-title
                             [ngClass]="{'text-red-700': apiItem.bodyContentPrivate}"
                             (click)="apiItem.bodyContentPrivate = !apiItem.bodyContentPrivate" *ngIf="authorized">
