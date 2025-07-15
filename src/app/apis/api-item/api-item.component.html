@@ -63,7 +63,7 @@
 
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+<div class="relative grid grid-cols-1 lg:grid-cols-2 gap-3">
     <div>
         <h3 class="mb-2" i18n>Body</h3>
 
@@ -99,6 +99,7 @@
             </ul>
         </div>
 
+        <!-- Fields -->
         <div class="mb-6" *ngIf="apiItem.bodyDataSource === 'fields'">
 
             <div class="flex mb-4" *ngFor="let item of apiItem.bodyFields; index as index"
@@ -158,20 +159,35 @@
             </label>
 
         </div>
+        <!-- /Fields -->
 
+        <!-- RAW body -->
         <div class="mb-6 group" [ngClass]="{'hidden': apiItem.bodyDataSource !== 'raw'}">
-            <div class="app-ace-editor w-full h-60 rounded-md border border-gray-200 shadow-sm" #editorRequest></div>
-            <div class="relative z-10">
-                <div class="hidden group-hover:block absolute right-5 bottom-5 px-2 py-1 text-sm text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
-                      title="Private/Public"
-                      i18n-title
-                      [ngClass]="{'text-red-700': apiItem.bodyContentPrivate}"
-                      (click)="apiItem.bodyContentPrivate = !apiItem.bodyContentPrivate" *ngIf="authorized">
-                    <i class="bi bi-lock-fill" *ngIf="apiItem.bodyContentPrivate"></i>
-                    <i class="bi bi-unlock-fill" *ngIf="!apiItem.bodyContentPrivate"></i>
+            <div class="relative h-80"
+                 [ngClass]="{'!absolute left-0 top-0 w-full !h-full z-20': bodyInputFullScreen}">
+                <div class="app-ace-editor w-full h-full rounded-md border border-gray-200 shadow-sm" #editorRequest></div>
+                <div class="hidden group-hover:block absolute right-5 bottom-5 z-10">
+                    <button type="button"
+                            class="px-2 py-1 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
+                            title="Enlarge/Reduce"
+                            i18n-title
+                            [ngClass]="{'text-red-700': apiItem.bodyContentPrivate}"
+                            (click)="apiItem.bodyContentPrivate = !apiItem.bodyContentPrivate" *ngIf="authorized">
+                        <i class="bi bi-lock-fill" *ngIf="apiItem.bodyContentPrivate"></i>
+                        <i class="bi bi-unlock-fill" *ngIf="!apiItem.bodyContentPrivate"></i>
+                    </button>
+                    <button type="button"
+                            class="px-2 py-1 ml-2 text-sm border text-gray-900 bg-gray-200 rounded border-gray-300 cursor-pointer"
+                            title="Private/Public"
+                            i18n-title
+                            (click)="bodyInputFullScreenToggle()">
+                        <i class="bi bi-fullscreen-exit" *ngIf="bodyInputFullScreen"></i>
+                        <i class="bi bi-arrows-fullscreen" *ngIf="!bodyInputFullScreen"></i>
+                    </button>
                 </div>
             </div>
         </div>
+        <!-- /RAW body -->
 
         <hr class="mb-4">
 

@@ -53,6 +53,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     submitted = false;
     aceEditor: any;
     aceEditorRequest: any;
+    bodyInputFullScreen: boolean = false;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -259,5 +260,9 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     senderUpdate(sender: 'browser'|'server'): void {
         this.apiItem.sender = sender;
         this.senderChange.emit(sender);
+    }
+
+    bodyInputFullScreenToggle(): void {
+        this.bodyInputFullScreen = !this.bodyInputFullScreen;
     }
 }
