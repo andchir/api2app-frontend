@@ -477,6 +477,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     saveData(): void {
+        if (!this.data.name) {
+            this.messageType = 'error';
+            this.message = $localize `Enter Application Name`;
+            return;
+        }
         const data = Object.assign({}, this.data, {language: this.locale});
         data.shared = data.shared || false;
         data.hidden = data.hidden || false;
@@ -660,62 +665,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     }
                 }
             });
-    }
-
-    getFileExtension(fileName: string): string {
-        return fileName.split('.').pop().toLowerCase();
-    }
-
-    onFileChange(event: Event, imageEl: HTMLImageElement) {
-        const inputEl = event.target as HTMLInputElement;
-        const fieldName = inputEl.dataset['name'] || 'image';
-        const files = Array.from(inputEl.files);
-        this.onAddFiles(files, fieldName, imageEl);
-    }
-
-    buttonFileHandle(fileInput: HTMLInputElement) {
-        fileInput.click();
-    }
-
-    onAddFiles(files: File[], fieldName, imageEl: HTMLImageElement): void {
-        if (files.length === 0 || !['png', 'jpg', 'jpeg'].includes(this.getFileExtension(files[0].name))) {
-            return;
-        }
-        const mediaUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
-        imageEl.src = 'assets/img/transp.gif';
-        imageEl.style.backgroundImage = `url(${mediaUrl})`;
-        this.files[fieldName] = files[0];
-        this.data[fieldName] = '';
-    }
-
-    dropHandler(event: DragEvent, imageEl: HTMLImageElement): void {
-        event.preventDefault();
-        event.stopPropagation();
-        const files = this.getTransferedFiles(event.dataTransfer);
-        this.onAddFiles(files, 'image', imageEl);
-        (event.target as HTMLElement).classList.remove('border-green-500');
-    }
-
-    dragOverHandler(event: DragEvent): void {
-        event.preventDefault();
-    }
-
-    dragEnter(event: DragEvent): void {
-        (event.target as HTMLElement).classList.add('border-green-500');
-    }
-
-    dragLeave(event: DragEvent): void {
-        (event.target as HTMLElement).classList.remove('border-green-500');
-    }
-
-    getTransferedFiles(dataTransfer: DataTransfer): File[] {
-        const files = [];
-        if (dataTransfer.items) {
-            for (let i = 0; i < dataTransfer.items.length; i++) {
-                files.push(dataTransfer.items[i].getAsFile());
-            }
-        }
-        return files;
     }
 
     override ngOnDestroy(): void {

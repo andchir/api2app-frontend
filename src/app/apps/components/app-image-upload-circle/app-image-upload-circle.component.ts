@@ -63,12 +63,14 @@ export class ImageUploadCircleComponent implements ControlValueAccessor {
     }
 
     onAddFiles(files: File[], fieldName, imageEl: HTMLImageElement): void {
-        if (files.length === 0 || !['png', 'jpg', 'jpeg'].includes(this.getFileExtension(files[0].name))) {
+        if (files.length === 0 || !['png', 'jpg', 'jpeg', 'webp'].includes(this.getFileExtension(files[0].name))) {
             return;
         }
-        this.imageUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
+        this.imageUrl = null;
+        // this.imageUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
+        const imageUrl = files.length > 0 ? URL.createObjectURL(files[0]) : '';
         imageEl.src = 'assets/img/transp.gif';
-        imageEl.style.backgroundImage = `url(${this.imageUrl})`;
+        imageEl.style.backgroundImage = `url(${imageUrl})`;
         this.value = files[0];
     }
 
