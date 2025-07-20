@@ -357,13 +357,43 @@
 
                 <div class="grid gap-4 md:grid-cols-2 mb-4">
                     <div>
+
+                        <div class="p-3 border border-gray-200 rounded-lg">
+                            <div>
+                                <label for="settings-gupshup-apikey" class="block mb-2 text-sm font-medium text-gray-900" i18n>Gupshup API key</label>
+                                <input type="text" id="settings-gupshup-apikey"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       [(ngModel)]="data.gupshupApiKey">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div>
+                        <div class="flex mb-3">
+                            <div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.advertising">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900" i18n>Enable advertising</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="flex mb-3">
+                            <div>
+                                <label class="inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.adultsOnly">
+                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                    <span class="ms-3 text-sm font-medium text-gray-900" i18n>Only for 18+</span>
+                                </label>
+                            </div>
+                        </div>
                         <div [ngClass]="{'p-3 border border-gray-200 rounded-lg': data.paymentEnabled}">
                             <div class="flex" [ngClass]="{'mb-3': data.paymentEnabled}">
                                 <div>
                                     <label class="inline-flex items-center cursor-pointer">
                                         <input type="checkbox" class="sr-only peer" [(ngModel)]="data.paymentEnabled">
-                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                        <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Payments</span>
+                                        <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                        <span class="ms-3 text-sm font-medium text-gray-900" i18n>Payments</span>
                                     </label>
                                 </div>
                             </div>
@@ -372,31 +402,11 @@
                                     <label class="block mb-2" for="fieldSettingsPrice" i18n>Price per use</label>
                                 </div>
                                 <div>
-                                    <input type="number" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 mb-2"
+                                    <input type="number" class="block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 mb-2"
                                            id="fieldSettingsPrice" min="0" step="0.5"
                                            [(ngModel)]="data.pricePerUse">
                                     <div class="text-xs text-gray-500" i18n>General price for information. The price of a specific call is specified in the API settings.</div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex mb-4">
-                            <div>
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.advertising">
-                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Enable advertising</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="flex">
-                            <div>
-                                <label class="inline-flex items-center cursor-pointer">
-                                    <input type="checkbox" class="sr-only peer" [(ngModel)]="data.adultsOnly">
-                                    <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                                    <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" i18n>Only for 18+</span>
-                                </label>
                             </div>
                         </div>
                     </div>
