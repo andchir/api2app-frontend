@@ -77,6 +77,9 @@ export class ApiSharedComponent implements OnInit, OnDestroy {
     }
 
     cloneItem(): void {
+        if (!this.data?.uuid) {
+            return;
+        }
         const initialData = {
             message: $localize `Are you sure you want to clone this API?`,
             isActive: true
