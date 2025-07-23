@@ -88,7 +88,15 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                             .pipe(takeUntil(this.destroyed$))
                             .subscribe({
                                 next: (res) => {
-                                    this.router.navigate(['apis', 'personal']);
+                                    if (res.success) {
+                                        this.router.navigate(['apis', 'personal']);
+                                    } else {
+                                        if (res['detail']) {
+                                            this.message = res['detail'];
+                                            this.messageType = 'error';
+                                        }
+                                        this.loading = false;
+                                    }
                                 },
                                 error: (err) => {
                                     if (err.detail) {
