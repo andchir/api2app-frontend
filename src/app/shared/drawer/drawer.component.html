@@ -1,10 +1,10 @@
 <div class="bg-gray-900 bg-opacity-50 fixed inset-0 z-30"
      [ngClass]="{'hidden': !isActive}"
      (click)="close()"></div>
-<div class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-full sm:w-96"
+<div class="fixed top-0 left-0 z-50 h-screen px-4 overflow-y-auto transition-transform bg-white w-full sm:w-96"
      tabindex="-1"
      [ngClass]="{'-translate-x-full': !isActive}">
-    <h5 class="text-xl inline-flex items-center mb-4 text-base font-semibold text-gray-5000">
+    <h5 class="text-xl inline-flex items-center pt-3 mb-4 text-base font-semibold text-gray-5000">
         <i class="bi bi-gear-fill me-2"></i>
         {{ title }}
     </h5>
@@ -20,7 +20,7 @@
         <ng-content></ng-content>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
+    <div class="bg-white grid grid-cols-2 gap-4 py-3 sticky bottom-0">
         <button type="button" class="px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:ring-blue-300"
             (click)="confirm()">
             <span i18n>Save</span>
