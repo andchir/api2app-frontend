@@ -442,6 +442,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    findBlockElementByName(elementName: string): AppBlockElement {
+        if (!elementName) {
+            return null;
+        }
+        let resultElement = null;
+        for (const block of this.data.blocks) {
+            if (resultElement) {
+                break;
+            }
+            resultElement = block.elements.find((element) => {
+                return element.name === elementName;
+            });
+        }
+        return resultElement;
+    }
+
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
         const buttons = this.appElements.buttons[targetApiUuid] || [];
         if (typeof blockIndex !== 'undefined') {
@@ -483,6 +499,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
+                if (element.valueFrom) {
+                    const targetElement = this.findBlockElementByName(element.valueFrom);
+                    if (targetElement && targetElement.value) {
+                        return;
+                    }
+                }
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
@@ -624,7 +646,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            valueObj[key] = element.value;
+                            const targetElement = this.findBlockElementByName(element.valueFrom);
+                            valueObj[key] = element.valueFrom && targetElement
+                                ? targetElement.value
+                                : element.value;
                         }
                         if (typeof valueObj[key] === 'string') {
                             valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
@@ -645,7 +670,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     return;
                 }
                 ApplicationService.localStoreValue(element);
-                bodyField.value = ApplicationService.getElementValue(element);
+
+                bodyField.value = element.valueFrom
+                    ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
+                    : ApplicationService.getElementValue(element);
 
                 if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
@@ -701,7 +729,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(element);
-                    const value = ApplicationService.getElementValue(element);
+
+                    const value = element.valueFrom
+                        ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
+                        : ApplicationService.getElementValue(element);
+
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
                         delete inputData[key];
@@ -722,7 +754,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(elem);
-                    const value = ApplicationService.getElementValue(elem);
+
+                    const value = elem.valueFrom
+                        ? ApplicationService.getElementValue(this.findBlockElementByName(elem.valueFrom))
+                        : ApplicationService.getElementValue(elem);
+
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
@@ -781,7 +817,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            header.value = ApplicationService.getElementValue(element) as string;
+            header.value = element.valueFrom
+                ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom)) as string
+                : ApplicationService.getElementValue(element) as string;
         });
         apiItem.headers = headers;
 

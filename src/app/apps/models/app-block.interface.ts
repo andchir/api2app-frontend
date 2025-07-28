@@ -76,6 +76,7 @@ export interface AppBlockElement {
     isDownloadMode?: boolean;
     isStickyPosition?: boolean;
     fontSize?: string;
+    valueFrom?: string;
 }
 
 export interface AppBlockOptions {

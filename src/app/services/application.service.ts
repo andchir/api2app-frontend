@@ -133,6 +133,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+        if (!element) {
+            return null;
+        }
         if (!element.value) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
