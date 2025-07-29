@@ -73,14 +73,14 @@
                         </div>
                     </div -->
 
-                    <div class="dropdown relative z-10">
+                    <div class="dropdown relative">
                         <div>
-                            <button class="flex-shrink-0 z-10 inline-flex items-center py-1.5 px-2 text-sm font-medium text-center text-gray-400 hover:text-gray-900 bg-gray-700 border border-gray-600 rounded hover:bg-gray-500" type="button">
+                            <button class="flex-shrink-0 inline-flex items-center py-1.5 px-2 text-sm font-medium text-center text-gray-400 hover:text-gray-900 bg-gray-700 border border-gray-600 rounded hover:bg-gray-500" type="button">
                                 <span class="uppercase">{{ locale }}</span>
                                 <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200 opacity-80" src="assets/img/{{ locale }}.svg" alt="Russian">
                             </button>
                         </div>
-                        <div class="dropdown-menu absolute right-0 z-10 w-48 py-2 origin-top-right">
+                        <div class="dropdown-menu absolute right-0 w-48 py-2 origin-top-right z-50">
                             <div class="rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
                                 <a href="/ru/" class="block px-4 py-2 text-sm text-right hover:bg-gray-100"
@@ -123,7 +123,7 @@
                             </button -->
 
                             <!-- Profile dropdown -->
-                            <div class="dropdown relative z-10" *ngIf="(userSubject$ | async) else buttonAuthTemplate">
+                            <div class="dropdown relative" *ngIf="(userSubject$ | async) else buttonAuthTemplate">
                                 <div>
                                     <button type="button"
                                             class="relative flex max-w-xs items-center rounded-full bg-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -136,7 +136,7 @@
                                     </button>
                                 </div>
 
-                                <div class="dropdown-menu absolute -right-2 z-10 w-48 py-2 origin-top-right">
+                                <div class="dropdown-menu absolute -right-2 w-48 py-2 origin-top-right z-50">
                                     <div
                                         class="rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                         role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
