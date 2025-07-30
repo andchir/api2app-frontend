@@ -161,8 +161,10 @@ export class ApiService extends DataService<ApiItem> {
         return {outData, innerOptions, innerData};
     }
 
-    applyInnerParams(app_uuid: string, data: any, innerValues: any = null): any {
-        const {outData, innerOptions, innerData} = this.getInnerParams(data);
+    applyInnerParams(app_uuid: string, data: any, innerValues: any = null, useRequestData = true): any {
+        const {outData, innerOptions, innerData} = useRequestData
+            ? this.getInnerParams(data)
+            : {outData: data, innerOptions: {}, innerData: {}};
         if (typeof innerValues === 'object') {
             Object.assign(innerData, innerValues);
         }
@@ -170,6 +172,7 @@ export class ApiService extends DataService<ApiItem> {
             'SESSION_ID': ApiService.getUserSessionId(app_uuid),
             'DATE_SESSION_ID': ApiService.getUserSessionId(app_uuid, true)
         });
+        console.log(outData, innerOptions, innerData);
         if (Object.keys(innerOptions).length > 0) {
             for (const key of Object.keys(outData)) {
                 for (const optKey of Object.keys(innerOptions)) {
@@ -422,8 +425,16 @@ export class ApiService extends DataService<ApiItem> {
         const responseType = 'blob';
         const params = this.createParams(queryParams);
 
+        // Apply template
         if (data.sender !== 'server' && !sendAsFormData) {
             requestData = this.applyInnerParams(data.uuid, requestData);
+        } else if (!sendAsFormData) {
+            if (requestData.body) {
+                requestData.body = this.applyInnerParams(data.uuid, requestData.body, null, false);
+            }
+            if (requestData.bodyRaw) {
+                requestData.bodyRaw = this.applyInnerParams(data.uuid, requestData.bodyRaw, null, false);
+            }
         }
 
         let httpRequest;
