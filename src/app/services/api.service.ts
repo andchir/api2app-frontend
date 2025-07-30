@@ -108,6 +108,29 @@ export class ApiService extends DataService<ApiItem> {
         return true;
     }
 
+    static getCurrentDateISO(): string {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    static getUserSessionId(app_uuid: string, dayMode = false): string {
+        let sessionId = window.localStorage.getItem(`session-${app_uuid}`);
+        const currentDate = ApiService.getCurrentDateISO();
+        if (sessionId) {
+            return dayMode ? `${currentDate}-${sessionId}` : sessionId;
+        }
+        sessionId = ApiService.generateFallbackUUID();
+        window.localStorage.setItem(`session-${app_uuid}`, sessionId);
+        return dayMode ? `${currentDate}-${sessionId}` : sessionId;
+    }
+
+    static generateFallbackUUID(): string {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};
@@ -138,11 +161,15 @@ export class ApiService extends DataService<ApiItem> {
         return {outData, innerOptions, innerData};
     }
 
-    applyInnerParams(data: any, innerValues: any = null): any {
+    applyInnerParams(app_uuid: string, data: any, innerValues: any = null): any {
         const {outData, innerOptions, innerData} = this.getInnerParams(data);
         if (typeof innerValues === 'object') {
             Object.assign(innerData, innerValues);
         }
+        Object.assign(innerData, {
+            'SESSION_ID': ApiService.getUserSessionId(app_uuid),
+            'DATE_SESSION_ID': ApiService.getUserSessionId(app_uuid, true)
+        });
         if (Object.keys(innerOptions).length > 0) {
             for (const key of Object.keys(outData)) {
                 for (const optKey of Object.keys(innerOptions)) {
@@ -163,12 +190,12 @@ export class ApiService extends DataService<ApiItem> {
                 if (Array.isArray(outData[outKey])) {
                     outData[outKey] = outData[outKey].map((item) => {
                         if (typeof item === 'object' && !Array.isArray(item)) {
-                            return this.applyInnerParams(item, innerData);
+                            return this.applyInnerParams(app_uuid, item, innerData);
                         }
                         return item;
                     });
                 } else {
-                    outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+                    outData[outKey] = this.applyInnerParams(app_uuid, outData[outKey], innerData);
                 }
             } else if (typeof outData[outKey] === 'string') {
                 for (const dKey of Object.keys(innerData)) {
@@ -396,7 +423,7 @@ export class ApiService extends DataService<ApiItem> {
         const params = this.createParams(queryParams);
 
         if (data.sender !== 'server' && !sendAsFormData) {
-            requestData = this.applyInnerParams(requestData);
+            requestData = this.applyInnerParams(data.uuid, requestData);
         }
 
         let httpRequest;
