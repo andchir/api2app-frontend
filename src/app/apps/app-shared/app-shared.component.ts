@@ -265,7 +265,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, actionType, currentElement, false);
+        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -286,7 +286,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
+    appSubmit(appUuid: string, apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -297,7 +297,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType, currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages);
             });
             return;
         }
@@ -310,7 +310,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(apiUuid, 'input', currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages);
             });
             return;
         }
@@ -340,7 +340,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.stateLoadingUpdate(blocks, true, false);
 
-        this.apiService.apiRequest(apiItem, false, this.vkAppOptions)
+        this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -1119,7 +1119,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.data.maintenance) {
                     this.maintenanceModalToggle();
                 } else {
-                    this.appSubmit(element.options.inputApiUuid, 'input', element);
+                    this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 if (element.isDownloadMode) {
@@ -1195,7 +1195,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             this.removeAutoStart(inputApiUuid);
             // this.appAutoStart(inputApiUuid, 'input', element);
-            this.appSubmit(inputApiUuid, 'input', element);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
         }
     }
 
@@ -1231,7 +1231,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         // console.log('onItemSelected', element);
-        this.appSubmit(apiUuid, 'input', element);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', element);
     }
 
     onItemClone(data: number[]): void {
@@ -1253,7 +1253,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(apiUuid, 'input', currentElement);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement);
     }
 
     onProgressCompleted(currentElement: AppBlockElement): void {

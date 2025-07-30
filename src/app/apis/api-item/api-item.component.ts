@@ -153,7 +153,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         this.loading = true;
         this.submitted = true;
 
-        this.apiService.apiRequest(this.apiItem)
+        this.apiService.apiRequest('test', this.apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

@@ -208,7 +208,7 @@ export class ApiService extends DataService<ApiItem> {
         return outData;
     }
 
-    apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
+    apiRequest(appUuid: string, data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
         const bodyDataSource = data.bodyDataSource;
@@ -426,13 +426,13 @@ export class ApiService extends DataService<ApiItem> {
 
         // Apply template
         if (data.sender !== 'server' && !sendAsFormData) {
-            requestData = this.applyInnerParams(data.uuid, requestData);
+            requestData = this.applyInnerParams(appUuid, requestData);
         } else if (!sendAsFormData) {
             if (requestData.body) {
-                requestData.body = this.applyInnerParams(data.uuid, requestData.body, null, false);
+                requestData.body = this.applyInnerParams(appUuid, requestData.body, null, false);
             }
             if (requestData.bodyRaw) {
-                requestData.bodyRaw = this.applyInnerParams(data.uuid, requestData.bodyRaw, null, false);
+                requestData.bodyRaw = this.applyInnerParams(appUuid, requestData.bodyRaw, null, false);
             }
         }
 
