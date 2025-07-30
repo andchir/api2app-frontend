@@ -172,7 +172,6 @@ export class ApiService extends DataService<ApiItem> {
             'SESSION_ID': ApiService.getUserSessionId(app_uuid),
             'DATE_SESSION_ID': ApiService.getUserSessionId(app_uuid, true)
         });
-        console.log(outData, innerOptions, innerData);
         if (Object.keys(innerOptions).length > 0) {
             for (const key of Object.keys(outData)) {
                 for (const optKey of Object.keys(innerOptions)) {
