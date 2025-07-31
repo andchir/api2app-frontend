@@ -374,13 +374,17 @@ export class ApiService extends DataService<ApiItem> {
                 if (vkAppOptions?.appLaunchParamsJson) {
                     formData.append('opt__vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
                 }
+                formData.append('opt__session_id', ApiService.getUserSessionId(appUuid));
+                formData.append('opt__date_session_id', ApiService.getUserSessionId(appUuid, true));
             } else {
                 body = Object.assign({}, {
                     body,
                     bodyRaw,
                     bodyRawFlatten,
                     queryParams: Object.assign({}, queryParams),
-                    opt__uuid: data?.uuid
+                    opt__uuid: data?.uuid,
+                    opt_session_id: ApiService.getUserSessionId(appUuid),
+                    opt_date_session_id: ApiService.getUserSessionId(appUuid, true)
                 });
                 if (vkAppOptions?.appLaunchParamsJson) {
                     body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
@@ -427,13 +431,6 @@ export class ApiService extends DataService<ApiItem> {
         // Apply template
         if (data.sender !== 'server' && !sendAsFormData) {
             requestData = this.applyInnerParams(appUuid, requestData);
-        } else if (!sendAsFormData) {
-            if (requestData.body) {
-                requestData.body = this.applyInnerParams(appUuid, requestData.body, null, false);
-            }
-            if (requestData.bodyRaw) {
-                requestData.bodyRaw = this.applyInnerParams(appUuid, requestData.bodyRaw, null, false);
-            }
         }
 
         let httpRequest;
