@@ -383,8 +383,8 @@ export class ApiService extends DataService<ApiItem> {
                     bodyRawFlatten,
                     queryParams: Object.assign({}, queryParams),
                     opt__uuid: data?.uuid,
-                    opt_session_id: ApiService.getUserSessionId(appUuid),
-                    opt_date_session_id: ApiService.getUserSessionId(appUuid, true)
+                    opt__session_id: ApiService.getUserSessionId(appUuid),
+                    opt__date_session_id: ApiService.getUserSessionId(appUuid, true)
                 });
                 if (vkAppOptions?.appLaunchParamsJson) {
                     body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
