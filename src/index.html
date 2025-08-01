@@ -66,8 +66,7 @@
             }
         });
 </script>
-{% endif %}
-
+{% else %}
 <script src="https://andchir.github.io/api2app-chat-widget/api2app-chat-widget.js"></script>
 <script>
     const chatWidget = new Api2AppChatWidget(
@@ -79,6 +78,7 @@
             height: 465
         });
 </script>
+{% endif %}
 
 </body>
 </html>
