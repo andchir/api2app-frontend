@@ -192,7 +192,7 @@
                                  dragula="BLOCK_ELEMENTS"
                                  [(dragulaModel)]="block.elements">
                                 <ng-container *ngFor="let element of block.elements; index as ind">
-                                    <div class="relative group/element rounded" [ngClass]="{'hidden': element?.hidden}">
+                                    <div class="relative group/element rounded" [ngClass]="{'hidden': element?.hidden && previewMode}">
                                         <app-block-element [locale]="data?.language"
                                                            [type]="element.type"
                                                            [parentIndex]="index"
