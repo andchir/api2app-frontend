@@ -584,6 +584,12 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'valueFrom',
+                    label: $localize `Take value from field`,
+                    type: 'input-text',
+                    value: options?.valueFrom || ''
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
@@ -1488,6 +1494,7 @@ export class ElementOptions {
                     suffixText: '',
                     required: true,
                     storeValue: false,
+                    valueFrom: '',
                     value: ''
                 });
                 break;

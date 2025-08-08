@@ -23,6 +23,7 @@ export interface ApplicationItem {
     vkSecretKey?: string;
     tgBotToken?: string;
     tgForwardToUserId?: number;
+    gupshupApiKey?: string;
     paymentEnabled?: boolean;
     advertising?: boolean;
     adultsOnly?: boolean;
