@@ -15,8 +15,10 @@
                 <div class="mb-2 text-gray-400">
                     <i class="bi bi-exclamation-circle text-7xl"></i>
                 </div>
-                <h3 class="mb-5 text-lg font-normal text-gray-500" [innerHTML]="message"></h3>
-                <button type="button" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                <h3 class="mb-5 font-normal text-gray-500"
+                    [ngClass]="{'text-lg': isLargeFontSize}"
+                    [innerHTML]="message"></h3>
+                <button type="button" class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
                         (click)="confirm()">
                     <span i18n>Yes, I'm sure</span>
                 </button>

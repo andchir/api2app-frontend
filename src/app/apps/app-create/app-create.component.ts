@@ -50,6 +50,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     files: {[key: string]: File} = {image: null};
     selectedElementIndex: number;
     selectedBlockIndex: number;
+    isNotified: boolean = false;
     selectedItemOptionsFields: AppBlockElement[] = [];
 
     subs = new Subscription();
@@ -476,12 +477,55 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             });
     }
 
-    saveData(): void {
+    validateData(): boolean {
+
+        // Elements with an input action selected, but no button
+        const elementsOrphan = [];
+        this.data.blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                if (!element.options?.inputApiUuid) {
+                    return;
+                }
+                const inputApiUuid = element.options?.inputApiUuid;
+                const buttonElement = this.findButtonElement(inputApiUuid);
+                if (!buttonElement) {
+                    elementsOrphan.push(element);
+                }
+            });
+        });
+
+        if (elementsOrphan.length > 0 && !this.isNotified) {
+            const initialData = {
+                message: $localize `You have selected an input action for the element, but have not added a button to submit the data to the API. In this case, the API will be called automatically when the element receives a value. Are you sure you want to continue?`,
+                isLargeFontSize: false,
+                isActive: true
+            };
+            this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+                .pipe(take(1))
+                .subscribe({
+                    next: (reason) => {
+                        if (reason === 'confirmed') {
+                            this.isNotified = true;
+                            this.saveData(true);
+                        }
+                    }
+                });
+            return false;
+        }
+        return true;
+    }
+
+    saveData(confirmed = false): void {
         if (!this.data.name) {
             this.messageType = 'error';
             this.message = $localize `Enter Application Name`;
             return;
         }
+
+        if (!this.validateData() && !confirmed) {
+            return;
+        }
+
         const data = Object.assign({}, this.data, {language: this.locale});
         data.shared = data.shared || false;
         data.hidden = data.hidden || false;

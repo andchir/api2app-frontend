@@ -10,6 +10,7 @@ export class ConfirmComponent implements OnInit {
     @Input() message = $localize `Are you sure you want to delete this item?`;
     @Input() type = 'confirm';
     @Input() isActive = false;
+    @Input() isLargeFontSize = true;
     @Output() isActiveChange = new EventEmitter<boolean>();
     @Output() confirmed = new EventEmitter<void>();
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
