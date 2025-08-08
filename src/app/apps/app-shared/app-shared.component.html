@@ -1,4 +1,4 @@
-<header class="bg-white shadow" *ngIf="showHeader">
+<header class="bg-white shadow-md sm:shadow" *ngIf="showHeader">
     <div class="sm:flex justify-between items-center mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
         <div class="flex justify-center gap-3 items-center"
             [ngClass]="{'pl-8 xl:pl-0': needBackButton}">
@@ -46,9 +46,9 @@
 </header>
 
 <main>
-    <div [className]="noBorder ? '' : 'mx-auto max-w-7xl p-3 sm:p-6 lg:p-8'">
+    <div [className]="noBorder ? '' : 'mx-auto max-w-7xl p-2 sm:p-6 lg:p-8'">
 
-        <div class="w-full mb-4" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+        <div class="w-full mb-4 p-3 sm:p-0" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
             <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300">
                 <li class="me-0 md:me-2" *ngFor="let tabName of data.tabs; index as index">
                     <button type="button"
@@ -73,7 +73,7 @@
                      }">
 
                     <div class="relative"
-                         [ngClass]="{'bg-white p-3 rounded-[1rem] border border-gray-200 shadow': !noBorder}"
+                         [ngClass]="{'sm:bg-white p-3 sm:rounded-[1rem] sm:border sm:border-gray-200 sm:shadow': !noBorder}"
                          *ngIf="block.elements.length > 0">
                         <div class="min-h-6 flex flex-col gap-3" [ngClass]="{'opacity-20 pointer-events-none': block.loading && block.options?.showLoading}">
                             <ng-container *ngFor="let element of block.elements; index as ind">
