@@ -109,6 +109,29 @@ export class ApiService extends DataService<ApiItem> {
         return true;
     }
 
+    static getCurrentDateISO(): string {
+        return new Date().toISOString().split('T')[0];
+    }
+
+    static getUserSessionId(app_uuid: string, dayMode = false): string {
+        let sessionId = window.localStorage.getItem(`session-${app_uuid}`);
+        const currentDate = ApiService.getCurrentDateISO();
+        if (sessionId) {
+            return dayMode ? `${currentDate}-${sessionId}` : sessionId;
+        }
+        sessionId = ApiService.generateFallbackUUID();
+        window.localStorage.setItem(`session-${app_uuid}`, sessionId);
+        return dayMode ? `${currentDate}-${sessionId}` : sessionId;
+    }
+
+    static generateFallbackUUID(): string {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            const r = Math.random() * 16 | 0;
+            const v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};
@@ -139,11 +162,17 @@ export class ApiService extends DataService<ApiItem> {
         return {outData, innerOptions, innerData};
     }
 
-    applyInnerParams(data: any, innerValues: any = null): any {
-        const {outData, innerOptions, innerData} = this.getInnerParams(data);
+    applyInnerParams(app_uuid: string, data: any, innerValues: any = null, useRequestData = true): any {
+        const {outData, innerOptions, innerData} = useRequestData
+            ? this.getInnerParams(data)
+            : {outData: data, innerOptions: {}, innerData: {}};
         if (typeof innerValues === 'object') {
             Object.assign(innerData, innerValues);
         }
+        Object.assign(innerData, {
+            'SESSION_ID': ApiService.getUserSessionId(app_uuid),
+            'DATE_SESSION_ID': ApiService.getUserSessionId(app_uuid, true)
+        });
         if (Object.keys(innerOptions).length > 0) {
             for (const key of Object.keys(outData)) {
                 for (const optKey of Object.keys(innerOptions)) {
@@ -164,12 +193,12 @@ export class ApiService extends DataService<ApiItem> {
                 if (Array.isArray(outData[outKey])) {
                     outData[outKey] = outData[outKey].map((item) => {
                         if (typeof item === 'object' && !Array.isArray(item)) {
-                            return this.applyInnerParams(item, innerData);
+                            return this.applyInnerParams(app_uuid, item, innerData);
                         }
                         return item;
                     });
                 } else {
-                    outData[outKey] = this.applyInnerParams(outData[outKey], innerData);
+                    outData[outKey] = this.applyInnerParams(app_uuid, outData[outKey], innerData);
                 }
             } else if (typeof outData[outKey] === 'string') {
                 for (const dKey of Object.keys(innerData)) {
@@ -180,7 +209,7 @@ export class ApiService extends DataService<ApiItem> {
         return outData;
     }
 
-    apiRequest(data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
+    apiRequest(appUuid: string, data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
         let requestUrl = data.requestUrl;
         let requestMethod = data.requestMethod;
         const bodyDataSource = data.bodyDataSource;
@@ -310,6 +339,16 @@ export class ApiService extends DataService<ApiItem> {
         const requestHeaders = data.sender === 'server'
             ? (headersData['Content-Type'] ? {'Content-Type': headersData['Content-Type']} : {})
             : Object.assign({}, headersData);
+
+        if (!isApiTesting) {
+            if (headersData['Accept']) {
+                delete headersData['Accept'];
+            }
+            if (headersData['Content-Type']) {
+                delete headersData['Content-Type'];
+            }
+        }
+
         if (data.sender === 'server') {
             if (sendAsFormData) {
                 formData.append('opt__uuid', data.uuid || '');
@@ -325,9 +364,9 @@ export class ApiService extends DataService<ApiItem> {
                     formData.append('opt__authLogin', data.authLogin);
                     formData.append('opt__authPassword', data.authPassword);
                 }
+                formData.append('opt__headers', Object.keys(headersData).join(','));
+                formData.append('opt__headers_values', Object.values(headersData).join(','));
                 if (isApiTesting) {
-                    formData.append('opt__headers', Object.keys(headersData).join(','));
-                    formData.append('opt__headers_values', Object.values(headersData).join(','));
                     formData.append('opt__requestUrl', data?.requestUrl || '');
                     formData.append('opt__requestMethod', data?.requestMethod || 'GET');
                     formData.append('opt__responseContentType', data?.responseContentType || '');
@@ -336,13 +375,17 @@ export class ApiService extends DataService<ApiItem> {
                 if (vkAppOptions?.appLaunchParamsJson) {
                     formData.append('opt__vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
                 }
+                formData.append('opt__session_id', ApiService.getUserSessionId(appUuid));
+                formData.append('opt__date_session_id', ApiService.getUserSessionId(appUuid, true));
             } else {
                 body = Object.assign({}, {
                     body,
                     bodyRaw,
                     bodyRawFlatten,
                     queryParams: Object.assign({}, queryParams),
-                    opt__uuid: data?.uuid
+                    opt__uuid: data?.uuid,
+                    opt__session_id: ApiService.getUserSessionId(appUuid),
+                    opt__date_session_id: ApiService.getUserSessionId(appUuid, true)
                 });
                 if (vkAppOptions?.appLaunchParamsJson) {
                     body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
@@ -368,6 +411,10 @@ export class ApiService extends DataService<ApiItem> {
                         opt__responseContentType: data?.responseContentType,
                         opt__sendAsFormData: data?.sendAsFormData
                     });
+                } else {
+                    Object.assign(body, {
+                        headers: Object.assign({}, headersData)
+                    });
                 }
             }
             if (!isDevMode()) {
@@ -382,8 +429,9 @@ export class ApiService extends DataService<ApiItem> {
         const responseType = 'blob';
         const params = this.createParams(queryParams);
 
+        // Apply template
         if (data.sender !== 'server' && !sendAsFormData) {
-            requestData = this.applyInnerParams(requestData);
+            requestData = this.applyInnerParams(appUuid, requestData);
         }
 
         let httpRequest;

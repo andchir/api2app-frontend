@@ -142,6 +142,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+        if (!element) {
+            return null;
+        }
         if (!element.value) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
@@ -294,6 +297,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             }).join('');
         } else if (typeof value === 'object') {
             value = JSON.stringify(value, null, 2);
+        } else if (typeof value === 'number') {
+            value = String(value);
         }
         if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
             value = (element.prefixText || '') + encodeURIComponent(value);
