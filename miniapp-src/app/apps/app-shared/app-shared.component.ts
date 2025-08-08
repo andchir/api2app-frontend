@@ -253,7 +253,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(apiUuid, actionType, currentElement, false);
+        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -274,7 +274,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
+    appSubmit(appUuid: string, apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -285,7 +285,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(apiUuid, actionType, currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages);
             });
             return;
         }
@@ -298,7 +298,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(apiUuid, 'input', currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages);
             });
             return;
         }
@@ -328,7 +328,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.stateLoadingUpdate(blocks, true, false);
 
-        this.apiService.apiRequest(apiItem, false, this.vkAppOptions)
+        this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
@@ -430,6 +430,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    findBlockElementByName(elementName: string): AppBlockElement {
+        if (!elementName) {
+            return null;
+        }
+        let resultElement = null;
+        for (const block of this.data.blocks) {
+            if (resultElement) {
+                break;
+            }
+            resultElement = block.elements.find((element) => {
+                return element.name === elementName;
+            });
+        }
+        return resultElement;
+    }
+
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
         const buttons = this.appElements.buttons[targetApiUuid] || [];
         if (typeof blockIndex !== 'undefined') {
@@ -471,6 +487,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
+                if (element.valueFrom) {
+                    const targetElement = this.findBlockElementByName(element.valueFrom);
+                    if (targetElement && targetElement.value) {
+                        return;
+                    }
+                }
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
@@ -612,7 +634,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            valueObj[key] = element.value;
+                            const targetElement = this.findBlockElementByName(element.valueFrom);
+                            valueObj[key] = element.valueFrom && targetElement
+                                ? targetElement.value
+                                : element.value;
                         }
                         if (typeof valueObj[key] === 'string') {
                             valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
@@ -633,7 +658,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     return;
                 }
                 ApplicationService.localStoreValue(element);
-                bodyField.value = ApplicationService.getElementValue(element);
+
+                bodyField.value = element.valueFrom
+                    ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
+                    : ApplicationService.getElementValue(element);
 
                 if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
@@ -689,7 +717,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(element);
-                    const value = ApplicationService.getElementValue(element);
+
+                    const value = element.valueFrom
+                        ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
+                        : ApplicationService.getElementValue(element);
+
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
                         delete inputData[key];
@@ -710,13 +742,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     ApplicationService.localStoreValue(elem);
-                    const value = ApplicationService.getElementValue(elem);
+
+                    const value = elem.valueFrom
+                        ? ApplicationService.getElementValue(this.findBlockElementByName(elem.valueFrom))
+                        : ApplicationService.getElementValue(elem);
+
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    // outputData[fieldName] = value;
-                    outputData[fieldName] = ApplicationService.createStringValue(elem, value);
+                    if (typeof value === 'string') {
+                        outputData[fieldName] = ApplicationService.createStringValue(elem, value);
+                    } else {
+                        outputData[fieldName] = value;
+                    }
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
             }
@@ -766,7 +805,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            header.value = ApplicationService.getElementValue(element) as string;
+            header.value = element.valueFrom
+                ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom)) as string
+                : ApplicationService.getElementValue(element) as string;
         });
         apiItem.headers = headers;
 
@@ -1033,7 +1074,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
             }
-            if (['input-text', 'input-textarea', 'input-hidden'].includes(element.type)) {
+            if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
@@ -1043,8 +1084,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else {
+            } else if (typeof value === 'string') {
                 element.value = ApplicationService.createStringValue(element, value, true);
+            } else {
+                element.value = value;
             }
         }
         ApplicationService.localStoreValue(element);
@@ -1064,7 +1107,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (this.data.maintenance) {
                     this.maintenanceModalToggle();
                 } else {
-                    this.appSubmit(element.options.inputApiUuid, 'input', element);
+                    this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 if (element.isDownloadMode) {
@@ -1140,7 +1183,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             this.removeAutoStart(inputApiUuid);
             // this.appAutoStart(inputApiUuid, 'input', element);
-            this.appSubmit(inputApiUuid, 'input', element);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
         }
     }
 
@@ -1176,7 +1219,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         // console.log('onItemSelected', element);
-        this.appSubmit(apiUuid, 'input', element);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', element);
+    }
+
+    onItemClone(data: number[]): void {
+        if (data.length < 2) {
+            return;
+        }
+        const parentIndex = data[0];
+        const elementIndex = data[1];
+        const element = this.data.blocks[parentIndex].elements[elementIndex];
+        const elementCloned = Object.assign({}, element, {options: {}});
+
+        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
+        this.cdr.markForCheck();
     }
 
     onProgressUpdate(currentElement: AppBlockElement): void {
@@ -1185,7 +1241,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(apiUuid, 'input', currentElement);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement);
     }
 
     onProgressCompleted(currentElement: AppBlockElement): void {

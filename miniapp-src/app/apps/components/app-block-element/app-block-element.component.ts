@@ -32,6 +32,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
     @Output() progressCompleted: EventEmitter<string> = new EventEmitter<string>();
+    @Output() cloneElement: EventEmitter<number[]> = new EventEmitter<number[]>();
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
@@ -68,6 +69,14 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     updateItemType(): void {
         this.typeChange.emit(this.type);
+    }
+
+    elementClone(index: number, parentIndex: number, event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.cloneElement.emit([parentIndex, index]);
     }
 
     elementOptionsInit(event?: MouseEvent) {

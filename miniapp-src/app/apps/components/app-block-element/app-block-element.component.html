@@ -168,8 +168,7 @@
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="w-full max-w-[600px] mx-auto">
                 <input [type]="editorMode ? 'text' : 'hidden'" id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                       placeholder="Hidden Text Field"
-                       i18n-placeholder
+                       [placeholder]="options?.label"
                        [(ngModel)]="options.value">
             </div>
         </div>
@@ -669,6 +668,12 @@
                 i18n-title
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+                title="Clone"
+                i18n-title
+                (click)="elementClone(index, parentIndex, $event)">
+            <i class="bi bi-copy text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
                 title="Input Action"
