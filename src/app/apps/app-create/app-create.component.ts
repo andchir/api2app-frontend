@@ -477,10 +477,25 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             });
     }
 
+    override findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
+        if (!targetApiUuid) {
+            return null;
+        }
+        const buttons = [];
+        this.data.blocks.forEach((block, index) => {
+            if (typeof blockIndex === 'number' && blockIndex !== index) {
+                return;
+            }
+            block.elements.forEach((element) => {
+                if (element.options?.inputApiUuid === targetApiUuid && element.type === 'button') {
+                    buttons.push(element);
+                }
+            });
+        });
+        return buttons.length > 0 ? buttons[0] : null;
+    }
+
     validateData(): boolean {
-
-        this.createButtonsData();
-
         // Elements with an input action selected, but no button
         const elementsOrphan = [];
         this.data.blocks.forEach((block) => {
