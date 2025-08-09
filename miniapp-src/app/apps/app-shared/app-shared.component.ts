@@ -141,29 +141,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    createButtonsData(): void {
-        this.appElements.buttons = {};
-        this.appElements.input = {};
-        this.data.blocks.forEach((block, blockIndex) => {
-            block.elements.forEach((element) => {
-                if (!element.options?.inputApiUuid) {
-                    return;
-                }
-                if (element.type === 'button') {
-                    if (!this.appElements.buttons[element.options.inputApiUuid]) {
-                        this.appElements.buttons[element.options.inputApiUuid] = [];
-                    }
-                    this.appElements.buttons[element.options.inputApiUuid].push(element);
-                } else {
-                    if (!this.appElements.input[element.options.inputApiUuid]) {
-                        this.appElements.input[element.options.inputApiUuid] = [];
-                    }
-                    this.appElements.input[element.options.inputApiUuid].push(element);
-                }
-            });
-        });
-    }
-
     createAppOptions(): void {
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
@@ -1111,7 +1088,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else if (typeof value === 'string') {
+            } else if (['string', 'number'].includes(typeof value)) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             } else {
                 element.value = value;
