@@ -479,6 +479,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     validateData(): boolean {
 
+        this.createButtonsData();
+
         // Elements with an input action selected, but no button
         const elementsOrphan = [];
         this.data.blocks.forEach((block) => {

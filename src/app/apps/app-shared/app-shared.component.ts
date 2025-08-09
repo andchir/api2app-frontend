@@ -68,7 +68,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
-    appElements: {input: AppBlockElement[], output: AppBlockElement[], buttons: AppBlockElement[]} = {input: [], output: [], buttons: []};
+    appElements: {
+        input: {[uuid: string]: AppBlockElement[]},
+        output: {[uuid: string]: AppBlockElement[]},
+        buttons: {[uuid: string]:AppBlockElement[]}
+    } = {input: {}, output: {}, buttons: {}};
 
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
@@ -147,6 +151,29 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.loading = false;
                 }
             });
+    }
+
+    createButtonsData(): void {
+        this.appElements.buttons = {};
+        this.appElements.input = {};
+        this.data.blocks.forEach((block, blockIndex) => {
+            block.elements.forEach((element) => {
+                if (!element.options?.inputApiUuid) {
+                    return;
+                }
+                if (element.type === 'button') {
+                    if (!this.appElements.buttons[element.options.inputApiUuid]) {
+                        this.appElements.buttons[element.options.inputApiUuid] = [];
+                    }
+                    this.appElements.buttons[element.options.inputApiUuid].push(element);
+                } else {
+                    if (!this.appElements.input[element.options.inputApiUuid]) {
+                        this.appElements.input[element.options.inputApiUuid] = [];
+                    }
+                    this.appElements.input[element.options.inputApiUuid].push(element);
+                }
+            });
+        });
     }
 
     createAppOptions(): void {
