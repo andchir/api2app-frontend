@@ -1100,7 +1100,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else if (['string', 'number'].includes(typeof value)) {
+            } else if (typeof value === 'string' || element.prefixText || element.suffixText) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             } else {
                 element.value = value;
