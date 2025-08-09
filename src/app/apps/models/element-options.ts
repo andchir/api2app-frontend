@@ -455,6 +455,12 @@ export class ElementOptions {
                     enabled: options?.required || false
                 });
                 output.push({
+                    name: 'autoHeight',
+                    label: $localize `Auto height`,
+                    type: 'input-switch',
+                    enabled: options?.autoHeight || false
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -1458,7 +1464,7 @@ export class ElementOptions {
                     copyToClipboardEnabled: false,
                     hiddenByField: '',
                     storeValue: false,
-                    autoHeight: false,
+                    autoHeight: true,
                     value: null
                 });
                 break;
