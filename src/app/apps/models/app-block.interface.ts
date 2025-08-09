@@ -77,6 +77,7 @@ export interface AppBlockElement {
     isStickyPosition?: boolean;
     fontSize?: string;
     valueFrom?: string;
+    autoHeight?: boolean;
 }
 
 export interface AppBlockOptions {

@@ -52,6 +52,7 @@ export class ElementOptions {
                     label: $localize `Value`,
                     type: 'input-textarea',
                     rows: 6,
+                    autoHeight: true,
                     value: options?.value
                 });
                 output.push({
@@ -108,6 +109,7 @@ export class ElementOptions {
                     label: $localize `Value`,
                     type: 'input-textarea',
                     rows: 6,
+                    autoHeight: true,
                     value: options?.value
                 });
                 output.push({
@@ -440,6 +442,7 @@ export class ElementOptions {
                     label: $localize `Default Value`,
                     type: 'input-textarea',
                     rows: 6,
+                    autoHeight: true,
                     value: options?.value
                 });
                 output.push({
