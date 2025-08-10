@@ -5,133 +5,7 @@
             <div class="md:col-span-2">
 
                 <!-- main page content -->
-                <ng-container *ngIf="locale === 'ru'">
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Создавайте приложения и зарабатывайте</h4>
-                            <div>
-                                Вы можете создать приложение и принимать платежи за его использование.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="relative">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
-                        </div>
-                        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Тестируйте API</h4>
-                            <div>
-                                Здесь Вы можете тестировать свои API и делиться ими с другими членами сообщества.
-                                <br>
-                                Не беспокойтесь о приватных данных, они могут быть использованы только на стороне сервера.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Выбирайте из множества элементов</h4>
-                            <div>
-                                При создании приложений Вы можете использовать большой выбор элементов интерфейса.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
-                        </div>
-                        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Создавайте современные приложения</h4>
-                            <div>
-                                Создавайте приложения с приятным и современнным интерфейсом всего за несколько минут.
-                                Используйте настройки приватности.
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <ng-container *ngIf="locale === 'en'">
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="relative">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Test the API</h4>
-                            <div>
-                                Here you can test your APIs and share them with other community members.
-                                <br>
-                                Don't worry about private data, it can only be used on the server side.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
-                        </div>
-                        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Choose from a variety of UI elements</h4>
-                            <div>
-                                When creating applications, you can use a large selection of interface elements.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Create modern applications</h4>
-                            <div>
-                                Create applications with a pleasant and modern interface in just a few minutes.
-                                Use your privacy settings.
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
-
-                <ng-container *ngIf="locale === 'fr'">
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="relative">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Tester l'API</h4>
-                            <div>
-                                Ici, vous pouvez tester vos API et les partager avec d'autres membres de la communauté.
-                                <br>
-                                Ne vous inquiétez pas des données privées, elles ne peuvent être utilisées que côté serveur.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
-                        </div>
-                        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Choisissez parmi une variété d'éléments d'interface utilisateur</h4>
-                            <div>
-                                Lors de la création d'applications, vous pouvez utiliser une large sélection d'éléments d'interface.
-                            </div>
-                        </div>
-                    </div>
-                    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
-                        <div class="">
-                            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
-                        </div>
-                        <div class="text-center lg:text-left px-3 text-cyan-700">
-                            <h4 class="text-2xl mb-3">Créer des applications modernes</h4>
-                            <div>
-                                Créez des applications avec une interface agréable et moderne en quelques minutes seulement.
-                                Utilisez vos paramètres de confidentialité.
-                            </div>
-                        </div>
-                    </div>
-                </ng-container>
+                <ng-container *ngTemplateOutlet="getTemplate()"></ng-container>
                 <!-- /main page content -->
 
             </div>
@@ -263,6 +137,48 @@
                         </div>
                     </div>
                 </ng-container>
+
+                <ng-container *ngIf="locale === 'de'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            08/03/2024
+                        </div>
+                        <div>
+                            Jetzt können Api2App-Anwendungen zum Erstellen von <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://dev.vk.com/ru/mini-apps/overview" target="_blank" rel="nofollow">VK-Anwendungen</a>
+                            und <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://core.telegram.org/bots/webapps" target="_blank" rel="nofollow">Telegram-Bot-Mini-Apps</a> verwendet werden.
+                            <br>
+                            Verwenden Sie einfach die <b>URL zum Einbetten</b> Ihrer Anwendung.
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="locale === 'es'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            08/03/2024
+                        </div>
+                        <div>
+                            Ahora puedes usar las aplicaciones Api2App para crear <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://dev.vk.com/ru/mini-apps/overview" target="_blank" rel="nofollow">aplicaciones VK</a>
+                            y miniaplicaciones de bots de <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://core.telegram.org/bots/webapps" target="_blank" rel="nofollow">Telegram</a>.
+                            <br>
+                            Solo usa la <b>URL para integrar</b> tu aplicación.
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-container *ngIf="locale === 'uk'">
+                    <div class="mb-4 text-sm">
+                        <div class="mb-2 text-gray-400">
+                            08/03/2024
+                        </div>
+                        <div>
+                            Тепер застосунки Api2App можна використовувати для створення <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://dev.vk.com/ru/mini-apps/overview" target="_blank" rel="nofollow">застосунків VK</a>
+                            та міні-застосунків для ботів <a class="text-teal-600 underline transition hover:text-teal-600/75" href="https://core.telegram.org/bots/webapps" target="_blank" rel="nofollow">Telegram</a>.
+                            <br>
+                            Просто використовуйте <b>URL-адресу для вбудовування</b> вашого застосунку.
+                        </div>
+                    </div>
+                </ng-container>
                 <!-- /news -->
 
             </div>
@@ -270,3 +186,308 @@
 
     </div>
 </main>
+
+<ng-template #enTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Create apps and earn money</h4>
+            <div>
+                You can create an app and accept payments for its use.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Test the API</h4>
+            <div>
+                Here you can test your APIs and share them with other community members.
+                <br>
+                Don't worry about private data, it can only be used on the server side.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Choose from a variety of UI elements</h4>
+            <div>
+                When creating applications, you can use a large selection of interface elements.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Create modern applications</h4>
+            <div>
+                Create applications with a pleasant and modern interface in just a few minutes.
+                <br>
+                Use your privacy settings.
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #ruTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Создавайте приложения и зарабатывайте</h4>
+            <div>
+                Вы можете создать приложение и принимать платежи за его использование.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Тестируйте API</h4>
+            <div>
+                Здесь Вы можете тестировать свои API и делиться ими с другими членами сообщества.
+                <br>
+                Не беспокойтесь о приватных данных, они могут быть использованы только на стороне сервера.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Выбирайте из множества элементов</h4>
+            <div>
+                При создании приложений Вы можете использовать большой выбор элементов интерфейса.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Создавайте современные приложения</h4>
+            <div>
+                Создавайте приложения с приятным и современнным интерфейсом всего за несколько минут.
+                Используйте настройки приватности.
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #frTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Créez des applications et gagnez de l'argent</h4>
+            <div>
+                Vous pouvez créer une application et accepter des paiements pour son utilisation.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Tester l'API</h4>
+            <div>
+                Ici, vous pouvez tester vos API et les partager avec d'autres membres de la communauté.
+                <br>
+                Ne vous inquiétez pas des données privées, elles ne peuvent être utilisées que côté serveur.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Choisissez parmi une variété d'éléments d'interface utilisateur</h4>
+            <div>
+                Lors de la création d'applications, vous pouvez utiliser une large sélection d'éléments d'interface.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Créer des applications modernes</h4>
+            <div>
+                Créez des applications avec une interface agréable et moderne en quelques minutes seulement.
+                <br>
+                Utilisez vos paramètres de confidentialité.
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #deTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Apps erstellen und Geld verdienen</h4>
+            <div>
+                Sie können eine App erstellen und Zahlungen für deren Nutzung akzeptieren.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Testen der API</h4>
+            <div>
+                Hier können Sie Ihre APIs testen und mit anderen Community-Mitgliedern teilen.
+                <br>
+                Keine Sorge um private Daten, diese können nur serverseitig verwendet werden.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Wählen Sie aus einer Vielzahl von UI-Elementen</h4>
+            <div>
+                Beim Erstellen von Anwendungen können Sie auf eine große Auswahl an Oberflächenelementen zurückgreifen.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Erstellen Sie moderne Anwendungen</h4>
+            <div>
+                Erstellen Sie in wenigen Minuten Anwendungen mit einer ansprechenden und modernen Benutzeroberfläche.
+                <br>
+                Nutzen Sie Ihre Datenschutzeinstellungen.
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #esTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Crea aplicaciones y gana dinero</h4>
+            <div>
+                Puedes crear una aplicación y aceptar pagos por su uso.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Probar la API</h4>
+            <div>
+                Aquí puedes probar tus API y compartirlas con otros miembros de la comunidad.
+                <br>
+                No te preocupes por los datos privados, solo se pueden usar en el servidor.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Elija entre una variedad de elementos de interfaz de usuario</h4>
+            <div>
+                Al crear aplicaciones, puede utilizar una amplia selección de elementos de interfaz.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Crear aplicaciones modernas</h4>
+            <div>
+                Crea aplicaciones con una interfaz agradable y moderna en tan solo unos minutos.
+                <br>
+                Utiliza tu configuración de privacidad.
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #ukTemplate>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/004.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Створюйте додатки та заробляйте гроші</h4>
+            <div>
+                Ви можете створити додаток і приймати платежі за його використання.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="relative">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/001.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Тестування API</h4>
+            <div>
+                Тут ви можете протестувати свої API та поділитися ними з іншими учасниками спільноти.
+                <br>
+                Не хвилюйтеся щодо конфіденційних даних, їх можна використовувати лише на стороні сервера.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/002.png" alt="api2app">
+        </div>
+        <div class="text-center lg:text-left px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Вибирайте з різноманітних елементів інтерфейсу користувача</h4>
+            <div>
+                Під час створення додатків можна використовувати великий вибір елементів інтерфейсу.
+            </div>
+        </div>
+    </div>
+    <div class="lg:grid lg:grid-cols-2 items-center mb-6">
+        <div class="">
+            <img class="block overflow-hidden w-80 h-80 mx-auto object-cover rounded-full shadow-xl shadow-blue-200" src="assets/img/screenshots/003.png" alt="api2app">
+        </div>
+        <div class="order-last lg:order-first text-center lg:text-right px-3 text-cyan-700">
+            <h4 class="text-2xl mb-3">Створюйте сучасні програми</h4>
+            <div>
+                Створюйте додатки з приємним та сучасним інтерфейсом лише за кілька хвилин.
+                <br>
+                Використовуйте налаштування конфіденційності.
+            </div>
+        </div>
+    </div>
+</ng-template>
