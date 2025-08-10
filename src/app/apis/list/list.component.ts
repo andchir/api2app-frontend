@@ -33,6 +33,14 @@ export class ListApisComponent implements OnInit {
         {
             name: 'fr',
             title: 'Français'
+        },
+        {
+            name: 'de',
+            title: 'Deutsch'
+        },
+        {
+            name: 'es',
+            title: 'Español'
         }
     ];
     currentUrl: string = '';
