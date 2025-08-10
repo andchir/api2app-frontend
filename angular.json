@@ -26,6 +26,18 @@
                     "fr": {
                         "translation": "src/locale/messages.fr.json",
                         "baseHref": "fr/"
+                    },
+                    "de": {
+                        "translation": "src/locale/messages.de.json",
+                        "baseHref": "de/"
+                    },
+                    "es": {
+                        "translation": "src/locale/messages.es.json",
+                        "baseHref": "es/"
+                    },
+                    "uk": {
+                        "translation": "src/locale/messages.uk.json",
+                        "baseHref": "uk/"
                     }
                 }
             },
@@ -78,7 +90,7 @@
                             }
                         },
                         "production": {
-                            "localize": ["en", "ru", "fr"],
+                            "localize": ["en", "ru", "fr", "de", "es", "uk"],
                             "index": {
                                 "input": "src/index-ru.html",
                                 "output": "index.html"
@@ -185,6 +197,18 @@
                     "fr": {
                         "translation": "miniapp-src/locale/messages.fr.json",
                         "baseHref": "fr/"
+                    },
+                    "de": {
+                        "translation": "src/locale/messages.de.json",
+                        "baseHref": "de/"
+                    },
+                    "es": {
+                        "translation": "src/locale/messages.es.json",
+                        "baseHref": "es/"
+                    },
+                    "uk": {
+                        "translation": "src/locale/messages.uk.json",
+                        "baseHref": "uk/"
                     }
                 }
             },
@@ -236,7 +260,7 @@
                             }
                         },
                         "production": {
-                            "localize": ["en", "ru", "fr"],
+                            "localize": ["en", "ru", "fr", "de", "es", "uk"],
                             "index": {
                                 "input": "miniapp-src/index-ru.html",
                                 "output": "index.html"

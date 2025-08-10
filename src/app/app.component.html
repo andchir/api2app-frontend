@@ -103,6 +103,20 @@
                                     <span>Français</span>
                                     <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/fr.svg" alt="French">
                                 </a>
+                                <a href="/de/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
+                                   [ngClass]="{'text-gray-700': locale != 'de', 'text-blue-700 pointer-events-none opacity-50': locale == 'de'}"
+                                   role="menuitem"
+                                   tabindex="-1" *ngIf="locale != 'de'">
+                                    <span>Deutsch</span>
+                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/de.svg" alt="Deutsch">
+                                </a>
+                                <a href="/es/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
+                                   [ngClass]="{'text-gray-700': locale != 'es', 'text-blue-700 pointer-events-none opacity-50': locale == 'es'}"
+                                   role="menuitem"
+                                   tabindex="-1" *ngIf="locale != 'es'">
+                                    <span>Español</span>
+                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/es.svg" alt="Español">
+                                </a>
                             </div>
                         </div>
                     </div>
