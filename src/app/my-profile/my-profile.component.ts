@@ -9,8 +9,9 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
 import { User } from '../apis/models/user.interface';
 import { matchValidator } from '../helpers/match-validator';
-import { environment } from '../../environments/environment';
 
+import { environment } from '../../environments/environment';
+import { BASE_URL } from '../../environments/environment';
 const ROBOKASSA_URL = environment.robokassaUrl;
 
 @Component({
@@ -34,6 +35,11 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     passwordShow1: boolean = false;
     passwordShow2: boolean = false;
     robokassaUrl: string = ROBOKASSA_URL;
+
+    showRobokassaInfo: boolean = false;
+    robokassaResultURL: string = `${BASE_URL}rk_result/`;
+    robokassaSuccessURL: string = `${BASE_URL}rk_success/`;
+    robokassaFailURL: string = `${BASE_URL}rk_fail/`;
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -211,6 +217,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     if (res.userprofile?.vatCode) {
                         this.formPayments.controls['vatCode'].setValue(res.userprofile.vatCode);
                     }
+                    this.robokassaResultURL += this.user.username;
+                    this.robokassaSuccessURL += this.user.username;
+                    this.robokassaFailURL += this.user.username;
                 },
                 error: (err) => {
                     this.messageType = 'error';
@@ -227,6 +236,10 @@ export class MyProfileComponent implements OnInit, OnDestroy {
             return;
         }
         this.action = action;
+    }
+
+    showRobokassaInfoModalToggle(): void {
+        this.showRobokassaInfo = !this.showRobokassaInfo;
     }
 
     ngOnDestroy(): void {
