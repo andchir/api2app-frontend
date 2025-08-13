@@ -217,9 +217,9 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                     if (res.userprofile?.vatCode) {
                         this.formPayments.controls['vatCode'].setValue(res.userprofile.vatCode);
                     }
-                    this.robokassaResultURL += this.user.username;
-                    this.robokassaSuccessURL += this.user.username;
-                    this.robokassaFailURL += this.user.username;
+                    this.robokassaResultURL += this.user.username.toLowerCase();
+                    this.robokassaSuccessURL += this.user.username.toLowerCase();
+                    this.robokassaFailURL += this.user.username.toLowerCase();
                 },
                 error: (err) => {
                     this.messageType = 'error';
