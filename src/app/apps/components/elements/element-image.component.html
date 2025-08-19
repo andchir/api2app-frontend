@@ -9,7 +9,7 @@
                [href]="largeImageUrl"
                target="_blank">
                 <img class="inline-block max-w-full" loading="lazy"
-                     [ngClass]="{'rounded-lg': roundedCorners, 'shadow-gray-300 shadow-md': borderShadow}"
+                     [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
                      (load)="imageContainer.classList.remove('loading-bg-image')"
                      (error)="onImageError(imageContainer)"
                      [src]="previewImageUrl" alt="">
