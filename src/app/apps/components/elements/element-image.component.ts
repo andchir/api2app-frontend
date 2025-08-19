@@ -143,10 +143,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     onClick(event?: MouseEvent): void {
-        if (event && !this.useLink) {
-            event.preventDefault();
-            return;
-        }
         if (this.useLightbox) {
             this.lightboxOpen(event);
         } else {
@@ -272,6 +268,10 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         const options = {
             allowPanToNext: false,
             wheelToZoom: true,
+            bgOpacity: 0.6,
+            // showHideAnimationType: 'none',
+            showAnimationDuration: 0,
+            hideAnimationDuration: 0,
             pswpModule: PhotoSwipe,
             dataSource: []
         }
@@ -287,7 +287,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             left: '0',
             width: '100%',
             height: '100%',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
@@ -321,6 +321,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
         const img = new Image();
         img.onload = () => {
+            this.overlay.remove();
             this.lightbox.options.dataSource = [
                 {
                     src: img.src,
@@ -330,7 +331,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
                 }
             ];
             this.lightbox.loadAndOpen(0);
-            this.overlay.remove();
         };
         img.src = downloadUrl;
     }

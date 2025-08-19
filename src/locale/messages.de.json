@@ -407,6 +407,7 @@
         "4217916308142382737": "Gupshup API key",
         "6832689376490127081": "Wert aus Feld übernehmen",
         "5874074414001764922": "Sie haben eine Eingabeaktion für das Element ausgewählt, aber keine Schaltfläche zum Senden der Daten an die API hinzugefügt. In diesem Fall wird die API automatisch aufgerufen, wenn das Element einen Wert empfängt. Möchten Sie wirklich fortfahren?",
-        "8829557116477040252": "Automatische Höhe"
+        "8829557116477040252": "Automatische Höhe",
+        "4335256331897833341": "Bildzoom verwenden"
     }
 }
