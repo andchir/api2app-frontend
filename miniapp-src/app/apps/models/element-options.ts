@@ -1024,6 +1024,13 @@ export class ElementOptions {
                     enabled: options?.useCropper
                 });
                 output.push({
+                    name: 'useLightbox',
+                    label: $localize `Use image zoom`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useLightbox || false
+                });
+                output.push({
                     name: 'useLink',
                     label: $localize `Use link`,
                     type: 'input-switch',
@@ -1606,6 +1613,7 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     useLink: true,
                     useCropper: false,
+                    useLightbox: false,
                     fullWidth: false,
                     borderShadow: false,
                     roundedCorners: false
