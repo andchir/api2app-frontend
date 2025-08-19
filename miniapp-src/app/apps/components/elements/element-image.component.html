@@ -1,18 +1,18 @@
 <div class="relative block w-full text-center min-h-[50px]"
      [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
-        <div class="min-h-[50px] loading-bg-image" [ngClass]="{'hidden': !imageUrl}"
+        <div class="min-h-[50px] loading-bg-image text-center" [ngClass]="{'hidden': !previewImageUrl}"
             #imageContainer>
-            <a class="inline-block"
+            <a class="inline-block min-h-12"
                [ngClass]="{'cursor-default': !useLink, 'cursor-pointer': useLink}"
                (click)="onClick($event)"
-               [href]="downloadUrl"
-               target="_blank" *ngIf="imageUrl">
+               [href]="largeImageUrl"
+               target="_blank">
                 <img class="inline-block max-w-full" loading="lazy"
                      [ngClass]="{'rounded-lg': roundedCorners, 'shadow-gray-300 shadow-md': borderShadow}"
                      (load)="imageContainer.classList.remove('loading-bg-image')"
                      (error)="onImageError(imageContainer)"
-                     [src]="imageUrl" alt="">
+                     [src]="previewImageUrl" alt="">
             </a>
         </div>
     </ng-container>

@@ -15,6 +15,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
+import {type} from "node:os";
 
 @Component({
     selector: 'app-image-elem',
@@ -38,6 +39,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() name: string;
     @Input() parentIndex: number;
     @Input() index: number;
+    @Input() data: any;
+    @Input() thumbnailFieldName: string | null;
+    @Input() largeFieldName: string | null;
     @Input() imageUrl: string | SafeResourceUrl | null;
     @Input() imageLargeUrl: string | SafeResourceUrl | null;
     @Input() fullWidth: boolean;
@@ -51,7 +55,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() cropperAspectRatio: number = 4 / 3;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
-    downloadUrl: string | SafeResourceUrl | null = '#';
     isCropped: boolean = false;
     imageWidth: number = 0;
     imageHeight: number = 0;
@@ -99,9 +102,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
                     : val;
             }
         }
-        if (this.useLink) {
-            this.createLinkUrl();
-        }
         this._value = val || '';
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -111,6 +111,57 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         private sanitizer: DomSanitizer,
         private cdr: ChangeDetectorRef
     ) {}
+
+    get previewImageUrl(): string | SafeResourceUrl | null {
+        if (this.imageUrl) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.imageUrl);
+        }
+        if (!this.data || typeof this.data !== 'object') {
+            return null;
+        }
+        if (this.thumbnailFieldName.match(/^https?:\/\//)) {
+            let imageUrl = this.createUrlFromTemplate(this.thumbnailFieldName, this.data);
+            return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
+        }
+        if (this.data[this.thumbnailFieldName]) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.thumbnailFieldName]);
+        }
+        return null;
+    }
+
+    createLinkUrl(): void {
+        let downloadUrl = this.imageLargeUrl || this.imageUrl;
+        if (downloadUrl && typeof downloadUrl === 'object' && downloadUrl['changingThisBreaksApplicationSecurity']) {
+            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
+            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
+        }
+        // this.downloadUrl = typeof downloadUrl === 'string' && downloadUrl.indexOf('data:') === -1
+        //     ? this.sanitizer.bypassSecurityTrustUrl(downloadUrl)
+        //     : '#download';
+    }
+
+    get largeImageUrl(): string | SafeResourceUrl | null {
+        if (this.imageLargeUrl || this.imageUrl) {
+            let imageUrl = this.imageLargeUrl || this.imageUrl;
+            if (imageUrl && typeof imageUrl === 'object'
+                && imageUrl['changingThisBreaksApplicationSecurity']
+                && imageUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
+                return '#download';
+            }
+            return this.sanitizer.sanitize(SecurityContext.URL, this.imageLargeUrl || this.imageUrl);
+        }
+        if (!this.data || typeof this.data !== 'object') {
+            return null;
+        }
+        if (this.largeFieldName.match(/^https?:\/\//)) {
+            let imageUrl = this.createUrlFromTemplate(this.largeFieldName, this.data);
+            return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
+        }
+        if (this.data[this.largeFieldName]) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.largeFieldName]);
+        }
+        return null;
+    }
 
     ngOnInit(): void {
         // console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
@@ -126,20 +177,16 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
-        if (this.useLink && (changes['imageUrl'] || changes['imageLargeUrl'])) {
-            this.createLinkUrl();
-        }
     }
 
-    createLinkUrl(): void {
-        let downloadUrl = this.imageLargeUrl || this.imageUrl;
-        if (downloadUrl && typeof downloadUrl === 'object' && downloadUrl['changingThisBreaksApplicationSecurity']) {
-            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
-            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
+    createUrlFromTemplate(imageUrl: string, data: any): string {
+        if (!data) {
+            return imageUrl;
         }
-        this.downloadUrl = typeof downloadUrl === 'string' && downloadUrl.indexOf('data:') === -1
-            ? this.sanitizer.bypassSecurityTrustUrl(downloadUrl)
-            : '#download';
+        for (const dKey of Object.keys(data)) {
+            imageUrl = imageUrl.replace(`{${dKey}}`, this.data[dKey]);
+        }
+        return imageUrl;
     }
 
     onClick(event?: MouseEvent): void {
@@ -311,12 +358,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             event.preventDefault();
         }
 
-        let downloadUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
-        if (downloadUrl && downloadUrl['changingThisBreaksApplicationSecurity']) {
-            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
-            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
-        }
-
         this.createLoadingOverlay();
 
         const img = new Image();
@@ -332,6 +373,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             ];
             this.lightbox.loadAndOpen(0);
         };
-        img.src = downloadUrl;
+        img.src = this.largeImageUrl as string;
     }
 }
