@@ -93,10 +93,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
     }
 
     aceEditorInit(): void {
-        ace.config.set('fontSize', '16px');
+        // ace.config.set('fontSize', '16px');
         ace.config.set('basePath', 'https://unpkg.com/ace-builds@1.4.12/src-noconflict');
         this.aceEditor = ace.edit(this.editorResponse.nativeElement);
         this.aceEditor.setTheme('ace/theme/textmate');
+        this.aceEditor.setFontSize(16);
         if (!this.getIsMediaType(this.apiItem.responseContentType)) {
             this.aceEditor.session.setMode(`ace/mode/${this.apiItem.responseContentType}`);
         }
@@ -108,6 +109,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
         this.aceEditorRequest = ace.edit(this.editorRequest.nativeElement);
         this.aceEditorRequest.setTheme('ace/theme/textmate');
+        this.aceEditorRequest.setFontSize(16);
         if (!this.getIsMediaType(this.apiItem.requestContentType)) {
             this.aceEditorRequest.session.setMode(`ace/mode/${this.apiItem.requestContentType}`);
         }

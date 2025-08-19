@@ -63,6 +63,7 @@
                             "node_modules/@ng-select/ng-select/themes/default.theme.css",
                             "node_modules/prismjs/themes/prism.css",
                             "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
+                            "node_modules/photoswipe/dist/photoswipe.css",
                             "src/styles.css"
                         ],
                         "scripts": [
@@ -233,6 +234,7 @@
                             "node_modules/@ng-select/ng-select/themes/default.theme.css",
                             "node_modules/prismjs/themes/prism.css",
                             "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
+                            "node_modules/photoswipe/dist/photoswipe.css",
                             "miniapp-src/styles.css"
                         ],
                         "scripts": [

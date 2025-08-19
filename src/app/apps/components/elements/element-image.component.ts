@@ -13,6 +13,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
+import PhotoSwipeLightbox from 'photoswipe/lightbox';
+import PhotoSwipe from 'photoswipe';
 
 @Component({
     selector: 'app-image-elem',
@@ -42,7 +44,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
     @Input() useLink: boolean;
-    @Input() useCropper: boolean;
+    @Input() useCropper: boolean = false;
+    @Input() useLightbox: boolean = false;
     @Input() valueFieldName: string;
     @Input() cropperMaintainAspectRatio: boolean = false;
     @Input() cropperAspectRatio: number = 4 / 3;
@@ -57,6 +60,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     loading: boolean = false;
     imageChangedEvent: Event | null = null;
     croppedImage: SafeUrl | string = '';
+
+    overlay: HTMLElement;
+    lightbox: PhotoSwipeLightbox;
 
     private _cropperAspectRatioString: string = '';
 
@@ -108,6 +114,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     ngOnInit(): void {
         // console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
+        if (this.useLightbox) {
+            this.lightboxInit();
+        }
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -131,6 +140,18 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.downloadUrl = typeof downloadUrl === 'string' && downloadUrl.indexOf('data:') === -1
             ? this.sanitizer.bypassSecurityTrustUrl(downloadUrl)
             : '#download';
+    }
+
+    onClick(event?: MouseEvent): void {
+        if (event && !this.useLink) {
+            event.preventDefault();
+            return;
+        }
+        if (this.useLightbox) {
+            this.lightboxOpen(event);
+        } else {
+            this.download(event);
+        }
     }
 
     download(event?: MouseEvent): void {
@@ -245,5 +266,72 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     registerOnTouched(fn: (_: any) => void) {
         this.onTouched = fn;
+    }
+
+    lightboxInit(event?: MouseEvent): void {
+        const options = {
+            allowPanToNext: false,
+            wheelToZoom: true,
+            pswpModule: PhotoSwipe,
+            dataSource: []
+        }
+        this.lightbox = new PhotoSwipeLightbox(options);
+        this.lightbox.init();
+    }
+
+    createLoadingOverlay(): void {
+        this.overlay = document.createElement('div');
+        Object.assign(this.overlay.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: '100'
+        });
+        const spinner = document.createElement('div');
+        spinner.className = 'animate-spin';
+        Object.assign(spinner.style, {
+            width: '60px',
+            height: '60px',
+            border: '6px solid rgba(255, 255, 255, 0.3)',
+            borderTop: '6px solid #ffffff',
+            borderRadius: '50%'
+        });
+        this.overlay.appendChild(spinner);
+        document.body.appendChild(this.overlay);
+    }
+
+    lightboxOpen(event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+        }
+
+        let downloadUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
+        if (downloadUrl && downloadUrl['changingThisBreaksApplicationSecurity']) {
+            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
+            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
+        }
+
+        this.createLoadingOverlay();
+
+        const img = new Image();
+        img.onload = () => {
+            this.lightbox.options.dataSource = [
+                {
+                    src: img.src,
+                    width: img.naturalWidth,
+                    height: img.naturalHeight,
+                    alt: ''
+                }
+            ];
+            this.lightbox.loadAndOpen(0);
+            this.overlay.remove();
+        };
+        img.src = downloadUrl;
     }
 }

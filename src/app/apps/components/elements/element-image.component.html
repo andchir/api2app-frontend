@@ -5,7 +5,7 @@
             #imageContainer>
             <a class="inline-block"
                [ngClass]="{'cursor-default': !useLink, 'cursor-pointer': useLink}"
-               (click)="download($event)"
+               (click)="onClick($event)"
                [href]="downloadUrl"
                target="_blank" *ngIf="imageUrl">
                 <img class="inline-block max-w-full" loading="lazy"
