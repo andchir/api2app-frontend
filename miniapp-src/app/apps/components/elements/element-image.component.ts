@@ -15,7 +15,6 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
-import {type} from "node:os";
 
 @Component({
     selector: 'app-image-elem',
@@ -141,26 +140,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get largeImageUrl(): string | SafeResourceUrl | null {
-        if (this.imageLargeUrl || this.imageUrl) {
-            let imageUrl = this.imageLargeUrl || this.imageUrl;
-            if (imageUrl && typeof imageUrl === 'object'
-                && imageUrl['changingThisBreaksApplicationSecurity']
-                && imageUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
-                return '#download';
-            }
-            return this.sanitizer.sanitize(SecurityContext.URL, this.imageLargeUrl || this.imageUrl);
+        const imageUrl = this.createLargeImageUrl();
+        if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
+            return '#download';
         }
-        if (!this.data || typeof this.data !== 'object') {
-            return null;
-        }
-        if (this.largeFieldName.match(/^https?:\/\//)) {
-            let imageUrl = this.createUrlFromTemplate(this.largeFieldName, this.data);
-            return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
-        }
-        if (this.data[this.largeFieldName]) {
-            return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.largeFieldName]);
-        }
-        return null;
+        return imageUrl;
     }
 
     ngOnInit(): void {
@@ -177,6 +161,29 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
+    }
+
+    createLargeImageUrl(): string | null {
+        if (this.imageLargeUrl || this.imageUrl) {
+            let imageUrl = this.imageLargeUrl || this.imageUrl;
+            if (imageUrl && typeof imageUrl === 'object'
+                && imageUrl['changingThisBreaksApplicationSecurity']
+                && imageUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
+                return imageUrl['changingThisBreaksApplicationSecurity'];
+            }
+            return this.sanitizer.sanitize(SecurityContext.URL, this.imageLargeUrl || this.imageUrl);
+        }
+        if (!this.data || typeof this.data !== 'object') {
+            return null;
+        }
+        if (this.largeFieldName.match(/^https?:\/\//)) {
+            let imageUrl = this.createUrlFromTemplate(this.largeFieldName, this.data);
+            return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
+        }
+        if (this.data[this.largeFieldName]) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.largeFieldName]);
+        }
+        return null;
     }
 
     createUrlFromTemplate(imageUrl: string, data: any): string {
@@ -202,11 +209,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             event.preventDefault();
             return;
         }
-        let downloadUrl = (this.imageLargeUrl || this.imageUrl || '') as any;
-        if (downloadUrl && downloadUrl['changingThisBreaksApplicationSecurity']) {
-            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
-            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
-        }
+        let downloadUrl = this.createLargeImageUrl();
         if (typeof downloadUrl === 'string' && (downloadUrl.match(/^https?:\/\//) || downloadUrl.includes('blob:') )) {
             return;
         }
