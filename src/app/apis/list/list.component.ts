@@ -5,6 +5,7 @@ import { BehaviorSubject, debounceTime, delay, skip } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { RouterEventsService } from '../../services/router-events.service';
+import { ApplicationService } from '../../services/application.service';
 
 @Component({
     selector: 'app-apis-list',
@@ -17,32 +18,7 @@ export class ListApisComponent implements OnInit {
     @ViewChild('searchField') searchField: ElementRef<HTMLInputElement>;
     searchWord$ = new BehaviorSubject<string>('');
     language: string = '';
-    languagesList: {name: string, title: string}[] = [
-        {
-            name: 'all',
-            title: $localize `All languages`
-        },
-        {
-            name: 'en',
-            title: 'English'
-        },
-        {
-            name: 'ru',
-            title: 'Русский'
-        },
-        {
-            name: 'fr',
-            title: 'Français'
-        },
-        {
-            name: 'de',
-            title: 'Deutsch'
-        },
-        {
-            name: 'es',
-            title: 'Español'
-        }
-    ];
+    languagesList: {name: string, title: string}[];
     currentUrl: string = '';
 
     constructor(
@@ -52,6 +28,7 @@ export class ListApisComponent implements OnInit {
         protected router: Router
     ) {
         this.language = locale;
+        this.languagesList = ApplicationService.getLanguagesList(true);
     }
 
     ngOnInit(): void {

@@ -83,40 +83,16 @@
                         <div class="dropdown-menu absolute right-0 w-48 py-2 origin-top-right z-50">
                             <div class="rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                                 role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                                <a href="/ru/" class="block px-4 py-2 text-sm text-right hover:bg-gray-100"
-                                    role="menuitem"
-                                    tabindex="-1" *ngIf="locale != 'ru'">
-                                    <span>Русский</span>
-                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/ru.svg" alt="Russian">
-                                </a>
-                                <a href="/en/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
-                                    [ngClass]="{'text-gray-700': locale != 'en', 'text-blue-700 pointer-events-none opacity-50': locale == 'en'}"
-                                    role="menuitem"
-                                    tabindex="-1" *ngIf="locale != 'en'">
-                                    <span>English</span>
-                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/en.svg" alt="English">
-                                </a>
-                                <a href="/fr/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
-                                   [ngClass]="{'text-gray-700': locale != 'fr', 'text-blue-700 pointer-events-none opacity-50': locale == 'fr'}"
-                                   role="menuitem"
-                                   tabindex="-1" *ngIf="locale != 'fr'">
-                                    <span>Français</span>
-                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/fr.svg" alt="French">
-                                </a>
-                                <a href="/de/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
-                                   [ngClass]="{'text-gray-700': locale != 'de', 'text-blue-700 pointer-events-none opacity-50': locale == 'de'}"
-                                   role="menuitem"
-                                   tabindex="-1" *ngIf="locale != 'de'">
-                                    <span>Deutsch</span>
-                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/de.svg" alt="Deutsch">
-                                </a>
-                                <a href="/es/" class="block px-4 py-2 text-sm text-gray-700 text-right hover:bg-gray-100"
-                                   [ngClass]="{'text-gray-700': locale != 'es', 'text-blue-700 pointer-events-none opacity-50': locale == 'es'}"
-                                   role="menuitem"
-                                   tabindex="-1" *ngIf="locale != 'es'">
-                                    <span>Español</span>
-                                    <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200" src="assets/img/es.svg" alt="Español">
-                                </a>
+                                <ng-container *ngFor="let item of languagesList">
+                                    <a [href]="'/' + item.name + '/'" class="block px-4 py-2 text-sm text-right hover:bg-gray-100"
+                                       role="menuitem"
+                                       tabindex="-1" *ngIf="locale != item.name">
+                                        <span>{{ item.title }}</span>
+                                        <img class="inline-block w-5 h-5 rounded-full ml-2 border border-gray-200"
+                                             src="assets/img/{{ item.name }}.svg"
+                                             [alt]="item.title">
+                                    </a>
+                                </ng-container>
                             </div>
                         </div>
                     </div>

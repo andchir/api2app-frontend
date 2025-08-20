@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { TokenStorageService } from './services/token-storage.service';
 import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
+import { ApplicationService } from './services/application.service';
 
 
 @Component({
@@ -21,6 +22,7 @@ export class AppComponent implements OnInit {
     isSharedPageUrl = false;
     isPersonalPageUrl = false;
     navigationLoading = false;
+    languagesList: {name: string, title: string}[];
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
@@ -43,6 +45,7 @@ export class AppComponent implements OnInit {
                     this.isMobileMenuActive = false;
                 }
             });
+        this.languagesList = ApplicationService.getLanguagesList();
     }
 
     ngOnInit(): void {

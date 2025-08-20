@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 import { catchError, Observable } from 'rxjs';
 import * as moment from 'moment';
@@ -376,5 +377,39 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()}
             ]
         };
+    }
+
+    static getLanguagesList(addAllItem: boolean = false): {name: string, title: string}[] {
+        let languagesList = [
+            {
+                name: 'en',
+                title: 'English'
+            },
+            {
+                name: 'ru',
+                title: 'Русский'
+            },
+            {
+                name: 'fr',
+                title: 'Français'
+            },
+            {
+                name: 'de',
+                title: 'Deutsch'
+            },
+            {
+                name: 'es',
+                title: 'Español'
+            }
+        ].filter((item) => {
+            return environment.languages.includes(item.name);
+        });
+        if (addAllItem) {
+            languagesList.unshift({
+                name: 'all',
+                title: $localize `All languages`
+            });
+        }
+        return languagesList;
     }
 }
