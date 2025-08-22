@@ -69,7 +69,8 @@
                      [ngClass]="{
                      'md:col-span-2': block.options?.gridColumnSpan === 2,
                      'md:col-span-3': block.options?.gridColumnSpan === 3,
-                     'hidden': block.tabIndex !== -1 && block.tabIndex !== tabIndex
+                     'hidden': block.tabIndex !== -1 && block.tabIndex !== tabIndex,
+                     'sticky bottom-0 z-20 bg-white sm:bg-transparent': block.options?.isStickyPosition
                      }">
 
                     <div class="relative"

@@ -1,6 +1,7 @@
 export const environment = {
     production: false,
     appName: 'Api2App',
+    languages: ['en', 'ru', 'fr', 'de', 'es'],
     // apiUrl: 'http://localhost:8000/'
     apiUrl: 'https://api2app.org/'
 };

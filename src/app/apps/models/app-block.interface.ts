@@ -87,6 +87,7 @@ export interface AppBlockOptions {
     autoClear?: boolean;
     showLoading?: boolean;
     messageSuccess?: string;
+    isStickyPosition?: boolean;
 }
 
 export interface AppBlock {

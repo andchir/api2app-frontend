@@ -97,6 +97,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-switch',
             enabled: options?.showLoading
         });
+        output.push({
+            name: 'isStickyPosition',
+            label: $localize `Sticky position`,
+            type: 'input-switch',
+            enabled: options?.isStickyPosition || false
+        });
         return output;
     }
 
@@ -114,7 +120,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumnSpan: 1,
             messageSuccess: $localize `The form has been submitted successfully.`,
             autoClear: false,
-            showLoading: true
+            showLoading: true,
+            isStickyPosition: false
         };
     }
 

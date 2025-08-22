@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
+import { environment } from '../../environments/environment';
 
 import { catchError, Observable } from 'rxjs';
 import * as moment from 'moment';
@@ -105,6 +106,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             type: 'input-switch',
             enabled: options?.showLoading
         });
+        output.push({
+            name: 'isStickyPosition',
+            label: $localize `Sticky position`,
+            type: 'input-switch',
+            enabled: options?.isStickyPosition || false
+        });
         return output;
     }
 
@@ -122,7 +129,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
             gridColumnSpan: 1,
             messageSuccess: $localize `The form has been submitted successfully.`,
             autoClear: false,
-            showLoading: true
+            showLoading: true,
+            isStickyPosition: false
         };
     }
 
@@ -376,7 +384,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             hidden: false,
             advertising: true,
             adultsOnly: false,
-            gridColumns: 3,
+            gridColumns: 2,
             language: '',
             image: '',
             blocks: [
@@ -385,5 +393,39 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()}
             ]
         };
+    }
+
+    static getLanguagesList(addAllItem: boolean = false): {name: string, title: string}[] {
+        let languagesList = [
+            {
+                name: 'en',
+                title: 'English'
+            },
+            {
+                name: 'ru',
+                title: 'Русский'
+            },
+            {
+                name: 'fr',
+                title: 'Français'
+            },
+            {
+                name: 'de',
+                title: 'Deutsch'
+            },
+            {
+                name: 'es',
+                title: 'Español'
+            }
+        ].filter((item) => {
+            return environment.languages.includes(item.name);
+        });
+        if (addAllItem) {
+            languagesList.unshift({
+                name: 'all',
+                title: $localize `All languages`
+            });
+        }
+        return languagesList;
     }
 }
