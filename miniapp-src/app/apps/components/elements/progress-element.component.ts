@@ -95,7 +95,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     onDataUpdated(): void {
         clearTimeout(this.timer);
         if (!this.data) {
-            this.data = {};
+            return;
         }
         this.delay = 10000;
         const prevStatus = this.status;
@@ -129,6 +129,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
     }
 
     onCompleted(): void {
+        clearTimeout(this.timer);
         this.writeValue(100);
         const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
         window.localStorage.removeItem(`${taskUuid}-progress-start`);

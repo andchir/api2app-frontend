@@ -288,17 +288,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     onProgressUpdate(options: any): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
-        if (taskId) {
-            this.progressUpdate.emit(taskId);
-        }
+        this.progressUpdate.emit(taskId);
     }
 
     onProgressCompleted(options: any): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
-        if (taskId) {
-            this.progressCompleted.emit(taskId);
-        }
+        this.progressCompleted.emit(taskId);
     }
 
     onMessage(msg: string[]) {
