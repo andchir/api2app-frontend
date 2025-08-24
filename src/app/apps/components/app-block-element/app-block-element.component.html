@@ -423,17 +423,19 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
-    <ng-container *ngSwitchCase="'image'">
+    <ng-container *ngIf="['image', 'video'].includes(type)">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
                     <ng-container *ngFor="let image of options.valueArr; let ind = index">
                         <app-image-elem
                             [editorMode]="editorMode"
+                            [type]="type"
                             [parentIndex]="parentIndex"
                             [index]="ind"
                             [name]="image?.name"
                             [data]="image"
+                            [poster]="options?.posterUrl"
                             [thumbnailFieldName]="options?.itemThumbnailFieldName"
                             [largeFieldName]="options?.itemFieldName"
                             [fullWidth]="options?.fullWidth"
@@ -449,9 +451,11 @@
             <ng-template #templateImageItem>
                 <app-image-elem
                     [editorMode]="editorMode"
+                    [type]="type"
                     [parentIndex]="parentIndex"
                     [index]="index"
                     [name]="options?.name"
+                    [poster]="options?.posterUrl"
                     [imageUrl]="options?.valueObj"
                     [fullWidth]="options?.fullWidth"
                     [borderShadow]="options?.borderShadow"
@@ -467,22 +471,22 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
-    <ng-container *ngSwitchCase="'video'">
-        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
-                <video class="block w-full" [src]="options?.value" controls
-                       controlsList="nodownload"
-                       [poster]="options?.posterUrl"
-                       *ngIf="options?.value"></video>
-                <div class="px-4 py-10 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
-                     *ngIf="!options?.value && editorMode">
-                    <i class="bi bi-play-btn mr-2"></i>
-                    <span i18n>Video</span>
-                </div>
-            </div>
-        </div>
-        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
-    </ng-container>
+<!--    <ng-container *ngSwitchCase="'video'">-->
+<!--        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">-->
+<!--            <div class="block w-full max-w-[600px] mx-auto">-->
+<!--                <video class="block w-full" [src]="options?.value" controls-->
+<!--                       controlsList="nodownload"-->
+<!--                       [poster]="options?.posterUrl"-->
+<!--                       *ngIf="options?.value"></video>-->
+<!--                <div class="px-4 py-10 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"-->
+<!--                     *ngIf="!options?.value && editorMode">-->
+<!--                    <i class="bi bi-play-btn mr-2"></i>-->
+<!--                    <span i18n>Video</span>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>-->
+<!--    </ng-container>-->
 
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">

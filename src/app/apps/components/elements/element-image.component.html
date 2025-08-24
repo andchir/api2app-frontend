@@ -17,9 +17,14 @@
         </div>
     </ng-container>
     <div class="px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-         *ngIf="!imageUrl && editorMode">
+         *ngIf="!imageUrl && editorMode && type == 'image'">
         <i class="bi bi-image mr-2"></i>
         <span i18n>Image</span>
+    </div>
+    <div class="px-4 py-10 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
+         *ngIf="!imageUrl && editorMode && type == 'video'">
+        <i class="bi bi-play-btn mr-2"></i>
+        <span i18n>Video</span>
     </div>
 </div>
 

@@ -902,7 +902,6 @@ export class ElementOptions {
                 });
                 break;
             case 'audio':
-            case 'video':
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -921,29 +920,20 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.value
                 });
-                if (type === 'video') {
-                    output.push({
-                        name: 'posterUrl',
-                        label: $localize `Poster URL`,
-                        type: 'input-text',
-                        value: options?.posterUrl || ''
-                    });
-                }
                 output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
                 });
-                if (type === 'audio') {
-                    output.push({
-                        name: 'required',
-                        label: $localize `Required`,
-                        type: 'input-switch',
-                        enabled: options?.required || false
-                    });
-                }
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
+            case 'video':
             case 'image':
                 output.push({
                     name: 'label',
@@ -975,25 +965,41 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.hiddenByField || ''
                 });
-                output.push({
-                    name: 'cropperAspectRatioString',
-                    label: ($localize `Aspect ratio when cropping`),
-                    type: 'input-text',
-                    value: options?.cropperAspectRatioString || ''
-                });
-                output.push({
-                    name: 'info',
-                    value: '1:1, 4:3, 3:4, 16:9, 9:16',
-                    type: 'text',
-                    color: 'Gray',
-                    icon: 'bi-info-circle',
-                    fontSize: 'Small'
-                });
+                if (type === 'video') {
+                    output.push({
+                        name: 'posterUrl',
+                        label: $localize `Poster URL`,
+                        type: 'input-text',
+                        value: options?.posterUrl || ''
+                    });
+                } else {
+                    output.push({
+                        name: 'cropperAspectRatioString',
+                        label: ($localize `Aspect ratio when cropping`),
+                        type: 'input-text',
+                        value: options?.cropperAspectRatioString || ''
+                    });
+                    output.push({
+                        name: 'info',
+                        value: '1:1, 4:3, 3:4, 16:9, 9:16',
+                        type: 'text',
+                        color: 'Gray',
+                        icon: 'bi-info-circle',
+                        fontSize: 'Small'
+                    });
+                }
                 output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
                     value: options?.value
+                });
+                output.push({
+                    name: 'useLink',
+                    label: $localize `Use link`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useLink
                 });
                 output.push({
                     name: 'roundedCorners',
@@ -1003,13 +1009,6 @@ export class ElementOptions {
                     enabled: options?.roundedCorners
                 });
                 output.push({
-                    name: 'fullWidth',
-                    label: $localize `Full width`,
-                    type: 'input-switch',
-                    value: true,
-                    enabled: options?.fullWidth
-                });
-                output.push({
                     name: 'borderShadow',
                     label: $localize `Shadow`,
                     type: 'input-switch',
@@ -1017,11 +1016,11 @@ export class ElementOptions {
                     enabled: options?.borderShadow
                 });
                 output.push({
-                    name: 'useCropper',
-                    label: $localize `Use the crop tool`,
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
                     type: 'input-switch',
                     value: true,
-                    enabled: options?.useCropper
+                    enabled: options?.fullWidth
                 });
                 output.push({
                     name: 'useLightbox',
@@ -1030,14 +1029,15 @@ export class ElementOptions {
                     value: true,
                     enabled: options?.useLightbox || false
                 });
-                output.push({
-                    name: 'useLink',
-                    label: $localize `Use link`,
-                    type: 'input-switch',
-                    value: true,
-                    enabled: options?.useLink
-                });
-
+                if (type === 'image') {
+                    output.push({
+                        name: 'useCropper',
+                        label: $localize `Use the crop tool`,
+                        type: 'input-switch',
+                        value: true,
+                        enabled: options?.useCropper
+                    });
+                }
                 break;
             case 'input-chart-line':
                 output.push({

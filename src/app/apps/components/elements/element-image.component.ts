@@ -15,6 +15,7 @@ import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browse
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
+import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm.js';
 
 @Component({
     selector: 'app-image-elem',
@@ -35,10 +36,12 @@ import PhotoSwipe from 'photoswipe';
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
 
     @Input() editorMode = false;
+    @Input() type: string = 'image';
     @Input() name: string;
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() data: any;
+    @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
     @Input() imageUrl: string | SafeResourceUrl | null;
@@ -134,6 +137,24 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             return '#download';
         }
         return imageUrl;
+    }
+
+    get posterUrl(): string | null {
+        if (!this.poster) {
+            return null;
+        }
+        if (this.data) {
+            if (this.poster.match(/^https?:\/\//)) {
+                let imageUrl = this.createUrlFromTemplate(this.poster, this.data);
+                return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
+            }
+            if (this.data[this.poster]) {
+                return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.poster]);
+            }
+        } else if (this.poster) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.poster);
+        }
+        return null;
     }
 
     ngOnInit(): void {
@@ -315,6 +336,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             dataSource: []
         }
         this.lightbox = new PhotoSwipeLightbox(options);
+
+        const videoPlugin = new PhotoSwipeVideoPlugin(this.lightbox, {
+            autoplay: false
+        });
+
         this.lightbox.init();
     }
 
@@ -349,22 +375,49 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (event) {
             event.preventDefault();
         }
+        const mediaUrl = this.largeImageUrl as string;
+        const posterUrl = this.posterUrl;
 
-        this.createLoadingOverlay();
-
-        const img = new Image();
-        img.onload = () => {
-            this.overlay.remove();
+        if (this.type === 'image' || posterUrl) {
+            this.createLoadingOverlay();
+            const img = new Image();
+            img.onload = () => {
+                this.overlay.remove();
+                if (this.type === 'image') {
+                    this.lightbox.options.dataSource = [
+                        {
+                            src: img.src,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight,
+                            alt: ''
+                        }
+                    ];
+                } else {
+                    this.lightbox.options.dataSource = [
+                        {
+                            src: img.src,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight,
+                            msrc: img.src,
+                            videoSrc: mediaUrl,
+                            type: 'video'
+                        }
+                    ];
+                }
+                this.lightbox.loadAndOpen(0);
+            };
+            img.src = this.type === 'video' ? posterUrl : mediaUrl;
+        } else {
             this.lightbox.options.dataSource = [
                 {
-                    src: img.src,
-                    width: img.naturalWidth,
-                    height: img.naturalHeight,
-                    alt: ''
+                    width: 800,
+                    height: 600,
+                    type: 'video',
+                    msrc: this.previewImageUrl as string,
+                    videoSrc: mediaUrl
                 }
             ];
             this.lightbox.loadAndOpen(0);
-        };
-        img.src = this.largeImageUrl as string;
+        }
     }
 }
