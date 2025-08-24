@@ -147,7 +147,7 @@
 </div>
 <div class="bg-gray-900/50 fixed inset-0 z-40" *ngIf="maintenanceModalActive"></div>
 
-<div class="fixed right-5 bottom-20 opacity-100 transition-all" [ngClass]="{'pointer-events-none !opacity-0': !windowScrolled}">
+<div class="fixed right-5 bottom-20 opacity-100 transition-all z-30" [ngClass]="{'pointer-events-none !opacity-0': !windowScrolled}">
     <button type="button"
             class="p-1 rounded-md border border-blue-500 text-blue-500 hover:border-blue-700 hover:text-blue-700 text-4xl cursor-pointer"
             (click)="scrollToTop()">
