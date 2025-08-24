@@ -128,17 +128,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         return null;
     }
 
-    createLinkUrl(): void {
-        let downloadUrl = this.imageLargeUrl || this.imageUrl;
-        if (downloadUrl && typeof downloadUrl === 'object' && downloadUrl['changingThisBreaksApplicationSecurity']) {
-            downloadUrl = downloadUrl['changingThisBreaksApplicationSecurity'];
-            downloadUrl = this.sanitizer.sanitize(SecurityContext.URL, downloadUrl);
-        }
-        // this.downloadUrl = typeof downloadUrl === 'string' && downloadUrl.indexOf('data:') === -1
-        //     ? this.sanitizer.bypassSecurityTrustUrl(downloadUrl)
-        //     : '#download';
-    }
-
     get largeImageUrl(): string | SafeResourceUrl | null {
         const imageUrl = this.createLargeImageUrl();
         if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
