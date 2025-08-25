@@ -128,7 +128,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (this.data[this.thumbnailFieldName]) {
             return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.thumbnailFieldName]);
         }
-        return null;
+        return 'assets/img/transp-big.png';
     }
 
     get largeImageUrl(): string | SafeResourceUrl | null {
