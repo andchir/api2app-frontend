@@ -341,6 +341,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             autoplay: false
         });
 
+        this.lightbox.on('afterInit', () => {
+            const videoEl = this.lightbox.pswp.container.querySelector('video');
+            if (videoEl) {
+                videoEl.style.position = 'static';
+            }
+        });
+
         this.lightbox.init();
     }
 
@@ -383,12 +390,14 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             const img = new Image();
             img.onload = () => {
                 this.overlay.remove();
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
                 if (this.type === 'image') {
                     this.lightbox.options.dataSource = [
                         {
                             src: img.src,
-                            width: img.naturalWidth,
-                            height: img.naturalHeight,
+                            width: naturalWidth,
+                            height: naturalHeight,
                             alt: ''
                         }
                     ];
@@ -396,8 +405,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
                     this.lightbox.options.dataSource = [
                         {
                             src: img.src,
-                            width: img.naturalWidth,
-                            height: img.naturalHeight,
+                            width: naturalWidth,
+                            height: naturalHeight,
                             msrc: img.src,
                             videoSrc: mediaUrl,
                             type: 'video'
@@ -410,8 +419,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         } else {
             this.lightbox.options.dataSource = [
                 {
-                    width: 800,
-                    height: 600,
+                    width: window.innerWidth,
+                    height: window.innerHeight,
                     type: 'video',
                     msrc: this.previewImageUrl as string,
                     videoSrc: mediaUrl

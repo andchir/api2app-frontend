@@ -13,6 +13,10 @@
                      (load)="imageContainer.classList.remove('loading-bg-image')"
                      (error)="onImageError(imageContainer)"
                      [src]="previewImageUrl" alt="">
+                <div class="absolute left-0 top-0 w-full h-full flex justify-center items-center text-white text-8xl opacity-50 pointer-events-none"
+                    *ngIf="type == 'video'">
+                    <i class="bi bi-play-circle"></i>
+                </div>
             </a>
         </div>
     </ng-container>
