@@ -8,7 +8,7 @@ import {
     Output, SecurityContext,
     SimpleChanges
 } from '@angular/core';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
@@ -24,7 +24,8 @@ import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video
     imports: [
         NgIf,
         NgClass,
-        ImageCropperComponent
+        ImageCropperComponent,
+        NgTemplateOutlet
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -44,8 +45,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
-    @Input() imageUrl: string | SafeResourceUrl | null;
-    @Input() imageLargeUrl: string | SafeResourceUrl | null;
+    @Input() mediaOriginalUrl: string | SafeResourceUrl | null;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -95,11 +95,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.imageUrl && val) || !this.useCropper) {
+        if ((!this.mediaOriginalUrl && val) || !this.useCropper) {
             if (val instanceof File) {
-                this.imageUrl = URL.createObjectURL(val);
+                this.mediaOriginalUrl = URL.createObjectURL(val);
             } else {
-                this.imageUrl = val && typeof val === 'string'
+                this.mediaOriginalUrl = val && typeof val === 'string'
                     ? this.sanitizer.bypassSecurityTrustUrl(val)
                     : val;
             }
@@ -115,10 +115,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     ) {}
 
     get previewImageUrl(): string | SafeResourceUrl | null {
-        if (this.imageUrl) {
-            return this.sanitizer.sanitize(SecurityContext.URL, this.imageUrl);
+        if (this.mediaOriginalUrl && this.type === 'image') {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
+            if (this.type === 'video') {
+                return this.posterUrl || 'assets/img/transp-big.png';
+            }
             return null;
         }
         if (this.thumbnailFieldName.match(/^https?:\/\//)) {
@@ -132,7 +135,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get largeImageUrl(): string | SafeResourceUrl | null {
-        const imageUrl = this.createLargeImageUrl();
+        const imageUrl = this.createOriginalFileUrl();
         if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
             return '#download';
         }
@@ -173,15 +176,15 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         }
     }
 
-    createLargeImageUrl(): string | null {
-        if (this.imageLargeUrl || this.imageUrl) {
-            let imageUrl = this.imageLargeUrl || this.imageUrl;
-            if (imageUrl && typeof imageUrl === 'object'
-                && imageUrl['changingThisBreaksApplicationSecurity']
-                && imageUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
-                return imageUrl['changingThisBreaksApplicationSecurity'];
+    createOriginalFileUrl(): string | null {
+        if (this.mediaOriginalUrl) {
+            let mediaUrl = this.mediaOriginalUrl;
+            if (mediaUrl && typeof mediaUrl === 'object'
+                && mediaUrl['changingThisBreaksApplicationSecurity']
+                && mediaUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
+                return mediaUrl['changingThisBreaksApplicationSecurity'];
             }
-            return this.sanitizer.sanitize(SecurityContext.URL, this.imageLargeUrl || this.imageUrl);
+            return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
             return null;
@@ -219,7 +222,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             event.preventDefault();
             return;
         }
-        let downloadUrl = this.createLargeImageUrl();
+        let downloadUrl = this.createOriginalFileUrl();
         if (typeof downloadUrl === 'string' && (downloadUrl.match(/^https?:\/\//) || downloadUrl.includes('blob:') )) {
             return;
         }
@@ -345,6 +348,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             const videoEl = this.lightbox.pswp.container.querySelector('video');
             if (videoEl) {
                 videoEl.style.position = 'static';
+                videoEl.style.backgroundColor = '#000000';
             }
         });
 

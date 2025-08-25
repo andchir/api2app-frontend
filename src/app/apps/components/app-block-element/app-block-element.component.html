@@ -456,7 +456,7 @@
                     [index]="index"
                     [name]="options?.name"
                     [poster]="options?.posterUrl"
-                    [imageUrl]="options?.valueObj"
+                    [mediaOriginalUrl]="options?.valueObj"
                     [fullWidth]="options?.fullWidth"
                     [borderShadow]="options?.borderShadow"
                     [roundedCorners]="options?.roundedCorners"
@@ -470,23 +470,6 @@
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
-
-<!--    <ng-container *ngSwitchCase="'video'">-->
-<!--        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">-->
-<!--            <div class="block w-full max-w-[600px] mx-auto">-->
-<!--                <video class="block w-full" [src]="options?.value" controls-->
-<!--                       controlsList="nodownload"-->
-<!--                       [poster]="options?.posterUrl"-->
-<!--                       *ngIf="options?.value"></video>-->
-<!--                <div class="px-4 py-10 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"-->
-<!--                     *ngIf="!options?.value && editorMode">-->
-<!--                    <i class="bi bi-play-btn mr-2"></i>-->
-<!--                    <span i18n>Video</span>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>-->
-<!--    </ng-container>-->
 
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
