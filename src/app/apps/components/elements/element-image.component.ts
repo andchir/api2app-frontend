@@ -134,7 +134,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         return 'assets/img/transp-big.png';
     }
 
-    get largeImageUrl(): string | SafeResourceUrl | null {
+    get mediaUrl(): string | SafeResourceUrl | null {
         const imageUrl = this.createOriginalFileUrl();
         if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
             return '#download';
@@ -386,7 +386,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (event) {
             event.preventDefault();
         }
-        const mediaUrl = this.largeImageUrl as string;
+        const mediaUrl = this.mediaUrl as string;
         const posterUrl = this.posterUrl;
 
         if (this.type === 'image' || posterUrl) {

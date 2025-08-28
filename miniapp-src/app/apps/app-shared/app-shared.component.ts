@@ -1072,7 +1072,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             let valueArr = this.flattenObjInArray(value);
             if (element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
                 // Filter array values
-                valueArr = this.filterArrayValues(element.valueArr, element.itemFieldName);
+                valueArr = this.filterArrayValues(valueArr, element.itemFieldName);
             }
             element.valueArr = valueArr;
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
@@ -1275,7 +1275,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     filterArrayValues(valueArr: any[], itemFieldName: string): any[] {
-        if (!itemFieldName) {
+        if (!itemFieldName || !valueArr) {
             return valueArr;
         }
         valueArr = valueArr.filter((item) => {

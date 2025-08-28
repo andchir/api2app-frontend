@@ -1,13 +1,13 @@
 <div class="relative block w-full text-center min-h-[50px]"
      [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
-        <div class="min-h-[50px] text-center" [ngClass]="{'hidden': !largeImageUrl, 'loading-bg-image': type == 'image'}"
+        <div class="min-h-[50px] text-center" [ngClass]="{'hidden': !mediaUrl, 'loading-bg-image': type == 'image'}"
             #imageContainer>
             <ng-container *ngTemplateOutlet="useLink ? withLink : withoutLink"></ng-container>
             <ng-template #withLink>
                 <a class="inline-block min-h-12"
                    (click)="onClick($event)"
-                   [href]="largeImageUrl"
+                   [href]="mediaUrl"
                    target="_blank">
                     <img class="inline-block max-w-full" loading="lazy"
                          [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
@@ -25,10 +25,11 @@
                      [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
                      (load)="imageContainer.classList.remove('loading-bg-image')"
                      (error)="onImageError(imageContainer)"
-                     [src]="largeImageUrl" alt="" *ngIf="type == 'image'">
+                     [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                       [src]="largeImageUrl" controlsList="nodownload" controls *ngIf="type == 'video'"></video>
+                       [poster]="previewImageUrl"
+                       [src]="mediaUrl" controlsList="nodownload" controls *ngIf="type == 'video'"></video>
             </ng-template>
         </div>
     </ng-container>

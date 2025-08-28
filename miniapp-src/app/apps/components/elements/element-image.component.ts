@@ -8,13 +8,14 @@ import {
     Output, SecurityContext,
     SimpleChanges
 } from '@angular/core';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 
 import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image-cropper';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
+import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm.js';
 
 @Component({
     selector: 'app-image-elem',
@@ -23,7 +24,8 @@ import PhotoSwipe from 'photoswipe';
     imports: [
         NgIf,
         NgClass,
-        ImageCropperComponent
+        ImageCropperComponent,
+        NgTemplateOutlet
     ],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
@@ -35,14 +37,15 @@ import PhotoSwipe from 'photoswipe';
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
 
     @Input() editorMode = false;
+    @Input() type: string = 'image';
     @Input() name: string;
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() data: any;
+    @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
-    @Input() imageUrl: string | SafeResourceUrl | null;
-    @Input() imageLargeUrl: string | SafeResourceUrl | null;
+    @Input() mediaOriginalUrl: string | SafeResourceUrl | null;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -92,11 +95,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.imageUrl && val) || !this.useCropper) {
+        if ((!this.mediaOriginalUrl && val) || !this.useCropper) {
             if (val instanceof File) {
-                this.imageUrl = URL.createObjectURL(val);
+                this.mediaOriginalUrl = URL.createObjectURL(val);
             } else {
-                this.imageUrl = val && typeof val === 'string'
+                this.mediaOriginalUrl = val && typeof val === 'string'
                     ? this.sanitizer.bypassSecurityTrustUrl(val)
                     : val;
             }
@@ -112,10 +115,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     ) {}
 
     get previewImageUrl(): string | SafeResourceUrl | null {
-        if (this.imageUrl) {
-            return this.sanitizer.sanitize(SecurityContext.URL, this.imageUrl);
+        if (this.mediaOriginalUrl && this.type === 'image') {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
+            if (this.type === 'video') {
+                return this.posterUrl || 'assets/img/transp-big.png';
+            }
             return null;
         }
         if (this.thumbnailFieldName.match(/^https?:\/\//)) {
@@ -125,15 +131,33 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (this.data[this.thumbnailFieldName]) {
             return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.thumbnailFieldName]);
         }
-        return null;
+        return 'assets/img/transp-big.png';
     }
 
-    get largeImageUrl(): string | SafeResourceUrl | null {
-        const imageUrl = this.createLargeImageUrl();
+    get mediaUrl(): string | SafeResourceUrl | null {
+        const imageUrl = this.createOriginalFileUrl();
         if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
             return '#download';
         }
         return imageUrl;
+    }
+
+    get posterUrl(): string | null {
+        if (!this.poster) {
+            return null;
+        }
+        if (this.data) {
+            if (this.poster.match(/^https?:\/\//)) {
+                let imageUrl = this.createUrlFromTemplate(this.poster, this.data);
+                return this.sanitizer.sanitize(SecurityContext.URL, imageUrl);
+            }
+            if (this.data[this.poster]) {
+                return this.sanitizer.sanitize(SecurityContext.URL, this.data[this.poster]);
+            }
+        } else if (this.poster) {
+            return this.sanitizer.sanitize(SecurityContext.URL, this.poster);
+        }
+        return null;
     }
 
     ngOnInit(): void {
@@ -152,15 +176,15 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         }
     }
 
-    createLargeImageUrl(): string | null {
-        if (this.imageLargeUrl || this.imageUrl) {
-            let imageUrl = this.imageLargeUrl || this.imageUrl;
-            if (imageUrl && typeof imageUrl === 'object'
-                && imageUrl['changingThisBreaksApplicationSecurity']
-                && imageUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
-                return imageUrl['changingThisBreaksApplicationSecurity'];
+    createOriginalFileUrl(): string | null {
+        if (this.mediaOriginalUrl) {
+            let mediaUrl = this.mediaOriginalUrl;
+            if (mediaUrl && typeof mediaUrl === 'object'
+                && mediaUrl['changingThisBreaksApplicationSecurity']
+                && mediaUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
+                return mediaUrl['changingThisBreaksApplicationSecurity'];
             }
-            return this.sanitizer.sanitize(SecurityContext.URL, this.imageLargeUrl || this.imageUrl);
+            return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
             return null;
@@ -198,7 +222,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             event.preventDefault();
             return;
         }
-        let downloadUrl = this.createLargeImageUrl();
+        let downloadUrl = this.createOriginalFileUrl();
         if (typeof downloadUrl === 'string' && (downloadUrl.match(/^https?:\/\//) || downloadUrl.includes('blob:') )) {
             return;
         }
@@ -315,6 +339,19 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             dataSource: []
         }
         this.lightbox = new PhotoSwipeLightbox(options);
+
+        const videoPlugin = new PhotoSwipeVideoPlugin(this.lightbox, {
+            autoplay: false
+        });
+
+        this.lightbox.on('afterInit', () => {
+            const videoEl = this.lightbox.pswp.container.querySelector('video');
+            if (videoEl) {
+                videoEl.style.position = 'static';
+                videoEl.style.backgroundColor = '#000000';
+            }
+        });
+
         this.lightbox.init();
     }
 
@@ -349,22 +386,51 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (event) {
             event.preventDefault();
         }
+        const mediaUrl = this.mediaUrl as string;
+        const posterUrl = this.posterUrl;
 
-        this.createLoadingOverlay();
-
-        const img = new Image();
-        img.onload = () => {
-            this.overlay.remove();
+        if (this.type === 'image' || posterUrl) {
+            this.createLoadingOverlay();
+            const img = new Image();
+            img.onload = () => {
+                this.overlay.remove();
+                const naturalWidth = img.naturalWidth;
+                const naturalHeight = img.naturalHeight;
+                if (this.type === 'image') {
+                    this.lightbox.options.dataSource = [
+                        {
+                            src: img.src,
+                            width: naturalWidth,
+                            height: naturalHeight,
+                            alt: ''
+                        }
+                    ];
+                } else {
+                    this.lightbox.options.dataSource = [
+                        {
+                            src: img.src,
+                            width: naturalWidth,
+                            height: naturalHeight,
+                            msrc: img.src,
+                            videoSrc: mediaUrl,
+                            type: 'video'
+                        }
+                    ];
+                }
+                this.lightbox.loadAndOpen(0);
+            };
+            img.src = this.type === 'video' ? posterUrl : mediaUrl;
+        } else {
             this.lightbox.options.dataSource = [
                 {
-                    src: img.src,
-                    width: img.naturalWidth,
-                    height: img.naturalHeight,
-                    alt: ''
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    type: 'video',
+                    msrc: this.previewImageUrl as string,
+                    videoSrc: mediaUrl
                 }
             ];
             this.lightbox.loadAndOpen(0);
-        };
-        img.src = this.largeImageUrl as string;
+        }
     }
 }
