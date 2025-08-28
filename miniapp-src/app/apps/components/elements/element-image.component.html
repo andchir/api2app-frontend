@@ -28,7 +28,7 @@
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                       [poster]="previewImageUrl"
+                       [poster]="poster || null"
                        [src]="mediaUrl" controlsList="nodownload" controls *ngIf="type == 'video'"></video>
             </ng-template>
         </div>
