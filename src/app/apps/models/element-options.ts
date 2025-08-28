@@ -1633,11 +1633,19 @@ export class ElementOptions {
             case 'video':
                 Object.assign(output, {
                     name: type,
+                    label: '',
+                    itemFieldName: '',
+                    itemThumbnailFieldName: '',
                     hiddenByField: '',
                     prefixText: '',
                     value: '',
                     posterUrl: '',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    useLink: true,
+                    useLightbox: false,
+                    fullWidth: false,
+                    borderShadow: false,
+                    roundedCorners: false
                 });
                 break;
             case 'input-chart-line':
