@@ -45,7 +45,7 @@
                                       *ngIf="options?.markdown">
                             </markdown>
                         </ng-container>
-                        <ng-container *ngIf="!options?.itemFieldName || !item">
+                        <ng-container *ngIf="!options?.itemFieldName && !item">
                             <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
                             <markdown ngPreserveWhitespaces
                                       [data]="options?.value"

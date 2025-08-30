@@ -122,7 +122,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             if (this.type === 'video') {
                 return this.posterUrl || 'assets/img/transp-big.png';
             }
-            return null;
+            return this?.data;
         }
         if (this.thumbnailFieldName.match(/^https?:\/\//)) {
             let imageUrl = this.createUrlFromTemplate(this.thumbnailFieldName, this.data);
@@ -135,11 +135,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get mediaUrl(): string | SafeResourceUrl | null {
-        const imageUrl = this.createOriginalFileUrl();
-        if (imageUrl && typeof imageUrl === 'string' && imageUrl.indexOf('data:') > -1) {
+        const mediaUrl = this.createOriginalFileUrl();
+        if (mediaUrl && typeof mediaUrl === 'string' && mediaUrl.indexOf('data:') > -1) {
             return '#download';
         }
-        return imageUrl;
+        return mediaUrl;
     }
 
     get posterUrl(): string | null {
@@ -187,7 +187,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
-            return null;
+            return this?.data;
         }
         if (this.largeFieldName.match(/^https?:\/\//)) {
             let imageUrl = this.createUrlFromTemplate(this.largeFieldName, this.data);
