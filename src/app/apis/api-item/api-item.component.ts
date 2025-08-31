@@ -163,15 +163,14 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         }
         this.loading = true;
         this.submitted = true;
+        this.isResponseError = false;
+        this.apiItem.responseBody = '';
+        this.apiItem.responseHeaders = [];
 
         this.apiService.apiRequest('test', this.apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    this.apiItem.responseBody = '';
-                    this.apiItem.responseHeaders = [];
-                    this.isResponseError = false;
-
                     if (res instanceof MessageEvent) {
                         if (res.type === 'error') {
                             const event = res as unknown as SseErrorEvent;
@@ -217,10 +216,9 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                                     console.log(err);
                                 });
                         }
+                        this.loading = false;
+                        this.submitted = false;
                     }
-
-                    this.loading = false;
-                    this.submitted = false;
                 },
                 error: (err) => {
                     console.log(err);
