@@ -356,6 +356,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         } else {
                             const data = (res as MessageEvent).data;
                             if (data === '[DONE]') {
+                                outputElements.forEach((element, index) => {
+                                    if (element.suffixText) {
+                                        element.value += element.suffixText;
+                                    }
+                                })
                                 this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
                                 this.afterResponseCreated(blocks);
                             } else {
@@ -937,8 +942,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0)
-    {
+    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
@@ -948,9 +952,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
-            value = ApplicationService.createStringValue(element, value, true, false);
+            if (typeof value === 'object') {
+                value = JSON.stringify(value, null, 4);
+            }
             if (chunkIndex === 0) {
-                element.value = '';
+                element.value = element.prefixText || '';
             }
             element.value += value;
             element.hidden = !element.value;
