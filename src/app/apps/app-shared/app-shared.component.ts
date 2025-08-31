@@ -877,55 +877,56 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             };
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement): void {
-        if (!response.body) {
-            return;
-        }
-        const currentApiUuid = apiItem.uuid;
-        const responseContentType = response.headers.has('Content-type')
-            ? response.headers.get('Content-type')
-            : apiItem.responseContentType;
-        const elements = this.findElements(currentApiUuid, 'output', currentElement);
-        const blocks = this.findBlocksByElements(elements);
-        blocks.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>|Event, currentElement: AppBlockElement): void {
 
-        this.apiService.getDataFromBlob(response.body, responseContentType)
-            .then((data) => {
-                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-
-                elements.forEach((element, index) => {
-                    if (element.type === 'input-chart-line') {
-                        this.chartElementValueApply(element, data);
-                    } else if (element.type === 'input-pagination') {
-                        this.paginationValueApply(element, valuesObj, data);
-                    } else {
-                        this.blockElementValueApply(element, valuesObj, data);
-                    }
-                    this.elementHiddenStateUpdate(element);
-                });
-
-                // Save file to VK files section
-                if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                    this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-                }
-                if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
-                    this.vkBridgeService.showAds(this.vkAppOptions);
-                }
-
-                if (this.data.paymentEnabled) {
-                    this.updateUserBalance();
-                }
-
-                this.cdr.detectChanges();
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        // if (!response.body) {
+        //     return;
+        // }
+        // const currentApiUuid = apiItem.uuid;
+        // const responseContentType = response.headers.has('Content-type')
+        //     ? response.headers.get('Content-type')
+        //     : apiItem.responseContentType;
+        // const elements = this.findElements(currentApiUuid, 'output', currentElement);
+        // const blocks = this.findBlocksByElements(elements);
+        // blocks.forEach((block) => {
+        //     if (block.options?.autoClear) {
+        //         this.clearElementsValues(block);
+        //     }
+        // });
+        //
+        // this.apiService.getDataFromBlob(response.body, responseContentType)
+        //     .then((data) => {
+        //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+        //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+        //
+        //         elements.forEach((element, index) => {
+        //             if (element.type === 'input-chart-line') {
+        //                 this.chartElementValueApply(element, data);
+        //             } else if (element.type === 'input-pagination') {
+        //                 this.paginationValueApply(element, valuesObj, data);
+        //             } else {
+        //                 this.blockElementValueApply(element, valuesObj, data);
+        //             }
+        //             this.elementHiddenStateUpdate(element);
+        //         });
+        //
+        //         // Save file to VK files section
+        //         if (this.isVkApp && data?.result_data?.vk_file_to_save) {
+        //             this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+        //         }
+        //         if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
+        //             this.vkBridgeService.showAds(this.vkAppOptions);
+        //         }
+        //
+        //         if (this.data.paymentEnabled) {
+        //             this.updateUserBalance();
+        //         }
+        //
+        //         this.cdr.detectChanges();
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {

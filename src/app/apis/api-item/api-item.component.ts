@@ -3,17 +3,19 @@ import {
     Component,
     ElementRef, EventEmitter,
     Input,
-    OnChanges,
+    OnChanges, OnDestroy,
     OnInit,
     Output,
     SimpleChanges,
     ViewChild
 } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 
 import { Subject, takeUntil } from 'rxjs';
 import * as ace from 'ace-builds';
 
 import { ApiService } from '../../services/api.service';
+import { SseErrorEvent } from 'ngx-sse-client';
 import { ApiItem } from '../models/api-item.interface';
 
 @Component({
@@ -22,7 +24,7 @@ import { ApiItem } from '../models/api-item.interface';
     styleUrls: ['./api-item.component.css'],
     providers: []
 })
-export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
+export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
     @Input() apiItem: ApiItem;
     @Input() authorized = true;
@@ -148,8 +150,15 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
         }, delay);
     }
 
-    apiSendRequest(): void {
+    apiTestRequest(): void {
         if (!this.apiItem.requestUrl) {
+            return;
+        }
+        this.apiSendRequest();
+    }
+
+    apiSendRequest(): void {
+        if (this.loading || this.submitted) {
             return;
         }
         this.loading = true;
@@ -162,39 +171,59 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                     this.apiItem.responseBody = '';
                     this.apiItem.responseHeaders = [];
                     this.isResponseError = false;
-                    if (res.headers) {
-                        res.headers.keys().forEach((headerName) => {
-                            this.apiItem.responseHeaders.push({
-                                name: headerName,
-                                value: String(res.headers.get(headerName))
-                            });
-                        });
-                        if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
-                            this.apiItem.responseContentType = 'image';
-                        }
-                    }
-                    if (res.body) {
-                        this.apiService.getDataFromBlob(res.body, this.apiItem.responseContentType)
-                            .then((data) => {
-                                if (typeof data === 'object') {
-                                    this.apiItem.responseBody = JSON.stringify(data, null, 2);
-                                } else {
-                                    this.apiItem.responseBody = data;
-                                }
+
+                    if (res instanceof MessageEvent) {
+                        if (res.type === 'error') {
+                            const event = res as unknown as SseErrorEvent;
+                            console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
+                            this.isResponseError = true;
+                            this.loading = false;
+                            this.submitted = false;
+                        } else {
+                            const data = (res as MessageEvent).data;
+                            if (data !== '[DONE]') {
+                                let dataObj = JSON.parse(data);
+                                this.apiItem.responseBody = JSON.stringify(dataObj, null, 4);
                                 if (!this.getIsMediaType(this.apiItem.responseContentType)) {
                                     this.aceEditor.session.setValue(this.apiItem.responseBody);
                                 }
-                            })
-                            .catch((err) => {
-                                console.log(err);
+                            }
+                        }
+                    } else if(res instanceof HttpResponse) {
+                        if (res.headers) {
+                            res.headers.keys().forEach((headerName) => {
+                                this.apiItem.responseHeaders.push({
+                                    name: headerName,
+                                    value: String(res.headers.get(headerName))
+                                });
                             });
+                            if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
+                                this.apiItem.responseContentType = 'image';
+                            }
+                        }
+                        if (res.body) {
+                            this.apiService.getDataFromBlob(res.body, this.apiItem.responseContentType)
+                                .then((data) => {
+                                    if (typeof data === 'object') {
+                                        this.apiItem.responseBody = JSON.stringify(data, null, 2);
+                                    } else {
+                                        this.apiItem.responseBody = data;
+                                    }
+                                    if (!this.getIsMediaType(this.apiItem.responseContentType)) {
+                                        this.aceEditor.session.setValue(this.apiItem.responseBody);
+                                    }
+                                })
+                                .catch((err) => {
+                                    console.log(err);
+                                });
+                        }
                     }
 
                     this.loading = false;
                     this.submitted = false;
                 },
                 error: (err) => {
-                    // console.log(err);
+                    console.log(err);
                     if (err.error instanceof Blob) {
                         this.apiService.getDataFromBlob(err.error)
                             .then((errorData) => {
@@ -215,6 +244,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
                     this.aceEditor.session.setValue(this.apiItem.responseBody);
 
                     this.isResponseError = true;
+                    this.loading = false;
+                    this.submitted = false;
+                },
+                complete: () => {
                     this.loading = false;
                     this.submitted = false;
                 }
@@ -266,5 +299,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges {
 
     bodyInputFullScreenToggle(): void {
         this.bodyInputFullScreen = !this.bodyInputFullScreen;
+    }
+
+    ngOnDestroy() {
+        this.destroyed$.next();
+        this.destroyed$.complete();
     }
 }

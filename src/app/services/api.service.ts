@@ -3,6 +3,7 @@ import { Inject, Injectable, isDevMode, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
 
 import { catchError, iif, Observable } from 'rxjs';
+import { SseClient } from 'ngx-sse-client';
 
 import { ApiItem } from '../apis/models/api-item.interface';
 import { RequestDataField } from '../apis/models/request-data-field.interface';
@@ -14,7 +15,8 @@ export class ApiService extends DataService<ApiItem> {
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,
-        httpClient: HttpClient
+        httpClient: HttpClient,
+        private sseClient: SseClient
     ) {
         super(httpClient);
         this.requestUrl = `${BASE_URL}${this.locale}/api/v1/api_items`;
@@ -132,6 +134,34 @@ export class ApiService extends DataService<ApiItem> {
         });
     }
 
+    static getApiRequestUrl(apiItem: ApiItem, isApiTesting = false): string {
+        if (apiItem.sender === 'server') {
+            return isApiTesting ? `${BASE_URL}api/v1/proxy` : `${BASE_URL}api/v1/inference`;
+        }
+        return apiItem.requestUrl;
+    }
+
+    static getApiRequestMethod(apiItem: ApiItem): string {
+        if (apiItem.sender === 'server') {
+            return 'POST';
+        }
+        return apiItem.requestMethod;
+    }
+
+    static getApiHeaders(apiItem: ApiItem): {[key: string]: string} {
+        const headersData: {[header: string]: string} = {};
+        apiItem.headers.forEach((item) => {
+            if (item.name && item.value && !item.hidden) {
+                headersData[item.name] = String(item.value);
+            }
+        });
+        if (apiItem.basicAuth && apiItem.authLogin && apiItem.authPassword && apiItem.sender !== 'server') {
+            const authToken = btoa(`${apiItem.authLogin}:${apiItem.authPassword}`);
+            headersData['Authorization'] = `Basic ${authToken}`;
+        }
+        return headersData;
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};
@@ -209,28 +239,12 @@ export class ApiService extends DataService<ApiItem> {
         return outData;
     }
 
-    apiRequest(appUuid: string, data: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>> {
-        let requestUrl = data.requestUrl;
-        let requestMethod = data.requestMethod;
-        const bodyDataSource = data.bodyDataSource;
-        const sendAsFormData = (data?.sendAsFormData || false) && bodyDataSource === 'fields';
-
-        if (data.sender === 'server') {
-            requestUrl = isApiTesting ? `${BASE_URL}api/v1/proxy` : `${BASE_URL}api/v1/inference`;
-            requestMethod = 'POST';
-        }
-
-        // Headers
-        const headersData: {[header: string]: string} = {};
-        data.headers.forEach((item) => {
-            if (item.name && item.value && !item.hidden) {
-                headersData[item.name] = String(item.value);
-            }
-        });
-        if (data.basicAuth && data.authLogin && data.authPassword && data.sender !== 'server') {
-            const authToken = btoa(`${data.authLogin}:${data.authPassword}`);
-            headersData['Authorization'] = `Basic ${authToken}`;
-        }
+    apiRequest(appUuid: string, apiItem: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>|Event> {
+        const requestUrl = ApiService.getApiRequestUrl(apiItem, isApiTesting);
+        const requestMethod = ApiService.getApiRequestMethod(apiItem);
+        const bodyDataSource = apiItem.bodyDataSource;
+        const sendAsFormData = (apiItem?.sendAsFormData || false) && bodyDataSource === 'fields';
+        const headersData: {[header: string]: string} = ApiService.getApiHeaders(apiItem);
 
         if (sendAsFormData) {
             // headersData['Enctype'] = 'multipart/form-data';
@@ -240,11 +254,11 @@ export class ApiService extends DataService<ApiItem> {
         }
 
         // Request body
-        const bodyContent = data.requestContentType === 'json' && data.bodyContent
-            ? JSON.parse(data.bodyContent)
-            : data.bodyContent || null;
-        const bodyContentFlatten = data.requestContentType === 'json' && data.bodyContentFlatten
-            ? JSON.parse(data.bodyContentFlatten)
+        const bodyContent = apiItem.requestContentType === 'json' && apiItem.bodyContent
+            ? JSON.parse(apiItem.bodyContent)
+            : apiItem.bodyContent || null;
+        const bodyContentFlatten = apiItem.requestContentType === 'json' && apiItem.bodyContentFlatten
+            ? JSON.parse(apiItem.bodyContentFlatten)
             : {};
         const formData = new FormData();
         const bodyRaw = bodyDataSource === 'raw' ? bodyContent : null;
@@ -252,17 +266,17 @@ export class ApiService extends DataService<ApiItem> {
         let body: any = null;
         if (bodyDataSource === 'fields') {
             body = {};
-            const vkDataField = data.bodyFields.find((item) => {
+            const vkDataField = apiItem.bodyFields.find((item) => {
                 return item.name === 'opt_vk_data';
             });
             // Inject VK data
             if (vkDataField && vkDataField.value) {
-                let dataField = data.bodyFields.find((field) => {
+                let dataField = apiItem.bodyFields.find((field) => {
                     return field.name === 'data';
                 });
                 if (!dataField) {
                     dataField = {name: 'data', value: '', hidden: false};
-                    data.bodyFields.push(dataField);
+                    apiItem.bodyFields.push(dataField);
                 }
                 if (dataField.value !== '[RAW]') {
                     const vkData = JSON.parse(vkDataField.value as string) || {};
@@ -271,7 +285,7 @@ export class ApiService extends DataService<ApiItem> {
                         : JSON.stringify(vkData);
                 }
             }
-            data.bodyFields.forEach((item) => {
+            apiItem.bodyFields.forEach((item) => {
                 if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value && !item.files)) {
                     return;
                 }
@@ -288,7 +302,7 @@ export class ApiService extends DataService<ApiItem> {
                     }
                 }
                 body[item.name] = value;
-                if (data.sendAsFormData) {
+                if (apiItem.sendAsFormData) {
                     if (item.isFile) {
                         if (item.files) {
                             if (Array.isArray(item.files)) {
@@ -329,14 +343,14 @@ export class ApiService extends DataService<ApiItem> {
 
         // Query parameters
         let queryParams = {};
-        data.queryParams.forEach((item) => {
+        apiItem.queryParams.forEach((item) => {
             if (!item.value || item.hidden) {
                 return;
             }
             queryParams[item.name] = item.value;
         });
 
-        const requestHeaders = data.sender === 'server'
+        const requestHeaders = apiItem.sender === 'server'
             ? (headersData['Content-Type'] ? {'Content-Type': headersData['Content-Type']} : {})
             : Object.assign({}, headersData);
 
@@ -349,28 +363,28 @@ export class ApiService extends DataService<ApiItem> {
             }
         }
 
-        if (data.sender === 'server') {
+        if (apiItem.sender === 'server') {
             if (sendAsFormData) {
-                formData.append('opt__uuid', data.uuid || '');
+                formData.append('opt__uuid', apiItem.uuid || '');
                 formData.append('opt__queryParams', Object.keys(queryParams).join(','));
 
-                if (data?.urlPartIndex !== null && data?.urlPartValue) {
-                    formData.append('opt__urlPartIndex', String(data.urlPartIndex));
-                    formData.append('opt__urlPartValue', String(data.urlPartValue));
+                if (apiItem?.urlPartIndex !== null && apiItem?.urlPartValue) {
+                    formData.append('opt__urlPartIndex', String(apiItem.urlPartIndex));
+                    formData.append('opt__urlPartValue', String(apiItem.urlPartValue));
                 }
 
-                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
-                    formData.append('opt__basicAuth', data.basicAuth ? '1' : '0');
-                    formData.append('opt__authLogin', data.authLogin);
-                    formData.append('opt__authPassword', data.authPassword);
+                if (apiItem?.basicAuth && apiItem?.authLogin && apiItem?.authPassword) {
+                    formData.append('opt__basicAuth', apiItem.basicAuth ? '1' : '0');
+                    formData.append('opt__authLogin', apiItem.authLogin);
+                    formData.append('opt__authPassword', apiItem.authPassword);
                 }
                 formData.append('opt__headers', Object.keys(headersData).join(','));
                 formData.append('opt__headers_values', Object.values(headersData).join(','));
                 if (isApiTesting) {
-                    formData.append('opt__requestUrl', data?.requestUrl || '');
-                    formData.append('opt__requestMethod', data?.requestMethod || 'GET');
-                    formData.append('opt__responseContentType', data?.responseContentType || '');
-                    formData.append('opt__sendAsFormData', data?.sendAsFormData ? '1' : '0');
+                    formData.append('opt__requestUrl', apiItem?.requestUrl || '');
+                    formData.append('opt__requestMethod', apiItem?.requestMethod || 'GET');
+                    formData.append('opt__responseContentType', apiItem?.responseContentType || '');
+                    formData.append('opt__sendAsFormData', apiItem?.sendAsFormData ? '1' : '0');
                 }
                 if (vkAppOptions?.appLaunchParamsJson) {
                     formData.append('opt__vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
@@ -383,33 +397,33 @@ export class ApiService extends DataService<ApiItem> {
                     bodyRaw,
                     bodyRawFlatten,
                     queryParams: Object.assign({}, queryParams),
-                    opt__uuid: data?.uuid,
+                    opt__uuid: apiItem?.uuid,
                     opt__session_id: ApiService.getUserSessionId(appUuid),
                     opt__date_session_id: ApiService.getUserSessionId(appUuid, true)
                 });
                 if (vkAppOptions?.appLaunchParamsJson) {
                     body.opt__vk_app_launch_params = vkAppOptions.appLaunchParamsJson;
                 }
-                if (data?.urlPartIndex !== null && data?.urlPartValue) {
+                if (apiItem?.urlPartIndex !== null && apiItem?.urlPartValue) {
                     Object.assign(body, {
-                        opt__urlPartIndex: data.urlPartIndex,
-                        opt__urlPartValue: data.urlPartValue
+                        opt__urlPartIndex: apiItem.urlPartIndex,
+                        opt__urlPartValue: apiItem.urlPartValue
                     });
                 }
-                if (data?.basicAuth && data?.authLogin && data?.authPassword) {
+                if (apiItem?.basicAuth && apiItem?.authLogin && apiItem?.authPassword) {
                     Object.assign(body, {
                         opt__basicAuth: true,
-                        opt__authLogin: data.authLogin,
-                        opt__authPassword: data.authPassword
+                        opt__authLogin: apiItem.authLogin,
+                        opt__authPassword: apiItem.authPassword
                     });
                 }
                 if (isApiTesting) {
                     Object.assign(body, {
                         headers: Object.assign({}, headersData),
-                        opt__requestUrl: data?.requestUrl,
-                        opt__requestMethod: data?.requestMethod,
-                        opt__responseContentType: data?.responseContentType,
-                        opt__sendAsFormData: data?.sendAsFormData
+                        opt__requestUrl: apiItem?.requestUrl,
+                        opt__requestMethod: apiItem?.requestMethod,
+                        opt__responseContentType: apiItem?.responseContentType,
+                        opt__sendAsFormData: apiItem?.sendAsFormData
                     });
                 } else {
                     Object.assign(body, {
@@ -430,8 +444,16 @@ export class ApiService extends DataService<ApiItem> {
         const params = this.createParams(queryParams);
 
         // Apply template
-        if (data.sender !== 'server' && !sendAsFormData) {
+        if (apiItem.sender !== 'server' && !sendAsFormData) {
             requestData = this.applyInnerParams(appUuid, requestData);
+        }
+
+        // Stream mode
+        if (apiItem.stream) {
+            return this.sseClient.stream(requestUrl, {
+                keepAlive: false,
+                responseType: 'event'
+            }, { headers, params, body: requestData }, requestMethod);
         }
 
         let httpRequest;
