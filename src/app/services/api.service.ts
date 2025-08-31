@@ -35,6 +35,7 @@ export class ApiService extends DataService<ApiItem> {
             dailyLimitUsage: 0,
             dailyLimitForUniqueUsers: false,
             paidOnly: false,
+            stream: false,
             pricePerUse: 0,
             responseBody: '',
             responseHeaders: [],
