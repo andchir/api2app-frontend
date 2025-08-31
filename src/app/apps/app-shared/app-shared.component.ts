@@ -16,6 +16,7 @@ import { take } from 'rxjs/operators';
 import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
+import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem } from '../models/application-item.interface';
@@ -32,7 +33,6 @@ import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
 import { AuthService } from '../../services/auth.service';
 import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
-import {SseErrorEvent} from "ngx-sse-client";
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;

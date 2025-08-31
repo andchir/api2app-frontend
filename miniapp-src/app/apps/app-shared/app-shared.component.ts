@@ -16,6 +16,7 @@ import { take } from 'rxjs/operators';
 import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
+import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem } from '../models/application-item.interface';
@@ -331,22 +332,51 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const apiItem = this.prepareApiItem(currentApi, actionType, elements);
 
         this.stateLoadingUpdate(blocks, true, false);
+        let chunkIndex = 0;
+        const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    if (this.appsAutoStarted.includes(apiUuid)) {
-                        this.afterAutoStarted(apiUuid);
+                    if (res instanceof MessageEvent) {
+                        if (res.type === 'error') {
+                            const event = res as unknown as SseErrorEvent;
+                            console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
+                            this.message = this.localizeServerMessages(event.message);
+                            this.messageType = 'error';
+                            this.afterResponseCreated(blocks);
+                        } else {
+                            const data = (res as MessageEvent).data;
+                            if (data === '[DONE]') {
+                                outputElements.forEach((element, index) => {
+                                    if (element.suffixText) {
+                                        element.value += element.suffixText;
+                                    }
+                                });
+                                this.afterResponseCreated(blocks);
+                            } else {
+                                if (chunkIndex === 0) {
+                                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                }
+                                let dataObj = JSON.parse(data);
+                                this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
+                                chunkIndex++;
+                            }
+                        }
+                    } else if(res instanceof HttpResponse) {
+                        if (this.appsAutoStarted.includes(apiUuid)) {
+                            this.afterAutoStarted(apiUuid);
+                        }
+
+                        this.loading = false;
+                        this.submitted = false;
+
+                        this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                        this.createAppResponse(currentApi, res, currentElement);
+
+                        this.progressUpdating = false;
                     }
-
-                    this.loading = false;
-                    this.submitted = false;
-
-                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                    this.createAppResponse(currentApi, res, currentElement);
-
-                    this.progressUpdating = false;
                 },
                 error: (err) => {
                     // console.log('ERROR', err);
@@ -875,11 +905,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             : apiItem.responseContentType;
         const elements = this.findElements(currentApiUuid, 'output', currentElement);
         const blocks = this.findBlocksByElements(elements);
-        blocks.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
@@ -905,15 +930,45 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showAds(this.vkAppOptions);
                 }
 
-                if (this.data.paymentEnabled) {
-                    this.updateUserBalance();
-                }
-
-                this.cdr.detectChanges();
+                this.afterResponseCreated(blocks);
             })
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
+        const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+        const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+
+        elements.forEach((element, index) => {
+            const fieldName = element.options?.outputApiFieldName;
+            if (!fieldName) {
+                return;
+            }
+            let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
+            if (typeof value === 'object') {
+                value = JSON.stringify(value, null, 4);
+            }
+            if (chunkIndex === 0) {
+                element.value = element.prefixText || '';
+            }
+            element.value += value;
+            element.hidden = !element.value;
+            this.cdr.detectChanges();
+        });
+    }
+
+    afterResponseCreated(blocks: AppBlock[]): void {
+        blocks.forEach((block) => {
+            if (block.options?.autoClear) {
+                this.clearElementsValues(block);
+            }
+        });
+        if (this.data.paymentEnabled) {
+            this.updateUserBalance();
+        }
+        this.cdr.detectChanges();
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
