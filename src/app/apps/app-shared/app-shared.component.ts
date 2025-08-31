@@ -343,22 +343,40 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const apiItem = this.prepareApiItem(currentApi, actionType, elements);
 
         this.stateLoadingUpdate(blocks, true, false);
+        let chunkIndex = 0;
+        const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    if (this.appsAutoStarted.includes(apiUuid)) {
-                        this.afterAutoStarted(apiUuid);
+                    if (res instanceof MessageEvent) {
+                        if (res.type === 'error') {
+                            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                        } else {
+                            const data = (res as MessageEvent).data;
+                            if (data === '[DONE]') {
+                                this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                this.afterResponseCreated(blocks);
+                            } else {
+                                let dataObj = JSON.parse(data);
+                                this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
+                                chunkIndex++;
+                            }
+                        }
+                    } else if(res instanceof HttpResponse) {
+                        if (this.appsAutoStarted.includes(apiUuid)) {
+                            this.afterAutoStarted(apiUuid);
+                        }
+
+                        this.loading = false;
+                        this.submitted = false;
+
+                        this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                        this.createAppResponse(currentApi, res, currentElement);
+
+                        this.progressUpdating = false;
                     }
-
-                    this.loading = false;
-                    this.submitted = false;
-
-                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                    this.createAppResponse(currentApi, res, currentElement);
-
-                    this.progressUpdating = false;
                 },
                 error: (err) => {
                     // console.log('ERROR', err);
@@ -877,56 +895,79 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             };
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>|Event, currentElement: AppBlockElement): void {
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement): void {
+        if (!response.body) {
+            return;
+        }
+        const currentApiUuid = apiItem.uuid;
+        const responseContentType = response.headers.has('Content-type')
+            ? response.headers.get('Content-type')
+            : apiItem.responseContentType;
+        const elements = this.findElements(currentApiUuid, 'output', currentElement);
+        const blocks = this.findBlocksByElements(elements);
 
-        // if (!response.body) {
-        //     return;
-        // }
-        // const currentApiUuid = apiItem.uuid;
-        // const responseContentType = response.headers.has('Content-type')
-        //     ? response.headers.get('Content-type')
-        //     : apiItem.responseContentType;
-        // const elements = this.findElements(currentApiUuid, 'output', currentElement);
-        // const blocks = this.findBlocksByElements(elements);
-        // blocks.forEach((block) => {
-        //     if (block.options?.autoClear) {
-        //         this.clearElementsValues(block);
-        //     }
-        // });
-        //
-        // this.apiService.getDataFromBlob(response.body, responseContentType)
-        //     .then((data) => {
-        //         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-        //         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
-        //
-        //         elements.forEach((element, index) => {
-        //             if (element.type === 'input-chart-line') {
-        //                 this.chartElementValueApply(element, data);
-        //             } else if (element.type === 'input-pagination') {
-        //                 this.paginationValueApply(element, valuesObj, data);
-        //             } else {
-        //                 this.blockElementValueApply(element, valuesObj, data);
-        //             }
-        //             this.elementHiddenStateUpdate(element);
-        //         });
-        //
-        //         // Save file to VK files section
-        //         if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-        //             this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-        //         }
-        //         if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
-        //             this.vkBridgeService.showAds(this.vkAppOptions);
-        //         }
-        //
-        //         if (this.data.paymentEnabled) {
-        //             this.updateUserBalance();
-        //         }
-        //
-        //         this.cdr.detectChanges();
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        this.apiService.getDataFromBlob(response.body, responseContentType)
+            .then((data) => {
+                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+
+                elements.forEach((element, index) => {
+                    if (element.type === 'input-chart-line') {
+                        this.chartElementValueApply(element, data);
+                    } else if (element.type === 'input-pagination') {
+                        this.paginationValueApply(element, valuesObj, data);
+                    } else {
+                        this.blockElementValueApply(element, valuesObj, data);
+                    }
+                    this.elementHiddenStateUpdate(element);
+                });
+
+                // Save file to VK files section
+                if (this.isVkApp && data?.result_data?.vk_file_to_save) {
+                    this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+                }
+                if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
+                    this.vkBridgeService.showAds(this.vkAppOptions);
+                }
+
+                this.afterResponseCreated(blocks);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
+
+    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0)
+    {
+        const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+        const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+
+        elements.forEach((element, index) => {
+            const fieldName = element.options?.outputApiFieldName;
+            if (!fieldName) {
+                return;
+            }
+            let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
+            value = ApplicationService.createStringValue(element, value, true, false);
+            if (chunkIndex === 0) {
+                element.value = '';
+            }
+            element.value += value;
+            element.hidden = !element.value;
+            this.cdr.detectChanges();
+        });
+    }
+
+    afterResponseCreated(blocks: AppBlock[]): void {
+        blocks.forEach((block) => {
+            if (block.options?.autoClear) {
+                this.clearElementsValues(block);
+            }
+        });
+        if (this.data.paymentEnabled) {
+            this.updateUserBalance();
+        }
+        this.cdr.detectChanges();
     }
 
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {

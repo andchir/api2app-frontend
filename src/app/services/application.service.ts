@@ -286,7 +286,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true): string {
         if (typeof value === 'object' && Array.isArray(value)) {
             value = value.map(item => {
                 if (typeof item === 'object' && item !== null) {
@@ -307,7 +307,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (element.suffixText && (!/[{}]/.test(element.suffixText) || !skipTags)) {
             value += (element.suffixText || '');
         }
-        return value.trim();
+        if (trim) {
+            return value.trim();
+        }
+        return value;
     }
 
     static async downloadImage(url: string): Promise<boolean> {
