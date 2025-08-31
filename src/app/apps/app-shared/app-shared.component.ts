@@ -32,6 +32,7 @@ import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
 import { AuthService } from '../../services/auth.service';
 import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
+import {SseErrorEvent} from "ngx-sse-client";
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -352,7 +353,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     if (res instanceof MessageEvent) {
                         if (res.type === 'error') {
-
+                            const event = res as unknown as SseErrorEvent;
+                            console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
+                            this.message = this.localizeServerMessages(event.message);
+                            this.messageType = 'error';
+                            this.afterResponseCreated(blocks);
                         } else {
                             const data = (res as MessageEvent).data;
                             if (data === '[DONE]') {
