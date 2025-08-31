@@ -352,7 +352,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 next: (res) => {
                     if (res instanceof MessageEvent) {
                         if (res.type === 'error') {
-                            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+
                         } else {
                             const data = (res as MessageEvent).data;
                             if (data === '[DONE]') {
@@ -360,10 +360,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                     if (element.suffixText) {
                                         element.value += element.suffixText;
                                     }
-                                })
-                                this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                });
                                 this.afterResponseCreated(blocks);
                             } else {
+                                if (chunkIndex === 0) {
+                                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                }
                                 let dataObj = JSON.parse(data);
                                 this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
                                 chunkIndex++;

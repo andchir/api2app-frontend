@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
@@ -20,6 +21,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() type: AppBlockElementType;
     @Input() locale: string;
     @Input() options: any;
+    @Input() value: string | number | boolean | string[] | File | File[] | SafeResourceUrl | null;
     @Input() valueObj: any;
     @Input() valueArr: any[];
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
@@ -38,7 +40,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     pagesOptions: PaginationInstance;
     timerSelectItem: any;
 
-    constructor() {}
+    constructor(
+        private elementRef: ElementRef
+    ) {}
 
     ngOnInit(): void {
         this.createChartOptions();
@@ -64,6 +68,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
             this.updateStateByOptions();
+        }
+        if (changes['value'] && ['text'].includes(this.options.type) && this.options.maxHeight) {
+            setTimeout(this.scrollBottom.bind(this), 1);
         }
     }
 
@@ -295,6 +302,16 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         const taskIdField = options.taskIdFieldName || 'uuid';
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
         this.progressCompleted.emit(taskId);
+    }
+
+    scrollBottom(): void {
+        const textElement = this.elementRef.nativeElement.querySelector('.text-content');
+        if (textElement) {
+            textElement.scrollTo({
+                top: textElement.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     }
 
     onMessage(msg: string[]) {

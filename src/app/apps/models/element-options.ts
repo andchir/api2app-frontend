@@ -77,6 +77,12 @@ export class ElementOptions {
                     value: options?.label
                 });
                 output.push({
+                    name: 'maxHeight',
+                    label: $localize `Maximum container height`,
+                    type: 'input-number',
+                    value: options?.maxHeight || 0
+                });
+                output.push({
                     name: 'icon',
                     label: $localize `Icon`,
                     type: 'input-text',
@@ -1409,6 +1415,7 @@ export class ElementOptions {
                     itemFieldName: '',
                     icon: '',
                     keys: [],
+                    maxHeight: 0,
                     hiddenByField: '',
                     whiteSpacePre: false,
                     alignCenter: false,
