@@ -2,10 +2,10 @@
     <div class="relative w-full overflow-hidden rounded-lg" #wrapper>
         <div class="image-container relative w-full h-[400px] overflow-hidden">
             <div class="image-before-container absolute left-0 top-0 w-full h-full overflow-hidden z-[1]">
-                <img [src]="beforeImage" alt="Before" class="w-full h-full object-cover object-left-top" *ngIf="beforeImage">
+                <img [src]="afterImage" alt="Before" class="w-full h-full object-cover object-left-top" *ngIf="afterImage">
             </div>
             <div class="absolute lef-0 top-0 w-1/2 h-full overflow-hidden z-[2]" #overlay>
-                <img [src]="afterImage" alt="After" class="w-full h-full object-cover object-left-top" *ngIf="afterImage">
+                <img [src]="beforeImage" alt="After" class="w-full h-full object-cover object-left-top" *ngIf="beforeImage">
             </div>
         </div>
         <div class="w-[4px] h-full bg-white absolute z-10 top-0 left-1/2 -translate-x-1/2 shadow-md cursor-ew-resize" #slider>
