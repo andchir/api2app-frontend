@@ -169,13 +169,19 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
         }
         if (!document.fullscreenElement) {
             this.container.nativeElement.backgroundColor = '#000';
-            this.container.nativeElement.requestFullscreen();
-            this.isFullScreenMode = true;
+            this.container.nativeElement.requestFullscreen()
+                .then(() => {
+                    this.isFullScreenMode = true;
+                })
+                .catch((e: any) => {
+                    console.log(e);
+                });
         } else {
             this.container.nativeElement.backgroundColor = 'transparent';
-            document.exitFullscreen().then(() => {
-                this.isFullScreenMode = false;
-            });
+            document.exitFullscreen()
+                .then(() => {
+                    this.isFullScreenMode = false;
+                })
         }
         this.onResize();
     }
