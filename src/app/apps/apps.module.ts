@@ -26,7 +26,7 @@ import { TableElementComponent } from './components/elements/table-element.compo
 import { SelectImageComponent } from './components/elements/select-image.component';
 import { ProgressElementComponent } from './components/elements/progress-element.component';
 import { ElementImageComponent } from './components/elements/element-image.component';
-import {ImageComparisonComponent} from "./components/elements/image-comparison.component";
+import { ImageComparisonComponent } from './components/elements/image-comparison.component';
 
 @NgModule({
     declarations: [
