@@ -132,7 +132,6 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
 
     private onTouchStart(event: TouchEvent): void {
         this.isDragging = true;
-        this.updateSliderPosition(event.touches[0].clientX);
     }
 
     private onTouchMove(event: TouchEvent): void {
