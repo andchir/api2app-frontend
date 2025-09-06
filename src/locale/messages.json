@@ -409,6 +409,7 @@
         "5874074414001764922": "You have selected an input action for the element, but have not added a button to submit the data to the API. In this case, the API will be called automatically when the element receives a value. Are you sure you want to continue?",
         "8829557116477040252": "Auto height",
         "4335256331897833341": "Use image zoom",
-        "8256419370272847170": "Stream"
+        "8256419370272847170": "Stream",
+        "6674244249066104361": "Your API configuration is in \"browser\" mode, in this case an advanced user will be able to see all your private data (authorization keys, etc.). Are you sure you want to continue?"
     }
 }

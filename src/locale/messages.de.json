@@ -409,6 +409,7 @@
         "5874074414001764922": "Sie haben eine Eingabeaktion für das Element ausgewählt, aber keine Schaltfläche zum Senden der Daten an die API hinzugefügt. In diesem Fall wird die API automatisch aufgerufen, wenn das Element einen Wert empfängt. Möchten Sie wirklich fortfahren?",
         "8829557116477040252": "Automatische Höhe",
         "4335256331897833341": "Bildzoom verwenden",
-        "8256419370272847170": "Stream"
+        "8256419370272847170": "Stream",
+        "6674244249066104361": "Ihre API-Konfiguration befindet sich im Browsermodus. In diesem Fall kann ein fortgeschrittener Benutzer alle Ihre privaten Daten (Autorisierungsschlüssel usw.) sehen. Möchten Sie wirklich fortfahren?"
     }
 }

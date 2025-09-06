@@ -26,6 +26,7 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     submitted = false;
     senderValue = 'browser';
 
+    isNotified: boolean = false;
     isSettingsActive: boolean = false;
     itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
@@ -111,7 +112,33 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
             });
     }
 
-    saveData(): void {
+    validateData(): boolean {
+        if (this.data.sender === 'browser' && !this.isNotified) {
+            const initialData = {
+                message: $localize `Your API configuration is in "browser" mode, in this case an advanced user will be able to see all your private data (authorization keys, etc.). Are you sure you want to continue?`,
+                isLargeFontSize: false,
+                isActive: true
+            };
+            this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+                .pipe(take(1))
+                .subscribe({
+                    next: (reason) => {
+                        if (reason === 'confirmed') {
+                            this.isNotified = true;
+                            this.saveData(true);
+                        }
+                    }
+                });
+            return false;
+        }
+        return true;
+    }
+
+    saveData(confirmed = false): void {
+        if (!this.validateData() && !confirmed) {
+            return;
+        }
+
         this.message = '';
         this.errors = {};
         this.loading = true;
