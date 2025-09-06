@@ -1,4 +1,13 @@
-import { Component, Input, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
+import {
+    Component,
+    Input,
+    AfterViewInit,
+    ViewChild,
+    ElementRef,
+    HostListener,
+    OnChanges,
+    SimpleChanges
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -7,9 +16,10 @@ import { CommonModule } from '@angular/common';
     imports: [CommonModule],
     templateUrl: 'image-comparison.component.html'
 })
-export class ImageComparisonComponent implements AfterViewInit {
+export class ImageComparisonComponent implements AfterViewInit, OnChanges {
     @Input() beforeImage: string = '';
     @Input() afterImage: string = '';
+    @Input() hidden: boolean = false;
 
     @ViewChild('container', { static: true }) container!: ElementRef;
     @ViewChild('overlay', { static: true }) overlay!: ElementRef;
@@ -22,6 +32,12 @@ export class ImageComparisonComponent implements AfterViewInit {
 
     ngAfterViewInit(): void {
         this.addEventListeners();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['hidden']) {
+            this.onResize();
+        }
     }
 
     private addEventListeners(): void {

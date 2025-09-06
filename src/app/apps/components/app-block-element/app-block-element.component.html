@@ -479,6 +479,7 @@
                 <app-image-comparison
                     [beforeImage]="options?.valueFirst"
                     [afterImage]="options?.valueSecond"
+                    [hidden]="tabIndex === tabIndexCurrent"
                     *ngIf="options?.valueFirst">
                 </app-image-comparison>
                 <div class="px-4 py-3 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
