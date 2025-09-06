@@ -411,6 +411,8 @@
         "4335256331897833341": "Utiliser le zoom de l'image",
         "8256419370272847170": "Stream",
         "6674244249066104361": "Votre configuration API est en mode \"navigateur\". Dans ce cas, un utilisateur avancé pourra voir toutes vos données privées (clés d'autorisation, etc.). Voulez-vous vraiment continuer?",
-        "8661198191518918105": "Image comparison"
+        "8661198191518918105": "Comparaison d'images",
+        "826902473872336483": "Première image",
+        "6808434159612827961": "Deuxième image"
     }
 }
