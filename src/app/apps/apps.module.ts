@@ -26,6 +26,7 @@ import { TableElementComponent } from './components/elements/table-element.compo
 import { SelectImageComponent } from './components/elements/select-image.component';
 import { ProgressElementComponent } from './components/elements/progress-element.component';
 import { ElementImageComponent } from './components/elements/element-image.component';
+import {ImageComparisonComponent} from "./components/elements/image-comparison.component";
 
 @NgModule({
     declarations: [
@@ -51,7 +52,8 @@ import { ElementImageComponent } from './components/elements/element-image.compo
         SelectImageComponent,
         ProgressElementComponent,
         ElementImageComponent,
-        DragulaModule.forRoot()
+        DragulaModule.forRoot(),
+        ImageComparisonComponent
     ],
     exports: [
         ApplicationSharedComponent

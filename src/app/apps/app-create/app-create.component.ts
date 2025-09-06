@@ -76,6 +76,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         {name: 'image', title: $localize `Image`, icon: 'bi-image'},
         {name: 'audio', title: $localize `Audio`, icon: 'bi-music-note-beamed'},
         {name: 'video', title: $localize `Video`, icon: 'bi-play-btn'},
+        {name: 'image-comparison', title: $localize `Image comparison`, icon: 'bi-vr'},
         {name: 'input-chart-line', title: $localize `Line Chart`, icon: 'bi-graph-up'},
         {name: 'input-pagination', title: $localize `Pagination`, icon: 'bi-segmented-nav'},
         {name: 'status', title: $localize `Status Indicator`, icon: 'bi-check-circle'},

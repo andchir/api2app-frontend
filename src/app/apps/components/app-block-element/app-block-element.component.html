@@ -473,6 +473,16 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'image-comparison'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <app-image-comparison
+                [beforeImage]="'https://pbase.api2app.dev/api/files/pbc_408000745/fwy910ojzxwggxr/004_input_5ruk91rbsg.jpg'"
+                [afterImage]="'https://pbase.api2app.dev/api/files/pbc_408000745/6ue3fcrnh2914ge/004_hqo00xmopn.jpg'">
+            </app-image-comparison>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <apx-chart
