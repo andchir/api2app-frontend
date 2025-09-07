@@ -19,6 +19,7 @@ import { TableElementComponent } from './apps/components/elements/table-element.
 import { SelectImageComponent } from './apps/components/elements/select-image.component';
 import { ProgressElementComponent } from './apps/components/elements/progress-element.component';
 import { ElementImageComponent } from './apps/components/elements/element-image.component';
+import { ImageComparisonComponent } from './apps/components/elements/image-comparison.component';
 
 @NgModule({
     declarations: [
@@ -42,7 +43,8 @@ import { ElementImageComponent } from './apps/components/elements/element-image.
         TableElementComponent,
         SelectImageComponent,
         ProgressElementComponent,
-        ElementImageComponent
+        ElementImageComponent,
+        ImageComparisonComponent
     ],
     providers: [ApplicationService, ApiService, ModalService],
     bootstrap: [AppComponent]

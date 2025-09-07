@@ -17,6 +17,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     @Input() index: number = 0;
     @Input() parentIndex: number = 0;
+    @Input() tabIndex: number = 0;
+    @Input() tabIndexCurrent: number = 0;
     @Input() editorMode = false;
     @Input() type: AppBlockElementType;
     @Input() locale: string;

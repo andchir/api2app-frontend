@@ -1109,10 +1109,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        const fieldName = element.options?.outputApiFieldName;
-        if (!fieldName) {
+        if (!element.options?.outputApiFieldName) {
             return;
         }
+        const fieldName = element.options?.outputApiFieldName;
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = '';
@@ -1144,8 +1144,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
-        } else if (['progress'].includes(element.type)) {
-            element.valueObj = value;
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
@@ -1155,6 +1153,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = value;
             }
         }
+        element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
         ApplicationService.localStoreValue(element);
         if ((element.value || element.valueArr || element.valueObj)/* && !['input-select'].includes(element.type)*/) {
             this.onElementValueChanged(element);

@@ -80,6 +80,8 @@
                                 <div [ngClass]="{'hidden': element?.hidden || !element.type, 'py-1 sticky bottom-0 bg-white': element?.isStickyPosition}">
                                     <app-block-element [locale]="data?.language"
                                                        [type]="element.type"
+                                                       [tabIndex]="block.tabIndex"
+                                                       [tabIndexCurrent]="tabIndex"
                                                        [parentIndex]="index"
                                                        [index]="ind"
                                                        [options]="element"

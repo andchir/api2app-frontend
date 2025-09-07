@@ -939,6 +939,32 @@ export class ElementOptions {
                     enabled: options?.required || false
                 });
                 break;
+            case 'image-comparison':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label || ''
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'valueFirst',
+                    label: $localize `First image`,
+                    type: 'input-text',
+                    value: options?.valueFirst || ''
+                });
+                output.push({
+                    name: 'valueSecond',
+                    label: $localize `Second image`,
+                    type: 'input-text',
+                    value: options?.valueSecond || ''
+                });
+                break;
             case 'video':
             case 'image':
                 output.push({
@@ -1606,6 +1632,16 @@ export class ElementOptions {
                     hiddenByField: '',
                     required: true,
                     value: []
+                });
+                break;
+            case 'image-comparison':
+                Object.assign(output, {
+                    name: 'image-comparison',
+                    label: $localize `Image comparison`,
+                    hiddenByField: '',
+                    valueFirst: '',
+                    valueSecond: '',
+                    value: ''
                 });
                 break;
             case 'image':

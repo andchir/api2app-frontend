@@ -473,6 +473,22 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'image-comparison'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="block w-full max-w-[800px] mx-auto">
+                <app-image-comparison
+                    [editorMode]="editorMode"
+                    [beforeImage]="options?.valueFirst"
+                    [afterImage]="options?.valueSecond"
+                    [hidden]="tabIndex === tabIndexCurrent"
+                    [dataJson]="options.valueObj | json"
+                    *ngIf="options?.valueFirst">
+                </app-image-comparison>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <apx-chart
@@ -570,8 +586,7 @@
                     [dataJson]="options.valueObj | json"
                     (progressUpdate)="onProgressUpdate(options)"
                     (progressCompleted)="onProgressCompleted(options)"
-                    (message)="onMessage($event)"
-                    [(ngModel)]="options.value"></app-progress>
+                    (message)="onMessage($event)"></app-progress>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
