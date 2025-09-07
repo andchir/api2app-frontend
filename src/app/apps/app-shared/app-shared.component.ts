@@ -1139,9 +1139,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (ApiService.isJson(value)) {
             value = JSON.parse(value);
         }
-        if (typeof value === 'object' && !Array.isArray(value)) {
-            element.valueObj = value;
-        }
         if (Array.isArray(value)) {
             let valueArr = this.flattenObjInArray(value);
             if (element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
@@ -1168,6 +1165,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = value;
             }
         }
+        element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
         ApplicationService.localStoreValue(element);
         if ((element.value || element.valueArr || element.valueObj)/* && !['input-select'].includes(element.type)*/) {
             this.onElementValueChanged(element);

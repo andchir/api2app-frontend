@@ -586,8 +586,7 @@
                     [dataJson]="options.valueObj | json"
                     (progressUpdate)="onProgressUpdate(options)"
                     (progressCompleted)="onProgressCompleted(options)"
-                    (message)="onMessage($event)"
-                    [(ngModel)]="options.value"></app-progress>
+                    (message)="onMessage($event)"></app-progress>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
