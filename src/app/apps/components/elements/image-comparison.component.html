@@ -1,13 +1,16 @@
 <div class="w-full">
     <div class="w-full select-none"
-         [ngClass]="{'fixed left-0 top-0 h-full z-50 bg-black': isFullScreenMode}" #container>
+         [ngClass]="{'fixed left-0 top-0 h-full z-50 bg-black': isFullScreenMode}"
+         *ngIf="beforeImageUrl else templateEmpty" #container>
         <div class="relative mx-auto overflow-hidden rounded-lg group" #wrapper>
             <div class="image-container relative w-full overflow-hidden">
                 <div class="image-before-container absolute left-0 top-0 w-full h-full overflow-hidden z-[1]">
-                    <img [src]="afterImage" alt="Before" class="w-full h-full object-cover object-left-top" *ngIf="afterImage">
+                    <img [src]="afterImageUrl" alt="Before" class="w-full h-full object-cover object-left-top"
+                         [class.hidden]="!afterImageUrl">
                 </div>
                 <div class="absolute lef-0 top-0 w-1/2 h-full overflow-hidden z-[2]" #overlay>
-                    <img [src]="beforeImage" alt="After" class="w-full h-full object-cover object-left-top" *ngIf="beforeImage">
+                    <img [src]="beforeImageUrl" alt="After" class="w-full h-full object-cover object-left-top"
+                         (load)="onImageLoad($event)">
                 </div>
             </div>
             <div class="w-[4px] h-full bg-white absolute z-[3] top-0 left-1/2 -translate-x-1/2 shadow-md cursor-ew-resize" #slider>
@@ -27,3 +30,10 @@
         </div>
     </div>
 </div>
+<ng-template #templateEmpty>
+    <div class="px-4 py-3 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
+         *ngIf="editorMode">
+        <i class="bi bi-vr mr-2"></i>
+        <span i18n>Image comparison</span>
+    </div>
+</ng-template>

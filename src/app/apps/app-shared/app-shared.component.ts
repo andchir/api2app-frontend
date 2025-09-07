@@ -1121,10 +1121,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        const fieldName = element.options?.outputApiFieldName;
-        if (!fieldName) {
+        if (!element.options?.outputApiFieldName) {
             return;
         }
+        const fieldName = element.options?.outputApiFieldName;
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = '';
@@ -1138,6 +1138,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (ApiService.isJson(value)) {
             value = JSON.parse(value);
+        }
+        if (typeof value === 'object' && !Array.isArray(value)) {
+            element.valueObj = value;
         }
         if (Array.isArray(value)) {
             let valueArr = this.flattenObjInArray(value);
@@ -1156,8 +1159,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
-        } else if (['progress'].includes(element.type)) {
-            element.valueObj = value;
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');

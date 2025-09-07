@@ -1,7 +1,6 @@
 import {
     Component,
     Input,
-    AfterViewInit,
     ViewChild,
     ElementRef,
     HostListener,
@@ -16,16 +15,20 @@ import { CommonModule } from '@angular/common';
     imports: [CommonModule],
     templateUrl: 'image-comparison.component.html'
 })
-export class ImageComparisonComponent implements AfterViewInit, OnChanges {
+export class ImageComparisonComponent implements OnChanges {
+
+    @ViewChild('container') container!: ElementRef;
+    @ViewChild('overlay') overlay!: ElementRef;
+    @ViewChild('slider') slider!: ElementRef;
+    @ViewChild('wrapper') wrapper!: ElementRef;
+
+    @Input() editorMode: boolean = false;
+    @Input() dataJson: string|null = null;
     @Input() beforeImage: string = '';
     @Input() afterImage: string = '';
     @Input() hidden: boolean = false;
 
-    @ViewChild('container', { static: true }) container!: ElementRef;
-    @ViewChild('overlay', { static: true }) overlay!: ElementRef;
-    @ViewChild('slider', { static: true }) slider!: ElementRef;
-    @ViewChild('wrapper', { static: true }) wrapper!: ElementRef;
-
+    data: any = null;
     maxWidth: number = 800;
     maxHeight: number = 600;
     isFullScreenMode: boolean = false;
@@ -33,18 +36,42 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
     private imageWidth: number = 0;
     private imageHeight: number = 0;
 
-    ngAfterViewInit(): void {
-        this.addEventListeners();
+    constructor() {
     }
 
     ngOnChanges(changes: SimpleChanges) {
         if (changes['hidden']) {
             this.onResize();
         }
+        if (changes['dataJson'] && String(this.dataJson).startsWith('{')) {
+            try {
+                this.data = JSON.parse(this.dataJson);
+            } catch (e) {
+                console.log(e);
+                this.data = null;
+            }
+        }
+    }
+
+    get beforeImageUrl(): string|null {
+        if (!this.data || !this.data[this.beforeImage]) {
+            return this.beforeImage.match(/^https?:\/\//) ? this.beforeImage : null;
+        }
+        return this.data[this.beforeImage];
+    }
+
+    get afterImageUrl(): string|null {
+        if (!this.data || !this.data[this.afterImage]) {
+            return this.afterImage.match(/^https?:\/\//) ? this.afterImage : null;
+        }
+        return this.data[this.afterImage];
     }
 
     private addEventListeners(): void {
-        const wrapper = this.wrapper.nativeElement;
+        if (!this.wrapper) {
+            return;
+        }
+        const wrapper = this.wrapper?.nativeElement;
 
         // Mouse events
         wrapper.addEventListener('mousedown', this.onMouseDown.bind(this));
@@ -59,14 +86,11 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
 
         // Click events
         wrapper.addEventListener('click', this.onClick.bind(this));
-
-        const imageBefore = wrapper.querySelector('.image-before-container').querySelector('img');
-        imageBefore.addEventListener('load', this.onImageLoad.bind(this));
     }
 
     @HostListener('window:resize', ['$event'])
     private onResize(): void {
-        if (!this.imageWidth || !this.imageHeight || !this.wrapper) {
+        if (!this.imageWidth || !this.imageHeight || !this.container) {
             return;
         }
         const container = this.container.nativeElement;
@@ -102,11 +126,12 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
         }
     }
 
-    private onImageLoad(e: Event): void {
+    onImageLoad(e: Event): void {
         const img = e.target as HTMLImageElement;
         this.imageWidth = img.naturalWidth;
         this.imageHeight = img.naturalHeight;
         this.onResize();
+        this.addEventListeners();
     }
 
     private onMouseDown(event: MouseEvent): void {
