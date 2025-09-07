@@ -410,6 +410,9 @@
         "8829557116477040252": "Automatische Höhe",
         "4335256331897833341": "Bildzoom verwenden",
         "8256419370272847170": "Stream",
-        "6674244249066104361": "Ihre API-Konfiguration befindet sich im Browsermodus. In diesem Fall kann ein fortgeschrittener Benutzer alle Ihre privaten Daten (Autorisierungsschlüssel usw.) sehen. Möchten Sie wirklich fortfahren?"
+        "6674244249066104361": "Ihre API-Konfiguration befindet sich im Browsermodus. In diesem Fall kann ein fortgeschrittener Benutzer alle Ihre privaten Daten (Autorisierungsschlüssel usw.) sehen. Möchten Sie wirklich fortfahren?",
+        "8661198191518918105": "Bildvergleich",
+        "826902473872336483": "Erstes Bild",
+        "6808434159612827961": "Zweites Bild"
     }
 }
