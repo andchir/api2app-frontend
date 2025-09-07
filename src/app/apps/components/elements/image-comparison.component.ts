@@ -91,7 +91,7 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
                 wrapper.querySelector('.image-container').style.height = `${containerHeight}px`;
             }
         } else {
-            const containerWidth = Math.min(this.maxWidth, container.offsetWidth);
+            const containerWidth = Math.min(this.maxWidth, container.parentNode.offsetWidth);
             const wrapperWidth = (containerWidth / imageAspect) <= this.maxHeight
                 ? containerWidth
                 : this.maxHeight * imageAspect;
