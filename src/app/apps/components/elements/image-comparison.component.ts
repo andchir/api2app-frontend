@@ -74,10 +74,8 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
         const imageAspect = this.imageWidth / this.imageHeight;
         container.style.paddingTop = null;
 
-        if (document.fullscreenElement) {
-            if (document.fullscreenElement !== this.container.nativeElement) {
-                return;
-            }
+        if (this.isFullScreenMode) {
+            container.parentNode.style.height = `${container.offsetHeight}px`;
             const windowWidth = window.innerWidth;
             const windowHeight = window.innerHeight;
             const windowAspect = windowWidth / windowHeight;
@@ -93,13 +91,14 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
                 wrapper.querySelector('.image-container').style.height = `${containerHeight}px`;
             }
         } else {
-            const containerWidth = Math.min(this.maxWidth, this.container.nativeElement.offsetWidth);
+            const containerWidth = Math.min(this.maxWidth, container.offsetWidth);
             const wrapperWidth = (containerWidth / imageAspect) <= this.maxHeight
                 ? containerWidth
                 : this.maxHeight * imageAspect;
             const containerHeight = Math.floor(wrapperWidth / imageAspect);
             wrapper.style.width = `${wrapperWidth}px`;
             wrapper.querySelector('.image-container').style.height = `${containerHeight}px`;
+            container.parentNode.style.height = `${containerHeight}px`;
         }
     }
 
@@ -167,22 +166,21 @@ export class ImageComparisonComponent implements AfterViewInit, OnChanges {
             event.preventDefault();
             event.stopPropagation();
         }
-        if (!document.fullscreenElement) {
-            this.container.nativeElement.backgroundColor = '#000';
-            this.container.nativeElement.requestFullscreen()
-                .then(() => {
-                    this.isFullScreenMode = true;
-                })
-                .catch((e: any) => {
-                    console.log(e);
-                });
-        } else {
-            this.container.nativeElement.backgroundColor = 'transparent';
-            document.exitFullscreen()
-                .then(() => {
-                    this.isFullScreenMode = false;
-                })
-        }
+        // if (!document.fullscreenElement) {
+        //     this.container.nativeElement.requestFullscreen()
+        //         .then(() => {
+        //             this.isFullScreenMode = true;
+        //         })
+        //         .catch((e: any) => {
+        //             console.log(e);
+        //         });
+        // } else {
+        //     document.exitFullscreen()
+        //         .then(() => {
+        //             this.isFullScreenMode = false;
+        //         })
+        // }
+        this.isFullScreenMode = !this.isFullScreenMode;
         this.onResize();
     }
 }

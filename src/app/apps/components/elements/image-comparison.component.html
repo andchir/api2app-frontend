@@ -1,26 +1,29 @@
-<div class="relative w-full select-none group" #container>
-    <div class="relative mx-auto overflow-hidden rounded-lg" #wrapper>
-        <div class="image-container relative w-full overflow-hidden">
-            <div class="image-before-container absolute left-0 top-0 w-full h-full overflow-hidden z-[1]">
-                <img [src]="afterImage" alt="Before" class="w-full h-full object-cover object-left-top" *ngIf="afterImage">
+<div>
+    <div class="w-full select-none"
+         [ngClass]="{'fixed left-0 top-0 h-full z-50 bg-black': isFullScreenMode}" #container>
+        <div class="relative mx-auto overflow-hidden rounded-lg group" #wrapper>
+            <div class="image-container relative w-full overflow-hidden">
+                <div class="image-before-container absolute left-0 top-0 w-full h-full overflow-hidden z-[1]">
+                    <img [src]="afterImage" alt="Before" class="w-full h-full object-cover object-left-top" *ngIf="afterImage">
+                </div>
+                <div class="absolute lef-0 top-0 w-1/2 h-full overflow-hidden z-[2]" #overlay>
+                    <img [src]="beforeImage" alt="After" class="w-full h-full object-cover object-left-top" *ngIf="beforeImage">
+                </div>
             </div>
-            <div class="absolute lef-0 top-0 w-1/2 h-full overflow-hidden z-[2]" #overlay>
-                <img [src]="beforeImage" alt="After" class="w-full h-full object-cover object-left-top" *ngIf="beforeImage">
+            <div class="w-[4px] h-full bg-white absolute z-[3] top-0 left-1/2 -translate-x-1/2 shadow-md cursor-ew-resize" #slider>
+                <div class="w-[50px] flex justify-between absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none opacity-0 group-hover:opacity-100 group-hover:w-[70px] transition-all">
+                    <i class="bi bi-chevron-left"></i>
+                    <i class="bi bi-chevron-right"></i>
+                </div>
             </div>
-        </div>
-        <div class="w-[4px] h-full bg-white absolute z-[3] top-0 left-1/2 -translate-x-1/2 shadow-md cursor-ew-resize" #slider>
-            <div class="w-[50px] flex justify-between absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-2xl pointer-events-none opacity-0 group-hover:opacity-100 group-hover:w-[70px] transition-all">
-                <i class="bi bi-chevron-left"></i>
-                <i class="bi bi-chevron-right"></i>
+            <div class="absolute right-3 bottom-3 z-[4] opacity-0 group-hover:opacity-100 transition-opacity">
+                <button type="button"
+                        class="px-2 py-1 text-gray-900 text-xl focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 shadow-md"
+                        (click)="fullScreenToggle($event)">
+                    <i class="bi bi-arrows-fullscreen" *ngIf="!isFullScreenMode"></i>
+                    <i class="bi bi-fullscreen-exit" *ngIf="isFullScreenMode"></i>
+                </button>
             </div>
-        </div>
-        <div class="absolute right-3 bottom-3 z-[4] opacity-0 group-hover:opacity-100 transition-opacity">
-            <button type="button"
-                    class="px-2 py-1 text-gray-900 text-xl focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 shadow-md"
-                    (click)="fullScreenToggle($event)">
-                <i class="bi bi-arrows-fullscreen" *ngIf="!isFullScreenMode"></i>
-                <i class="bi bi-fullscreen-exit" *ngIf="isFullScreenMode"></i>
-            </button>
         </div>
     </div>
 </div>
