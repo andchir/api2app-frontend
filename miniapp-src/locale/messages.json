@@ -413,6 +413,7 @@
         "6674244249066104361": "Your API configuration is in \"browser\" mode, in this case an advanced user will be able to see all your private data (authorization keys, etc.). Are you sure you want to continue?",
         "8661198191518918105": "Image comparison",
         "826902473872336483": "First image",
-        "6808434159612827961": "Second image"
+        "6808434159612827961": "Second image",
+        "169142387762129569": "VK Community Access Key"
     }
 }
