@@ -188,6 +188,13 @@ export class ElementOptions {
                     enabled: options?.markdown
                 });
                 output.push({
+                    name: 'showHeader',
+                    label: $localize `Show title`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.showHeader || false
+                });
+                output.push({
                     name: 'border',
                     label: $localize `Border`,
                     type: 'input-switch',
@@ -1447,6 +1454,7 @@ export class ElementOptions {
                     alignCenter: false,
                     markdown: false,
                     hiddenByDefault: false,
+                    showHeader: false,
                     fullWidth: true,
                     border: false,
                     borderShadow: false,
