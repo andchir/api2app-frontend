@@ -11,9 +11,8 @@
             </ng-container>
 
             <ng-template let-item #templateImageItem>
-                <div class="flex gap-2 w-full"
+                <div class="w-full"
                      [ngClass]="{
-                            'items-center': !!options?.icon,
                             'whitespace-pre-line': options?.whiteSpacePre,
                             'min-h-[20px]': editorMode,
                             'border rounded-lg': options?.border,
@@ -34,49 +33,48 @@
                             'text-lg': options?.fontSize == 'Large',
                             'max-w-[600px] mx-auto': !options.fullWidth
                         }">
-                    <div class="grow max-w-full text-content"
-                         [style.max-height]="options?.maxHeight ? options?.maxHeight + 'px' : 'none'"
-                         [ngClass]="{'w-full text-center': options?.alignCenter, 'overflow-y-auto': options?.maxHeight}">
-                        <div
-                            class="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-50"
-                            [ngClass]="{'border-b border-gray-200 rounded-t-lg': options?.border}"
-                            *ngIf="options?.showHeader && options?.label">
-                            {{ options.label }}
-                        </div>
-                        <div [ngClass]="{'flex gap-2 p-3': options?.border || options?.showHeader}">
-                            <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                            <div>
-                                <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
+                    <div
+                        class="px-3 py-2 text-sm font-medium text-gray-600 bg-gray-50"
+                        [ngClass]="{'border-b border-gray-200 rounded-t-lg': options?.border}"
+                        *ngIf="options?.showHeader && options?.label">
+                        {{ options.label }}
+                    </div>
+                    <div class="flex gap-2 items-center"
+                         [ngClass]="{'p-3': options?.border || options?.showHeader}">
+                        <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
+                        <div class="grow text-content"
+                             [style.max-height]="options?.maxHeight ? options?.maxHeight + 'px' : 'none'"
+                             [ngClass]="{'w-full text-center': options?.alignCenter, 'overflow-y-auto': options?.maxHeight}">
+                            <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
 
-                                <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
-                                    <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
-                                    <markdown ngPreserveWhitespaces
-                                              [data]="item[options.itemFieldName]"
-                                              *ngIf="options?.markdown">
-                                    </markdown>
-                                </ng-container>
-                                <ng-container *ngIf="!options?.itemFieldName && !item">
-                                    <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
-                                    <markdown ngPreserveWhitespaces
-                                              [data]="options?.value"
-                                              *ngIf="options?.value && options?.markdown">
-                                    </markdown>
-                                </ng-container>
-                                <ng-container *ngIf="options?.keys && item">
-                                    <div *ngFor="let key of options?.keys">
-                                        <div class="mb-3" *ngIf="item[key]">
-                                            <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
-                                            <markdown ngPreserveWhitespaces
-                                                      [data]="item[key]"
-                                                      *ngIf="options?.markdown">
-                                            </markdown>
-                                        </div>
+                            <ng-container *ngIf="options?.itemFieldName && item && item[options.itemFieldName]">
+                                <span *ngIf="!options?.markdown" [innerHTML]="item[options.itemFieldName] | toHtml"></span>
+                                <markdown ngPreserveWhitespaces
+                                          [data]="item[options.itemFieldName]"
+                                          *ngIf="options?.markdown">
+                                </markdown>
+                            </ng-container>
+                            <ng-container *ngIf="!options?.itemFieldName && !item">
+                                <span *ngIf="options?.value && !options?.markdown" [innerHTML]="options?.value | toHtml"></span>
+                                <markdown ngPreserveWhitespaces
+                                          [data]="options?.value"
+                                          *ngIf="options?.value && options?.markdown">
+                                </markdown>
+                            </ng-container>
+                            <ng-container *ngIf="options?.keys && item">
+                                <div *ngFor="let key of options?.keys">
+                                    <div class="mb-3" *ngIf="item[key]">
+                                        <span *ngIf="!options?.markdown" [innerHTML]="item[key] | toHtml"></span>
+                                        <markdown ngPreserveWhitespaces
+                                                  [data]="item[key]"
+                                                  *ngIf="options?.markdown">
+                                        </markdown>
                                     </div>
-                                </ng-container>
+                                </div>
+                            </ng-container>
 
-                                <span class="text-gray-400" *ngIf="!options?.value && !options?.valueArr && editorMode">{{ options?.name }}</span>
-                                <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
-                            </div>
+                            <span class="text-gray-400" *ngIf="!options?.value && !options?.valueArr && editorMode">{{ options?.name }}</span>
+                            <span *ngIf="options?.suffixText && editorMode">{{ options?.suffixText }}</span>
                         </div>
                     </div>
                 </div>
