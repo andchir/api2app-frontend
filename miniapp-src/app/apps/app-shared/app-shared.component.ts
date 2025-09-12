@@ -8,7 +8,7 @@ import {
     OnInit, ViewChild, ViewContainerRef
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -99,6 +99,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
+        this.route.queryParams
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe((params: Params) => {
+                if (params['tab'] && this.tabIndex !== parseInt(params['tab'])) {
+                    this.tabIndex = parseInt(params['tab']);
+                    this.cdr.detectChanges();
+                }
+            });
     }
 
     @HostListener('window:scroll', [])
@@ -254,8 +262,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     switchTab(tabIndex: number): void {
-        this.tabIndex = tabIndex;
-        this.cdr.detectChanges();
+        // this.tabIndex = tabIndex;
+        // this.cdr.detectChanges();
+        const queryParams: Params = {
+            tab: tabIndex
+        };
+        this.router.navigate(
+            [],
+            {
+                relativeTo: this.route,
+                queryParams,
+                queryParamsHandling: 'merge'
+            }
+        );
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
