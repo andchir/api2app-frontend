@@ -102,10 +102,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.route.queryParams
             .pipe(takeUntil(this.destroyed$))
             .subscribe((params: Params) => {
-                if (params['tab'] && this.tabIndex !== parseInt(params['tab'])) {
-                    this.tabIndex = parseInt(params['tab']);
-                    this.cdr.detectChanges();
+                if (!params['tab']) {
+                    return;
                 }
+                this.tabIndex = parseInt(params['tab']) - 1;
+                this.cdr.detectChanges();
             });
     }
 
@@ -262,10 +263,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     switchTab(tabIndex: number): void {
+        if (this.tabIndex === tabIndex) {
+            return;
+        }
         // this.tabIndex = tabIndex;
         // this.cdr.detectChanges();
         const queryParams: Params = {
-            tab: tabIndex
+            tab: tabIndex + 1
         };
         this.router.navigate(
             [],
