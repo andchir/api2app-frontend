@@ -14,7 +14,7 @@ export class RouterEventsService {
         router.events
             .subscribe(event => {
                 if (event instanceof NavigationEnd) {
-                    if (this.currentUrl !== event.url.split('?')[0]) {
+                    if (this.currentUrl !== event.url.split('?')[0] || event.url.includes('?search=')) {
                         this.previousUrl = this.currentUrl;
                         this.currentUrl = event.url;
                     }
