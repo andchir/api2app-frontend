@@ -6,7 +6,7 @@ import {
     OnInit
 } from '@angular/core';
 import { DomSanitizer, Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import {ActivatedRoute, Params, Router} from '@angular/router';
 
 import { Subscription, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
@@ -158,6 +158,15 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (this.itemId) {
             this.getData();
         }
+        this.route.queryParams
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe((params: Params) => {
+                if (!params['tab']) {
+                    return;
+                }
+                this.tabIndex = parseInt(params['tab']) - 1;
+                this.cdr.detectChanges();
+            });
     }
 
     override getData(): void {
