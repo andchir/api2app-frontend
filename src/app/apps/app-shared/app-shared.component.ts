@@ -1566,7 +1566,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (event) {
             event.preventDefault();
         }
-        this.router.navigate([this.routerEventsService.getPreviousUrl()]);
+        const url = this.routerEventsService.getPreviousUrl(true);
+        const queryParams = this.routerEventsService.getPreviousQueryParams();
+        this.router.navigate([url], {queryParams});
     }
 
     ngOnDestroy(): void {
