@@ -164,6 +164,14 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     onFieldValueChanged(): void {
+        const elementParent = this.elementRef.nativeElement.parentNode?.parentNode;
+        // Auto pause audio/video
+        if (elementParent) {
+            const audioElements = Array.from(elementParent.querySelectorAll('audio,video'));
+            audioElements.forEach((audio) => {
+                (audio as HTMLAudioElement).pause();
+            });
+        }
         this.elementValueChange.emit(this.options);
     }
 
