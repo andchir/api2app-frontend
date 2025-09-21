@@ -10,7 +10,7 @@ export class RouterEventsService {
     constructor(
         private router : Router
     ) {
-        this.currentUrl = this.router.url;
+        this.currentUrl = this.router.url.split('?')[0];
         router.events
             .subscribe(event => {
                 if (event instanceof NavigationEnd) {
