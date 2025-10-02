@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { TitleStrategy } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,8 +23,7 @@ import { authInterceptorProviders } from './helpers/auth.interceptor';
 import { CustomTitleStrategy } from './helpers/custom-title-strategy';
 import { SharedModule } from './shared.module';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         AuthLoginComponent,
         AuthRegisterComponent,
@@ -38,18 +37,12 @@ import { SharedModule } from './shared.module';
         MyProfileComponent,
         NotFoundComponent
     ],
-    imports: [
-        CommonModule,
+    bootstrap: [AppComponent], imports: [CommonModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         FormsModule,
-        SharedModule
-    ],
-    providers: [authInterceptorProviders, {provide: TitleStrategy,  useClass: CustomTitleStrategy}],
-    bootstrap: [AppComponent]
-})
+        SharedModule], providers: [authInterceptorProviders, { provide: TitleStrategy, useClass: CustomTitleStrategy }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {
 }

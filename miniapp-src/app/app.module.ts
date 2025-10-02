@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AppRoutingModule } from './app-routing.module';
@@ -21,21 +21,17 @@ import { ProgressElementComponent } from './apps/components/elements/progress-el
 import { ElementImageComponent } from './apps/components/elements/element-image.component';
 import { ImageComparisonComponent } from './apps/components/elements/image-comparison.component';
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         ApplicationSharedComponent,
         AppBlockElementComponent,
         ElementInputTextComponent,
-
         AppComponent,
         NotFoundComponent
     ],
-    imports: [
-        CommonModule,
+    bootstrap: [AppComponent], imports: [CommonModule,
         FormsModule,
         ReactiveFormsModule,
         BrowserModule,
-        HttpClientModule,
         AppRoutingModule,
         FormsModule,
         SharedModule,
@@ -44,10 +40,6 @@ import { ImageComparisonComponent } from './apps/components/elements/image-compa
         SelectImageComponent,
         ProgressElementComponent,
         ElementImageComponent,
-        ImageComparisonComponent
-    ],
-    providers: [ApplicationService, ApiService, ModalService],
-    bootstrap: [AppComponent]
-})
+        ImageComparisonComponent], providers: [ApplicationService, ApiService, ModalService, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {
 }
