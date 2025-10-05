@@ -45,7 +45,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
-    @Input() mediaOriginalUrl: string | SafeResourceUrl | null;
+    @Input() mediaOriginalUrl: string | null;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -99,9 +99,10 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             if (val instanceof File) {
                 this.mediaOriginalUrl = URL.createObjectURL(val);
             } else {
-                this.mediaOriginalUrl = val && typeof val === 'string'
-                    ? this.sanitizer.bypassSecurityTrustUrl(val)
-                    : val;
+                this.mediaOriginalUrl = typeof val === 'string' ? val : '';
+                // this.mediaOriginalUrl = val && typeof val === 'string'
+                //     ? this.sanitizer.bypassSecurityTrustUrl(val)
+                //     : val;
             }
         }
         this._value = val || '';
@@ -178,13 +179,14 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     createOriginalFileUrl(): string | null {
         if (this.mediaOriginalUrl) {
-            let mediaUrl = this.mediaOriginalUrl;
-            if (mediaUrl && typeof mediaUrl === 'object'
-                && mediaUrl['changingThisBreaksApplicationSecurity']
-                && mediaUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
-                return mediaUrl['changingThisBreaksApplicationSecurity'];
-            }
-            return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
+            return this.mediaOriginalUrl;
+            // let mediaUrl = this.mediaOriginalUrl;
+            // if (mediaUrl && typeof mediaUrl === 'object'
+            //     && mediaUrl['changingThisBreaksApplicationSecurity']
+            //     && mediaUrl['changingThisBreaksApplicationSecurity'].indexOf('data:') > -1) {
+            //     return mediaUrl['changingThisBreaksApplicationSecurity'];
+            // }
+            // return this.sanitizer.sanitize(SecurityContext.URL, this.mediaOriginalUrl);
         }
         if (!this.data || typeof this.data !== 'object') {
             return this?.data;
