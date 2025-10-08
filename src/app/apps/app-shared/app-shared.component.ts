@@ -1208,12 +1208,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 } else {
                     this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
-            } else if (element.value && String(element.value).match(/https?:\/\//)) {
-                if (element.isDownloadMode) {
-                    ApplicationService.downloadImage(String(element.value));
-                } else {
-                    window.open(String(element.value), '_blank').focus();
-                }
+             } else if (element.value && (String(element.value).match(/https?:\/\//) || String(element.value).startsWith('data:'))) {
+                 if (element.isDownloadMode) {
+                     ApplicationService.downloadImage(String(element.value));
+                 } else {
+                     window.open(String(element.value), '_blank').focus();
+                 }
             }
         }
         if (element.type === 'user-subscription' && this.isVkApp) {
