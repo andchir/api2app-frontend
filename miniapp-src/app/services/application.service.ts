@@ -320,6 +320,39 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static async downloadImage(url: string): Promise<boolean> {
+        // Handle data URIs (bytes)
+        if (url.startsWith('data:')) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.style.display = 'none';
+
+            // Extract mime type and set appropriate filename
+            const mimeMatch = url.match(/^data:([^;]+)/);
+            let filename = 'file';
+            if (mimeMatch) {
+                const mimeType = mimeMatch[1];
+                if (mimeType.startsWith('image/')) {
+                    filename = 'image.' + mimeType.split('/')[1];
+                } else if (mimeType.startsWith('audio/')) {
+                    filename = 'audio.' + (mimeType.split('/')[1] === 'mpeg' ? 'mp3' : mimeType.split('/')[1]);
+                } else if (mimeType.startsWith('video/')) {
+                    filename = 'video.' + mimeType.split('/')[1];
+                } else {
+                    filename = 'file.' + mimeType.split('/')[1];
+                }
+            }
+
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+
+            setTimeout(() => {
+                document.body.removeChild(link);
+            }, 100);
+
+            return true;
+        }
+
         const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
         const fileExtension = ApplicationService.getFileExtension(url);
         const isFileUrl = filesExtensions.includes(fileExtension);
