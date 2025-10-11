@@ -52,6 +52,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     selectedBlockIndex: number;
     isNotified: boolean = false;
     selectedItemOptionsFields: AppBlockElement[] = [];
+    copiedElements: AppBlockElement[] = [];
+    selectedElementsList: string[] = [];
 
     subs = new Subscription();
 
@@ -141,6 +143,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 });
             })
         );
+
+        if (window.sessionStorage.getItem('app_elements_copied')) {
+            this.copiedElements = JSON.parse(window.sessionStorage.getItem('app_elements_copied'));
+        }
     }
 
     get optionsTitle(): string {
@@ -736,6 +742,82 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     }
                 }
             });
+    }
+
+    onElementSelected(value: string): void {
+        this.selectedElementsList.push(value);
+    }
+
+    onElementUnSelected(value: string): void {
+        const index = this.selectedElementsList.indexOf(value);
+        if (index === -1) {
+            return;
+        }
+        this.selectedElementsList.splice(index, 1);
+    }
+
+    onActionSelected(event: Event): void {
+        const selectEl = event.target as HTMLInputElement;
+        const action = selectEl.value;
+        selectEl.value = '';
+        this.messageType = 'success';
+
+        const selectedData = [];
+        this.selectedElementsList.forEach(value => {
+            const tmp = value.split('-');
+            const blockIndex = parseInt(tmp[0], 10);
+            const elementIndex = parseInt(tmp[1], 10);
+            if (!this.data.blocks[blockIndex]) {
+                return;
+            }
+            if (!selectedData[blockIndex]) {
+                selectedData[blockIndex] = [];
+            }
+            selectedData[blockIndex].push(elementIndex);
+        });
+
+        switch (action) {
+            case 'copy':
+            case 'cut':
+                this.copiedElements = [];
+                selectedData.forEach((ids, blockIndex) => {
+                    if (!this.data.blocks[blockIndex]) {
+                        return;
+                    }
+                    const block = this.data.blocks[blockIndex];
+                    this.copiedElements = [...this.copiedElements, ...block.elements.filter((_, index) => ids.includes(index))];
+                    if (action === 'cut') {
+                        ApplicationService.deleteBlockElementsByIndexArr(block, ids);
+                    }
+                });
+                window.sessionStorage.setItem('app_elements_copied', JSON.stringify(this.copiedElements));
+                if (action === 'copy') {
+                    this.message = 'Выделенные элементы успешно скопированы в буфер обмена.';
+                } else if (action === 'cut') {
+                    this.message = 'Выделенные элементы успешно вырезаны в буфер обмена.';
+                }
+                break;
+            case 'paste_before':
+            case 'paste_after':
+                const tmp = this.selectedElementsList[0].split('-');
+                const blockIndex = parseInt(tmp[0], 10);
+                const elementIndex = parseInt(tmp[1], 10);
+                const block = this.data.blocks[blockIndex];
+                if (!block || this.copiedElements.length === 0) {
+                    return;
+                }
+                this.copiedElements.forEach(element => {
+                    element.options = {};
+                });
+                block.elements.splice(elementIndex, 0, ...this.copiedElements);
+                break;
+        }
+        // Clear selection
+        this.selectedElementsList = [];
+        Array.from(document.querySelectorAll('.element-select-checkbox')).forEach(element => {
+            (element as HTMLInputElement).checked = false;
+        });
+        this.cdr.detectChanges();
     }
 
     override ngOnDestroy(): void {

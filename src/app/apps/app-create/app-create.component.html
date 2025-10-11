@@ -214,7 +214,9 @@
                                                            (elementClick)="onElementClick(element)"
                                                            (elementValueChange)="onElementValueChanged(element)"
                                                            (itemSelected)="onItemSelected(element, $event)"
-                                                           (cloneElement)="onItemClone($event)"></app-block-element>
+                                                           (cloneElement)="onItemClone($event)"
+                                                           (selected)="onElementSelected($event)"
+                                                           (unselected)="onElementUnSelected($event)"></app-block-element>
                                         <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
                                             <div class="pt-3 w-full max-w-[600px] mx-auto">
                                                 <div class="relative -top-2 mb-1 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
@@ -288,6 +290,19 @@
 
     </div>
 </main>
+
+<div class="fixed right-6 bottom-6 z-30">
+    <select id="countries"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            (change)="onActionSelected($event)"
+            *ngIf="selectedElementsList.length > 0">
+        <option value="" selected>Действие</option>
+        <option value="copy">Копировать</option>
+        <option value="cut">Вырезать</option>
+        <option value="paste_before">Вставить перед</option>
+        <option value="paste_after">Вставить после</option>
+    </select>
+</div>
 
 <app-alert [(message)]="message" [type]="messageType"></app-alert>
 

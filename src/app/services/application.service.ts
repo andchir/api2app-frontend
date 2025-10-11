@@ -422,4 +422,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         return languagesList;
     }
+
+    static deleteBlockElementsByIndexArr(block: AppBlock, indexes: number[]): void {
+        block.elements = block.elements.filter((_, index) => !indexes.includes(index));
+    }
 }

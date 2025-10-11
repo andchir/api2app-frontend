@@ -37,6 +37,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
     @Output() progressCompleted: EventEmitter<string> = new EventEmitter<string>();
     @Output() cloneElement: EventEmitter<number[]> = new EventEmitter<number[]>();
+    @Output() selected: EventEmitter<string> = new EventEmitter<string>();
+    @Output() unselected: EventEmitter<string> = new EventEmitter<string>();
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
@@ -326,6 +328,14 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     onMessage(msg: string[]) {
         this.message.emit(msg);
+    }
+
+    onSelected(event: MouseEvent): void {
+        if ((event.target as HTMLInputElement).checked) {
+            this.selected.emit((event.target as HTMLInputElement).value);
+        } else {
+            this.unselected.emit((event.target as HTMLInputElement).value);
+        }
     }
 
     isArray(obj: any ): boolean {
