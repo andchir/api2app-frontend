@@ -1143,7 +1143,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = this.sanitizer.bypassSecurityTrustResourceUrl(ApplicationService.createStringValue(element, value));
+            element.value = ApplicationService.createStringValue(element, value);
             this.cdr.detectChanges();
             return;
         }
