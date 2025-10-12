@@ -415,6 +415,14 @@
         "826902473872336483": "Première image",
         "6808434159612827961": "Deuxième image",
         "169142387762129569": "Clé d'accès communautaire VK",
-        "8477489297425722732": "Afficher le titre"
+        "8477489297425722732": "Afficher le titre",
+        "action": "Action",
+        "copy": "Copier",
+        "cut": "Couper",
+        "pasteBefore": "Coller avant",
+        "pasteAfter": "Coller après",
+        "cancelSelection": "Annuler la sélection",
+        "elementsCopiedSuccess": "Éléments sélectionnés copiés dans le presse-papiers avec succès.",
+        "elementsCutSuccess": "Éléments sélectionnés coupés dans le presse-papiers avec succès."
     }
 }

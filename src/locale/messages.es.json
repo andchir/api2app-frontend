@@ -415,6 +415,14 @@
         "826902473872336483": "Primera imagen",
         "6808434159612827961": "Segunda imagen",
         "169142387762129569": "Clave de acceso a la comunidad VK",
-        "8477489297425722732": "Mostrar título"
+        "8477489297425722732": "Mostrar título",
+        "action": "Acción",
+        "copy": "Copiar",
+        "cut": "Cortar",
+        "pasteBefore": "Pegar antes",
+        "pasteAfter": "Pegar después",
+        "cancelSelection": "Cancelar selección",
+        "elementsCopiedSuccess": "Elementos seleccionados copiados al portapapeles con éxito.",
+        "elementsCutSuccess": "Elementos seleccionados cortados al portapapeles con éxito."
     }
 }

@@ -415,6 +415,14 @@
         "826902473872336483": "Erstes Bild",
         "6808434159612827961": "Zweites Bild",
         "169142387762129569": "VK-Community-Zugriffsschlüssel",
-        "8477489297425722732": "Titel anzeigen"
+        "8477489297425722732": "Titel anzeigen",
+        "action": "Aktion",
+        "copy": "Kopieren",
+        "cut": "Ausschneiden",
+        "pasteBefore": "Vorher einfügen",
+        "pasteAfter": "Nachher einfügen",
+        "cancelSelection": "Auswahl abbrechen",
+        "elementsCopiedSuccess": "Ausgewählte Elemente erfolgreich in die Zwischenablage kopiert.",
+        "elementsCutSuccess": "Ausgewählte Elemente erfolgreich in die Zwischenablage ausgeschnitten."
     }
 }

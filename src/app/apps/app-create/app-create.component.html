@@ -296,12 +296,12 @@
             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             (change)="onActionSelected($event)"
             *ngIf="selectedElementsList.length > 0">
-        <option value="" selected>Действие</option>
-        <option value="copy">Копировать</option>
-        <option value="cut">Вырезать</option>
-        <option value="paste_before">Вставить перед</option>
-        <option value="paste_after">Вставить после</option>
-        <option value="cancel">Отменить выбор</option>
+        <option value="" selected i18n="@@action">Action</option>
+        <option value="copy" i18n="@@copy">Copy</option>
+        <option value="cut" i18n="@@cut">Cut</option>
+        <option value="paste_before" i18n="@@pasteBefore">Paste before</option>
+        <option value="paste_after" i18n="@@pasteAfter">Paste after</option>
+        <option value="cancel" i18n="@@cancelSelection">Cancel selection</option>
     </select>
 </div>
 

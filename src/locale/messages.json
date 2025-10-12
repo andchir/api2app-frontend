@@ -415,6 +415,14 @@
         "826902473872336483": "First image",
         "6808434159612827961": "Second image",
         "169142387762129569": "VK Community Access Key",
-        "8477489297425722732": "Show title"
+        "8477489297425722732": "Show title",
+        "action": "Action",
+        "copy": "Copy",
+        "cut": "Cut",
+        "pasteBefore": "Paste before",
+        "pasteAfter": "Paste after",
+        "cancelSelection": "Cancel selection",
+        "elementsCopiedSuccess": "Selected elements successfully copied to clipboard.",
+        "elementsCutSuccess": "Selected elements successfully cut to clipboard."
     }
 }
