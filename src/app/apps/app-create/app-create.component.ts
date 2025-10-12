@@ -809,7 +809,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 this.copiedElements.forEach(element => {
                     element.options = {};
                 });
-                block.elements.splice(elementIndex, 0, ...this.copiedElements);
+                block.elements.splice((action === 'paste_before' ? elementIndex : elementIndex + 1), 0, ...this.copiedElements);
                 break;
         }
         // Clear selection
