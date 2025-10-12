@@ -180,7 +180,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return element.multiple || !Array.isArray(element.value) ? element.value : element.value[0];
             case 'input-number':
             case 'input-slider':
-                return parseInt(String(element.value));
+                return typeof element.value === 'string'
+                    ? parseFloat(String(element.value).replace(',', '.'))
+                    : element.value as number;
         }
         return element.value ? String(element.value) : null;
     }
@@ -295,7 +297,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true): string {
         if (typeof value === 'object' && Array.isArray(value)) {
             value = value.map(item => {
                 if (typeof item === 'object' && item !== null) {
@@ -316,7 +318,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (element.suffixText && (!/[{}]/.test(element.suffixText) || !skipTags)) {
             value += (element.suffixText || '');
         }
-        return value.trim();
+        if (trim) {
+            return value.trim();
+        }
+        return value;
     }
 
     static async downloadImage(url: string): Promise<boolean> {
@@ -427,5 +432,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
             });
         }
         return languagesList;
+    }
+
+    static deleteBlockElementsByIndexArr(block: AppBlock, indexes: number[]): void {
+        block.elements = block.elements.filter((_, index) => !indexes.includes(index));
     }
 }

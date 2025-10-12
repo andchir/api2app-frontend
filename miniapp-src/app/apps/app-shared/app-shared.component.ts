@@ -13,7 +13,7 @@ import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { take } from 'rxjs/operators';
-import { firstValueFrom, retry, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
@@ -1170,7 +1170,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else if (typeof value === 'string' || element.prefixText || element.suffixText) {
+            } else if (typeof value === 'string' || element.prefixText || element.suffixText
+                || ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             } else {
                 element.value = value;
