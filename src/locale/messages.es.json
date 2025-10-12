@@ -416,13 +416,13 @@
         "6808434159612827961": "Segunda imagen",
         "169142387762129569": "Clave de acceso a la comunidad VK",
         "8477489297425722732": "Mostrar título",
-        "1234567890123456701": "Acción",
-        "1234567890123456702": "Copiar",
-        "1234567890123456703": "Cortar",
-        "1234567890123456704": "Pegar antes",
-        "1234567890123456705": "Pegar después",
-        "1234567890123456706": "Cancelar selección",
-        "1234567890123456707": "Elementos seleccionados copiados al portapapeles con éxito.",
-        "1234567890123456708": "Elementos seleccionados cortados al portapapeles con éxito."
+        "action": "Acción",
+        "copy": "Copiar",
+        "cut": "Cortar",
+        "pasteBefore": "Pegar antes",
+        "pasteAfter": "Pegar después",
+        "cancelSelection": "Cancelar selección",
+        "elementsCopiedSuccess": "Elementos seleccionados copiados al portapapeles con éxito.",
+        "elementsCutSuccess": "Elementos seleccionados cortados al portapapeles con éxito."
     }
 }

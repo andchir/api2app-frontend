@@ -416,13 +416,13 @@
         "6808434159612827961": "Second image",
         "169142387762129569": "VK Community Access Key",
         "8477489297425722732": "Show title",
-        "1234567890123456701": "Action",
-        "1234567890123456702": "Copy",
-        "1234567890123456703": "Cut",
-        "1234567890123456704": "Paste before",
-        "1234567890123456705": "Paste after",
-        "1234567890123456706": "Cancel selection",
-        "1234567890123456707": "Selected elements successfully copied to clipboard.",
-        "1234567890123456708": "Selected elements successfully cut to clipboard."
+        "action": "Action",
+        "copy": "Copy",
+        "cut": "Cut",
+        "pasteBefore": "Paste before",
+        "pasteAfter": "Paste after",
+        "cancelSelection": "Cancel selection",
+        "elementsCopiedSuccess": "Selected elements successfully copied to clipboard.",
+        "elementsCutSuccess": "Selected elements successfully cut to clipboard."
     }
 }
