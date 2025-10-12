@@ -792,9 +792,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 });
                 window.sessionStorage.setItem('app_elements_copied', JSON.stringify(this.copiedElements));
                 if (action === 'copy') {
-                    this.message = 'Выделенные элементы успешно скопированы в буфер обмена.';
+                    this.message = $localize `:@@1234567890123456707:Selected elements successfully copied to clipboard.`;
                 } else if (action === 'cut') {
-                    this.message = 'Выделенные элементы успешно вырезаны в буфер обмена.';
+                    this.message = $localize `:@@1234567890123456708:Selected elements successfully cut to clipboard.`;
                 }
                 break;
             case 'paste_before':
