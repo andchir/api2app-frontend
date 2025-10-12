@@ -171,7 +171,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return element.multiple || !Array.isArray(element.value) ? element.value : element.value[0];
             case 'input-number':
             case 'input-slider':
-                return parseInt(String(element.value));
+                return typeof element.value === 'string'
+                    ? parseFloat(String(element.value).replace(',', '.'))
+                    : element.value as number;
         }
         return element.value ? String(element.value) : null;
     }
