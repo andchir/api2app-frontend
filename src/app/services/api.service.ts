@@ -77,6 +77,9 @@ export class ApiService extends DataService<ApiItem> {
                 });
             } else {
                 for (let prop in data) {
+                    if (this.isJson(data[prop])) {
+                        data[prop] = JSON.parse(data[prop]);
+                    }
                     if (typeof data[prop] === 'object') {
                         outputKeys.push(string + (string ? '.' : '') + prop);
                         values.push(data[prop]);
