@@ -1750,7 +1750,7 @@ export class ElementOptions {
                     statusFieldName: 'status',
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
-                    operationDurationSeconds: 0,
+                    operationDurationSeconds: 20,
                     hiddenByField: '',
                     isBooleanValue: false,
                     valueObj: null,
