@@ -786,6 +786,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     }
                     const block = this.data.blocks[blockIndex];
                     this.copiedElements = [...this.copiedElements, ...block.elements.filter((_, index) => ids.includes(index))];
+                    this.copiedElements = JSON.parse(JSON.stringify(this.copiedElements));
                     if (action === 'cut') {
                         ApplicationService.deleteBlockElementsByIndexArr(block, ids);
                     }
