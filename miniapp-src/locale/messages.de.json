@@ -423,6 +423,7 @@
         "pasteAfter": "Nachher einfügen",
         "cancelSelection": "Auswahl abbrechen",
         "elementsCopiedSuccess": "Ausgewählte Elemente erfolgreich in die Zwischenablage kopiert.",
-        "elementsCutSuccess": "Ausgewählte Elemente erfolgreich in die Zwischenablage ausgeschnitten."
+        "elementsCutSuccess": "Ausgewählte Elemente erfolgreich in die Zwischenablage ausgeschnitten.",
+        "3415874160202270134": "Stichwort in der Gruppe"
     }
 }
