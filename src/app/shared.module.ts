@@ -19,6 +19,7 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
 
 import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
 import { FilterBlockPipe } from './shared/pipes/filter-block';
+import {CarouselComponent} from "./shared/carousel/carousel.component";
 
 export function markedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
@@ -67,7 +68,8 @@ export function markedOptionsFactory(): MarkedOptions {
         PaginationComponent,
 
         ToHtmlPipe,
-        FilterBlockPipe
+        FilterBlockPipe,
+        CarouselComponent
     ],
     exports: [
         AlertComponent,
@@ -86,7 +88,8 @@ export function markedOptionsFactory(): MarkedOptions {
         MarkdownModule,
 
         ToHtmlPipe,
-        FilterBlockPipe
+        FilterBlockPipe,
+        CarouselComponent
     ]
 })
 export class SharedModule { }

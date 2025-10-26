@@ -14,6 +14,8 @@ import { ApplicationService } from '../../../services/application.service';
 })
 export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
+    carouselItems: ApplicationItem[] = [];
+
     constructor(
         @Inject(LOCALE_ID) locale: string,
         route: ActivatedRoute,
@@ -26,6 +28,7 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
 
     getData(): void {
         this.loading = true;
+        this.getCarouselItems();
         this.dataService.getListShared(this.currentPage, this.searchWord, this.searchLanguage)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -41,6 +44,19 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
                         this.messageType = 'error';
                     }
                     this.loading = false;
+                }
+            });
+    }
+
+    getCarouselItems(): void {
+        this.dataService.getListFavorite(this.searchLanguage)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    this.carouselItems = res;
+                },
+                error: (err) => {
+                    // console.log(err);
                 }
             });
     }

@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
-import { catchError, iif, Observable, throwError } from "rxjs";
+
+import { catchError, iif, Observable, throwError } from 'rxjs';
 
 
 export abstract class DataService<T extends {id: number}> {
@@ -62,6 +63,15 @@ export abstract class DataService<T extends {id: number}> {
         const url = `${this.requestUrl}/list_shared`;
         const params = this.createParams({page, search, language});
         return this.httpClient.get<{count: number, results: T[]}>(url, Object.assign({}, this.httpOptions, {params}))
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    getListFavorite(language?: string): Observable<T[]> {
+        const url = `${this.requestUrl}/list_favorite`;
+        const params = this.createParams({language});
+        return this.httpClient.get<T[]>(url, Object.assign({}, this.httpOptions, {params}))
             .pipe(
                 catchError(this.handleError)
             );
