@@ -114,7 +114,7 @@ export class CarouselComponent implements AfterViewInit, OnDestroy {
     // Touch events
     @HostListener('touchstart', ['$event'])
     onTouchStart(event: TouchEvent) {
-        event.preventDefault();
+        // event.preventDefault();
         this.startPos = this.getPositionX(event);
         this.isDragging = true;
 
