@@ -24,6 +24,7 @@ export interface ApplicationItem {
     vkToken?: string;
     tgBotToken?: string;
     tgForwardToUserId?: number;
+    tgKeyWord?: string;
     gupshupApiKey?: string;
     paymentEnabled?: boolean;
     advertising?: boolean;

@@ -372,13 +372,22 @@
                                            [(ngModel)]="data.tgBotToken">
                                 </div>
                             </div>
-                            <div>
+                            <div class="mb-4">
                                 <div>
                                     <label for="settings-tg-forward-user"
                                            class="block mb-2 text-sm font-medium text-gray-900" i18n>User ID for forwarding messages</label>
                                     <input type="text" id="settings-tg-forward-user"
                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                            [(ngModel)]="data.tgForwardToUserId">
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label for="settings-tg-key-word"
+                                           class="block mb-2 text-sm font-medium text-gray-900">Ключевое слово в группе</label>
+                                    <input type="text" id="settings-tg-key-word"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           [(ngModel)]="data.tgKeyWord">
                                 </div>
                             </div>
                         </div>
