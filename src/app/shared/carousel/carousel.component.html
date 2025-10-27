@@ -1,5 +1,5 @@
 <div class="carousel-container relative w-full overflow-hidden touch-pan-y select-none">
-    <div class="relative w-full overflow-hidden rounded-xl pb-4">
+    <div class="relative w-full overflow-hidden rounded-xl pt-3 pb-4">
         <div
             class="carousel-slider flex transition-transform duration-300 ease-out"
             [class.transition-none]="isDragging"
@@ -33,9 +33,13 @@
                            [routerLink]="['/apps', 'shared', item.uuid]">
                             <span class="flex gap-2 flex-grow items-center justify-center relative px-5 py-2 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                                 <i class="bi bi-arrow-right-circle text-lg"></i>
-                                <span i18n> View </span>
+                                <span i18n>Open</span>
                             </span>
                         </a>
+                    </div>
+                    <div class="absolute right-2 -top-2 flex">
+                    <span class="flex items-center bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400  shadow-md"
+                          *ngIf="item.paymentEnabled" i18n>Paid</span>
                     </div>
                 </div>
 
