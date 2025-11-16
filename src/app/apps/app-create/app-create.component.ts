@@ -456,6 +456,18 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         return {tabIndex, elements, options};
     }
 
+    appPreview(): void {
+        this.message = '';
+        if (!this.data.shared) {
+            this.messageType = 'error';
+            this.message = $localize `The application must be published (can be hidden).`;
+            return;
+        }
+        const baseUrl = `${window.location.protocol}//${window.location.host}`;
+        const url = `${baseUrl}/${this.data.language}/apps/shared/${this.data.uuid}`;
+        window.open(url, '_blank').focus();
+    }
+
     appSettingsToggle(): void {
         this.isSettingsActive = !this.isSettingsActive;
     }
@@ -589,10 +601,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.saving = true;
         this.cdr.detectChanges();
 
-        if (data.id) {
-            delete data.shared;
-            delete data.hidden;
-        }
+        // if (data.id) {
+        //     delete data.shared;
+        //     delete data.hidden;
+        // }
 
         const formData = this.dataService.creteFormData(data, this.files);
         const itemId = data.id || 0;
