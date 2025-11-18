@@ -1,10 +1,10 @@
 <header class="bg-white shadow sticky top-0 z-[21]">
     <div class="mx-auto max-w-7xl py-3 px-4 sm:px-6 lg:px-8">
 
-        <div class="block md:flex justify-between">
+        <div class="block lg:flex justify-between">
 
-            <nav aria-label="Breadcrumb" class="flex mb-0 sm:mb-3 md:mb-0">
-                <ol class="flex w-full md:w-auto overflow-hidden rounded-lg border border-gray-300 text-gray-600">
+            <nav aria-label="Breadcrumb" class="flex mb-0 sm:mb-3 lg:mb-0">
+                <ol class="flex w-full lg:w-auto overflow-hidden rounded-lg border border-gray-300 text-gray-600">
                     <li class="flex items-center">
                         <a class="flex h-10 items-center gap-1.5 bg-gray-200 px-4 transition hover:text-gray-900"
                             [routerLink]="['/apps', 'personal']">
@@ -12,9 +12,9 @@
                             <span class="ms-1.5 text-xs font-medium" i18n>Applications</span>
                         </a>
                     </li>
-                    <li class="relative flex items-center">
+                    <li class="relative flex grow items-center">
                         <span class="absolute inset-y-0 -start-px h-10 w-4 bg-gray-200 [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
-                        <span class="flex h-10 items-center bg-white pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
+                        <span class="flex h-10 grow items-center justify-center bg-white pe-4 ps-8 text-xs font-medium transition hover:text-gray-900">
                             <span *ngIf="data?.id" i18n>Edit</span>
                             <span *ngIf="!data?.id" i18n>Create</span>
                         </span>
@@ -22,7 +22,7 @@
                 </ol>
             </nav>
 
-            <div class="block sm:flex gap-2 justify-center md:justify-start">
+            <div class="block sm:flex gap-2 justify-center lg:justify-start">
                 <div class="flex gap-2 justify-center sm:justify-start">
                     <div class="pt-2 pb-2 sm:pb-0 pr-0 sm:pr-3">
                         <!-- label class="relative inline-flex items-center cursor-pointer">
@@ -34,16 +34,16 @@
                 </div>
                 <div class="sm:flex gap-2 justify-center">
                     <div class="flex gap-2 justify-center mb-3 sm:mb-0">
-                        <button type="button"
-                                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                                title="Preview"
-                                i18n-title
-                                (click)="appPreview()">
-                            <i class="bi bi-eye me-2"></i>
-                            <span i18n>Preview</span>
-                        </button>
-                    </div>
-                    <div class="flex gap-2 justify-center">
+                        <div>
+                            <button type="button"
+                                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
+                                    title="Preview"
+                                    i18n-title
+                                    (click)="appPreview()">
+                                <i class="bi bi-eye me-2"></i>
+                                <span i18n>Preview</span>
+                            </button>
+                        </div>
                         <div>
                             <button type="button"
                                     class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
@@ -53,6 +53,8 @@
                                 <i class="bi bi-gear"></i>
                             </button>
                         </div>
+                    </div>
+                    <div class="flex gap-2 justify-center">
                         <div>
                             <button type="button"
                                     class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
@@ -60,6 +62,53 @@
                                     i18n-title
                                     (click)="cloneItem()">
                                 <i class="bi bi-copy"></i>
+                            </button>
+                        </div>
+                        <div>
+                            <button type="button"
+                                    class="text-white bg-blue-500 border border-blue-500 focus:outline-none hover:bg-blue-600 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm transition duration-500 ease"
+                                    title="Разработка с помощью ИИ"
+                                    (click)="editItemAI()">
+                                <svg
+                                    width="20"
+                                    height="20"
+                                    viewBox="0 0 160 160"
+                                    version="1.1"
+                                    fill="#000000"
+                                    id="svg10"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    xmlns:svg="http://www.w3.org/2000/svg">
+                                    <defs
+                                        id="defs14" />
+                                    <g
+                                        id="SVGRepo_bgCarrier"
+                                        stroke-width="0" />
+                                    <g
+                                        id="SVGRepo_tracerCarrier"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <g
+                                        id="SVGRepo_iconCarrier"
+                                        transform="matrix(0.41423006,0,0,0.41423006,-25.704342,-25.800339)">
+                                        <title
+                                            id="title4">ai</title>
+                                        <g
+                                            id="Page-1"
+                                            stroke="none"
+                                            stroke-width="1"
+                                            fill="none"
+                                            fill-rule="evenodd">
+                                            <g
+                                                id="icon"
+                                                fill="#ffffff"
+                                                transform="translate(64,64)">
+                                                <path
+                                                    d="M 320,64 V 320 H 64 V 64 Z M 171.74939,128 H 146.81784 L 99.484039,256 h 22.492591 l 8.93641,-25.023 h 56.662 L 196.31961,256 h 23.84756 z m 88.34439,0 h -22.40226 v 128 h 22.40226 z m -100.99905,21.47526 22.31431,63.85774 h -44.274 z M 341.33333,256 H 384 v 42.66667 H 341.33333 Z M 85.333333,341.33333 H 128 V 384 H 85.333333 Z m 85.333337,0 h 42.66666 V 384 H 170.66667 Z M 85.333333,0 H 128 V 42.666667 H 85.333333 Z M 256,341.33333 h 42.66667 V 384 H 256 Z M 170.66667,0 h 42.66666 V 42.666667 H 170.66667 Z M 256,0 h 42.66667 V 42.666667 H 256 Z m 85.33333,170.66667 H 384 v 42.66666 H 341.33333 Z M 0,256 h 42.666667 v 42.66667 H 0 Z M 341.33333,85.333333 H 384 V 128 H 341.33333 Z M 0,170.66667 h 42.666667 v 42.66666 H 0 Z M 0,85.333333 H 42.666667 V 128 H 0 Z"
+                                                    id="Combined-Shape" />
+                                            </g>
+                                        </g>
+                                    </g>
+                                </svg>
                             </button>
                         </div>
                         <div>
@@ -86,10 +135,10 @@
 <main>
     <div class="mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8">
 
-        <h2 class="text-xl font-bold mb-4">
+        <!-- h2 class="text-xl font-bold mb-4">
             <span *ngIf="data?.id" i18n>Edit Application</span>
             <span *ngIf="!data?.id" i18n>Create Application</span>
-        </h2>
+        </h2 -->
 
         <div>
 

@@ -472,6 +472,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.isSettingsActive = !this.isSettingsActive;
     }
 
+    editItemAI(): void {
+
+    }
+
     cloneItem(): void {
         const initialData = {
             message: $localize `Are you sure you want to clone this application?`,
