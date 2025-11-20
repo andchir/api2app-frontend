@@ -11,7 +11,7 @@ export class ApplicationImportComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
     inputString: string;
-    errorMessage = '';
+    errorMessage: string = '';
     loading: boolean;
     destroyed$: Subject<void> = new Subject();
 

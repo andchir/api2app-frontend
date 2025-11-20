@@ -26,6 +26,7 @@ import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { AuthService } from '../../services/auth.service';
+import { EditAppAiComponent } from './edit-app-ai/edit-app-ai.component';
 
 const APP_NAME = environment.appName;
 
@@ -473,7 +474,17 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     editItemAI(): void {
+        const initialData = {
+        };
+        this.modalService.showDynamicComponent(this.viewRef, EditAppAiComponent, initialData)
+            .pipe(take(1))
+            .subscribe({
+                next: (reason) => {
+                    if (reason === 'confirmed') {
 
+                    }
+                }
+            });
     }
 
     cloneItem(): void {
