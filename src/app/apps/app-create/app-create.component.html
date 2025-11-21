@@ -64,7 +64,7 @@
                                 <i class="bi bi-copy"></i>
                             </button>
                         </div>
-                        <div>
+                        <!-- div>
                             <button type="button"
                                     class="text-white bg-blue-500 border border-blue-500 focus:outline-none hover:bg-blue-600 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm transition duration-500 ease"
                                     title="Разработка с помощью ИИ"
@@ -80,7 +80,7 @@
                                     </g>
                                 </svg>
                             </button>
-                        </div>
+                        </div -->
                         <div>
                             <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
                                     [disabled]="loading && saving"
@@ -122,7 +122,7 @@
                     </div>
                     <div class="flex-grow">
                         <label class="block mb-2" for="fieldName" i18n>Application name</label>
-                        <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                        <input type="text" class="block w-full rounded-md border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 shadow-inner"
                                id="fieldName"
                                placeholder="Enter Application Name"
                                i18n-placeholder
@@ -371,7 +371,7 @@
                                 <div>
                                     <label for="settings-vk-app-id" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Application ID</label>
                                     <input type="text" id="settings-vk-app-id"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.vkAppId">
                                 </div>
                             </div>
@@ -379,7 +379,7 @@
                                 <div>
                                     <label for="settings-vk-secret-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Secret key</label>
                                     <input type="text" id="settings-vk-secret-key"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.vkSecretKey">
                                 </div>
                             </div>
@@ -387,7 +387,7 @@
                                 <div>
                                     <label for="settings-vk-bot-token" class="block mb-2 text-sm font-medium text-gray-900" i18n>VK Community Access Key</label>
                                     <input type="text" id="settings-vk-bot-token"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.vkToken">
                                 </div>
                             </div>
@@ -399,7 +399,7 @@
                                 <div>
                                     <label for="settings-tg-token" class="block mb-2 text-sm font-medium text-gray-900" i18n>Telegram Bot Token</label>
                                     <input type="text" id="settings-tg-token"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.tgBotToken">
                                 </div>
                             </div>
@@ -408,7 +408,7 @@
                                     <label for="settings-tg-forward-user"
                                            class="block mb-2 text-sm font-medium text-gray-900" i18n>User ID for forwarding messages</label>
                                     <input type="text" id="settings-tg-forward-user"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.tgForwardToUserId">
                                 </div>
                             </div>
@@ -417,7 +417,7 @@
                                     <label for="settings-tg-key-word"
                                            class="block mb-2 text-sm font-medium text-gray-900" i18n>Keyword in the group</label>
                                     <input type="text" id="settings-tg-key-word"
-                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                            [(ngModel)]="data.tgKeyWord">
                                 </div>
                             </div>
@@ -432,7 +432,7 @@
                             <div>
                                 <label for="settings-gupshup-apikey" class="block mb-2 text-sm font-medium text-gray-900" i18n>Gupshup API key</label>
                                 <input type="text" id="settings-gupshup-apikey"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                                        [(ngModel)]="data.gupshupApiKey">
                             </div>
                         </div>
@@ -494,7 +494,7 @@
                                     <label class="block mb-2" for="fieldSettingsPrice" i18n>Price per use</label>
                                 </div>
                                 <div>
-                                    <input type="number" class="block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 mb-2"
+                                    <input type="number" class="block w-full rounded-md border-gray-300 focus:ring-blue-500 focus:border-blue-500 mb-2 shadow-inner"
                                            id="fieldSettingsPrice" min="0" step="0.5"
                                            [(ngModel)]="data.pricePerUse">
                                     <div class="text-xs text-gray-500" i18n>General price for information. The price of a specific call is specified in the API settings.</div>

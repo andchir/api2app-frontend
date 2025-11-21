@@ -1263,7 +1263,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         // Hidden by field switch
-        if (['input-switch', 'input-select', 'input-radio'].includes(element.type)) {
+        if (['input-switch', 'input-select', 'input-radio', 'input-hidden'].includes(element.type)) {
             const enabled = element.enabled;
             const block = this.findBlock(element);
             if (block) {
