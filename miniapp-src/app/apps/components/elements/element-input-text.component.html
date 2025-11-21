@@ -42,7 +42,7 @@
         </div>
         <ng-container [ngSwitch]="type">
             <ng-container *ngSwitchCase="'input-text'">
-                <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                <input type="text" id="{{ name }}-{{ parentIndex }}-{{ index }}" class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
                        [style.padding-right]="paddingRight"
                        [ngClass]="{
                        'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue,
@@ -58,7 +58,7 @@
             <ng-container *ngSwitchCase="'input-textarea'">
             <textarea id="{{ name }}-{{ parentIndex }}-{{ index }}"
                       [style.padding-bottom]="paddingBottom"
-                      class="block min-h-[70px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                      class="block min-h-[70px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-inner"
                       [ngClass]="{'text-blue-600': storeValue && !isChanged, 'text-gray-900': isChanged || !storeValue}"
                       [placeholder]="placeholder || ''"
                       [rows]="rows"

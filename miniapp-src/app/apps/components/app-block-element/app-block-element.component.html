@@ -677,20 +677,20 @@
 </ng-container>
 
 <ng-template #templateButtonOptions>
-    <div class="app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+    <div class="flex gap-2 items-center app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Options"
                 i18n-title
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-base"></i>
         </button>
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Clone"
                 i18n-title
                 (click)="elementClone(index, parentIndex, $event)">
             <i class="bi bi-copy text-base"></i>
         </button>
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Input Action"
                 i18n-title
                 (click)="elementActionSelect('input', $event)"
@@ -698,7 +698,7 @@
             <i class="bi bi-arrow-down text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
-        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1 me-2"
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
                 title="Output Action"
                 i18n-title
                 (click)="elementActionSelect('output', $event)">
@@ -711,5 +711,15 @@
                 (click)="elementDeleteInit()">
             <i class="bi bi-trash3-fill text-base"></i>
         </button>
+        <div>
+            <div class="flex items-center me-4">
+                <input id="select-element-{{ parentIndex }}-{{ index }}"
+                       type="checkbox"
+                       value="{{ parentIndex }}-{{ index }}"
+                       class="element-select-checkbox w-6 h-6 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 shadow-md"
+                       (click)="onSelected($event)">
+                <label for="select-element-{{ parentIndex }}-{{ index }}" class="ms-2 text-sm font-medium text-gray-900"></label>
+            </div>
+        </div>
     </div>
 </ng-template>
