@@ -370,6 +370,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const apiItem = this.prepareApiItem(currentApi, actionType, elements);
 
+        // Clear output blocks
+        const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
+        const blocksOutput = this.findBlocksByElements(elementsOutput);
+        blocksOutput.forEach((block) => {
+            if (block.options?.autoClear) {
+                this.clearElementsValues(block);
+            }
+        });
+
         this.stateLoadingUpdate(blocks, true, false);
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
