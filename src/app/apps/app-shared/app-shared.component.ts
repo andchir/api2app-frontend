@@ -1371,6 +1371,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    onRefreshIframeContent(iframeEl: HTMLIFrameElement, element: AppBlockElement, block: AppBlock): void {
+        if (!iframeEl || !element.valueFrom) {
+            return;
+        }
+        block.loading = true;
+        this.cdr.detectChanges();
+
+        const sourceElement = this.findBlockElementByName(element.valueFrom);
+        const htmlContent = String(sourceElement.value);
+
+        iframeEl.srcdoc = htmlContent;
+
+        setTimeout(() => {
+            block.loading = false;
+            this.cdr.detectChanges();
+        }, 1000);
+    }
+
     flattenObjInArray(inputArr: any[]): any[] {
         return inputArr.map((item) => {
             return this.flattenObj(item);

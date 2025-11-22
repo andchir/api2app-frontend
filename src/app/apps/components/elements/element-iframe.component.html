@@ -32,16 +32,16 @@
          *ngIf="useRefreshButton || useFullscreenButton">
         <button type="button"
                 class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
-                (click)="refreshContent()"
+                (click)="refreshContentAction()"
                 *ngIf="useRefreshButton">
-            <i class="bi bi-arrow-repeat mr-1"></i>
+            <i class="bi bi-arrow-repeat mr-2"></i>
             <span i18n>Refresh</span>
         </button>
         <button type="button"
                 class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                 (click)="fullScreenToggle()"
                 *ngIf="useFullscreenButton">
-            <i class="bi bi-arrows-fullscreen mr-1"></i>
+            <i class="bi bi-arrows-fullscreen mr-2"></i>
             <span i18n>Full Screen</span>
         </button>
     </div>

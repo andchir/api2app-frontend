@@ -2,10 +2,10 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
-    ElementRef,
+    ElementRef, EventEmitter,
     Input, OnChanges,
     OnDestroy,
-    OnInit, SimpleChanges,
+    OnInit, Output, SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { NgClass, NgIf, NgStyle } from '@angular/common';
@@ -33,8 +33,9 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     @Input() useFullscreenButton: boolean = false;
     @Input() border: boolean = false;
     @Input() hiddenByDefault: boolean = false;
+    @Output() refreshContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
-    @ViewChild('iframeEl', { static: false }) iframe!: ElementRef;
+    @ViewChild('iframeEl', { static: false }) iframeEl!: ElementRef;
     @ViewChild('resizerHandle', { static: false }) resizerHandle!: ElementRef;
 
     safeHtmlContent: SafeHtml | null = null;
@@ -60,7 +61,6 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        console.log(changes);
         if (changes['pageUrl']) {
             this.createSafeUrl();
         }
@@ -129,11 +129,11 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         this.cdr.detectChanges();
     }
 
-    refreshContent(): void {
-        if (this.editorMode) {
+    refreshContentAction(): void {
+        if (this.editorMode || !this.iframeEl?.nativeElement) {
             return;
         }
-
+        this.refreshContent.emit(this.iframeEl?.nativeElement);
     }
 
     fullScreenToggle(): void {

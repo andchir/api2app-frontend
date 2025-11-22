@@ -679,7 +679,8 @@
                     [useResizer]="options.useResizer"
                     [useRefreshButton]="options.useRefreshButton"
                     [useFullscreenButton]="options.useFullscreenButton"
-                    [border]="options.border"></app-element-iframe>
+                    [border]="options.border"
+                    (refreshContent)="refreshIframeContent.emit($event)"></app-element-iframe>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

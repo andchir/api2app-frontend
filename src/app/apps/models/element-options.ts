@@ -1434,6 +1434,12 @@ export class ElementOptions {
                     value: options?.height || 500
                 });
                 output.push({
+                    name: 'valueFrom',
+                    label: $localize `Take value from field`,
+                    type: 'input-text',
+                    value: options?.valueFrom || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Page URL`,
                     type: 'input-text',
@@ -1865,6 +1871,7 @@ export class ElementOptions {
                     border: true,
                     hiddenByDefault: false,
                     htmlContent: '',
+                    valueFrom: '',
                     value: ''
                 });
                 break;

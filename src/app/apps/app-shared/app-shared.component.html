@@ -95,6 +95,7 @@
                                                        (itemSelected)="onItemSelected(element, $event)"
                                                        (progressUpdate)="onProgressUpdate(element)"
                                                        (progressCompleted)="onProgressCompleted(element)"
+                                                       (refreshIframeContent)="onRefreshIframeContent($event, element, block)"
                                                        (message)="onMessage($event)"></app-block-element>
                                 </div>
                                 <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
