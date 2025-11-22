@@ -1429,19 +1429,19 @@ export class ElementOptions {
                 });
                 output.push({
                     name: 'height',
-                    label: 'Height',
+                    label: $localize `Height`,
                     type: 'input-number',
                     value: options?.height || 500
                 });
                 output.push({
                     name: 'value',
-                    label: $localize `Default Value`,
+                    label: $localize `Page URL`,
                     type: 'input-text',
                     value: options?.value
                 });
                 output.push({
                     name: 'useResizer',
-                    label: 'Use resizer',
+                    label: $localize `Use resize`,
                     type: 'input-switch',
                     value: true,
                     enabled: options?.useResizer
