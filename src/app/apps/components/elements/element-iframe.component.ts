@@ -8,7 +8,7 @@ import {
     OnInit,
     ViewChild
 } from '@angular/core';
-import { NgIf, NgStyle } from '@angular/common';
+import {NgClass, NgIf, NgStyle} from '@angular/common';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
@@ -17,7 +17,8 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     standalone: true,
     imports: [
         NgIf,
-        NgStyle
+        NgStyle,
+        NgClass
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -25,7 +26,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy {
 
     @Input() editorMode = false;
     @Input() pageUrl: string = '';
-    @Input() height: string = '600px';
+    @Input() height: number = 600;
     @Input() useResizer: boolean = false;
     @Input() border: boolean = false;
 

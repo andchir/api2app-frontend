@@ -1,25 +1,24 @@
-<div class="iframe-container relative w-full">
-    <div class="flex items-stretch">
+<div class="iframe-container relative w-full"
+     [ngClass]="{'border border-gray-300': border}"
+     *ngIf="safeUrl">
+    <div class="flex items-stretch bg-gray-200">
         <div class="iframe-wrapper"
              [ngStyle]="{'width': iframeWidth + '%'}">
-            <iframe *ngIf="safeUrl"
-                    [src]="safeUrl"
-                    [ngStyle]="{
-                        'height': height,
-                        'border': border ? '1px solid #d1d5db' : 'none'
-                    }"
+            <iframe [src]="safeUrl"
+                    [ngStyle]="{'height': height + 'px'}"
+                    [ngClass]="{'pointer-events-none': isResizing}"
                     class="w-full"
                     frameborder="0"
                     allowfullscreen></iframe>
         </div>
 
-        <div *ngIf="useResizer && !editorMode"
-             class="resizer-handle flex items-center justify-center cursor-col-resize select-none"
+        <div *ngIf="useResizer"
+             class="bg-gray-100 resizer-handle flex items-center justify-center cursor-col-resize select-none w-[15px] border-l border-l-gray-300"
+             [ngClass]="{'border-r border-r-gray-300': iframeWidth < 100}"
              [class.active]="isResizing"
              (mousedown)="onMouseDown($event)"
-             #resizerHandle
-             style="width: 15px; background-color: #f3f4f6; border-left: 1px solid #d1d5db; border-right: 1px solid #d1d5db;">
-            <div class="resizer-line" style="width: 3px; height: 40px; background-color: #9ca3af; border-radius: 2px;"></div>
+             #resizerHandle>
+            <div class="resizer-line bg-gray-400 pointer-events-none w-[3px] h-[40px] rounded-full"></div>
         </div>
     </div>
 </div>
