@@ -1,0 +1,25 @@
+<div class="iframe-container relative w-full">
+    <div class="flex items-stretch">
+        <div class="iframe-wrapper"
+             [ngStyle]="{'width': iframeWidth + '%'}">
+            <iframe *ngIf="safeUrl"
+                    [src]="safeUrl"
+                    [ngStyle]="{
+                        'height': height,
+                        'border': border ? '1px solid #d1d5db' : 'none'
+                    }"
+                    class="w-full"
+                    frameborder="0"
+                    allowfullscreen></iframe>
+        </div>
+
+        <div *ngIf="useResizer && !editorMode"
+             class="resizer-handle flex items-center justify-center cursor-col-resize select-none"
+             [class.active]="isResizing"
+             (mousedown)="onMouseDown($event)"
+             #resizerHandle
+             style="width: 15px; background-color: #f3f4f6; border-left: 1px solid #d1d5db; border-right: 1px solid #d1d5db;">
+            <div class="resizer-line" style="width: 3px; height: 40px; background-color: #9ca3af; border-radius: 2px;"></div>
+        </div>
+    </div>
+</div>
