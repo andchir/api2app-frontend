@@ -180,7 +180,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                             this.submitted = false;
                         } else {
                             const data = (res as MessageEvent).data;
-                            if (data !== '[DONE]') {
+                            if (data === '[DONE]') {
+                                this.loading = false;
+                                this.submitted = false;
+                            } else {
                                 let dataObj = JSON.parse(data);
                                 this.apiItem.responseBody = JSON.stringify(dataObj, null, 4);
                                 if (!this.getIsMediaType(this.apiItem.responseContentType)) {
