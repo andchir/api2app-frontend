@@ -3,13 +3,13 @@ import {
     ChangeDetectorRef,
     Component,
     ElementRef,
-    Input,
+    Input, OnChanges,
     OnDestroy,
-    OnInit,
+    OnInit, SimpleChanges,
     ViewChild
 } from '@angular/core';
-import {NgClass, NgIf, NgStyle} from '@angular/common';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { NgClass, NgIf, NgStyle } from '@angular/common';
+import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
     selector: 'app-element-iframe',
@@ -22,19 +22,27 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementIframeComponent implements OnInit, OnDestroy {
+export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
 
     @Input() editorMode = false;
     @Input() pageUrl: string = '';
+    @Input() htmlContent: string = '';
     @Input() height: number = 600;
     @Input() useResizer: boolean = false;
+    @Input() useRefreshButton: boolean = false;
+    @Input() useFullscreenButton: boolean = false;
     @Input() border: boolean = false;
+    @Input() hiddenByDefault: boolean = false;
 
-    @ViewChild('resizerHandle', { static: false }) resizerHandle: ElementRef;
+    @ViewChild('iframeEl', { static: false }) iframe!: ElementRef;
+    @ViewChild('resizerHandle', { static: false }) resizerHandle!: ElementRef;
 
-    safeUrl: SafeResourceUrl | null = null;
+    safeHtmlContent: SafeHtml | null = null;
+    safeUrl: SafeResourceUrl | null = 'about:blank';
     iframeWidth: number = 100;
+    heightCurrent: number = 600;
     isResizing: boolean = false;
+    isFullScreenMode: boolean = false;
     private startX: number = 0;
     private startWidth: number = 0;
     private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
@@ -46,9 +54,29 @@ export class ElementIframeComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit(): void {
-        if (this.pageUrl) {
-            this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl);
+        this.heightCurrent = this.height;
+        this.createSafeUrl();
+        this.createIframeContent();
+    }
+
+    ngOnChanges(changes: SimpleChanges) {
+        console.log(changes);
+        if (changes['pageUrl']) {
+            this.createSafeUrl();
         }
+    }
+
+    createSafeUrl(): void {
+        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl || 'about:blank');
+        this.cdr.detectChanges();
+    }
+
+    createIframeContent(): void {
+        if (!this.htmlContent) {
+            return;
+        }
+        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.htmlContent);
+        this.cdr.detectChanges();
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -97,6 +125,31 @@ export class ElementIframeComponent implements OnInit, OnDestroy {
         if (this.mouseUpListener) {
             document.removeEventListener('mouseup', this.mouseUpListener);
             this.mouseUpListener = null;
+        }
+        this.cdr.detectChanges();
+    }
+
+    refreshContent(): void {
+        if (this.editorMode) {
+            return;
+        }
+
+    }
+
+    fullScreenToggle(): void {
+        if (this.editorMode) {
+            return;
+        }
+        this.isFullScreenMode = !this.isFullScreenMode;
+        this.onResize();
+    }
+
+    onResize(): void {
+        const windowHeight = window.innerHeight;
+        if (this.isFullScreenMode) {
+            this.heightCurrent = windowHeight;
+        } else {
+            this.heightCurrent = this.height;
         }
         this.cdr.detectChanges();
     }

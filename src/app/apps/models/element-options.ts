@@ -1440,6 +1440,14 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'htmlContent',
+                    label: 'HTML',
+                    type: 'input-textarea',
+                    rows: 6,
+                    autoHeight: true,
+                    value: options?.htmlContent || ''
+                });
+                output.push({
                     name: 'useResizer',
                     label: $localize `Use resize`,
                     type: 'input-switch',
@@ -1447,11 +1455,31 @@ export class ElementOptions {
                     enabled: options?.useResizer
                 });
                 output.push({
+                    name: 'useRefreshButton',
+                    label: `useRefreshButton`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useRefreshButton
+                });
+                output.push({
+                    name: 'useFullscreenButton',
+                    label: `useFullscreenButton`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useFullscreenButton
+                });
+                output.push({
                     name: 'border',
                     label: $localize `Border`,
                     type: 'input-switch',
                     value: true,
                     enabled: options?.border
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
                 });
                 break;
         }
@@ -1832,7 +1860,11 @@ export class ElementOptions {
                     label: 'Iframe',
                     height: 500,
                     useResizer: false,
+                    useRefreshButton: false,
+                    useFullscreenButton: false,
                     border: true,
+                    hiddenByDefault: false,
+                    htmlContent: '',
                     value: ''
                 });
                 break;
