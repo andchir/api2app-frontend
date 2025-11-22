@@ -49,10 +49,6 @@ export class ElementIframeComponent implements OnInit, OnDestroy {
         if (this.pageUrl) {
             this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl);
         }
-        if (this.editorMode) {
-            this.pageUrl = 'https://example.com';
-            this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl);
-        }
     }
 
     onMouseDown(event: MouseEvent): void {
@@ -102,6 +98,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy {
             document.removeEventListener('mouseup', this.mouseUpListener);
             this.mouseUpListener = null;
         }
+        this.cdr.detectChanges();
     }
 
     ngOnDestroy(): void {

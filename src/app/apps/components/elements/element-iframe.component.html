@@ -1,24 +1,25 @@
-<div class="iframe-container relative w-full"
+<div class="iframe-container relative w-full bg-gray-200"
      [ngClass]="{'border border-gray-300': border}"
      *ngIf="safeUrl">
-    <div class="flex items-stretch bg-gray-200">
-        <div class="iframe-wrapper"
-             [ngStyle]="{'width': iframeWidth + '%'}">
-            <iframe [src]="safeUrl"
-                    [ngStyle]="{'height': height + 'px'}"
-                    [ngClass]="{'pointer-events-none': isResizing}"
-                    class="w-full"
-                    frameborder="0"
-                    allowfullscreen></iframe>
-        </div>
+    <div class="mx-auto" [ngStyle]="{'width': iframeWidth + '%'}">
+        <div class="w-full flex items-stretch">
+            <div class="iframe-wrapper w-full">
+                <iframe [src]="safeUrl"
+                        [ngStyle]="{'height': height + 'px'}"
+                        [ngClass]="{'pointer-events-none': isResizing || editorMode}"
+                        class="w-full"
+                        frameborder="0"
+                        allowfullscreen></iframe>
+            </div>
 
-        <div *ngIf="useResizer"
-             class="bg-gray-100 resizer-handle flex items-center justify-center cursor-col-resize select-none w-[15px] border-l border-l-gray-300"
-             [ngClass]="{'border-r border-r-gray-300': iframeWidth < 100}"
-             [class.active]="isResizing"
-             (mousedown)="onMouseDown($event)"
-             #resizerHandle>
-            <div class="resizer-line bg-gray-400 pointer-events-none w-[3px] h-[40px] rounded-full"></div>
+            <div *ngIf="useResizer"
+                 class="bg-gray-100 resizer-handle flex items-center justify-center cursor-col-resize select-none w-[15px] border-l border-l-gray-300"
+                 [ngClass]="{'border-r border-r-gray-300': iframeWidth < 100}"
+                 [class.active]="isResizing"
+                 (mousedown)="onMouseDown($event)"
+                 #resizerHandle>
+                <div class="resizer-line bg-gray-400 pointer-events-none w-[3px] h-[40px] rounded-full"></div>
+            </div>
         </div>
     </div>
 </div>

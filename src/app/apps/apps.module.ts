@@ -27,6 +27,7 @@ import { SelectImageComponent } from './components/elements/select-image.compone
 import { ProgressElementComponent } from './components/elements/progress-element.component';
 import { ElementImageComponent } from './components/elements/element-image.component';
 import { ImageComparisonComponent } from './components/elements/image-comparison.component';
+import { ElementIframeComponent } from './components/elements/element-iframe.component';
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { ImageComparisonComponent } from './components/elements/image-comparison
         ProgressElementComponent,
         ElementImageComponent,
         DragulaModule.forRoot(),
-        ImageComparisonComponent
+        ImageComparisonComponent,
+        ElementIframeComponent
     ],
     exports: [
         ApplicationSharedComponent

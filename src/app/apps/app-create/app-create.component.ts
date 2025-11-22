@@ -86,7 +86,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         {name: 'progress', title: $localize `Progress Indicator`, icon: 'bi-percent'},
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
-        {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'}
+        {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'},
+        {name: 'iframe', title: 'Iframe', icon: 'bi-window-dock'}
         // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
     ];
 

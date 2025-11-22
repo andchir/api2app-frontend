@@ -1420,6 +1420,40 @@ export class ElementOptions {
                     enabled: options?.showOnlyInVK
                 });
                 break;
+            case 'iframe':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'height',
+                    label: 'Height',
+                    type: 'input-number',
+                    value: options?.height || 500
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
+                    name: 'useResizer',
+                    label: 'Use resizer',
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useResizer
+                });
+                output.push({
+                    name: 'border',
+                    label: $localize `Border`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.border
+                });
+                break;
         }
         return output;
     }
@@ -1790,6 +1824,16 @@ export class ElementOptions {
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null
+                });
+                break;
+            case 'iframe':
+                Object.assign(output, {
+                    name: 'iframe1',
+                    label: 'Iframe',
+                    height: 500,
+                    useResizer: false,
+                    border: true,
+                    value: ''
                 });
                 break;
         }
