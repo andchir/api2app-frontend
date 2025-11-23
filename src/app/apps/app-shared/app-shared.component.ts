@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
+import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { take } from 'rxjs/operators';
@@ -433,15 +433,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 },
                 error: (err) => {
-                    // console.log('ERROR', err);
+                    // console.log('ERROR', err?.error);
                     this.loading = false;
                     this.submitted = false;
                     this.progressUpdating = false;
                     if (err?.error instanceof Blob) {
                         this.createErrorMessage(currentApi, err.error);
                     } else {
+                        let errorMessage = '';
+                        if (typeof err?.error === 'string') {
+                            try {
+                                const errObj = JSON.parse(err?.error);
+                                errorMessage = errObj?.detail || errObj?.message || '';
+                            } catch (error) {
+
+                            }
+                        } else {
+                            errorMessage = err?.detail || err?.message || '';
+                        }
                         this.messageType = 'error';
-                        this.message = err.message || 'Error.';
+                        this.message = this.localizeServerMessages(errorMessage || 'Error.');
                     }
                     this.onError(apiUuid);
                     this.stateLoadingUpdate(blocks, false, false);
