@@ -383,11 +383,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
+        let timer: any;
+
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     if (res instanceof MessageEvent) {
+                        let content = '';
                         if (res.type === 'error') {
                             const event = res as unknown as SseErrorEvent;
                             console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
@@ -395,23 +398,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             this.messageType = 'error';
                             this.afterResponseCreated(blocks);
                         } else {
-                            const data = (res as MessageEvent).data;
-                            if (data === '[DONE]') {
-                                outputElements.forEach((element, index) => {
-                                    if (element.suffixText) {
-                                        element.value += element.suffixText;
-                                    }
-                                });
-                                this.afterResponseCreated(blocks);
-                            } else {
+                            content = (res as MessageEvent).data;
+                            if (content !== '[DONE]') {
                                 if (chunkIndex === 0) {
-                                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                    this.stateLoadingUpdate(blocks, false, false);
                                 }
-                                let dataObj = JSON.parse(data);
+                                let dataObj = JSON.parse(content);
                                 this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
                                 chunkIndex++;
                             }
                         }
+                        clearTimeout(timer);
+                        timer = setTimeout(() => {
+                            outputElements.forEach((element, index) => {
+                                if (element.suffixText) {
+                                    element.value += element.suffixText;
+                                }
+                            });
+                            this.afterResponseCreated(blocks);
+                            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
+                        }, (content === '[DONE]' ? 0 : 3000));
                     } else if(res instanceof HttpResponse) {
                         if (this.appsAutoStarted.includes(apiUuid)) {
                             this.afterAutoStarted(apiUuid);
@@ -1007,7 +1013,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element.prefixText || '';
             }
             element.value += value;
-            element.hidden = !element.value;
+            element.hidden = !element.value && element.hiddenByDefault;
             this.cdr.detectChanges();
         });
     }
