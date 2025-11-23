@@ -36,6 +36,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     @Output() refreshContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild('iframeEl', { static: false }) iframeEl!: ElementRef;
+    @ViewChild('iframeContainer', { static: false }) iframeContainer!: ElementRef;
     @ViewChild('resizerHandle', { static: false }) resizerHandle!: ElementRef;
 
     safeHtmlContent: SafeHtml | null = null;
@@ -101,7 +102,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             return;
         }
 
-        const container = document.querySelector('.iframe-container');
+        const container = this.iframeContainer?.nativeElement;
         if (!container) {
             return;
         }

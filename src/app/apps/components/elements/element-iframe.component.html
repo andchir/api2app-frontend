@@ -1,7 +1,7 @@
 <div [ngClass]="{'fixed left-0 top-0 w-full h-full z-50 bg-black': isFullScreenMode}">
     <div class="iframe-container relative w-full bg-gray-200"
          [ngClass]="{'border border-gray-300': border}"
-         *ngIf="safeUrl || !hiddenByDefault">
+         *ngIf="safeUrl || !hiddenByDefault" #iframeContainer>
         <div class="mx-auto" [ngStyle]="{'width': iframeWidth + '%'}">
             <div class="w-full flex items-stretch">
                 <div class="iframe-wrapper w-full">
