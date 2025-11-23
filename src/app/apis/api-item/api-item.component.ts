@@ -167,6 +167,8 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         this.apiItem.responseBody = '';
         this.apiItem.responseHeaders = [];
 
+        let timer: any;
+
         this.apiService.apiRequest('test', this.apiItem)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -190,6 +192,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                                     this.aceEditor.session.setValue(this.apiItem.responseBody);
                                 }
                             }
+                            clearTimeout(timer);
+                            timer = setTimeout(() => {
+                                this.loading = false;
+                                this.submitted = false;
+                            }, 3000);
                         }
                     } else if(res instanceof HttpResponse) {
                         if (res.headers) {
