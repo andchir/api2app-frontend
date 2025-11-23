@@ -42,7 +42,7 @@ export class DocumentationComponent implements OnInit, OnDestroy {
                 this.itemUuid = 'da932582-948c-11ef-b839-525400f8f94f';
                 break;
             case 'es':
-                this.itemUuid = '47e6774e-d238-4c36-ad10-e57247bef95f';
+                this.itemUuid = '36b8f70d-c88a-11f0-b01e-0050565bc892';
                 break;
             default:
                 this.itemUuid = '5eaba24c-89a5-11ef-ba06-525400f8f94f';
