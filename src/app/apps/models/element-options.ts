@@ -1462,14 +1462,14 @@ export class ElementOptions {
                 });
                 output.push({
                     name: 'useRefreshButton',
-                    label: `useRefreshButton`,
+                    label: $localize `Use the button to refresh`,
                     type: 'input-switch',
                     value: true,
                     enabled: options?.useRefreshButton
                 });
                 output.push({
                     name: 'useFullscreenButton',
-                    label: `useFullscreenButton`,
+                    label: $localize `Use the button for full screen`,
                     type: 'input-switch',
                     value: true,
                     enabled: options?.useFullscreenButton
