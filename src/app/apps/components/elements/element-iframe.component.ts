@@ -109,7 +109,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
 
         const containerWidth = container.clientWidth;
         const deltaX = event.clientX - this.startX;
-        const newWidthPercent = this.startWidth + (deltaX / containerWidth * 100);
+        const newWidthPercent = this.startWidth + (deltaX * 2 / containerWidth * 100);
 
         // Limit width between 20% and 100%
         this.iframeWidth = Math.max(20, Math.min(100, newWidthPercent));
