@@ -49,6 +49,8 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     private startWidth: number = 0;
     private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
     private mouseUpListener: ((e: MouseEvent) => void) | null = null;
+    private touchMoveListener: ((e: TouchEvent) => void) | null = null;
+    private touchEndListener: ((e: TouchEvent) => void) | null = null;
 
     constructor(
         private sanitizer: DomSanitizer,
@@ -97,7 +99,17 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         event.preventDefault();
     }
 
+    private getPositionX(event: MouseEvent | TouchEvent): number {
+        return event.type.includes('mouse')
+            ? (event as MouseEvent).clientX
+            : (event as TouchEvent).touches[0].clientX;
+    }
+
     private onMouseMove(event: MouseEvent): void {
+        this.onMove(event);
+    }
+
+    private onMove(event: MouseEvent | TouchEvent): void {
         if (!this.isResizing) {
             return;
         }
@@ -108,7 +120,8 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         }
 
         const containerWidth = container.clientWidth;
-        const deltaX = event.clientX - this.startX;
+        const clientX = this.getPositionX(event);
+        const deltaX = clientX - this.startX;
         const newWidthPercent = this.startWidth + (deltaX * 2 / containerWidth * 100);
 
         // Limit width between 20% and 100%
@@ -117,6 +130,10 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private onMouseUp(event: MouseEvent): void {
+        this.onEnd();
+    }
+
+    private onEnd(): void {
         this.isResizing = false;
 
         if (this.mouseMoveListener) {
@@ -127,7 +144,41 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             document.removeEventListener('mouseup', this.mouseUpListener);
             this.mouseUpListener = null;
         }
+        if (this.touchMoveListener) {
+            document.removeEventListener('touchmove', this.touchMoveListener);
+            this.touchMoveListener = null;
+        }
+        if (this.touchEndListener) {
+            document.removeEventListener('touchend', this.touchEndListener);
+            this.touchEndListener = null;
+        }
         this.cdr.detectChanges();
+    }
+
+    onTouchStart(event: TouchEvent): void {
+        if (!this.useResizer || this.editorMode) {
+            return;
+        }
+        this.isResizing = true;
+        this.startX = this.getPositionX(event);
+        this.startWidth = this.iframeWidth;
+
+        this.touchMoveListener = (e: TouchEvent) => this.onTouchMove(e);
+        this.touchEndListener = (e: TouchEvent) => this.onTouchEnd(e);
+
+        document.addEventListener('touchmove', this.touchMoveListener, { passive: false });
+        document.addEventListener('touchend', this.touchEndListener);
+
+        event.preventDefault();
+    }
+
+    private onTouchMove(event: TouchEvent): void {
+        this.onMove(event);
+        event.preventDefault();
+    }
+
+    private onTouchEnd(event: TouchEvent): void {
+        this.onEnd();
     }
 
     refreshContentAction(): void {
@@ -161,6 +212,12 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         }
         if (this.mouseUpListener) {
             document.removeEventListener('mouseup', this.mouseUpListener);
+        }
+        if (this.touchMoveListener) {
+            document.removeEventListener('touchmove', this.touchMoveListener);
+        }
+        if (this.touchEndListener) {
+            document.removeEventListener('touchend', this.touchEndListener);
         }
     }
 }
