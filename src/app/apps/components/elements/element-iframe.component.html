@@ -21,6 +21,7 @@
                      [ngClass]="{'border-r border-r-gray-300': iframeWidth < 100}"
                      [class.active]="isResizing"
                      (mousedown)="onMouseDown($event)"
+                     (touchstart)="onTouchStart($event)"
                      #resizerHandle>
                     <div class="resizer-line bg-gray-400 pointer-events-none w-[3px] h-[40px] rounded-full"></div>
                 </div>
