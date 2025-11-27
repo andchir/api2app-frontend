@@ -102,7 +102,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         }
         this.delay = 10000;
         const prevStatus = this.status;
-        this.status = this.statusFieldName ? (this.data[this.statusFieldName] || 'processing') : 'processing';
+        this.status = this.statusFieldName ? String(this.data[this.statusFieldName] || 'processing') : 'processing';
         const isStatusChanged = prevStatus !== this.status;
         const taskUuid = this.taskIdFieldName ? (this.data[this.taskIdFieldName] || 'app') : 'app';
         let queueNumber = this.queueNumberFieldName ? (this.data[this.queueNumberFieldName] || 0) : 0;
@@ -118,7 +118,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
         this.queueNumber = queueNumber;
         if ([this.statusCompleted, this.statusError].includes(this.status)) {
             this.onCompleted();
-            if (this.status == this.statusError && this.data?.result_data?.message) {
+            if (this.status === this.statusError && this.data?.result_data?.message) {
                 this.onError(this.data.result_data.message);
             }
             return;

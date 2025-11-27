@@ -39,6 +39,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() cloneElement: EventEmitter<number[]> = new EventEmitter<number[]>();
     @Output() selected: EventEmitter<string> = new EventEmitter<string>();
     @Output() unselected: EventEmitter<string> = new EventEmitter<string>();
+    @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;

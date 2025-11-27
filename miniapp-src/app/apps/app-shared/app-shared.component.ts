@@ -231,7 +231,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
-        if (((!window['isVKApp'] && element.showOnlyInVK) ||['input-hidden'].includes(element.type)) && this.previewMode) {
+        if (((!window['isVKApp'] && element.showOnlyInVK) || ['input-hidden'].includes(element.type)) && this.previewMode) {
             element.hidden = true;
             return;
         }
@@ -371,11 +371,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
+        let timer: any;
+
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     if (res instanceof MessageEvent) {
+                        let content = '';
                         if (res.type === 'error') {
                             const event = res as unknown as SseErrorEvent;
                             console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
@@ -383,23 +386,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             this.messageType = 'error';
                             this.afterResponseCreated(blocks);
                         } else {
-                            const data = (res as MessageEvent).data;
-                            if (data === '[DONE]') {
-                                outputElements.forEach((element, index) => {
-                                    if (element.suffixText) {
-                                        element.value += element.suffixText;
-                                    }
-                                });
-                                this.afterResponseCreated(blocks);
-                            } else {
+                            content = (res as MessageEvent).data;
+                            if (content !== '[DONE]') {
                                 if (chunkIndex === 0) {
-                                    this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
+                                    this.stateLoadingUpdate(blocks, false, false);
                                 }
-                                let dataObj = JSON.parse(data);
+                                let dataObj = JSON.parse(content);
                                 this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
                                 chunkIndex++;
                             }
                         }
+                        clearTimeout(timer);
+                        timer = setTimeout(() => {
+                            outputElements.forEach((element, index) => {
+                                if (element.suffixText) {
+                                    element.value += element.suffixText;
+                                }
+                            });
+                            this.afterResponseCreated(blocks);
+                            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
+                        }, (content === '[DONE]' ? 0 : 3000));
                     } else if(res instanceof HttpResponse) {
                         if (this.appsAutoStarted.includes(apiUuid)) {
                             this.afterAutoStarted(apiUuid);
@@ -415,15 +421,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 },
                 error: (err) => {
-                    // console.log('ERROR', err);
+                    // console.log('ERROR', err?.error);
                     this.loading = false;
                     this.submitted = false;
                     this.progressUpdating = false;
                     if (err?.error instanceof Blob) {
                         this.createErrorMessage(currentApi, err.error);
                     } else {
+                        let errorMessage = '';
+                        if (typeof err?.error === 'string') {
+                            try {
+                                const errObj = JSON.parse(err?.error);
+                                errorMessage = errObj?.detail || errObj?.message || '';
+                            } catch (error) {
+
+                            }
+                        } else {
+                            errorMessage = err?.detail || err?.message || '';
+                        }
                         this.messageType = 'error';
-                        this.message = err.message || 'Error.';
+                        this.message = this.localizeServerMessages(errorMessage || 'Error.');
                     }
                     this.onError(apiUuid);
                     this.stateLoadingUpdate(blocks, false, false);
@@ -995,7 +1012,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element.prefixText || '';
             }
             element.value += value;
-            element.hidden = !element.value;
+            element.hidden = !element.value && element.hiddenByDefault;
             this.cdr.detectChanges();
         });
     }
@@ -1359,6 +1376,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    onRefreshIframeContent(iframeEl: HTMLIFrameElement, element: AppBlockElement, block: AppBlock): void {
+        if (!iframeEl || !element.valueFrom) {
+            return;
+        }
+        block.loading = true;
+        this.cdr.detectChanges();
+
+        const sourceElement = this.findBlockElementByName(element.valueFrom);
+        const htmlContent = String(sourceElement.value);
+
+        iframeEl.srcdoc = htmlContent;
+
+        setTimeout(() => {
+            block.loading = false;
+            this.cdr.detectChanges();
+        }, 1000);
+    }
+
     flattenObjInArray(inputArr: any[]): any[] {
         return inputArr.map((item) => {
             return this.flattenObj(item);
@@ -1429,6 +1464,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     maintenanceModalToggle(): void {
         this.maintenanceModalActive = !this.maintenanceModalActive;
+        this.data.blocks.forEach((block, blockIndex) => {
+            block.elements.forEach((element) => {
+                this.elementHiddenStateUpdate(element, block);
+            });
+        });
+        this.cdr.detectChanges();
     }
 
     onMessage(msg: string[]) {

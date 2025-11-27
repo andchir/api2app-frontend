@@ -102,7 +102,7 @@
 
     <ng-container *ngSwitchCase="'button'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center"
+            <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center shadow-md"
                     [ngClass]="{
                         'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color == 'Green',
                         'bg-blue-500 hover:bg-blue-700 focus:ring-blue-300': options?.color == 'Blue',
@@ -668,11 +668,31 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'iframe'">
+        <div class="rounded-[0.7rem]"
+             [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="min-h-8">
+                <app-element-iframe
+                    [editorMode]="editorMode"
+                    [pageUrl]="options.value"
+                    [htmlContent]="options.htmlContent"
+                    [useResizer]="options.useResizer"
+                    [useRefreshButton]="options.useRefreshButton"
+                    [useFullscreenButton]="options.useFullscreenButton"
+                    [height]="options.height"
+                    [border]="options.border"
+                    (refreshContent)="refreshIframeContent.emit($event)"></app-element-iframe>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'image-crop'">
         <div class="rounded-[0.7rem]"
              [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
 
         </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 </ng-container>
 
