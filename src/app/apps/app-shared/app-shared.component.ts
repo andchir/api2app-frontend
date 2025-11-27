@@ -243,7 +243,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
-        if (((!window['isVKApp'] && element.showOnlyInVK) ||['input-hidden'].includes(element.type)) && this.previewMode) {
+        if (((!window['isVKApp'] && element.showOnlyInVK) || ['input-hidden'].includes(element.type)) && this.previewMode) {
             element.hidden = true;
             return;
         }
@@ -1476,6 +1476,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     maintenanceModalToggle(): void {
         this.maintenanceModalActive = !this.maintenanceModalActive;
+        this.data.blocks.forEach((block, blockIndex) => {
+            block.elements.forEach((element) => {
+                this.elementHiddenStateUpdate(element, block);
+            });
+        });
+        this.cdr.detectChanges();
     }
 
     onMessage(msg: string[]) {
