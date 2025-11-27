@@ -97,6 +97,9 @@ export class AppActionComponent implements OnInit, OnDestroy {
 
     onApiSelected(): void {
         if (!this.selectedUuid) {
+            this.selectedFieldName = null;
+            this.selectedFieldType = null;
+            this.cdr.detectChanges();
             return;
         }
         this.inputFields = [];
