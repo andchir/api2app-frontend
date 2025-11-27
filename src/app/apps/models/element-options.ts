@@ -1618,7 +1618,7 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     required: true,
-                    storeValue: false,
+                    storeValue: true,
                     valueFrom: '',
                     value: ''
                 });
