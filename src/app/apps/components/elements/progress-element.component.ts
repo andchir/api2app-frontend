@@ -124,7 +124,7 @@ export class ProgressElementComponent implements ControlValueAccessor, OnDestroy
             return;
         }
         this.writeValue(0);
-        if (this.queueNumber > 0) {
+        if (this.queueNumber > 0 || (this.statusPending && this.statusPending !== this.statusProcessing && this.status === this.statusPending)) {
             this.pollingStatus();
         } else {
             this.pollingProgress();
