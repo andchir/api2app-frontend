@@ -349,6 +349,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.lightbox.on('afterInit', () => {
             const videoEl = this.lightbox.pswp.container.querySelector('video');
             if (videoEl) {
+                videoEl.play().then(_ => {
+
+                }).catch(err => {
+                    console.log(err);
+                });
                 videoEl.style.position = 'static';
                 videoEl.style.backgroundColor = '#000000';
             }
