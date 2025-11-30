@@ -617,6 +617,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.storeValue || false
                 });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
                 break;
             case 'input-switch':
                 output.push({
