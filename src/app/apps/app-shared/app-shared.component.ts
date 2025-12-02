@@ -582,7 +582,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || element.hidden || (!element.required && !['input-chart-line', 'image'].includes(element.type))) {
+            if (apiUuid !== targetApiUuid || (!element.required && !['input-hidden', 'input-chart-line', 'image'].includes(element.type))) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
