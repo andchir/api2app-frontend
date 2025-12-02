@@ -602,6 +602,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if ((showMessage && block.options?.autoClear) || clearBlock) {
                 this.clearElementsValues(block);
             }
+            else if (!loading) {
+                // Clean only the important elements
+                block.elements.forEach((element) => {
+                    if (['input-file'].includes(element.type)) {
+                        this.clearElementValue(element, true, false);
+                    }
+                });
+            }
             if (block.options?.showLoading && !this.progressUpdating) {
                 block.loading = loading;
             }
