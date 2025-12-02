@@ -243,7 +243,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
-        if (((!window['isVKApp'] && element.showOnlyInVK) || ['input-hidden'].includes(element.type)) && this.previewMode) {
+        if ((!window['isVKApp'] && element.showOnlyInVK) && this.previewMode) {
             element.hidden = true;
             return;
         }
@@ -263,7 +263,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
             }
         }
-        if ((['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element.hiddenByDefault)
+        if ((['text', 'input-hidden', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element.hiddenByDefault)
             && !element.value
             && !element.valueObj
             && !element.valueArr
