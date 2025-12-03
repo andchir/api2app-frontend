@@ -228,18 +228,26 @@ export class ApiService extends DataService<ApiItem> {
                         if (typeof item === 'object' && !Array.isArray(item)) {
                             return this.applyInnerParams(app_uuid, item, innerData);
                         }
+                        if (typeof item === 'string') {
+                            return this.replaceData(item, innerData);
+                        }
                         return item;
                     });
                 } else {
                     outData[outKey] = this.applyInnerParams(app_uuid, outData[outKey], innerData);
                 }
             } else if (typeof outData[outKey] === 'string') {
-                for (const dKey of Object.keys(innerData)) {
-                    outData[outKey] = outData[outKey].replace(`{${dKey}}`, innerData[dKey]);
-                }
+                outData[outKey] = this.replaceData(outData[outKey], innerData);
             }
         }
         return outData;
+    }
+
+    replaceData(inputString: string, innerData: any): any {
+        for (const dKey of Object.keys(innerData)) {
+            inputString = inputString.replace(`{${dKey}}`, innerData[dKey]);
+        }
+        return inputString;
     }
 
     apiRequest(appUuid: string, apiItem: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>|Event> {
