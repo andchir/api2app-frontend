@@ -77,7 +77,7 @@
                          *ngIf="block.elements.length > 0">
                         <div class="min-h-6 flex flex-col gap-3" [ngClass]="{'opacity-20 pointer-events-none': block.loading && block.options?.showLoading}">
                             <ng-container *ngFor="let element of block.elements; index as ind">
-                                <div [ngClass]="{'hidden': element?.hidden || !element.type, 'py-1 sticky bottom-0 bg-white': element?.isStickyPosition}">
+                                <div [ngClass]="{'hidden': element?.hidden || !element.type || ['input-hidden'].includes(element.type), 'py-1 sticky bottom-0 bg-white': element?.isStickyPosition}">
                                     <app-block-element [locale]="data?.language"
                                                        [type]="element.type"
                                                        [tabIndex]="block.tabIndex"
@@ -98,8 +98,8 @@
                                                        (message)="onMessage($event)"></app-block-element>
                                 </div>
                                 <ng-container *ngIf="element.options?.inputApiUuid && errors[element.options.inputApiUuid] && errors[element.options.inputApiUuid][element.name]">
-                                    <div class="pt-3 w-full max-w-[600px] mx-auto">
-                                        <div class="relative -top-2 mb-1 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
+                                    <div class="w-full max-w-[600px] mx-auto">
+                                        <div class="relative -top-1 text-sm text-red-600">{{ errors[element.options.inputApiUuid][element.name] }}</div>
                                     </div>
                                 </ng-container>
                             </ng-container>

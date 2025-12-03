@@ -62,6 +62,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
+    fieldsHiddenByDefault: string[] = ['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -231,10 +232,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
-        if (((!window['isVKApp'] && element.showOnlyInVK) || ['input-hidden'].includes(element.type)) && this.previewMode) {
+        if ((!window['isVKApp'] && element.showOnlyInVK) && this.previewMode) {
             element.hidden = true;
             return;
         }
+        element.hidden = false;
         if (element.hiddenByField && this.previewMode) {
             if (!block) {
                 block = this.findBlock(element);
@@ -244,22 +246,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (targetElement) {
                 if (['input-switch'].includes(targetElement.type)) {
                     element.hidden = !targetElement.enabled;
-                    return;
                 } else if (hiddenByField.length > 1) {
                     element.hidden = targetElement.value !== hiddenByField[1];
-                    return;
                 }
             }
         }
-        if ((['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'].includes(element.type) || element.hiddenByDefault)
+        if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
             && !element.value
             && !element.valueObj
             && !element.valueArr
+            && !element.hidden
             && this.previewMode) {
                 element.hidden = true;
-                return;
             }
-        element.hidden = false;
     }
 
     switchTab(tabIndex: number): void {
@@ -570,7 +569,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const errors = {};
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (apiUuid !== targetApiUuid || element.hidden || (!element.required && !['input-chart-line', 'image'].includes(element.type))) {
+            if (apiUuid !== targetApiUuid || element.hidden || !element.required) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -1289,6 +1288,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const enabled = element.enabled;
             const block = this.findBlock(element);
             if (block) {
+                this.clearValidationErrors();
                 block.elements.forEach((elem) => {
                     this.elementHiddenStateUpdate(elem, block);
                 });
