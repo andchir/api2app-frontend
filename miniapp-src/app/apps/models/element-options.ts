@@ -612,10 +612,22 @@ export class ElementOptions {
                     value: options?.valueFrom || ''
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
                     enabled: options?.storeValue || false
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 break;
             case 'input-switch':
@@ -1034,6 +1046,12 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
+                output.push({
                     name: 'useLink',
                     label: $localize `Use link`,
                     type: 'input-switch',
@@ -1420,6 +1438,74 @@ export class ElementOptions {
                     enabled: options?.showOnlyInVK
                 });
                 break;
+            case 'iframe':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'height',
+                    label: $localize `Height`,
+                    type: 'input-number',
+                    value: options?.height || 500
+                });
+                output.push({
+                    name: 'valueFrom',
+                    label: $localize `Take value from field`,
+                    type: 'input-text',
+                    value: options?.valueFrom || ''
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Page URL`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
+                    name: 'htmlContent',
+                    label: 'HTML',
+                    type: 'input-textarea',
+                    rows: 6,
+                    autoHeight: true,
+                    value: options?.htmlContent || ''
+                });
+                output.push({
+                    name: 'useResizer',
+                    label: $localize `Use resize`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useResizer
+                });
+                output.push({
+                    name: 'useRefreshButton',
+                    label: $localize `Use the button to refresh`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useRefreshButton
+                });
+                output.push({
+                    name: 'useFullscreenButton',
+                    label: $localize `Use the button for full screen`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.useFullscreenButton
+                });
+                output.push({
+                    name: 'border',
+                    label: $localize `Border`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.border
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
+                break;
         }
         return output;
     }
@@ -1549,8 +1635,9 @@ export class ElementOptions {
                     type: 'input-text',
                     prefixText: '',
                     suffixText: '',
+                    hiddenByField: '',
                     required: true,
-                    storeValue: false,
+                    storeValue: true,
                     valueFrom: '',
                     value: ''
                 });
@@ -1667,7 +1754,8 @@ export class ElementOptions {
                     useLightbox: false,
                     fullWidth: false,
                     borderShadow: false,
-                    roundedCorners: false
+                    roundedCorners: false,
+                    required: false
                 });
                 break;
             case 'audio':
@@ -1696,7 +1784,8 @@ export class ElementOptions {
                     useLightbox: false,
                     fullWidth: false,
                     borderShadow: false,
-                    roundedCorners: false
+                    roundedCorners: false,
+                    required: false
                 });
                 break;
             case 'input-chart-line':
@@ -1750,7 +1839,7 @@ export class ElementOptions {
                     statusFieldName: 'status',
                     taskIdFieldName: 'uuid',
                     queueNumberFieldName: 'number',
-                    operationDurationSeconds: 0,
+                    operationDurationSeconds: 20,
                     hiddenByField: '',
                     isBooleanValue: false,
                     valueObj: null,
@@ -1790,6 +1879,21 @@ export class ElementOptions {
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null
+                });
+                break;
+            case 'iframe':
+                Object.assign(output, {
+                    name: 'iframe1',
+                    label: 'Iframe',
+                    height: 500,
+                    useResizer: false,
+                    useRefreshButton: false,
+                    useFullscreenButton: false,
+                    border: true,
+                    hiddenByDefault: false,
+                    htmlContent: '',
+                    valueFrom: '',
+                    value: ''
                 });
                 break;
         }

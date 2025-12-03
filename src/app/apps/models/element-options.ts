@@ -612,6 +612,12 @@ export class ElementOptions {
                     value: options?.valueFrom || ''
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
@@ -1038,6 +1044,12 @@ export class ElementOptions {
                     label: $localize `Default Value`,
                     type: 'input-text',
                     value: options?.value
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 output.push({
                     name: 'useLink',
@@ -1623,6 +1635,7 @@ export class ElementOptions {
                     type: 'input-text',
                     prefixText: '',
                     suffixText: '',
+                    hiddenByField: '',
                     required: true,
                     storeValue: true,
                     valueFrom: '',
@@ -1741,7 +1754,8 @@ export class ElementOptions {
                     useLightbox: false,
                     fullWidth: false,
                     borderShadow: false,
-                    roundedCorners: false
+                    roundedCorners: false,
+                    required: false
                 });
                 break;
             case 'audio':
@@ -1770,7 +1784,8 @@ export class ElementOptions {
                     useLightbox: false,
                     fullWidth: false,
                     borderShadow: false,
-                    roundedCorners: false
+                    roundedCorners: false,
+                    required: false
                 });
                 break;
             case 'input-chart-line':
