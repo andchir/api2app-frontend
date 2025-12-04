@@ -596,6 +596,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     : $localize `This field is required.`;
             }
         });
+        console.log(this.errors);
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
