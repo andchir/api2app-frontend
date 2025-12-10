@@ -1406,12 +1406,31 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const sourceElement = this.findBlockElementByName(element.valueFrom);
         const htmlContent = String(sourceElement.value);
 
-        iframeEl.srcdoc = htmlContent;
+        if (!htmlContent.includes('<body')) {
+            this.message = $localize `Incorrect HTML code.`;
+            this.messageType = 'error';
+            block.loading = false;
+            this.cdr.detectChanges();
+            return;
+        }
+
+        iframeEl.srcdoc = this.trimSubstring(htmlContent, '```html', '```');
 
         setTimeout(() => {
             block.loading = false;
             this.cdr.detectChanges();
         }, 1000);
+    }
+
+    trimSubstring(str: string, substringStart: string, substringEnd: string): string {
+        let result = str;
+        while (result.startsWith(substringStart)) {
+            result = result.slice(substringStart.length);
+        }
+        while (result.endsWith(substringEnd)) {
+            result = result.slice(0, -substringEnd.length);
+        }
+        return result;
     }
 
     flattenObjInArray(inputArr: any[]): any[] {
