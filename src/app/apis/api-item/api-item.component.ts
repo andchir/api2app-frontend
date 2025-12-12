@@ -196,7 +196,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                             timer = setTimeout(() => {
                                 this.loading = false;
                                 this.submitted = false;
-                            }, 3000);
+                            }, 4000);
                         }
                     } else if(res instanceof HttpResponse) {
                         if (res.headers) {

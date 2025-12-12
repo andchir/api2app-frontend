@@ -416,7 +416,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             });
                             this.afterResponseCreated(blocks);
                             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-                        }, (content === '[DONE]' ? 0 : 3000));
+                        }, (content === '[DONE]' ? 0 : 4000));
                     } else if(res instanceof HttpResponse) {
                         if (this.appsAutoStarted.includes(apiUuid)) {
                             this.afterAutoStarted(apiUuid);
