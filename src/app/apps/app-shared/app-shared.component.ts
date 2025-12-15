@@ -1389,11 +1389,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return elem.storeValue;
         });
         storeElements.forEach((elem) => {
-            elem.value = null;
-            elem.valueObj = null;
-            elem.valueArr = null;
-            ApplicationService.localStoreValue(elem);
+            if (['input-hidden'].includes(elem.type)) {
+                elem.value = null;
+                elem.valueObj = null;
+                elem.valueArr = null;
+                ApplicationService.localStoreValue(elem);
+            }
         });
+        this.cdr.markForCheck();
     }
 
     onRefreshIframeContent(iframeEl: HTMLIFrameElement, element: AppBlockElement, block: AppBlock): void {
