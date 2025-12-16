@@ -387,7 +387,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
                 {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()},
                 {tabIndex: -1, elements: [], options: ApplicationService.getBlockOptionsDefaults()}
-            ]
+            ],
+            user_id: 0
         };
     }
 

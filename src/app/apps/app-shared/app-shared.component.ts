@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import {HttpErrorResponse, HttpResponse} from '@angular/common/http';
+import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { take } from 'rxjs/operators';
@@ -56,6 +56,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     isLoggedIn: boolean = false;
     isShared: boolean = true;
+    isOwner: boolean = false;
     progressUpdating: boolean = false;
     loading: boolean = false;
     submitted: boolean = false;
@@ -169,6 +170,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
+        const currentUser = this.tokenStorageService.getUser();
+        const currentUserId = currentUser ? parseInt(currentUser.url.split('/').pop()) : 0;
+        this.isOwner = this.data.user_id === currentUserId;
+
         if (this.data.adultsOnly && (
                 !window.localStorage.getItem(`${this.data.uuid}-appUserDob`)
                 || window.localStorage.getItem(`${this.data.uuid}-ageRestricted`)
