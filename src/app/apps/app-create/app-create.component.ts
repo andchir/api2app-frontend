@@ -460,7 +460,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     appPreview(): void {
         this.message = '';
-        if (!this.data.shared) {
+        if (!this.data.shared || !this.data.uuid) {
             this.messageType = 'error';
             this.message = $localize `The application must be published (can be hidden).`;
             return;
@@ -631,6 +631,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 next: (res) => {
                     this.itemId = res.id;
                     this.data.id = this.itemId;
+                    this.data.uuid = res.uuid;
                     this.loading = false;
                     this.saving = false;
                     this.message = $localize `Saved successfully.`;
