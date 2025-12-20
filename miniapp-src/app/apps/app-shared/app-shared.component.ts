@@ -52,6 +52,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     isLoggedIn: boolean = false;
     isShared: boolean = true;
+    isOwner: boolean = false;
     progressUpdating: boolean = false;
     loading: boolean = false;
     submitted: boolean = false;
@@ -404,7 +405,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             });
                             this.afterResponseCreated(blocks);
                             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-                        }, (content === '[DONE]' ? 0 : 3000));
+                        }, (content === '[DONE]' ? 0 : 4000));
                     } else if(res instanceof HttpResponse) {
                         if (this.appsAutoStarted.includes(apiUuid)) {
                             this.afterAutoStarted(apiUuid);
@@ -1377,11 +1378,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return elem.storeValue;
         });
         storeElements.forEach((elem) => {
-            elem.value = null;
-            elem.valueObj = null;
-            elem.valueArr = null;
-            ApplicationService.localStoreValue(elem);
+            if (['input-hidden'].includes(elem.type)) {
+                elem.value = null;
+                elem.valueObj = null;
+                elem.valueArr = null;
+                ApplicationService.localStoreValue(elem);
+            }
         });
+        this.cdr.markForCheck();
     }
 
     onRefreshIframeContent(iframeEl: HTMLIFrameElement, element: AppBlockElement, block: AppBlock): void {
@@ -1394,12 +1398,31 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const sourceElement = this.findBlockElementByName(element.valueFrom);
         const htmlContent = String(sourceElement.value);
 
-        iframeEl.srcdoc = htmlContent;
+        if (!htmlContent.includes('<body')) {
+            this.message = $localize `Incorrect HTML code.`;
+            this.messageType = 'error';
+            block.loading = false;
+            this.cdr.detectChanges();
+            return;
+        }
+
+        iframeEl.srcdoc = this.trimSubstring(htmlContent, '```html', '```');
 
         setTimeout(() => {
             block.loading = false;
             this.cdr.detectChanges();
         }, 1000);
+    }
+
+    trimSubstring(str: string, substringStart: string, substringEnd: string): string {
+        let result = str;
+        while (result.startsWith(substringStart)) {
+            result = result.slice(substringStart.length);
+        }
+        while (result.endsWith(substringEnd)) {
+            result = result.slice(0, -substringEnd.length);
+        }
+        return result;
     }
 
     flattenObjInArray(inputArr: any[]): any[] {

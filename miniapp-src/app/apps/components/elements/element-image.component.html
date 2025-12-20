@@ -11,7 +11,7 @@
                    target="_blank">
                     <img class="inline-block max-w-full" loading="lazy"
                          [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                         (load)="imageContainer.classList.remove('loading-bg-image')"
+                         (load)="onImageLoaded(imageContainer)"
                          (error)="onImageError(imageContainer)"
                          [src]="previewImageUrl" alt="">
                     <div class="absolute left-0 top-0 w-full h-full flex justify-center items-center text-white text-8xl opacity-50 pointer-events-none"
@@ -23,7 +23,7 @@
             <ng-template #withoutLink>
                 <img class="inline-block max-w-full" loading="lazy"
                      [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                     (load)="imageContainer.classList.remove('loading-bg-image')"
+                     (load)="onImageLoaded(imageContainer)"
                      (error)="onImageError(imageContainer)"
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
@@ -59,7 +59,7 @@
                 [imageQuality]="92"
                 [output]="'blob'"
                 (imageCropped)="imageCropped($event)"
-                (imageLoaded)="imageLoaded($event)"
+                (imageLoaded)="cropperImageLoaded($event)"
                 (cropperReady)="cropperReady()"
                 (loadImageFailed)="loadImageFailed()"></image-cropper>
         </div>

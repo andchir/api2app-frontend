@@ -253,9 +253,16 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             .catch(console.error);
     }
 
+    onImageLoaded(imageContainer: HTMLElement): void {
+        if (imageContainer) {
+            imageContainer.classList.remove('loading-bg-image');
+        }
+    }
+
     onImageError(imageContainer: HTMLElement): void {
         if (imageContainer) {
             imageContainer.classList.remove('loading-bg-image');
+            imageContainer.classList.add('error-bg-image');
         }
         if (this.editorMode) {
             return;
@@ -273,7 +280,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         // this.onFieldValueChanged();
     }
 
-    imageLoaded(image: LoadedImage): void {
+    cropperImageLoaded(image: LoadedImage): void {
         this.imageWidth = image.original.size.width;
         this.imageHeight = image.original.size.height;
         this.imageOutputWidth = this.imageWidth;

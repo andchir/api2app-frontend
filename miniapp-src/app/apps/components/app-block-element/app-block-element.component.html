@@ -102,14 +102,14 @@
 
     <ng-container *ngSwitchCase="'button'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center shadow-md"
+            <button type="button" class="block w-full max-w-[600px] mx-auto text-white focus:outline-none focus:ring-4 font-medium rounded-full text-sm px-5 py-2.5 text-center shadow-md transition-colors"
                     [ngClass]="{
                         'bg-green-500 hover:bg-green-700 focus:ring-green-300': options?.color == 'Green',
                         'bg-blue-500 hover:bg-blue-700 focus:ring-blue-300': options?.color == 'Blue',
                         'bg-cyan-500 hover:bg-cyan-700 focus:ring-cyan-300': options?.color == 'Cyan',
                         'bg-violet-600 hover:bg-violet-800 focus:ring-violet-400': options?.color == 'Violet',
                         'bg-red-500 hover:bg-red-700 focus:ring-red-300': options?.color == 'Red',
-                        'border border-gray-500 bg-gray-400 hover:bg-gray-600 focus:ring-gray-200': options?.color == 'Gray'
+                        'border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:ring-gray-100 !text-gray-600': options?.color == 'Gray'
                         }"
                     (click)="onClick()"
                     (contextmenu)="$event.preventDefault()">
