@@ -39,6 +39,7 @@
 
 /* loading-bg-image */
 .loading-bg-image { background-image: url('assets/img/loading.gif'); background-position: 50% 50%; background-repeat: no-repeat; }
+.error-bg-image { background-image: url('assets/img/image-broken.png'); background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; }
 
 /* input range */
 input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); background-repeat: no-repeat; background-size: 0% 100%; }
@@ -57,6 +58,20 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
 .text-content h3 { font-size: 20px; }
 .text-content h4 { font-size: 18px; }
 .text-content h5 { font-size: 17px; }
+
+/* app fonts */
+@font-face {
+    font-family: 'Roboto Condensed';
+    src: url('assets/fonts/Roboto_Condensed/static/RobotoCondensed-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+.app-font-header {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+}
 
 /* ngx-cropper */
 .ngx-ic-source-image { display: inline-block; }

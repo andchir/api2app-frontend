@@ -39,6 +39,7 @@
 
 /* loading-bg-image */
 .loading-bg-image { background-image: url('assets/img/loading.gif'); background-position: 50% 50%; background-repeat: no-repeat; }
+.error-bg-image { background-image: url('assets/img/image-broken.png'); background-position: 50% 50%; background-repeat: no-repeat; background-size: contain; }
 
 /* input range */
 input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); background-repeat: no-repeat; background-size: 0% 100%; }
