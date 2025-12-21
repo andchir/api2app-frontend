@@ -30,4 +30,5 @@ export interface ApplicationItem {
     advertising?: boolean;
     adultsOnly?: boolean;
     pricePerUse?: number;
+    user_id?: number;
 }

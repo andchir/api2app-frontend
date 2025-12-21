@@ -1234,7 +1234,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
             } else if (element.value && String(element.value).match(/https?:\/\//)) {
                 if (element.isDownloadMode) {
-                    ApplicationService.downloadImage(String(element.value));
+                    const block = this.findBlock(element);
+                    if (block) {
+                        block.loading = true;
+                        this.cdr.detectChanges();
+                    }
+                    ApplicationService.downloadFile(String(element.value))
+                        .then(() => {
+                            if (block) {
+                                block.loading = false;
+                                this.cdr.detectChanges();
+                            }
+                        });
                 } else {
                     window.open(String(element.value), '_blank').focus();
                 }
