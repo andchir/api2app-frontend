@@ -315,7 +315,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static async downloadImage(url: string): Promise<boolean> {
+    static async downloadFile(url: string): Promise<boolean> {
         const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
         const fileExtension = ApplicationService.getFileExtension(url);
         const isFileUrl = filesExtensions.includes(fileExtension);
