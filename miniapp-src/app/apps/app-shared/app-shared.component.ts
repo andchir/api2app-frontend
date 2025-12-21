@@ -918,6 +918,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (el.value && el.options?.inputApiFieldName !== null) {
                 apiItem.urlPartIndex = Number(el.options?.inputApiFieldName);
                 apiItem.urlPartValue = String(el.value);
+                ApplicationService.localStoreValue(el);
                 this.apiRequestUrlUpdate(apiItem, Number(el.options?.inputApiFieldName), String(el.value));
             }
         });
