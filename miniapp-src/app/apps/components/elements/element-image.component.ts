@@ -162,7 +162,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     ngOnInit(): void {
-        // console.log('cropperAspectRatioString', this.cropperAspectRatioString, this._cropperAspectRatioString);
         if (this.useLightbox) {
             this.lightboxInit();
         }
@@ -259,7 +258,12 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         }
     }
 
-    onImageError(imageContainer: HTMLElement): void {
+    onImageError(imageContainer: HTMLElement, event?: Event): void {
+        if (event.target
+            && (!(event.target as HTMLImageElement).src
+            || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
+            return;
+        }
         if (imageContainer) {
             imageContainer.classList.remove('loading-bg-image');
             imageContainer.classList.add('error-bg-image');
@@ -446,5 +450,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             ];
             this.lightbox.loadAndOpen(0);
         }
+    }
+
+    getSiteUrl(): string {
+        return window.location.protocol + '//' + window.location.host + '/';
     }
 }

@@ -12,7 +12,7 @@
                     <img class="inline-block max-w-full" loading="lazy"
                          [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
                          (load)="onImageLoaded(imageContainer)"
-                         (error)="onImageError(imageContainer)"
+                         (error)="onImageError(imageContainer, $event)"
                          [src]="previewImageUrl" alt="">
                     <div class="absolute left-0 top-0 w-full h-full flex justify-center items-center text-white text-8xl opacity-50 pointer-events-none"
                          *ngIf="type == 'video'">
@@ -24,7 +24,7 @@
                 <img class="inline-block max-w-full" loading="lazy"
                      [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
                      (load)="onImageLoaded(imageContainer)"
-                     (error)="onImageError(imageContainer)"
+                     (error)="onImageError(imageContainer, $event)"
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
