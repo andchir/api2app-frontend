@@ -6,7 +6,7 @@ import {
     Input,
     OnChanges, OnInit,
     Output, SecurityContext,
-    SimpleChanges
+    SimpleChanges, ViewChild
 } from '@angular/core';
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -35,6 +35,8 @@ import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
+
+    @ViewChild('imageContainer', { static: false }) imageContainer!: HTMLElement;
 
     @Input() editorMode = false;
     @Input() type: string = 'image';
@@ -254,17 +256,18 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     onImageLoaded(imageContainer: HTMLElement): void {
         if (imageContainer) {
+            imageContainer.classList.remove('error-bg-image');
             imageContainer.classList.remove('loading-bg-image');
         }
     }
 
     onImageError(imageContainer: HTMLElement, event?: Event): void {
-        console.log(event);
-        if (event.target
+        if (event?.target
             && (!(event.target as HTMLImageElement).src
             || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
             return;
         }
+        console.log('onImageError', event);
         if (imageContainer) {
             imageContainer.classList.remove('loading-bg-image');
             imageContainer.classList.add('error-bg-image');
