@@ -259,6 +259,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     onImageError(imageContainer: HTMLElement, event?: Event): void {
+        console.log(event);
         if (event.target
             && (!(event.target as HTMLImageElement).src
             || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
