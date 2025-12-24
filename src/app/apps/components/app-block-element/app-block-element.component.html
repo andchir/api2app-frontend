@@ -548,7 +548,7 @@
                 </div>
                 <ng-template #templateStatusProcessing>
                     <div class="px-3 py-2 border rounded-[0.7rem] text-gray-500 border-gray-300 bg-gray-50"
-                         *ngIf="options?.value !== options?.statusError; else templateStatusError">
+                         *ngIf="(options?.isBooleanValue && options?.value === false) || (!options?.isBooleanValue && options?.value !== options?.statusError); else templateStatusError">
                         <div class="flex gap-2 items-center animate-pulse">
                             <div>
                                 <i class="bi bi-info-circle"></i>

@@ -63,7 +63,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
-    fieldsHiddenByDefault: string[] = ['text', 'text-header', 'status', 'progress', 'input-select-image', 'image', 'video', 'audio'];
+    fieldsHiddenByDefault: string[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -253,7 +253,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         }
         if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
-            && !element.value
+            && (!element.value && (!['status'].includes(element.type) || element.value === null))
             && !element.valueObj
             && !element.valueArr
             && !element.hidden
@@ -1173,7 +1173,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const fieldName = element.options?.outputApiFieldName;
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
-            element.value = '';
+            element.value = element.isBooleanValue ? false : '';
             this.cdr.detectChanges();
             return;
         }

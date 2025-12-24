@@ -1241,6 +1241,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.isBooleanValue || false
                 });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
                 break;
             case 'progress':
                 output.push({
@@ -1825,6 +1831,7 @@ export class ElementOptions {
                     statusProcessingText: $localize `Performing an operation...`,
                     statusErrorText: $localize `Error`,
                     isBooleanValue: false,
+                    hiddenByDefault: false,
                     value: null
                 });
                 break;

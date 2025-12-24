@@ -78,6 +78,7 @@ export interface AppBlockElement {
     fontSize?: string;
     valueFrom?: string;
     autoHeight?: boolean;
+    isBooleanValue?: boolean;
 }
 
 export interface AppBlockOptions {
