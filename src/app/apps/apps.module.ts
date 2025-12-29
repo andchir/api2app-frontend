@@ -28,6 +28,7 @@ import { ProgressElementComponent } from './components/elements/progress-element
 import { ElementImageComponent } from './components/elements/element-image.component';
 import { ImageComparisonComponent } from './components/elements/image-comparison.component';
 import { ElementIframeComponent } from './components/elements/element-iframe.component';
+import { AudioPlayerComponent } from './components/elements/audio-player.component';
 
 @NgModule({
     declarations: [
@@ -55,7 +56,8 @@ import { ElementIframeComponent } from './components/elements/element-iframe.com
         ElementImageComponent,
         DragulaModule.forRoot(),
         ImageComparisonComponent,
-        ElementIframeComponent
+        ElementIframeComponent,
+        AudioPlayerComponent
     ],
     exports: [
         ApplicationSharedComponent
