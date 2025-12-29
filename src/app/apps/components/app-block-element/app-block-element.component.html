@@ -418,6 +418,21 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'audio'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="block w-full max-w-[600px] mx-auto">
+                <audio class="block w-full" [src]="options?.value" controls
+                       *ngIf="options?.value"></audio>
+                <div class="px-4 py-3 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
+                     *ngIf="!options?.value && editorMode">
+                    <i class="bi bi-music-note-beamed mr-2"></i>
+                    <span i18n>Audio</span>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngIf="['image', 'video'].includes(type)">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <ng-container *ngIf="options?.valueArr && options?.valueArr.length > 0; else templateImageItem">
