@@ -21,6 +21,7 @@ import { ProgressElementComponent } from './apps/components/elements/progress-el
 import { ElementImageComponent } from './apps/components/elements/element-image.component';
 import { ImageComparisonComponent } from './apps/components/elements/image-comparison.component';
 import { ElementIframeComponent } from "./apps/components/elements/element-iframe.component";
+import { AudioPlayerComponent } from './apps/components/elements/audio-player.component';
 
 @NgModule({
     declarations: [
@@ -46,7 +47,8 @@ import { ElementIframeComponent } from "./apps/components/elements/element-ifram
         ProgressElementComponent,
         ElementImageComponent,
         ImageComparisonComponent,
-        ElementIframeComponent
+        ElementIframeComponent,
+        AudioPlayerComponent
     ],
     providers: [ApplicationService, ApiService, ModalService],
     bootstrap: [AppComponent]
