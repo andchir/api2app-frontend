@@ -301,7 +301,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false);
+        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false, true);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -322,7 +322,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(appUuid: string, apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
+    appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
+              showMessages = true, isAutoStart = false): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -333,7 +334,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart);
             });
             return;
         }
@@ -346,7 +347,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages, isAutoStart);
             });
             return;
         }
@@ -383,7 +384,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.stateLoadingUpdate(blocks, true, false);
+        if (!isAutoStart) {
+            this.stateLoadingUpdate(blocks, true, false);
+        }
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 

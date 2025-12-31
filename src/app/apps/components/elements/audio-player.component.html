@@ -1,12 +1,12 @@
-<div class="audio-player-container w-full">
+<div class="audio-player-container w-full" [ngClass]="{'pointer-events-none': editorMode}">
     <!-- Label -->
     <label class="block mb-2 text-sm font-medium text-gray-900" *ngIf="label">
         {{ label }}
     </label>
 
     <!-- Main Player Container -->
-    <div class="relative bg-gray-50 border border-gray-300 rounded-lg p-4 shadow-sm"
-         [ngClass]="{'border-red-300 bg-red-50': hasError}">
+    <div class="relative"
+         [ngClass]="{'border-red-300 bg-red-50': hasError, 'bg-gray-50 border border-gray-300 rounded-lg p-4 shadow-md': !editorMode || value}">
 
         <!-- Loading Spinner Overlay -->
         <div class="absolute inset-0 flex items-center justify-center bg-gray-50 bg-opacity-90 rounded-lg z-10"
@@ -24,12 +24,10 @@
             <span class="text-sm">{{ errorMessage }}</span>
         </div>
 
-        <!-- Editor Mode Placeholder -->
-        <div class="flex flex-col items-center justify-center py-6 text-gray-400"
+        <div class="px-4 py-3 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md text-center"
              *ngIf="editorMode && !value">
-            <i class="bi bi-music-note-beamed text-4xl mb-2"></i>
-            <span class="text-sm" i18n>Audio Player</span>
-            <span class="text-xs text-gray-300" i18n>Wavesurfer.js</span>
+            <i class="bi bi-music-note-beamed mr-2"></i>
+            <span i18n>Audio</span>
         </div>
 
         <!-- Player Content (shown when value exists and not in error state) -->
@@ -38,7 +36,7 @@
             <div class="flex items-center gap-3">
                 <!-- Play/Pause Button -->
                 <button type="button"
-                        class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-colors shadow-md focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-cyan-500 hover:bg-cyan-600 text-white transition-colors shadow-md focus:outline-none focus:ring-4 focus:ring-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
                         [disabled]="isLoading || hasError || !value"
                         (click)="togglePlayPause()">
                     <i class="bi text-xl"
@@ -52,10 +50,10 @@
             </div>
 
             <!-- Time Display -->
-            <div class="flex justify-between mt-2 text-xs text-gray-500 px-1"
+            <div class="absolute left-0 top-0 w-full flex justify-between mt-2 text-xs text-gray-500 px-1"
                  *ngIf="value && !hasError">
-                <span>{{ currentTime }}</span>
-                <span>{{ duration }}</span>
+                <span class="px-2">{{ currentTime }}</span>
+                <span class="px-2">{{ duration }}</span>
             </div>
         </div>
     </div>

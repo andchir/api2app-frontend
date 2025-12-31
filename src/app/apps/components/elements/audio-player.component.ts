@@ -42,9 +42,9 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() label: string = '';
-    @Input() waveColor: string = '#4F4A85';
-    @Input() progressColor: string = '#383351';
-    @Input() cursorColor: string = '#383351';
+    @Input() waveColor: string = '#06b6d4';
+    @Input() progressColor: string = '#36d9d9';
+    @Input() cursorColor: string = '#36d9d9';
     @Input() height: number = 80;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
@@ -158,7 +158,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.wavesurfer.on('error', (error: Error) => {
             this.isLoading = false;
             this.hasError = true;
-            this.errorMessage = error.message || 'Failed to load audio';
+            this.errorMessage = $localize `Failed to load audio`;// error.message || 'Failed to load audio';
             console.error('Wavesurfer error:', error);
             this.cdr.detectChanges();
         });
@@ -191,7 +191,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         } catch (error) {
             this.isLoading = false;
             this.hasError = true;
-            this.errorMessage = 'Failed to load audio file';
+            this.errorMessage = $localize `Failed to load audio`;;
             console.error('Failed to load audio:', error);
             this.cdr.detectChanges();
         }
