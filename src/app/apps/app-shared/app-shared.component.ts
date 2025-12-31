@@ -536,6 +536,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    findCombinedField(block: AppBlock, elementName: string): AppBlockElement {
+        if (!elementName) {
+            return null;
+        }
+        return block.elements.find((element) => {
+            return element.valueFrom === elementName;
+        });
+    }
+
     findBlockElementByName(elementName: string): AppBlockElement {
         if (!elementName) {
             return null;
@@ -1198,6 +1207,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createStringValue(element, value);
+            this.onElementValueChanged(element);
             this.cdr.detectChanges();
             return;
         }
@@ -1243,6 +1253,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (element.type === 'button') {
+
+            let fieldValue = element.value;
+            if (element.valueFrom) {
+                const sourceElement = this.findBlockElementByName(element.valueFrom);
+                fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
+            }
+
             if (element.isClearForm) {
                 this.clearAllValues();
             } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
@@ -1251,14 +1268,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 } else {
                     this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
-            } else if (element.value && String(element.value).match(/https?:\/\//)) {
+            } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).includes('data:'))) {
                 if (element.isDownloadMode) {
                     const block = this.findBlock(element);
                     if (block) {
                         block.loading = true;
                         this.cdr.detectChanges();
                     }
-                    ApplicationService.downloadFile(String(element.value))
+                    ApplicationService.downloadFile(String(fieldValue))
                         .then(() => {
                             if (block) {
                                 block.loading = false;
@@ -1266,7 +1283,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             }
                         });
                 } else {
-                    window.open(String(element.value), '_blank').focus();
+                    window.open(String(fieldValue), '_blank').focus();
                 }
             }
         }
@@ -1297,6 +1314,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
+        const block = this.findBlock(element);
+
         if (element.loadValueInto && element.value) {
             const allElements = this.getAllElements();
             const targetElement = allElements.find((elem) => {
@@ -1315,10 +1334,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             return;
         }
+
+        // Update value for combined field
+        const combinedField = this.findCombinedField(block, element.name);
+        if (combinedField) {
+            combinedField.value = `fromField:${element.name}`;
+            this.elementHiddenStateUpdate(combinedField);
+        }
+
         // Hidden by field switch
         if (['input-switch', 'input-select', 'input-radio', 'input-hidden'].includes(element.type)) {
             const enabled = element.enabled;
-            const block = this.findBlock(element);
             if (block) {
                 this.clearValidationErrors();
                 block.elements.forEach((elem) => {

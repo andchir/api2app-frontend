@@ -280,6 +280,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'valueFrom',
+                    label: $localize `Take value from field`,
+                    type: 'input-text',
+                    value: options?.valueFrom || ''
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -1562,6 +1568,7 @@ export class ElementOptions {
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
+                    valueFrom: '',
                     hiddenByDefault: false,
                     isClearForm: false,
                     isDownloadMode: false,

@@ -320,6 +320,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
         const fileExtension = ApplicationService.getFileExtension(url);
         const isFileUrl = filesExtensions.includes(fileExtension);
 
+        if (url.startsWith('data:')) {
+            ApplicationService.downloadDataURI(url);
+            return true;
+        }
+
         if (!isFileUrl) {
             console.log('Not an image.', url, fileExtension);
             window.open(url, '_blank').focus();
@@ -360,6 +365,33 @@ export class ApplicationService extends DataService<ApplicationItem> {
             window.open(url, '_blank').focus();
             return false;
         }
+    }
+
+    static downloadDataURI(dataURI: string, filename: string = 'file'): void {
+        const byteString = atob(dataURI.split(',')[1]); // Декодируем base64
+        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]; // Получаем MIME-тип
+
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        const blob = new Blob([ab], { type: mimeString });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+
+        document.body.appendChild(link);
+        link.click();
+
+        setTimeout(() => {
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        }, 100);
     }
 
     static getFileExtension(url: string): string {
