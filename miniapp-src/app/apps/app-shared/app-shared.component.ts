@@ -285,7 +285,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false);
+        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false, true);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -306,7 +306,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return Promise.all(promises);
     }
 
-    appSubmit(appUuid: string, apiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, showMessages = true): void {
+    appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
+              showMessages = true, isAutoStart = false): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -317,7 +318,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart);
             });
             return;
         }
@@ -330,7 +331,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages);
+                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages, isAutoStart);
             });
             return;
         }
@@ -367,7 +368,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.stateLoadingUpdate(blocks, true, false);
+        if (!isAutoStart) {
+            this.stateLoadingUpdate(blocks, true, false);
+        }
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
@@ -514,6 +517,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     findElementByName(block: AppBlock, elementName: string): AppBlockElement {
         return block.elements.find((element) => {
             return element.name === elementName;
+        });
+    }
+
+    findCombinedField(block: AppBlock, elementName: string): AppBlockElement {
+        if (!elementName) {
+            return null;
+        }
+        return block.elements.find((element) => {
+            return element.valueFrom === elementName;
         });
     }
 
@@ -1179,6 +1191,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createStringValue(element, value);
+            this.onElementValueChanged(element);
             this.cdr.detectChanges();
             return;
         }
@@ -1224,6 +1237,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (element.type === 'button') {
+
+            let fieldValue = element.value;
+            if (element.valueFrom) {
+                const sourceElement = this.findBlockElementByName(element.valueFrom);
+                fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
+            }
+
             if (element.isClearForm) {
                 this.clearAllValues();
             } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
@@ -1232,14 +1252,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 } else {
                     this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
-            } else if (element.value && String(element.value).match(/https?:\/\//)) {
+            } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
                 if (element.isDownloadMode) {
                     const block = this.findBlock(element);
                     if (block) {
                         block.loading = true;
                         this.cdr.detectChanges();
                     }
-                    ApplicationService.downloadFile(String(element.value))
+                    ApplicationService.downloadFile(String(fieldValue))
                         .then(() => {
                             if (block) {
                                 block.loading = false;
@@ -1247,7 +1267,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             }
                         });
                 } else {
-                    window.open(String(element.value), '_blank').focus();
+                    window.open(String(fieldValue), '_blank').focus();
                 }
             }
         }
@@ -1278,6 +1298,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
+        const block = this.findBlock(element);
+
         if (element.loadValueInto && element.value) {
             const allElements = this.getAllElements();
             const targetElement = allElements.find((elem) => {
@@ -1296,10 +1318,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             return;
         }
+
+        // Update value for combined field
+        const combinedField = this.findCombinedField(block, element.name);
+        if (combinedField) {
+            combinedField.value = `fromField:${element.name}`;
+            this.elementHiddenStateUpdate(combinedField);
+        }
+
         // Hidden by field switch
         if (['input-switch', 'input-select', 'input-radio', 'input-hidden'].includes(element.type)) {
             const enabled = element.enabled;
-            const block = this.findBlock(element);
             if (block) {
                 this.clearValidationErrors();
                 block.elements.forEach((elem) => {

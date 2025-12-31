@@ -1268,7 +1268,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 } else {
                     this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                 }
-            } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).includes('data:'))) {
+            } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
                 if (element.isDownloadMode) {
                     const block = this.findBlock(element);
                     if (block) {
