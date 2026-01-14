@@ -59,6 +59,15 @@ input[type=range] { background-image: linear-gradient(#3f83f8, #3f83f8); backgro
 .text-content h4 { font-size: 18px; }
 .text-content h5 { font-size: 17px; }
 
+/* markdown */
+markdown table,
+markdown table th,
+markdown table td { border: 1px solid #ddd; }
+markdown table th,
+markdown table td { padding: 3px 8px; }
+markdown table thead td,
+markdown table thead th { background-color: #eee; }
+
 /* app fonts */
 @font-face {
     font-family: 'Roboto Condensed';
