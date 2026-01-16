@@ -620,8 +620,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', errors, hiddenCount);
-        return Object.keys(errors).length === 0 && hiddenCount === 0;
+        // console.log('getIsValid', errors, elements.length, hiddenCount);
+        if (hiddenCount && hiddenCount === elements.length) {
+            return false;
+        }
+        return Object.keys(errors).length === 0;
     }
 
     stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {
