@@ -580,8 +580,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true): boolean {
         this.clearValidationErrors();
         const errors = {};
+        let hiddenCount = 0;
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
+            if (element.hidden) {
+                hiddenCount++;
+            }
             if (apiUuid !== targetApiUuid || element.hidden || !element.required) {
                 return;
             }
@@ -600,7 +604,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        return Object.keys(errors).length === 0;
+        // console.log('getIsValid', errors, hiddenCount);
+        return Object.keys(errors).length === 0 && hiddenCount === 0;
     }
 
     stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {
