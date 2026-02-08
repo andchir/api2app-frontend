@@ -132,16 +132,6 @@
     </div>
 </main>
 
-<div class="fixed top-2 left-2 lg:top-4 lg:left-4 z-20" *ngIf="needBackButton">
-    <button type="button"
-            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg px-2 py-1 lg:px-4 lg:py-2 text-2xl"
-            title="Back"
-            i18n-title
-            (click)="navigateBack($event)">
-        <i class="bi bi-chevron-left"></i>
-    </button>
-</div>
-
 <ng-template #dynamic></ng-template>
 
 <app-alert [(message)]="message" [type]="messageType" [delay]="6000"></app-alert>
