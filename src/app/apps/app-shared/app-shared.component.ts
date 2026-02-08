@@ -17,7 +17,6 @@ import { firstValueFrom, Subject, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
-import DOMPurify from 'dompurify';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem } from '../models/application-item.interface';
@@ -1479,8 +1478,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         htmlContent = this.trimSubstring(htmlContent, '```html', '```');
         htmlContent = ApplicationService.processStringTags(htmlContent, this.data.blocks);
-
-        // const safeHtml = DOMPurify.sanitize(htmlContent);
 
         iframeEl.srcdoc = htmlContent;
 

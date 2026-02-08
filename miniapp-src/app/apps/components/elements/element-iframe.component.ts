@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { NgClass, NgIf, NgStyle } from '@angular/common';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
+import { ApplicationService } from '../../../services/application.service';
 
 @Component({
     selector: 'app-element-iframe',
@@ -78,7 +79,13 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         if (!this.htmlContent) {
             return;
         }
-        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(this.htmlContent);
+        let htmlContent = this.htmlContent;
+        const tags = ApplicationService.findStringTags(htmlContent, true);
+        tags.forEach((tagName) => {
+            htmlContent = htmlContent.replace(`{${tagName}}`, '');
+        });
+
+        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
         this.cdr.detectChanges();
     }
 

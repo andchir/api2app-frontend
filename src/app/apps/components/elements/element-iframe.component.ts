@@ -80,7 +80,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             return;
         }
         let htmlContent = this.htmlContent;
-        const tags = ApplicationService.findStringTags(htmlContent);
+        const tags = ApplicationService.findStringTags(htmlContent, true);
         tags.forEach((tagName) => {
             htmlContent = htmlContent.replace(`{${tagName}}`, '');
         });

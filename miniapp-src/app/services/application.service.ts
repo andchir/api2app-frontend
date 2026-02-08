@@ -483,24 +483,27 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static processStringTags(inputString: string, blocks: AppBlock[]): string {
-        const tags = ApplicationService.findStringTags(inputString);
+        const tags = ApplicationService.findStringTags(inputString, true);
         if (tags.length === 0) {
             return inputString;
         }
         tags.forEach((tagName) => {
             const element = ApplicationService.findBlockElementByName(tagName, blocks);
-            const elementValue = String(element?.value || '');
+            if (!element) {
+                return;
+            }
+            const elementValue = String(element.value || '');
             inputString = inputString.replace(`{${tagName}}`, elementValue);
         });
         return inputString;
     }
 
-    static findStringTags(content: string): string [] {
+    static findStringTags(content: string, skipSpace = false): string [] {
         const tags = [];
         const regex = /\{([^}]+)\}/g;
         let match;
         while ((match = regex.exec(content)) !== null) {
-            if (match[1] && match[1].trim()) {
+            if (match[1] && match[1].trim() !== '' && (!skipSpace || !/\s/.test(match[1]))) {
                 tags.push(match[1]);
             }
         }
