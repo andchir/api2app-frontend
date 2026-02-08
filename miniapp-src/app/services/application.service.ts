@@ -26,16 +26,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         httpClient: HttpClient
     ) {
         super(httpClient);
-        // this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
-        this.requestUrl = 'assets/app_';
-    }
-
-    getItemByJsonFile(fileName: string): Observable<ApplicationItem> {
-        const url = `assets/${fileName}.json`;
-        return this.httpClient.get<ApplicationItem>(url, this.httpOptions)
-            .pipe(
-                catchError(this.handleError)
-            );
+        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
@@ -87,6 +78,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             min: 1,
             max: 3,
             value: options?.gridColumnSpan || 1
+        });
+        output.push({
+            name: 'maxHeight',
+            label: $localize `Maximum container height`,
+            type: 'input-number',
+            min: 0,
+            max: 1000,
+            value: options?.maxHeight || 0
         });
         output.push({
             name: 'messageSuccess',
@@ -465,6 +464,47 @@ export class ApplicationService extends DataService<ApplicationItem> {
             });
         }
         return languagesList;
+    }
+
+    static findBlockElementByName(elementName: string, blocks: AppBlock[]): AppBlockElement {
+        if (!elementName) {
+            return null;
+        }
+        let resultElement = null;
+        for (const block of blocks) {
+            if (resultElement) {
+                break;
+            }
+            resultElement = block.elements.find((element) => {
+                return element.name === elementName;
+            });
+        }
+        return resultElement;
+    }
+
+    static processStringTags(inputString: string, blocks: AppBlock[]): string {
+        const tags = ApplicationService.findStringTags(inputString);
+        if (tags.length === 0) {
+            return inputString;
+        }
+        tags.forEach((tagName) => {
+            const element = ApplicationService.findBlockElementByName(tagName, blocks);
+            const elementValue = String(element?.value || '');
+            inputString = inputString.replace(`{${tagName}}`, elementValue);
+        });
+        return inputString;
+    }
+
+    static findStringTags(content: string): string [] {
+        const tags = [];
+        const regex = /\{([^}]+)\}/g;
+        let match;
+        while ((match = regex.exec(content)) !== null) {
+            if (match[1] && match[1].trim()) {
+                tags.push(match[1]);
+            }
+        }
+        return tags;
     }
 
     static deleteBlockElementsByIndexArr(block: AppBlock, indexes: number[]): void {

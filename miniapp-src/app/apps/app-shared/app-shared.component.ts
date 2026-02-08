@@ -1438,24 +1438,32 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onRefreshIframeContent(iframeEl: HTMLIFrameElement, element: AppBlockElement, block: AppBlock): void {
-        if (!iframeEl || !element.valueFrom) {
+        if (!iframeEl) {
             return;
         }
         block.loading = true;
         this.cdr.detectChanges();
 
-        const sourceElement = this.findBlockElementByName(element.valueFrom);
-        const htmlContent = String(sourceElement.value);
+        let htmlContent = '';
+        if (element.valueFrom) {
+            const sourceElement = this.findBlockElementByName(element.valueFrom);
+            let htmlContent = String(sourceElement.value);
 
-        if (!htmlContent.includes('<body')) {
-            this.message = $localize `Incorrect HTML code.`;
-            this.messageType = 'error';
-            block.loading = false;
-            this.cdr.detectChanges();
-            return;
+            if (!htmlContent.includes('<body')) {
+                this.message = $localize `Incorrect HTML code.`;
+                this.messageType = 'error';
+                block.loading = false;
+                this.cdr.detectChanges();
+                return;
+            }
+        } else {
+            htmlContent = element['htmlContent'] || '';
         }
 
-        iframeEl.srcdoc = this.trimSubstring(htmlContent, '```html', '```');
+        htmlContent = this.trimSubstring(htmlContent, '```html', '```');
+        htmlContent = ApplicationService.processStringTags(htmlContent, this.data.blocks);
+
+        iframeEl.srcdoc = htmlContent;
 
         setTimeout(() => {
             block.loading = false;
