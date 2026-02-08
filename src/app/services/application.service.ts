@@ -80,6 +80,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             value: options?.gridColumnSpan || 1
         });
         output.push({
+            name: 'maxHeight',
+            label: $localize `Maximum container height`,
+            type: 'input-number',
+            min: 0,
+            max: 1000,
+            value: options?.maxHeight || 0
+        });
+        output.push({
             name: 'messageSuccess',
             label: $localize `Success message`,
             type: 'input-textarea',
