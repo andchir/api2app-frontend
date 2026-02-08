@@ -89,6 +89,7 @@ export interface AppBlockOptions {
     showLoading?: boolean;
     messageSuccess?: string;
     isStickyPosition?: boolean;
+    maxHeight?: number;
 }
 
 export interface AppBlock {
