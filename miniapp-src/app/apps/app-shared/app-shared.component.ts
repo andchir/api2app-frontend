@@ -242,13 +242,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!block) {
                 block = this.findBlock(element);
             }
-            const hiddenByField = element.hiddenByField.includes('==') ? element.hiddenByField.split('==') : [element.hiddenByField];
+            const hiddenByField = element.hiddenByField.includes('==')
+                ? element.hiddenByField.split('==')
+                : (element.hiddenByField.includes('!=') ? element.hiddenByField.split('!=') : [element.hiddenByField]);
+            const isOpposite = element.hiddenByField.includes('!=');
             const targetElement = this.findElementByName(block, hiddenByField[0]);
             if (targetElement) {
-                if (['input-switch'].includes(targetElement.type)) {
+                const targetValue = !['input-switch'].includes(targetElement.type) || targetElement.enabled
+                    ? targetElement.value
+                    : '';
+                if (hiddenByField.length > 1) {
+                    element.hidden = isOpposite
+                        ? targetValue === hiddenByField[1]
+                        : targetValue !== hiddenByField[1];
+                } else if (['input-switch'].includes(targetElement.type)) {
                     element.hidden = !targetElement.enabled;
-                } else if (hiddenByField.length > 1) {
-                    element.hidden = targetElement.value !== hiddenByField[1];
                 }
             }
         }
