@@ -257,6 +257,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         : targetValue !== hiddenByField[1];
                 } else if (['input-switch'].includes(targetElement.type)) {
                     element.hidden = !targetElement.enabled;
+                } else if (['image'].includes(targetElement.type)) {
+                    element.hidden = !targetValue;
                 }
             }
         }
@@ -1343,7 +1345,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Hidden by field switch
-        if (['input-switch', 'input-select', 'input-radio', 'input-hidden'].includes(element.type)) {
+        if (['input-switch', 'input-select', 'input-radio', 'input-hidden', 'input-text', 'image'].includes(element.type)) {
             const enabled = element.enabled;
             if (block) {
                 this.clearValidationErrors();

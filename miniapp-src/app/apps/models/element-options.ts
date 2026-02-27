@@ -650,6 +650,12 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
                     name: 'enabled',
                     label: $localize `Enabled By Default?`,
                     type: 'input-switch',
@@ -1660,6 +1666,7 @@ export class ElementOptions {
                     name: 'enabled',
                     label: $localize `Enabled`,
                     type: 'input-switch',
+                    hiddenByField: '',
                     value: '1',
                     enabled: true
                 });
@@ -1702,6 +1709,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'radio',
                     label: $localize `Example Radio Buttons`,
+                    hiddenByField: '',
                     value: 'Value1',
                     required: true,
                     storeValue: false,
@@ -1899,6 +1907,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'iframe1',
                     label: 'Iframe',
+                    hiddenByField: '',
                     height: 500,
                     useResizer: false,
                     useRefreshButton: false,
