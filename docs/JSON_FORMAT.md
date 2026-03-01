@@ -37,6 +37,42 @@ An application is defined as a JSON object with the following top-level structur
 }
 ```
 
+## Example with required fields:
+```json
+{
+    "name": "<Here is the name of the application>",
+    "language": "ru",
+    "gridColumns": 2,
+    "tabs": [
+        "<Tab 1>",
+        "<Tab 2>"
+    ],
+    "blocks": [
+        {
+            "tabIndex": 0,
+            "options": {
+                "orderIndex": 0,
+                "gridColumnSpan": 1,
+                "showLoading": true,
+                "autoClear": false,
+                "isStickyPosition": false,
+                "maxHeight": 0,
+                "messageSuccess": "Request sent successfully!"
+            },
+            "elements": [
+                {
+                    "name": "text_description",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "<Here is the description of the application>"
+                }
+            ]
+        }
+    ]
+}
+```
+
 ---
 
 ## Application Properties
@@ -84,7 +120,6 @@ Blocks are containers for elements. Each block represents a section of the appli
     "elements": [],                       // Array of elements in this block (AppBlockElement[])
     "tabIndex": 0,                        // Which tab this block belongs to (number)
     "options": {                          // Block options (AppBlockOptions)
-        "enabled": true,                  // Whether the block is enabled (boolean)
         "orderIndex": 0,                  // Order of the block (number)
         "gridColumnSpan": 1,              // How many grid columns this block spans (number, 1-3)
         "autoClear": false,               // Clear form after submission (boolean)
@@ -99,14 +134,13 @@ Blocks are containers for elements. Each block represents a section of the appli
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `enabled` | boolean | true | Whether the block is active |
-| `orderIndex` | number | 0 | Display order of the block |
-| `gridColumnSpan` | number | 1 | Number of grid columns the block spans (1-3) |
-| `tabIndex` | number | 0 | Index of the tab this block belongs to |
-| `autoClear` | boolean | false | Clear form fields after successful submission |
-| `showLoading` | boolean | true | Show loading spinner during API calls |
-| `messageSuccess` | string | "" | Success message displayed after form submission |
-| `isStickyPosition` | boolean | false | Keep the block visible when scrolling |
+| `orderIndex` | number | 0       | Display order of the block |
+| `gridColumnSpan` | number | 1       | Number of grid columns the block spans (1-3) |
+| `autoClear` | boolean | false   | Clear form fields after successful submission |
+| `showLoading` | boolean | true    | Show loading spinner during API calls |
+| `messageSuccess` | string | ""      | Success message displayed after form submission |
+| `isStickyPosition` | boolean | false   | Keep the block visible when scrolling |
+| `maxHeight` | number | 0       | Maximum block height (adding a scrollbar if necessary) |
 
 ---
 
