@@ -144,6 +144,9 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     }
 
     submit(): void {
+        if (!this.inputString) {
+            return;
+        }
         this.loadingMain = true;
         this.cdr.detectChanges();
 
@@ -151,7 +154,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
             return item.uuid;
         });
 
-        this.dataService.editByAi(this.appData, apiUuidList)
+        this.dataService.editByAi(this.inputString, this.appData, apiUuidList)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

@@ -608,9 +608,9 @@ export class ApiService extends DataService<ApiItem> {
             );
     }
 
-    editByAi(appData: any, apiUuidList: string[]): Observable<{success: boolean}> {
-        const url = `${this.requestUrl}/edit_by_ai`
-        return this.httpClient.post<{success: boolean}>(url, {appData, apiUuidList}, this.httpOptions)
+    editByAi(prompt: string, appData: any, apiUuidList: string[]): Observable<{success: boolean, app: any}> {
+        const url = `${BASE_URL}${this.locale}/api/v1/ai_assistant/edit_by_ai`
+        return this.httpClient.post<{success: boolean, app: any}>(url, {prompt, appData, apiUuidList}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
