@@ -22,9 +22,7 @@ An application is defined as a JSON object with the following top-level structur
 
 ```json
 {
-    "id": 123,                          // Unique application ID (number)
     "name": "Application Name",          // Application name (string)
-    "uuid": "unique-uuid-string",         // Unique UUID for the application (string)
     "language": "en",                     // Language code: "en", "ru", "fr", "de", "es" (string)
     "shared": true,                       // Whether the app is publicly shared (boolean)
     "hidden": false,                      // Whether the app is hidden (boolean)
@@ -32,7 +30,6 @@ An application is defined as a JSON object with the following top-level structur
     "advertising": true,                  // Whether advertising is enabled (boolean)
     "adultsOnly": false,                  // Whether the app is for adults only (boolean)
     "gridColumns": 2,                     // Number of grid columns for layout: 1, 2, or 3 (number)
-    "image": "https://...",               // Application icon/image URL (string)
     "tabs": ["Tab 1", "Tab 2"],           // Tab names for navigation (string[])
     "blocks": [],                         // Array of blocks containing elements (AppBlock[])
     "paymentEnabled": false,              // Whether payment is enabled (boolean)
@@ -46,9 +43,7 @@ An application is defined as a JSON object with the following top-level structur
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `id` | number | Yes | Unique identifier for the application |
 | `name` | string | Yes | Display name of the application |
-| `uuid` | string | Yes | Unique UUID for the application |
 | `language` | string | Yes | Language code: `en`, `ru`, `fr`, `de`, `es` |
 | `shared` | boolean | Yes | Whether the application is publicly accessible |
 | `hidden` | boolean | Yes | Whether the application is hidden from listings |
