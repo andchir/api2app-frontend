@@ -777,18 +777,26 @@ Elements can be shown/hidden based on other field values using `hiddenByField`.
 ```
 hiddenByField: "fieldName==value"
 ```
+or:
+```
+hiddenByField: "fieldName!=value"
+```
+input-switch:
+```
+hiddenByField: "fieldName"
+```
 
 The element is **shown** when the condition matches, **hidden** otherwise.
 
 ### Examples
 
-Show only when mode equals "advanced":
+Show only if the switch is on:
 ```json
 {
     "name": "advancedOptions",
     "type": "text",
     "value": "Advanced options are enabled",
-    "hiddenByField": "mode==advanced"
+    "hiddenByField": "mode"
 }
 ```
 
@@ -802,6 +810,16 @@ Show when category is "premium":
 }
 ```
 
+Show when category is not "premium":
+```json
+{
+    "name": "basicFeatures",
+    "type": "text",
+    "value": "Basic features available",
+    "hiddenByField": "category!=premium"
+}
+```
+
 ---
 
 ## Complete Example
@@ -810,191 +828,815 @@ Here's a complete example of an image processing application:
 
 ```json
 {
-    "id": 1,
-    "name": "Photo Enhancer",
+    "url": "https://api2app.org/ru/api/v1/applications/276",
+    "id": 276,
+    "date_created": "2025-09-04T09:21:36.212962Z",
+    "name": "Реставрация старых фотографий",
+    "language": "ru",
     "uuid": "8e1d7b2e-8970-11f0-983f-525400f8f94f",
-    "language": "en",
     "shared": true,
     "hidden": false,
+    "maintenance": false,
+    "advertising": true,
+    "adultsOnly": false,
     "gridColumns": 2,
-    "tabs": ["Enhance", "Results"],
-    "image": "https://example.com/icon.png",
+    "tabs": [
+        "Отреставрировать фото",
+        "Примеры",
+        "Контакты"
+    ],
     "blocks": [
         {
-            "tabIndex": 0,
             "options": {
                 "enabled": true,
+                "autoClear": true,
                 "orderIndex": 0,
-                "gridColumnSpan": 1,
-                "autoClear": false,
                 "showLoading": true,
-                "messageSuccess": "Image processing started!"
+                "gridColumnSpan": 1,
+                "messageSuccess": "Запрос успешно отправлен."
             },
             "elements": [
                 {
-                    "name": "banner",
+                    "info": "1:1, 4:3, 3:4, 16:9, 9:16",
+                    "name": "image",
                     "type": "image",
-                    "value": "https://example.com/banner.jpg",
+                    "label": "",
+                    "value": "https://api2app.org/media/uploads/1757114218_banner_3_3.jpg",
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "useLink": false,
+                    "fullWidth": false,
                     "blockIndex": 0,
                     "orderIndex": 0,
-                    "roundedCorners": true
+                    "prefixText": "",
+                    "useCropper": false,
+                    "useLightbox": false,
+                    "borderShadow": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "roundedCorners": true,
+                    "hiddenByDefault": false,
+                    "itemThumbnailFieldName": "",
+                    "cropperAspectRatioString": ""
                 },
                 {
                     "name": "file",
                     "type": "input-file",
-                    "label": "Upload Image",
-                    "placeholder": "Choose file (.jpg, .png)",
+                    "label": "Файл изображения",
+                    "value": [],
                     "accept": "image/*",
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {
+                        "inputApiUuid": null,
+                        "inputApiFieldName": null,
+                        "inputApiFieldType": null
+                    },
                     "multiple": false,
-                    "required": true,
-                    "loadValueInto": "preview",
+                    "required": false,
                     "blockIndex": 0,
                     "orderIndex": 1,
-                    "options": {}
+                    "placeholder": "Загрузить Файл (.jpg, .png)",
+                    "hiddenByField": "",
+                    "loadValueInto": "image_input"
                 },
                 {
-                    "name": "preview",
+                    "info": "1:1, 4:3, 3:4, 16:9, 9:16",
+                    "name": "image_input",
                     "type": "image",
-                    "label": "Preview",
+                    "label": "Изображение",
                     "value": "",
-                    "useLink": true,
-                    "useCropper": true,
-                    "blockIndex": 0,
-                    "orderIndex": 2,
+                    "hidden": false,
+                    "enabled": true,
                     "options": {
-                        "inputApiUuid": "api-uuid-1",
+                        "inputApiUuid": "11eda37a-f848-11f0-b365-525400f8f94f",
                         "inputApiFieldName": "image_file",
                         "inputApiFieldType": "input"
-                    }
+                    },
+                    "useLink": true,
+                    "required": true,
+                    "valueArr": null,
+                    "valueObj": null,
+                    "fullWidth": false,
+                    "blockIndex": 0,
+                    "orderIndex": 2,
+                    "prefixText": "",
+                    "useCropper": true,
+                    "useLightbox": false,
+                    "borderShadow": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "roundedCorners": false,
+                    "hiddenByDefault": false,
+                    "itemThumbnailFieldName": "",
+                    "cropperAspectRatioString": ""
                 },
                 {
                     "name": "mode",
                     "type": "input-select",
-                    "label": "Enhancement Mode",
-                    "value": "enhance",
-                    "valueArr": [
-                        {"name": "Enhance Quality", "value": "enhance"},
-                        {"name": "Upscale 2x", "value": "upscale"},
-                        {"name": "Remove Background", "value": "remove_bg"}
-                    ],
-                    "itemFieldNameForTitle": "name",
-                    "itemFieldNameForValue": "value",
-                    "required": true,
-                    "blockIndex": 0,
-                    "orderIndex": 3,
+                    "label": "Режим",
+                    "value": "default",
+                    "addTag": false,
+                    "choices": [],
+                    "enabled": false,
                     "options": {
-                        "inputApiUuid": "api-uuid-1",
+                        "inputApiUuid": "11eda37a-f848-11f0-b365-525400f8f94f",
                         "inputApiFieldName": "data.mode",
                         "inputApiFieldType": "input"
-                    }
+                    },
+                    "required": true,
+                    "valueArr": [
+                        {
+                            "name": "Улучшение качества",
+                            "value": "default"
+                        },
+                        {
+                            "name": "Реставрация",
+                            "value": "restore"
+                        },
+                        {
+                            "name": "Реставрация и улучшение (авто)",
+                            "value": "restore_upscale"
+                        }
+                    ],
+                    "clearable": false,
+                    "blockIndex": 0,
+                    "orderIndex": 3,
+                    "searchable": false,
+                    "placeholder": "Пожалуйста, выберите режим",
+                    "hiddenByField": "",
+                    "loadValueInto": "",
+                    "hiddenByDefault": false,
+                    "selectDefaultFirst": false,
+                    "itemFieldNameForTitle": "name",
+                    "itemFieldNameForValue": "value"
                 },
                 {
-                    "name": "submit",
-                    "type": "button",
-                    "text": "Process Image",
-                    "icon": "bi-magic",
+                    "icon": "bi-info-circle",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
                     "color": "Blue",
+                    "label": "",
+                    "value": "Этот режим улучшает качество фото: убирает зернистость и искажения, а также удваивает разрешение с сохранением чёткости.",
+                    "border": true,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
                     "blockIndex": 0,
                     "orderIndex": 4,
-                    "isStickyPosition": true,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "mode==default",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "bi-info-circle",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Blue",
+                    "label": "",
+                    "value": "Этот режим автоматически удалит с фото все помятости, царапины и пятна, а также раскрасит чёрно-белый снимок.\nПожалуйста, введите описание изображения, это поможет искусственному интеллекту сделать корректную реставрацию.",
+                    "border": true,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 0,
+                    "orderIndex": 5,
+                    "prefixText": "",
+                    "showHeader": false,
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "mode==restore",
+                    "itemFieldName": "",
+                    "whiteSpacePre": true,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "bi-info-circle",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Blue",
+                    "label": "",
+                    "value": "Автоматический режим: реставрация и улучшение качества.",
+                    "border": true,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 0,
+                    "orderIndex": 6,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "mode==restore_upscale",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "max": 0,
+                    "name": "description",
+                    "rows": 2,
+                    "type": "input-textarea",
+                    "label": "Дополнительная информация (не обязательно)",
+                    "value": "",
+                    "enabled": false,
+                    "options": {
+                        "inputApiUuid": "11eda37a-f848-11f0-b365-525400f8f94f",
+                        "inputApiFieldName": "data.description",
+                        "inputApiFieldType": "input"
+                    },
+                    "readOnly": false,
+                    "required": false,
+                    "autoHeight": false,
+                    "blockIndex": 0,
+                    "orderIndex": 6,
+                    "prefixText": "",
+                    "storeValue": false,
+                    "suffixText": "",
+                    "placeholder": "Пример: платье у женщины зелёного цвета",
+                    "hiddenByField": "mode==restore",
+                    "hiddenByDefault": false,
+                    "copyToClipboardEnabled": false,
+                    "speechSynthesisEnabled": false,
+                    "speechRecognitionEnabled": false
+                },
+                {
+                    "icon": "bi-check2",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "name": "submit",
+                    "text": "Отправить",
+                    "type": "button",
+                    "color": "Blue",
+                    "value": null,
+                    "hidden": false,
                     "enabled": true,
                     "options": {
-                        "inputApiUuid": "api-uuid-1",
+                        "inputApiUuid": "11eda37a-f848-11f0-b365-525400f8f94f",
                         "inputApiFieldName": "submit",
                         "inputApiFieldType": "input"
-                    }
+                    },
+                    "valueArr": null,
+                    "valueObj": null,
+                    "blockIndex": 0,
+                    "orderIndex": 7,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "isClearForm": false,
+                    "hiddenByField": "",
+                    "isDownloadMode": false,
+                    "hiddenByDefault": false,
+                    "isStickyPosition": true
                 }
-            ]
+            ],
+            "tabIndex": 0
         },
         {
-            "tabIndex": 0,
             "options": {
                 "enabled": true,
+                "autoClear": true,
                 "orderIndex": 1,
+                "showLoading": true,
                 "gridColumnSpan": 1,
-                "showLoading": true
+                "messageSuccess": "Запрос успешно отправлен."
             },
             "elements": [
                 {
-                    "name": "instructions",
-                    "type": "text",
-                    "value": "Upload an image and select an enhancement mode to get started.",
-                    "color": "Gray",
-                    "fontSize": "Small",
-                    "blockIndex": 1,
-                    "orderIndex": 0
-                },
-                {
-                    "name": "result",
+                    "info": "1:1, 4:3, 3:4, 16:9, 9:16",
+                    "name": "image",
                     "type": "image",
-                    "label": "Result",
+                    "label": "",
                     "value": "",
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {
+                        "outputApiUuid": "3fb6f554-f848-11f0-8915-525400f8f94f",
+                        "outputApiFieldName": "result_data.result",
+                        "outputApiFieldType": "output"
+                    },
                     "useLink": true,
-                    "useLightbox": true,
-                    "roundedCorners": true,
-                    "hiddenByDefault": true,
-                    "blockIndex": 1,
-                    "orderIndex": 1,
-                    "options": {
-                        "outputApiUuid": "api-uuid-2",
-                        "outputApiFieldName": "result_data.image_url",
-                        "outputApiFieldType": "output"
-                    }
-                },
-                {
-                    "name": "download",
-                    "type": "button",
-                    "text": "Download Result",
-                    "icon": "bi-download",
-                    "color": "Green",
-                    "hiddenByDefault": true,
-                    "blockIndex": 1,
-                    "orderIndex": 2,
-                    "options": {
-                        "outputApiUuid": "api-uuid-2",
-                        "outputApiFieldName": "result_data.image_url",
-                        "outputApiFieldType": "output"
-                    }
-                },
-                {
-                    "name": "taskId",
-                    "type": "input-hidden",
-                    "label": "Task ID",
-                    "storeValue": true,
-                    "enabled": true,
+                    "valueArr": null,
+                    "valueObj": null,
+                    "fullWidth": false,
                     "blockIndex": 1,
                     "orderIndex": 3,
+                    "prefixText": "",
+                    "useCropper": false,
+                    "useLightbox": true,
+                    "borderShadow": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "roundedCorners": true,
+                    "hiddenByDefault": false,
+                    "itemThumbnailFieldName": "",
+                    "cropperAspectRatioString": ""
+                },
+                {
+                    "icon": "bi-download",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "name": "submit",
+                    "text": "Скачать файл",
+                    "type": "button",
+                    "color": "Green",
+                    "value": null,
+                    "hidden": false,
+                    "enabled": false,
                     "options": {
-                        "inputApiUuid": "api-uuid-2",
+                        "outputApiUuid": "3fb6f554-f848-11f0-8915-525400f8f94f",
+                        "outputApiFieldName": "result_data.public_url",
+                        "outputApiFieldType": "output"
+                    },
+                    "valueArr": null,
+                    "valueObj": null,
+                    "blockIndex": 1,
+                    "orderIndex": 4,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "isClearForm": false,
+                    "hiddenByField": "",
+                    "isDownloadMode": false,
+                    "hiddenByDefault": true
+                },
+                {
+                    "name": "task_uuid",
+                    "type": "input-hidden",
+                    "label": "ID задачи",
+                    "value": "",
+                    "hidden": false,
+                    "enabled": true,
+                    "options": {
+                        "inputApiUuid": "3fb6f554-f848-11f0-8915-525400f8f94f",
+                        "outputApiUuid": "11eda37a-f848-11f0-b365-525400f8f94f",
                         "inputApiFieldName": 1,
                         "inputApiFieldType": "url",
-                        "outputApiUuid": "api-uuid-1",
                         "outputApiFieldName": "uuid",
                         "outputApiFieldType": "output"
-                    }
+                    },
+                    "required": true,
+                    "valueArr": null,
+                    "valueObj": null,
+                    "valueFrom": "",
+                    "blockIndex": 1,
+                    "orderIndex": 5,
+                    "prefixText": "",
+                    "storeValue": true,
+                    "suffixText": ""
                 },
                 {
                     "name": "progress",
+                    "note": "Пожалуйста, выберите объект, который содержит данные о номере в очереди и статусе операции.",
                     "type": "progress",
-                    "statusPending": "",
-                    "statusProcessing": "",
-                    "statusCompleted": "completed",
-                    "statusError": "error",
-                    "statusFieldName": "status",
-                    "queueNumberFieldName": "number",
-                    "taskIdFieldName": "uuid",
-                    "operationDurationSeconds": 30,
-                    "blockIndex": 1,
-                    "orderIndex": 4,
+                    "value": null,
+                    "hidden": false,
+                    "enabled": false,
                     "options": {
-                        "outputApiUuid": "api-uuid-2",
+                        "outputApiUuid": "3fb6f554-f848-11f0-8915-525400f8f94f",
                         "outputApiFieldName": "value",
                         "outputApiFieldType": "output"
-                    }
+                    },
+                    "valueArr": null,
+                    "valueObj": null,
+                    "blockIndex": 1,
+                    "orderIndex": 3,
+                    "statusError": "error",
+                    "hiddenByField": "",
+                    "statusPending": "",
+                    "isBooleanValue": false,
+                    "statusCompleted": "completed",
+                    "statusFieldName": "status",
+                    "taskIdFieldName": "uuid",
+                    "statusProcessing": "",
+                    "queueNumberFieldName": "number",
+                    "operationDurationSeconds": 30
+                },
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "Здесь Вы можете улучшить качество старого фото или увеличить разрешение маленького изображения в 2 раза.",
+                    "border": false,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": false,
+                    "maxHeight": 0,
+                    "blockIndex": 1,
+                    "orderIndex": 0,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "bi-info-circle",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Blue",
+                    "label": "",
+                    "value": "Ограничение: **15 фотографий** в день",
+                    "border": true,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Small",
+                    "markdown": true,
+                    "fullWidth": false,
+                    "maxHeight": 0,
+                    "blockIndex": 1,
+                    "orderIndex": 5,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Blue",
+                    "label": "",
+                    "value": "Результат будет сохранен в Вашем разделе [Файлы](https://vk.com/docs).",
+                    "border": true,
+                    "hidden": false,
+                    "enabled": true,
+                    "options": {},
+                    "fontSize": "Small",
+                    "markdown": true,
+                    "fullWidth": false,
+                    "blockIndex": 1,
+                    "orderIndex": 2,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": true,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "bi-question-circle",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Gray",
+                    "label": "",
+                    "value": "Загрузите файл фотографии и нажмите кнопку \"Отправить\". \nДождитесь завершения операции, которая может занять до нескольких минут, в зависимости от Вашего номера в очереди.",
+                    "border": true,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Small",
+                    "markdown": false,
+                    "fullWidth": false,
+                    "maxHeight": 0,
+                    "blockIndex": 1,
+                    "orderIndex": 1,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": true,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Gray",
+                    "label": "",
+                    "value": "Версия: 2.5.0",
+                    "border": false,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Small",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 1,
+                    "orderIndex": 7,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "name": "image",
+                    "type": "image",
+                    "value": "https://api2app.org/media/uploads/1723375257_made-in-api2app.svg",
+                    "hidden": false,
+                    "options": {},
+                    "blockIndex": 1,
+                    "orderIndex": 7,
+                    "prefixText": "",
+                    "itemFieldName": "",
+                    "hiddenByDefault": false,
+                    "itemThumbnailFieldName": ""
                 }
-            ]
+            ],
+            "tabIndex": 0
+        },
+        {
+            "options": {
+                "enabled": false,
+                "autoClear": false,
+                "orderIndex": 2,
+                "showLoading": true,
+                "gridColumnSpan": 1,
+                "messageSuccess": "Данные успешно отправлены.",
+                "isStickyPosition": false
+            },
+            "elements": [
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "Улучшение качества",
+                    "border": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 2,
+                    "orderIndex": 0,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "name": "image-comparison",
+                    "type": "image-comparison",
+                    "label": "Сравнение изображений",
+                    "value": "",
+                    "options": {},
+                    "blockIndex": 2,
+                    "orderIndex": 1,
+                    "valueFirst": "https://api2app.org/media/uploads/1764164596_001_input.jpg",
+                    "valueSecond": "https://api2app.org/media/uploads/1764164609_001_output.jpg",
+                    "hiddenByField": ""
+                }
+            ],
+            "tabIndex": 1
+        },
+        {
+            "options": {
+                "enabled": false,
+                "autoClear": false,
+                "orderIndex": 3,
+                "showLoading": true,
+                "gridColumnSpan": 2,
+                "messageSuccess": "Данные успешно отправлены.",
+                "isStickyPosition": false
+            },
+            "elements": [
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "Если у Вас есть вопросы по работе приложения, Вы можете задать их в нашей группе.\nТакже в нашей группе новости проекта и обзоры нейросетей.",
+                    "border": false,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 3,
+                    "orderIndex": 0,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": true,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": true,
+                    "hiddenByDefault": false
+                },
+                {
+                    "info": "1:1, 4:3, 3:4, 16:9, 9:16",
+                    "name": "image",
+                    "type": "image",
+                    "label": "",
+                    "value": "https://api2app.org/media/uploads/1733921183_api2app-logo-small-nolabel.png",
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "useLink": false,
+                    "fullWidth": false,
+                    "blockIndex": 3,
+                    "orderIndex": 0,
+                    "prefixText": "",
+                    "useCropper": false,
+                    "useLightbox": false,
+                    "borderShadow": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "roundedCorners": false,
+                    "hiddenByDefault": false,
+                    "itemThumbnailFieldName": "",
+                    "cropperAspectRatioString": ""
+                },
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "https://vk.com/api2app",
+                    "border": false,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 3,
+                    "orderIndex": 2,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": true,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "https://t.me/api2app",
+                    "border": false,
+                    "hidden": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 3,
+                    "orderIndex": 2,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": true,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                }
+            ],
+            "tabIndex": 2
+        },
+        {
+            "options": {
+                "autoClear": false,
+                "orderIndex": 0,
+                "showLoading": true,
+                "gridColumnSpan": 1,
+                "messageSuccess": "Данные успешно отправлены.",
+                "isStickyPosition": false
+            },
+            "elements": [
+                {
+                    "icon": "",
+                    "info": "[Bootstrap Icons](https://icons.getbootstrap.com/)",
+                    "keys": [],
+                    "name": "text",
+                    "type": "text",
+                    "color": "Black",
+                    "label": "",
+                    "value": "Реставрация",
+                    "border": false,
+                    "enabled": false,
+                    "options": {},
+                    "fontSize": "Medium",
+                    "markdown": false,
+                    "fullWidth": true,
+                    "maxHeight": 0,
+                    "blockIndex": 4,
+                    "orderIndex": 0,
+                    "prefixText": "",
+                    "suffixText": "",
+                    "alignCenter": false,
+                    "borderShadow": false,
+                    "showOnlyInVK": false,
+                    "hiddenByField": "",
+                    "itemFieldName": "",
+                    "whiteSpacePre": false,
+                    "hiddenByDefault": false
+                },
+                {
+                    "name": "image-comparison",
+                    "type": "image-comparison",
+                    "label": "Сравнение изображений",
+                    "value": "",
+                    "options": {},
+                    "blockIndex": 4,
+                    "orderIndex": 1,
+                    "valueFirst": "https://api2app.org/media/uploads/1764164668_004_input.jpg",
+                    "valueSecond": "https://api2app.org/media/uploads/1764164680_004_output.jpg",
+                    "hiddenByField": ""
+                }
+            ],
+            "tabIndex": 1
         }
-    ]
+    ],
+    "image": "https://api2app.org/media/images/photo_restoration_icon_576_v6ZIKuw.png",
+    "vkAppId": "",
+    "vkSecretKey": "",
+    "vkToken": "",
+    "tgBotToken": "",
+    "tgForwardToUserId": "",
+    "tgKeyWord": "",
+    "paymentEnabled": false,
+    "pricePerUse": null,
+    "gupshupApiKey": "",
+    "favorite": true
 }
 ```
 
@@ -1014,27 +1656,6 @@ Common icons used in applications:
 - `bi-box-arrow-up-right` - External link
 
 ---
-
-## Managing the visibility of elements
-
-The element's parameters include a "hiddenByField" field. This field allows you to enter the name of the element that will control the visibility of this element.
-
-For example, you could create a toggle named "mode" and set its value to "second." For another element, you could enter the name "mode" in the "hiddenByField" parameter. In this case, the toggle will control the visibility of another element (or several).
-
-If you want the opposite effect—to show only when the toggle is disabled—you can use the following notation in the "hiddenByField" field:
-~~~
-mode!=second
-~~~
-You can also specify specific values for the element to be visible. For example, you could create a "input-select" or "input-radio" element named "select_mode" and assign it multiple values.  
-Then create other elements and in the "hiddenByField" parameter field use the following entry:  
-~~~
-select_mode==First value
-~~~
-For another element:
-~~~
-select_mode==Second value
-~~~
-...and so on. This way, you can control the visibility of an element depending on the value of another element.
 
 ## Best Practices
 
