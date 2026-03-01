@@ -823,12 +823,8 @@ Here's a complete example of an image processing application:
 
 ```json
 {
-    "url": "https://api2app.org/ru/api/v1/applications/276",
-    "id": 276,
-    "date_created": "2025-09-04T09:21:36.212962Z",
     "name": "Реставрация старых фотографий",
     "language": "ru",
-    "uuid": "8e1d7b2e-8970-11f0-983f-525400f8f94f",
     "shared": true,
     "hidden": false,
     "maintenance": false,
