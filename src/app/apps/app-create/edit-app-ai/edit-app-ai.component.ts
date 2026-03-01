@@ -35,10 +35,11 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
 
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
     loading: boolean = false;
+    loadingMain: boolean = false;
     errorMessage: string = '';
     inputString: string = '';
     selectedUuid: string | null = null;
-    selectedApiList: ApiItem[] = [];
+    selectedApiList: Partial<ApiItem>[] = [];
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
     searchInput$ = new Subject<string>();
@@ -52,6 +53,8 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loadItems();
+
+        // TODO: load selectedApiList names
     }
 
     private loadItems() {
@@ -92,17 +95,8 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    // this.selectedApi = res;
-                    this.selectedApiList.push(res);
-                    // this.items$
-                    //     .pipe(take(1))
-                    //     .subscribe({
-                    //         next: (items) => {
-                    //             if (items.length === 0) {
-                    //                 this.items$ = of([res]);
-                    //             }
-                    //         }
-                    //     });
+                    const {id, name, uuid} = res;
+                    this.selectedApiList.push({id, name, uuid});
                     this.loading = false;
                     this.cdr.detectChanges();
                 },
@@ -118,6 +112,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     }
 
     submit(): void {
+        this.loadingMain = true;
 
     }
 

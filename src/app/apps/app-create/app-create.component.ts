@@ -193,6 +193,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                         }
                     });
                     this.addEmptyBlockByGrid();
+                    this.createAppOptions();
                     this.cdr.detectChanges();
                 },
                 error: (err) => {
@@ -200,6 +201,22 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     this.loading = false;
                 }
             });
+    }
+
+    override createAppOptions(): void {
+        this.data.blocks.forEach((block, blockIndex) => {
+            if (typeof block.tabIndex === 'undefined') {
+                block.tabIndex = 0;
+            }
+            block.elements.forEach((element) => {
+                if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
+                    this.apiUuidsList.input.push(element.options.inputApiUuid);
+                }
+                if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
+                    this.apiUuidsList.output.push(element.options.outputApiUuid);
+                }
+            });
+        });
     }
 
     findEmptyBlocks(): AppBlock[] {
@@ -476,12 +493,23 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     editItemAI(): void {
         const initialData = {
+            selectedApiList: []
         };
+        this.apiUuidsList.input.forEach((uuid) => {
+            if (!initialData.selectedApiList.find(item => item.uuid === uuid)) {
+                initialData.selectedApiList.push({uuid});
+            }
+        });
+        this.apiUuidsList.output.forEach((uuid) => {
+            if (!initialData.selectedApiList.find(item => item.uuid === uuid)) {
+                initialData.selectedApiList.push({uuid});
+            }
+        });
         this.modalService.showDynamicComponent(this.viewRef, EditAppAiComponent, initialData)
             .pipe(take(1))
             .subscribe({
                 next: (reason) => {
-                    if (reason === 'confirmed') {
+                    if (reason === 'submit') {
 
                     }
                 }
