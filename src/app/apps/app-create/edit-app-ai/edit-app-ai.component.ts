@@ -37,12 +37,13 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     loading: boolean = false;
     loadingMain: boolean = false;
     errorMessage: string = '';
-    inputString: string = '';
+    prompt: string = '';
     selectedUuid: string | null = null;
     appData: ApplicationItem;
     selectedApiList: Partial<ApiItem>[] = [];
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
+    resultJsonString: string = '';
     searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 
@@ -144,7 +145,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     }
 
     submit(): void {
-        if (!this.inputString) {
+        if (!this.prompt) {
             return;
         }
         this.loadingMain = true;
@@ -154,15 +155,15 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
             return item.uuid;
         });
 
-        this.dataService.editByAi(this.inputString, this.appData, apiUuidList)
+        this.dataService.editByAi(this.prompt, this.appData, apiUuidList)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-
-                    console.log(res);
-
+                    this.resultJsonString = res.result || '';
                     this.loadingMain = false;
                     this.cdr.detectChanges();
+
+                    this.closeModal('submit');
                 },
                 error: (err) => {
                     this.loadingMain = false;

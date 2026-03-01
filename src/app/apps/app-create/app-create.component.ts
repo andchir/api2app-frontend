@@ -27,6 +27,7 @@ import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { AuthService } from '../../services/auth.service';
 import { EditAppAiComponent } from './edit-app-ai/edit-app-ai.component';
+import { ApplicationItem } from '../models/application-item.interface';
 
 const APP_NAME = environment.appName;
 
@@ -55,6 +56,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     selectedItemOptionsFields: AppBlockElement[] = [];
     copiedElements: AppBlockElement[] = [];
     selectedElementsList: string[] = [];
+    aiAssistantPrompt: string = '';
 
     subs = new Subscription();
 
@@ -494,7 +496,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     editItemAI(): void {
         const initialData = {
             appData: JSON.parse(JSON.stringify(this.data)),
-            selectedApiList: []
+            selectedApiList: [],
+            prompt: this.aiAssistantPrompt
         };
         this.apiUuidsList.input.forEach((uuid) => {
             if (!initialData.selectedApiList.find(item => item.uuid === uuid)) {
@@ -511,7 +514,22 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             .subscribe({
                 next: (reason) => {
                     if (reason === 'submit') {
-
+                        this.aiAssistantPrompt = this.modalService.content.prompt;
+                        const resultJsonString = this.modalService.content.resultJsonString;
+                        let newAppData: ApplicationItem = null;
+                        try {
+                            newAppData = JSON.parse(resultJsonString) as ApplicationItem;
+                        } catch (error) {
+                            console.log(error);
+                        }
+                        if (!newAppData) {
+                            return;
+                        }
+                        if (!newAppData.blocks) {
+                            return;
+                        }
+                        this.data = newAppData;
+                        this.cdr.detectChanges();
                     }
                 }
             });
