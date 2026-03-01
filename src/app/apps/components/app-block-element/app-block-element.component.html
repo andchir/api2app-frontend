@@ -695,35 +695,35 @@
 <ng-template #templateButtonOptions>
     <div class="flex gap-2 items-center app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
-                title="Options"
-                i18n-title
+                ngxTippy="Options"
+                i18n-ngxTippy
                 (click)="elementOptionsInit($event)">
             <i class="bi bi-gear-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
-                title="Clone"
-                i18n-title
+                ngxTippy="Clone"
+                i18n-ngxTippy
                 (click)="elementClone(index, parentIndex, $event)">
             <i class="bi bi-copy text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
-                title="Input Action"
-                i18n-title
+                ngxTippy="Input Action"
+                i18n-ngxTippy
                 (click)="elementActionSelect('input', $event)"
                 *ngIf="type.includes('input-') || ['button', 'audio', 'image'].includes(type)">
             <i class="bi bi-arrow-down text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
-                title="Output Action"
-                i18n-title
+                ngxTippy="Output Action"
+                i18n-ngxTippy
                 (click)="elementActionSelect('output', $event)">
             <i class="bi bi-arrow-up text-base"></i>
             <i class="bi bi-lightning-charge-fill text-base"></i>
         </button>
         <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
-                title="Delete"
-                i18n-title
+                ngxTippy="Delete"
+                i18n-ngxTippy
                 (click)="elementDeleteInit()">
             <i class="bi bi-trash3-fill text-base"></i>
         </button>

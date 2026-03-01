@@ -32,6 +32,45 @@
             </div>
             <div class="p-4 md:p-5">
 
+                <div class="mb-4">
+                    <ng-select class="ng-select-custom"
+                               [items]="items$ | async"
+                               [clearable]="true"
+                               [hideSelected]="false"
+                               [typeahead]="searchInput$"
+                               [minTermLength]="2"
+                               [loading]="loading"
+                               bindLabel="name"
+                               bindValue="uuid"
+                               placeholder="Enter the name of the API to search"
+                               i18n-placeholder
+                               typeToSearchText="Type to search"
+                               i18n-typeToSearchText
+                               labelForId="apiSelectField"
+                               (clear)="onSearchCleared()"
+                               [(ngModel)]="selectedUuid"
+                               (ngModelChange)="onApiSelected()">
+                    </ng-select>
+                </div>
+
+                <div class="flex gap-2 items-center justify-between mb-4 p-2 border border-gray-300 rounded-md"
+                     *ngFor="let item of selectedApiList; index as index">
+                    <div class="w-1/2">
+                        {{ item.name }}
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        {{ item.uuid }}
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="px-2 bg-transparent border-0 text-red-700 hover:text-red-800"
+                            ngxTippy="Delete"
+                            i18n-ngxTippy
+                            (click)="removeSelectedApi(index)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div>
                     <label for="import-curl-string-field" class="inline-block mb-2 text-sm font-medium text-gray-900">Описание приложения</label>
                     <textarea id="import-curl-string-field" rows="7" class="block mb-2 p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
@@ -41,7 +80,7 @@
 
                 <div class="text-blue-800 text-xs">
                     <i class="bi bi-info-circle mr-1"></i>
-                    <span>Выберите API, которые хотите использовать в приложении. Для каждого API введите описание. Введиоте общее описание приложения и нажмите кнопку.</span>
+                    <span>Выберите API, которые хотите использовать в приложении. Введиоте общее описание приложения и нажмите кнопку "Применить".</span>
                 </div>
 
                 <div class="pt-3" *ngIf="errorMessage">

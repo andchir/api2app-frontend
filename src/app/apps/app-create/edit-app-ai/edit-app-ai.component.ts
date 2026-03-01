@@ -1,8 +1,24 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, OnDestroy, OnInit, Output} from '@angular/core';
+import {NgIf} from '@angular/common';
 
-import { Subject } from 'rxjs';
-import {NgIf} from "@angular/common";
-import {SharedModule} from "../../../../../miniapp-src/app/shared.module";
+import {
+    catchError,
+    concat,
+    debounceTime,
+    distinctUntilChanged,
+    map,
+    Observable,
+    of,
+    Subject,
+    takeUntil,
+    tap
+} from 'rxjs';
+import {filter, switchMap, take} from 'rxjs/operators';
+import {NgxTippyModule} from 'ngx-tippy-wrapper';
+
+import {SharedModule} from '../../../../../miniapp-src/app/shared.module';
+import {ApiItem} from '../../../apis/models/api-item.interface';
+import {ApiService} from '../../../services/api.service';
 
 
 @Component({
@@ -10,7 +26,8 @@ import {SharedModule} from "../../../../../miniapp-src/app/shared.module";
     standalone: true,
     imports: [
         NgIf,
-        SharedModule
+        SharedModule,
+        NgxTippyModule
     ],
     templateUrl: './edit-app-ai.component.html'
 })
@@ -20,10 +37,84 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     loading: boolean = false;
     errorMessage: string = '';
     inputString: string = '';
+    selectedUuid: string | null = null;
+    selectedApiList: ApiItem[] = [];
+    selectedApi: ApiItem;
+    items$: Observable<ApiItem[]>;
+    searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 
-    ngOnInit(): void {
+    constructor(
+        protected cdr: ChangeDetectorRef,
+        protected dataService: ApiService
+    ) {
+    }
 
+    ngOnInit(): void {
+        this.loadItems();
+    }
+
+    private loadItems() {
+        this.items$ = concat(
+            of([]),
+            this.searchInput$.pipe(
+                takeUntil(this.destroyed$),
+                distinctUntilChanged(),
+                filter(input => !!input),
+                debounceTime(700),
+                tap(() => this.loading = true),
+                switchMap(term => this.dataService.searchItems(term).pipe(
+                    map(res => res.results),
+                    catchError(() => of([])),
+                    tap(() => {
+                        this.loading = false;
+                        this.cdr.detectChanges();
+                    })
+                ))
+            )
+        );
+    }
+
+    onSearchCleared(): void {
+        this.selectedUuid = '';
+        this.selectedApi = null;
+        this.loadItems();
+    }
+
+    onApiSelected(): void {
+        if (!this.selectedUuid) {
+            this.cdr.detectChanges();
+            return;
+        }
+        this.loading = true;
+        this.cdr.detectChanges();
+        this.dataService.getItemByUuid(this.selectedUuid)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    // this.selectedApi = res;
+                    this.selectedApiList.push(res);
+                    // this.items$
+                    //     .pipe(take(1))
+                    //     .subscribe({
+                    //         next: (items) => {
+                    //             if (items.length === 0) {
+                    //                 this.items$ = of([res]);
+                    //             }
+                    //         }
+                    //     });
+                    this.loading = false;
+                    this.cdr.detectChanges();
+                },
+                error: (err) => {
+                    console.log(err);
+                    this.loading = false;
+                }
+            });
+    }
+
+    removeSelectedApi(index: number) {
+        this.selectedApiList.splice(index, 1);
     }
 
     submit(): void {
