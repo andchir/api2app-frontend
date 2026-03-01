@@ -819,7 +819,7 @@ The element is **shown** when the condition matches, **hidden** otherwise.
 
 ### Examples
 
-Show only if the switch is on:
+Visible (not hidden) if the switch is on:
 ```json
 {
     "name": "advancedOptions",
@@ -829,7 +829,7 @@ Show only if the switch is on:
 }
 ```
 
-Show when category is "premium":
+Visible (not hidden) when category is "premium":
 ```json
 {
     "name": "premiumFeatures",
@@ -839,7 +839,7 @@ Show when category is "premium":
 }
 ```
 
-Show when category is not "premium":
+Visible (not hidden) when category is not "premium":
 ```json
 {
     "name": "basicFeatures",
