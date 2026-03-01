@@ -607,4 +607,12 @@ export class ApiService extends DataService<ApiItem> {
                 catchError(this.handleError)
             );
     }
+
+    editByAi(appData: any, apiUuidList: string[]): Observable<{success: boolean}> {
+        const url = `${this.requestUrl}/edit_by_ai`
+        return this.httpClient.post<{success: boolean}>(url, {appData, apiUuidList}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
 }

@@ -5,7 +5,7 @@ import {
     catchError,
     concat,
     debounceTime,
-    distinctUntilChanged,
+    distinctUntilChanged, firstValueFrom,
     map,
     Observable,
     of,
@@ -19,7 +19,7 @@ import {NgxTippyModule} from 'ngx-tippy-wrapper';
 import {SharedModule} from '../../../../../miniapp-src/app/shared.module';
 import {ApiItem} from '../../../apis/models/api-item.interface';
 import {ApiService} from '../../../services/api.service';
-
+import {ApplicationItem} from '../../models/application-item.interface';
 
 @Component({
     selector: 'app-import-application',
@@ -39,6 +39,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     errorMessage: string = '';
     inputString: string = '';
     selectedUuid: string | null = null;
+    appData: ApplicationItem;
     selectedApiList: Partial<ApiItem>[] = [];
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
@@ -53,8 +54,39 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.loadItems();
+        this.loadApiItemsDetails()
+            .then((items) => {
+                this.loadingMain = false;
+                items.forEach((item) => {
+                    const {id, name, uuid} = item;
+                    const selectedApiItem = this.selectedApiList.find((selectedApi) => {
+                        return selectedApi.uuid === uuid;
+                    });
+                    if (selectedApiItem) {
+                        Object.assign(selectedApiItem, {id, name, uuid});
+                    }
+                });
+                this.cdr.detectChanges();
+            })
+            .catch((err) => {
+                console.log(err);
+                this.loadingMain = false;
+            });
+    }
 
-        // TODO: load selectedApiList names
+    loadApiItemsDetails(): Promise<any> {
+        const selectedApiList = this.selectedApiList.filter((item) => {
+            return !item.name;
+        });
+        if (this.selectedApiList.length === 0) {
+            return Promise.resolve();
+        }
+        this.loadingMain = true;
+        const promises = [];
+        selectedApiList.forEach((item) => {
+            promises.push(firstValueFrom(this.dataService.getItemByUuidShared(item.uuid)));
+        });
+        return Promise.all(promises);
     }
 
     private loadItems() {
@@ -113,7 +145,27 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
 
     submit(): void {
         this.loadingMain = true;
+        this.cdr.detectChanges();
 
+        const apiUuidList = this.selectedApiList.map((item) => {
+            return item.uuid;
+        });
+
+        this.dataService.editByAi(this.appData, apiUuidList)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+
+                    console.log(res);
+
+                    this.loadingMain = false;
+                    this.cdr.detectChanges();
+                },
+                error: (err) => {
+                    this.loadingMain = false;
+                    this.cdr.detectChanges();
+                }
+            });
     }
 
     closeModal(reason = 'close'): void {
@@ -124,4 +176,6 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         this.destroyed$.next();
         this.destroyed$.complete();
     }
+
+    protected readonly $localize = $localize;
 }

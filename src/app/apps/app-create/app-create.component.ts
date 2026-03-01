@@ -493,6 +493,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     editItemAI(): void {
         const initialData = {
+            appData: JSON.parse(JSON.stringify(this.data)),
             selectedApiList: []
         };
         this.apiUuidsList.input.forEach((uuid) => {
