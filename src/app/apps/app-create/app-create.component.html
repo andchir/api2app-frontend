@@ -37,8 +37,6 @@
                         <div>
                             <button type="button"
                                     class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                                    title="Preview"
-                                    i18n-title
                                     (click)="appPreview()">
                                 <i class="bi bi-eye me-2"></i>
                                 <span i18n>Preview</span>
@@ -47,8 +45,9 @@
                         <div>
                             <button type="button"
                                     class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                                    title="Settings"
-                                    i18n-title
+                                    ngxTippy="Settings"
+                                    i18n-ngxTippy
+                                    [tippyProps]="{placement: 'bottom'}"
                                     (click)="appSettingsToggle()">
                                 <i class="bi bi-gear"></i>
                             </button>
@@ -58,16 +57,19 @@
                         <div>
                             <button type="button"
                                     class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                                    title="Clone Application"
-                                    i18n-title
+                                    ngxTippy="Clone Application"
+                                    i18n-ngxTippy
+                                    [tippyProps]="{placement: 'bottom'}"
                                     (click)="cloneItem()">
                                 <i class="bi bi-copy"></i>
                             </button>
                         </div>
-                        <!-- div>
+                        <div>
                             <button type="button"
                                     class="text-white bg-blue-500 border border-blue-500 focus:outline-none hover:bg-blue-600 focus:ring-4 focus:ring-blue-200 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm transition duration-500 ease"
-                                    title="Разработка с помощью ИИ"
+                                    ngxTippy="AI-assisted development"
+                                    i18n-ngxTippy
+                                    [tippyProps]="{placement: 'bottom'}"
                                     (click)="editItemAI()">
                                 <svg width="20" height="20" viewBox="0 0 160 160" version="1.1" fill="#000000" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
                                     <g stroke-width="0" /><g stroke-linecap="round" stroke-linejoin="round" />
@@ -80,7 +82,7 @@
                                     </g>
                                 </svg>
                             </button>
-                        </div -->
+                        </div>
                         <div>
                             <button type="button" class="border border-green-500 bg-green-500 text-white rounded-md px-6 py-2 transition duration-500 ease select-none hover:bg-green-600 focus:outline-none focus:shadow-outline"
                                     [disabled]="loading && saving"
@@ -183,22 +185,22 @@
                     <li class="me-2 min-h-[45px] whitespace-nowrap" *ngIf="!previewMode">
                         <button type="button"
                                 class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
-                                title="Add tab"
-                                i18n-title
+                                ngxTippy="Add tab"
+                                i18n-ngxTippy
                                 (click)="addTab()">
                             <i class="bi bi-plus"></i>
                         </button>
                         <button type="button"
                                 class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
-                                title="Delete tab"
-                                i18n-title
+                                ngxTippy="Delete tab"
+                                i18n-ngxTippy
                                 (click)="removeTab()" *ngIf="data.tabs.length > 1">
                             <i class="bi bi-trash3"></i>
                         </button>
                         <button type="button"
                                 class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
-                                title="Rename tab"
-                                i18n-title
+                                ngxTippy="Rename tab"
+                                i18n-ngxTippy
                                 (click)="editTab()">
                             <i class="bi bi-pencil-square"></i>
                         </button>
@@ -281,8 +283,8 @@
 
                             <div class="pt-3" *ngIf="block.elements.length > 0 && !previewMode">
                                 <button type="button" class="block w-full p-1 bg-white border border-gray-200 rounded-lg shadow-inner shadow-gray-300 hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
-                                        title="Add Element"
-                                        i18n-title
+                                        ngxTippy="Add Element"
+                                        i18n-ngxTippy
                                         (click)="blockAddElement(index)">
                                     <i class="bi bi-plus-circle-dotted text-3xl"></i>
                                 </button>
@@ -295,8 +297,8 @@
                         </div>
 
                         <button type="button" class="block w-full p-6 bg-white border border-gray-200 rounded-lg shadow-inner shadow-gray-300 hover:bg-gray-200 text-gray-400 hover:text-gray-500 cursor-pointer text-center"
-                                title="Add Block"
-                                i18n-title
+                                ngxTippy="Add Block"
+                                i18n-ngxTippy
                                 (click)="blockAddElement(index)"
                                 *ngIf="block.elements.length === 0 && !previewMode">
                             <i class="bi bi-plus-circle-dotted text-5xl"></i>
@@ -305,8 +307,8 @@
                         <div class="absolute left-3 top-1 z-[9] transition-top duration-300 group-hover/block:-top-8"
                              *ngIf="block.elements.length > 0 && block.elements[0].type && !previewMode">
                             <button type="button" class="cursor-pointer shadow-gray-400 text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-2 pt-1 pb-3"
-                                    title="Options"
-                                    i18n-title
+                                    ngxTippy="Options"
+                                    i18n-ngxTippy
                                     (click)="showBlockOptions(block, index, $event)">
                                 <i class="bi bi-gear-fill text-xl"></i>
                             </button>

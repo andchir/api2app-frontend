@@ -64,6 +64,7 @@
                             "node_modules/prismjs/themes/prism.css",
                             "node_modules/prismjs/plugins/line-numbers/prism-line-numbers.css",
                             "node_modules/photoswipe/dist/photoswipe.css",
+                            "node_modules/tippy.js/dist/tippy.css",
                             "src/styles.css"
                         ],
                         "scripts": [

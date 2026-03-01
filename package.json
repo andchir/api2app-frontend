@@ -40,6 +40,7 @@
     "ngx-markdown": "^18.1.0",
     "ngx-pagination": "^6.0.3",
     "ngx-sse-client": "^18.0.0",
+    "ngx-tippy-wrapper": "^6.3.0",
     "photoswipe": "^5.4.4",
     "photoswipe-deep-zoom-plugin": "^1.1.2",
     "photoswipe-video-plugin": "^1.0.2",

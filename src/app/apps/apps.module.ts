@@ -29,6 +29,7 @@ import { ElementImageComponent } from './components/elements/element-image.compo
 import { ImageComparisonComponent } from './components/elements/image-comparison.component';
 import { ElementIframeComponent } from './components/elements/element-iframe.component';
 import { AudioPlayerComponent } from './components/elements/audio-player.component';
+import {NgxTippyModule} from "ngx-tippy-wrapper";
 
 @NgModule({
     declarations: [
@@ -57,7 +58,8 @@ import { AudioPlayerComponent } from './components/elements/audio-player.compone
         DragulaModule.forRoot(),
         ImageComparisonComponent,
         ElementIframeComponent,
-        AudioPlayerComponent
+        AudioPlayerComponent,
+        NgxTippyModule
     ],
     exports: [
         ApplicationSharedComponent
