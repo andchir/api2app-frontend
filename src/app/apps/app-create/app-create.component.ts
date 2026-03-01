@@ -528,7 +528,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                         if (!newAppData.blocks) {
                             return;
                         }
-                        this.data = newAppData;
+                        const appId = this.data.id;
+                        const appUuid = this.data.uuid;
+                        const appEmbedUuid = this.data.uuid_embed;
+                        Object.assign(this.data, newAppData, {id: appId, uuid: appUuid, uuid_embed: appEmbedUuid});
                         this.cdr.detectChanges();
                     }
                 }
