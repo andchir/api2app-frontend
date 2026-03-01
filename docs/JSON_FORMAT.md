@@ -1027,3 +1027,24 @@ Common icons used in applications:
 8. **Store Values**: Use `storeValue: true` for values that should persist across sessions
 9. **Grid Layout**: Use `gridColumnSpan` to control block widths in the grid
 10. **Sticky Buttons**: Use `isStickyPosition: true` for important action buttons
+
+## Managing the visibility of elements
+
+The element's parameters include a "hiddenByField" field. This field allows you to enter the name of the element that will control the visibility of this element.
+
+For example, you could create a toggle named "mode" and set its value to "second." For another element, you could enter the name "mode" in the "hiddenByField" parameter. In this case, the toggle will control the visibility of another element (or several).
+
+If you want the opposite effect—to show only when the toggle is disabled—you can use the following notation in the "hiddenByField" field:
+~~~
+mode!=second
+~~~
+You can also specify specific values for the element to be visible. For example, you could create a "input-select" or "input-radio" element named "select_mode" and assign it multiple values.  
+Then create other elements and in the "hiddenByField" parameter field use the following entry:  
+~~~
+select_mode==First value
+~~~
+For another element:
+~~~
+select_mode==Second value
+~~~
+...and so on. This way, you can control the visibility of an element depending on the value of another element.
