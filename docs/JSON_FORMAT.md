@@ -1015,19 +1015,6 @@ Common icons used in applications:
 
 ---
 
-## Best Practices
-
-1. **Unique Names**: Each element should have a unique `name` within the application
-2. **Order Index**: Use `orderIndex` to control element order within a block
-3. **Block Index**: Match `blockIndex` with the actual position in the blocks array
-4. **API UUIDs**: Ensure API UUIDs match your configured API endpoints
-5. **Conditional Logic**: Use `hiddenByField` to create dynamic forms
-6. **Loading States**: Use `hiddenByDefault: true` for elements that show API results
-7. **Required Fields**: Mark important inputs as `required: true`
-8. **Store Values**: Use `storeValue: true` for values that should persist across sessions
-9. **Grid Layout**: Use `gridColumnSpan` to control block widths in the grid
-10. **Sticky Buttons**: Use `isStickyPosition: true` for important action buttons
-
 ## Managing the visibility of elements
 
 The element's parameters include a "hiddenByField" field. This field allows you to enter the name of the element that will control the visibility of this element.
@@ -1048,3 +1035,16 @@ For another element:
 select_mode==Second value
 ~~~
 ...and so on. This way, you can control the visibility of an element depending on the value of another element.
+
+## Best Practices
+
+1. **Unique Names**: Each element should have a unique `name` within the application
+2. **Order Index**: Use `orderIndex` to control element order within a block
+3. **Block Index**: Match `blockIndex` with the actual position in the blocks array
+4. **API UUIDs**: Ensure API UUIDs match your configured API endpoints
+5. **Conditional Logic**: Use `hiddenByField` to create dynamic forms
+6. **Loading States**: Use `hiddenByDefault: true` for elements that show API results
+7. **Required Fields**: Mark important inputs as `required: true`
+8. **Store Values**: Use `storeValue: true` for values that should persist across sessions
+9. **Grid Layout**: Use `gridColumnSpan` to control block widths in the grid
+10. **Sticky Buttons**: Use `isStickyPosition: true` for important action buttons
