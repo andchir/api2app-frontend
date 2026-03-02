@@ -530,8 +530,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                         }
                         const appId = this.data.id;
                         const appUuid = this.data.uuid;
-                        const appEmbedUuid = this.data.uuid_embed;
-                        Object.assign(this.data, newAppData, {id: appId, uuid: appUuid, uuid_embed: appEmbedUuid});
+                        const uuid_embed = this.data.uuid_embed;
+                        const image = this.data.image;
+                        Object.assign(this.data, newAppData, {id: appId, uuid: appUuid, uuid_embed, image});
                         this.cdr.detectChanges();
                     }
                 }
