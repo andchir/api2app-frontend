@@ -246,7 +246,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ? element.hiddenByField.split('==')
                 : (element.hiddenByField.includes('!=') ? element.hiddenByField.split('!=') : [element.hiddenByField]);
             const isOpposite = element.hiddenByField.includes('!=');
-            const targetElement = this.findElementByName(block, hiddenByField[0]);
+            const targetElement = this.findBlockElementByName(hiddenByField[0]);
             if (targetElement) {
                 const targetValue = !['input-switch'].includes(targetElement.type) || targetElement.enabled
                     ? targetElement.value
@@ -1349,8 +1349,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const enabled = element.enabled;
             if (block) {
                 this.clearValidationErrors();
-                block.elements.forEach((elem) => {
-                    this.elementHiddenStateUpdate(elem, block);
+                this.data.blocks.forEach(block => {
+                    block.elements.forEach((elem) => {
+                        this.elementHiddenStateUpdate(elem, block);
+                    });
                 });
             }
         }
