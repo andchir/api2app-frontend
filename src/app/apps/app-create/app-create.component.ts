@@ -494,6 +494,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     editItemAI(): void {
+        this.createAppOptions();
         const initialData = {
             appData: JSON.parse(JSON.stringify(this.data)),
             selectedApiList: [],
