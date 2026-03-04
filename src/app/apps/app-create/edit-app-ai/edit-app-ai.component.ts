@@ -148,6 +148,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         if (!this.prompt) {
             return;
         }
+        this.errorMessage = '';
         this.loadingMain = true;
         this.cdr.detectChanges();
 
@@ -166,10 +167,21 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
                     this.closeModal('submit');
                 },
                 error: (err) => {
+                    this.errorMessage = this.localizeServerMessages(err.error || err.detail || $localize `Error.`);
                     this.loadingMain = false;
                     this.cdr.detectChanges();
                 }
             });
+    }
+
+    localizeServerMessages(errorMessage: string): string {
+        if (errorMessage === 'Daily usage limit exceeded.') {
+            errorMessage = $localize`Daily usage limit exceeded.`;
+        }
+        if (errorMessage === 'Insufficient funds.') {
+            errorMessage = $localize `Insufficient funds.`;
+        }
+        return errorMessage;
     }
 
     closeModal(reason = 'close'): void {
