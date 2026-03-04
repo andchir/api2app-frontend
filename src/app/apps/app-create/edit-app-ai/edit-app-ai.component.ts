@@ -58,15 +58,17 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         this.loadApiItemsDetails()
             .then((items) => {
                 this.loadingMain = false;
-                items.forEach((item) => {
-                    const {id, name, uuid} = item;
-                    const selectedApiItem = this.selectedApiList.find((selectedApi) => {
-                        return selectedApi.uuid === uuid;
+                if (items) {
+                    items.forEach((item) => {
+                        const {id, name, uuid} = item;
+                        const selectedApiItem = this.selectedApiList.find((selectedApi) => {
+                            return selectedApi.uuid === uuid;
+                        });
+                        if (selectedApiItem) {
+                            Object.assign(selectedApiItem, {id, name, uuid});
+                        }
                     });
-                    if (selectedApiItem) {
-                        Object.assign(selectedApiItem, {id, name, uuid});
-                    }
-                });
+                }
                 this.cdr.detectChanges();
             })
             .catch((err) => {
@@ -80,7 +82,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
             return !item.name;
         });
         if (this.selectedApiList.length === 0) {
-            return Promise.resolve();
+            return Promise.resolve(null);
         }
         this.loadingMain = true;
         const promises = [];
