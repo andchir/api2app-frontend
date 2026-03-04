@@ -424,6 +424,26 @@ Embedded web content.
 | `border` | boolean | Show border |
 | `hiddenByDefault` | boolean | Hidden until API response |
 
+This element supports inserting content from another element. In this case, content from the element named "content_code" will be inserted:
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Demo</title>
+    <style>
+        body { padding: 20px; font-family: sans-serif; }
+        h1 { margin: 0; padding: 0; }
+    </style>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    {content_code}
+  </body>
+</html>
+```
+
 #### `user-subscription`
 Subscription widget (VK apps).
 
