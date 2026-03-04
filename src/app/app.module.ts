@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { TitleStrategy } from '@angular/router';
 
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
+
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthLoginComponent } from './auth/auth-login.component';
@@ -46,7 +48,8 @@ import { SharedModule } from './shared.module';
         HttpClientModule,
         AppRoutingModule,
         FormsModule,
-        SharedModule
+        SharedModule,
+        NgxTippyModule
     ],
     providers: [authInterceptorProviders, {provide: TitleStrategy,  useClass: CustomTitleStrategy}],
     bootstrap: [AppComponent]

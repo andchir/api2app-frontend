@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
+
 import { authInterceptorProviders } from '../helpers/auth.interceptor';
 import { SharedModule } from '../shared.module';
 import { ApisRoutingModule } from './apis-routing.module';
@@ -30,7 +32,8 @@ import { ModalService } from '../services/modal.service';
         FormsModule,
         ReactiveFormsModule,
         ApisRoutingModule,
-        SharedModule
+        SharedModule,
+        NgxTippyModule
     ],
     providers: [authInterceptorProviders, ApiService, ModalService]
 })

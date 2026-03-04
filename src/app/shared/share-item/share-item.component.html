@@ -30,8 +30,9 @@
                                    value="{{ baseUrl }}/{{ language }}{{ shareUrl }}{{ itemUuid }}"
                                    readonly #sharedUrlField>
                             <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
-                                    title="Copy To Clipboard"
-                                    i18n-title
+                                    ngxTippy="Copy To Clipboard"
+                                    [tippyProps]="{placement: 'bottom'}"
+                                    i18n-ngxTippy
                                     (click)="copyUrl(sharedUrlField)">
                                 <i class="bi bi-clipboard text-lg"></i>
                             </button>
@@ -49,8 +50,9 @@
                                        value="{{ baseUrl }}/{{ language }}{{ embedUrl }}{{ itemEmbedUuid }}"
                                        readonly #embedUrlField>
                                 <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
-                                        title="Copy To Clipboard"
-                                        i18n-title
+                                        ngxTippy="Copy To Clipboard"
+                                        [tippyProps]="{placement: 'bottom'}"
+                                        i18n-ngxTippy
                                         (click)="copyUrl(embedUrlField)">
                                     <i class="bi bi-clipboard text-lg"></i>
                                 </button>

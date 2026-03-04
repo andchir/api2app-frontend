@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { MarkdownModule, MarkedOptions, MARKED_OPTIONS, MarkedRenderer } from 'ngx-markdown';
 
 import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.component';
@@ -19,7 +20,7 @@ import { PaginationComponent } from './shared/pagination/pagination.component';
 
 import { ToHtmlPipe } from './shared/pipes/to-html.pipe';
 import { FilterBlockPipe } from './shared/pipes/filter-block';
-import {CarouselComponent} from "./shared/carousel/carousel.component";
+import { CarouselComponent } from './shared/carousel/carousel.component';
 
 export function markedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
@@ -55,7 +56,8 @@ export function markedOptionsFactory(): MarkedOptions {
                 provide: MARKED_OPTIONS,
                 useFactory: markedOptionsFactory,
             },
-        })
+        }),
+        NgxTippyModule
     ],
     declarations: [
         AlertComponent,

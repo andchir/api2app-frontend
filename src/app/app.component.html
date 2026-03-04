@@ -45,16 +45,18 @@
                         [routerLink]="'/download'"
                         routerLinkActive="active !text-slate-300"
                         ariaCurrentWhenActive="page"
-                        title="Download"
-                        i18n-title>
+                        ngxTippy="Download"
+                        [tippyProps]="{placement: 'bottom', offset: [0, 22]}"
+                        i18n-ngxTippy>
                         <i class="bi bi-arrow-down-circle-fill"></i>
                     </a>
 
                     <a class="inline-block p-1 text-center text-xl text-slate-400 hover:text-slate-300"
-                       href="https://t.me/api2app"
-                       target="_blank"
-                       title="Telegram group"
-                       i18n-title>
+                        href="https://t.me/api2app"
+                        target="_blank"
+                        ngxTippy="Telegram group"
+                        [tippyProps]="{placement: 'bottom', offset: [0, 22]}"
+                        i18n-ngxTippy>
                         <i class="bi bi-telegram"></i>
                     </a>
 

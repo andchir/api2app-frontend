@@ -31,8 +31,9 @@
                 </div>
                 <div class="flex gap-2">
                     <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200"
-                            title="Edit"
-                            i18n-title
+                            ngxTippy="Edit"
+                            [tippyProps]="{placement: 'bottom'}"
+                            i18n-ngxTippy
                             (click)="viewItem(item)">
                         <span class="flex-grow relative px-0 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                             <i class="bi bi-pencil"></i>
@@ -40,8 +41,9 @@
                     </button>
 
                     <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-                            title="Share"
-                            i18n-title
+                            ngxTippy="Share"
+                            [tippyProps]="{placement: 'bottom'}"
+                            i18n-ngxTippy
                             (click)="shareItem(item)">
                         <span class="flex-grow relative px-0 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                             <i class="bi bi-share-fill"></i>
@@ -49,8 +51,9 @@
                     </button>
 
                     <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-                            title="Download"
-                            i18n-title
+                            ngxTippy="Download"
+                            [tippyProps]="{placement: 'bottom'}"
+                            i18n-ngxTippy
                             (click)="downloadItem(item)">
                         <span class="flex-grow relative px-0 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                             <i class="bi bi-download"></i>
@@ -58,8 +61,9 @@
                     </button>
 
                     <button class="flex-grow relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-200 via-red-300 to-yellow-200 group-hover:from-red-200 group-hover:via-red-300 group-hover:to-yellow-200 focus:ring-4 focus:outline-none focus:ring-red-100"
-                            title="Delete"
-                            i18n-title
+                            ngxTippy="Delete"
+                            [tippyProps]="{placement: 'bottom'}"
+                            i18n-ngxTippy
                             (click)="deleteItem(item)">
                         <span class="flex-grow relative px-0 py-2.5 transition-all ease-in duration-75 bg-white rounded-md group-hover:bg-opacity-0">
                             <i class="bi bi-trash3"></i>
