@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -48,7 +49,8 @@ import { AudioPlayerComponent } from './apps/components/elements/audio-player.co
         ElementImageComponent,
         ImageComparisonComponent,
         ElementIframeComponent,
-        AudioPlayerComponent
+        AudioPlayerComponent,
+        NgxTippyModule
     ],
     providers: [ApplicationService, ApiService, ModalService],
     bootstrap: [AppComponent]

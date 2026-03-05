@@ -13,7 +13,7 @@
             <ng-template let-item #templateImageItem>
                 <div class="w-full"
                      [ngClass]="{
-                            'whitespace-pre-line': options?.whiteSpacePre,
+                            'whitespace-pre-line': options?.whiteSpacePre && !options?.markdown,
                             'min-h-[20px]': editorMode,
                             'border rounded-lg': options?.border,
                             'shadow-md': options?.border && options?.borderShadow,
