@@ -27,8 +27,9 @@
                 <div>
                     <button type="button"
                             class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                            title="Settings"
-                            i18n-title
+                            ngxTippy="Settings"
+                            i18n-ngxTippy
+                            [tippyProps]="{placement: 'bottom'}"
                             (click)="apiSettingsToggle()">
                         <i class="bi bi-gear"></i>
                     </button>
@@ -36,8 +37,9 @@
                 <div>
                     <button type="button"
                             class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-2.5 shadow-sm"
-                            title="Clone API"
-                            i18n-title
+                            ngxTippy="Clone API"
+                            i18n-ngxTippy
+                            [tippyProps]="{placement: 'bottom'}"
                             (click)="cloneItem()">
                         <i class="bi bi-copy"></i>
                     </button>

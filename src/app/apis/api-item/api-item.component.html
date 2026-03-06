@@ -106,6 +106,7 @@
                  [ngClass]="{'opacity-50': item.hidden}">
                 <span class="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md cursor-pointer"
                       title="Enabled/Disabled"
+                      i18n-title
                       (click)="item.hidden = !item.hidden">
                     <i class="bi bi-eye-fill" *ngIf="!item.hidden"></i>
                     <i class="bi bi-eye-slash-fill" *ngIf="item.hidden"></i>

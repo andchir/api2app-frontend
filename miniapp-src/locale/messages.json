@@ -21,6 +21,7 @@
         "6029013718797664678": "Query parameters",
         "6215186523080321": "Headers",
         "531616689184039035": "Private/Public",
+        "3418083955118159185": "Enabled/Disabled",
         "4621275057098710269": "Delete header",
         "3597932961286677186": "Header",
         "6058392154092363055": "Basic Authentication",
@@ -437,6 +438,7 @@
         "4742394596363191983": "Incorrect HTML code.",
         "7825205305546013565": "Loading audio...",
         "4984038534046452095": "Audio Player",
-        "7627108528255498101": "Failed to load audio"
+        "7627108528255498101": "Failed to load audio",
+        "42192924057069166": "AI-assisted development"
     }
 }
