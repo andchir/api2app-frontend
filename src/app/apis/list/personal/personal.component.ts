@@ -43,6 +43,7 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
     }
 
     showImportApiModal():void {
+        this.message = '';
         const initialData = {};
         this.modalService.showDynamicComponent(this.viewRef, ApiImportComponent, initialData)
             .pipe(take(1))
@@ -50,6 +51,8 @@ export class ListPersonalComponent extends ListSharedComponent implements OnInit
             .subscribe({
                 next: (reason) => {
                     if (reason === 'submit') {
+                        this.messageType = 'success';
+                        this.message = $localize `The API configuration has been imported successfully.`;
                         this.getData();
                     }
                 },
