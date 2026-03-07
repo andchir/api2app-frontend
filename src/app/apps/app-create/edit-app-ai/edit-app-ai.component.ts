@@ -173,10 +173,12 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (res) => {
                     this.resultJsonString = res.result || '';
-                    this.loadingMain = false;
+                    this.workingState = 'done';
                     this.cdr.detectChanges();
 
-                    this.closeModal('submit');
+                    setTimeout(() => {
+                        this.closeModal('submit');
+                    }, 2500);
                 },
                 error: (err) => {
                     this.errorMessage = this.localizeServerMessages(err.error || err.detail || $localize `Error.`);

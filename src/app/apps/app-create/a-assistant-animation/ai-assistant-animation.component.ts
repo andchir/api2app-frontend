@@ -56,8 +56,8 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         },
         thinking: {
             img: 'assets/img/robot-1.png',
-            phrases: ['Хм...', 'Надо подумать...', 'Вот так задача...'],
-            max: 2,
+            phrases: ['Принял!', 'Хм...', 'Надо подумать...', 'Вот так задача...'],
+            max: 1,
             next: 'idea'
         },
         idea: {
