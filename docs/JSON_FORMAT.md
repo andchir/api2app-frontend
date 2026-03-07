@@ -77,15 +77,18 @@ JSON format used by API2App to define web applications. Designed for LLMs to gen
 
 All elements share these common fields:
 
-| Field           | Type   | Description                                                                               |
-|-----------------|--------|-------------------------------------------------------------------------------------------|
-| `type`          | string | **Required.** Element type identifier                                                     |
-| `name`          | string | Unique element name within the app                                                        |
-| `blockIndex`    | number | Index of the parent block                                                                 |
-| `orderIndex`    | number | Display order within the block                                                            |
-| `value`         | any    | Element value (type depends on element)                                                   |
-| `hiddenByField` | string | Conditional visibility expression (see [Conditional Visibility](#conditional-visibility)) |
-| `options`       | object | API binding options (see [API Integration](#api-integration))                             |
+| Field             | Type    | Description                                                                               |
+|-------------------|---------|-------------------------------------------------------------------------------------------|
+| `type`            | string  | **Required.** Element type identifier                                                     |
+| `name`            | string  | Unique element name within the app                                                        |
+| `blockIndex`      | number  | Index of the parent block                                                                 |
+| `orderIndex`      | number  | Display order within the block                                                            |
+| `value`           | any     | Element value (type depends on element)                                                   |
+| `hiddenByDefault` | boolean | Hidden until value is retrieved                                                           |
+| `hiddenByField`   | string  | Conditional visibility expression (see [Conditional Visibility](#conditional-visibility)) |
+| `options`         | object  | API binding options (see [API Integration](#api-integration))                             |
+
+If the field is hidden (hiddenByDefault=true), it becomes visible when the value is received.
 
 ---
 
@@ -350,10 +353,12 @@ Action button that triggers API calls.
 | `prefixText`       | string  | Prefix for resulting value                                   |
 | `suffixText`       | string  | Suffix for resulting value                                   |
 | `valueFrom`        | string  | Take value from another field                                |
-| `hiddenByDefault`  | boolean | Hidden until API response                                    |
+| `hiddenByDefault`  | boolean | Hidden until value is retrieved                              |
 | `isClearForm`      | boolean | Reset form on click                                          |
 | `isDownloadMode`   | boolean | Download file on click                                       |
 | `isStickyPosition` | boolean | Sticky on scroll                                             |
+
+The button can receive a value, but it doesn't display that value. It only uses it for download mode (if it's a URL) or opening the link in a new browser tab. If the button is hidden, it becomes visible when it receives a value.
 
 #### `input-select-image`
 
