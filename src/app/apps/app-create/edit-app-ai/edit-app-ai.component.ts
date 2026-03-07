@@ -20,6 +20,7 @@ import {SharedModule} from '../../../../../miniapp-src/app/shared.module';
 import {ApiItem} from '../../../apis/models/api-item.interface';
 import {ApiService} from '../../../services/api.service';
 import {ApplicationItem} from '../../models/application-item.interface';
+import {AiAssistantAnimationComponent} from "../a-assistant-animation/ai-assistant-animation.component";
 
 @Component({
     selector: 'app-import-application',
@@ -27,7 +28,8 @@ import {ApplicationItem} from '../../models/application-item.interface';
     imports: [
         NgIf,
         SharedModule,
-        NgxTippyModule
+        NgxTippyModule,
+        AiAssistantAnimationComponent
     ],
     templateUrl: './edit-app-ai.component.html'
 })
