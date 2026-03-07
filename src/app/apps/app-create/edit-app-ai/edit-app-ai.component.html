@@ -57,11 +57,15 @@
 
                     <div class="flex gap-2 items-center justify-between mb-4 py-2 px-3 border border-gray-300 rounded-md"
                          *ngFor="let item of selectedApiList; index as index">
-                        <div class="w-1/2">
-                            {{ item.name || '...' }}
-                        </div>
-                        <div class="text-sm text-gray-500">
-                            {{ item.uuid }}
+                        <div>
+                            <div>
+                                <div>
+                                    {{ item.name || '...' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ item.uuid }}
+                                </div>
+                            </div>
                         </div>
                         <div class="text-right">
                             <button type="button" class="px-2 bg-transparent border-0 text-red-700 hover:text-red-800"
