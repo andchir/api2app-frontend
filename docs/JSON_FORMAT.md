@@ -586,11 +586,11 @@ Elements can be shown/hidden based on other field values using `hiddenByField`.
 
 The element is **shown** when the condition matches, **hidden** otherwise.
 
-| Syntax               | Description                                   |
-|----------------------|-----------------------------------------------|
-| `"fieldName"`        | Shown when switch `fieldName` is on           |
-| `"fieldName==value"` | Shown when `fieldName` equals `value`         |
-| `"fieldName!=value"` | Shown when `fieldName` does not equal `value` |
+| Syntax             | Description                                   |
+|--------------------|-----------------------------------------------|
+| `fieldName`        | Shown when switch `fieldName` is on           |
+| `fieldName==value` | Shown when `fieldName` equals `value`         |
+| `fieldName!=value` | Shown when `fieldName` does not equal `value` |
 
 ---
 
@@ -751,7 +751,7 @@ A text generation app with input, API call, and result display:
 1. **Unique names** — each element must have a unique `name` within the app
 2. **Block/order index** — use `blockIndex` and `orderIndex` to control layout
 3. **API UUIDs** — must match configured API endpoints
-4. **Conditional logic** — use `hiddenByField` for dynamic forms
+4. **Conditional logic** — use `hiddenByField` for dynamic elements
 5. **Output elements** — set `hiddenByDefault: true` for elements showing API results
 6. **Required fields** — mark important inputs with `required: true`
 7. **Store values** — use `storeValue: true` for values persisting across sessions
