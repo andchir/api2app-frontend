@@ -46,6 +46,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     selectedApi: ApiItem;
     items$: Observable<ApiItem[]>;
     resultJsonString: string = '';
+    workingState: 'greeting'|'thinking'|'idea'|'working'|'done' = 'greeting';
     searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 

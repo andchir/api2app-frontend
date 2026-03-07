@@ -1,3 +1,19 @@
 <div class="absolute inset-0 pointer-events-none">
-    <img class="h-[200px] absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none" src="assets/img/robot-4.png" height="200" alt="">
+
+    <!-- Phrase bubble -->
+    <div class="absolute inset-0 flex items-end justify-center pb-[230px]">
+        <div *ngIf="phraseVisible"
+             class="px-4 py-3 bg-gray-900/70 text-white text-sm rounded-2xl max-w-[280px] text-center shadow-lg"
+             [ngClass]="{
+                 'phrase-enter': animationPhase === 'enter',
+                 'phrase-leave': animationPhase === 'leave'
+             }">
+            {{ currentPhrase }}
+        </div>
+    </div>
+
+    <!-- Robot image -->
+    <img class="h-[200px] absolute bottom-0 left-1/2 -translate-x-1/2 pointer-events-none"
+         [src]="currentImg" height="200" alt="">
+
 </div>
