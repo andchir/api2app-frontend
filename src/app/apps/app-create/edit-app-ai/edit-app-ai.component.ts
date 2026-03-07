@@ -167,6 +167,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
 
         const timer = setTimeout(() => {
             this.workingStateVisible = true;
+            this.cdr.detectChanges();
         }, 100);
 
         const apiUuidList = this.selectedApiList.map((item) => {
