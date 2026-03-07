@@ -163,8 +163,11 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         this.loadingMain = true;
         this.workingStateStopped = false;
         this.workingState = 'thinking';
-        this.workingStateVisible = true;
         this.cdr.detectChanges();
+
+        const timer = setTimeout(() => {
+            this.workingStateVisible = true;
+        }, 100);
 
         const apiUuidList = this.selectedApiList.map((item) => {
             return item.uuid;
@@ -183,6 +186,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
                     }, 2500);
                 },
                 error: (err) => {
+                    clearTimeout(timer);
                     this.errorMessage = this.localizeServerMessages(err.error || err.detail || $localize `Error.`);
                     this.loadingMain = false;
                     this.workingStateStopped = true;
