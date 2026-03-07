@@ -19,6 +19,7 @@ import { Subject } from 'rxjs';
         }
         .phrase-enter { animation: phraseEnter 0.5s ease-out forwards; }
         .phrase-leave { animation: phraseLeave 0.5s ease-in forwards; }
+        .container-wrap { transition: opacity 0.4s ease; }
     `]
 })
 export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
@@ -26,6 +27,12 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
     @Output() close: EventEmitter<string> = new EventEmitter<string>();
     errorMessage: string = '';
     destroyed$: Subject<void> = new Subject();
+    containerVisible: boolean = true;
+
+    @Input() set visible(v: boolean) {
+        this.containerVisible = v;
+        this.cdr.detectChanges();
+    }
 
     currentImg: string = 'assets/img/robot-4.png';
     currentPhrase: string = '';
@@ -44,27 +51,32 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         greetings: {
             img: 'assets/img/robot-4.png',
             phrases: ['Привет!', 'Привет! Чем могу тебе помочь?', 'Привет! Рад тебя видеть снова!'],
-            max: 1
+            max: 1,
+            next: null
         },
         thinking: {
             img: 'assets/img/robot-1.png',
             phrases: ['Хм...', 'Надо подумать...', 'Вот так задача...'],
-            max: 2
+            max: 2,
+            next: 'idea'
         },
         idea: {
             img: 'assets/img/robot-2.png',
             phrases: ['Я понял!', 'Придумал! Начинаю работу...', 'Всё понятно!'],
-            max: 1
+            max: 1,
+            next: 'working'
         },
         working: {
             img: 'assets/img/robot-3.png',
             phrases: ['Так...', 'Ещё немного здесь...', 'Вот это...', 'Так так...', 'Сейчас, сейчас...'],
-            max: 0
+            max: 0,
+            next: null
         },
         done: {
             img: 'assets/img/robot-2.png',
             phrases: ['Готово!', 'Сделал. Можешь проверить.'],
-            max: 1
+            max: 1,
+            next: null
         }
     };
 
@@ -117,7 +129,10 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         this.t(() => {
             if (!this.running) return;
             const cfg = this.states[this._currentState];
-            if (cfg.max > 0 && this.shownCount >= cfg.max) return;
+            if (cfg.max > 0 && this.shownCount >= cfg.max) {
+                if (cfg.next) this.changeState(cfg.next);
+                return;
+            }
             this.showPhrase(this.shuffledPhrases[this.phraseIndex]);
         }, delay);
     }
@@ -151,6 +166,8 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
                     const cfg = this.states[this._currentState];
                     if (cfg.max === 0 || this.shownCount < cfg.max) {
                         this.scheduleNextPhrase(1000);
+                    } else if (cfg.next) {
+                        this.changeState(cfg.next);
                     }
                 }, 500);
             }, 2000);

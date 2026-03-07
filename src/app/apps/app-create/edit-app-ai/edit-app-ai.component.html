@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
+            <!-- div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-1"
                 *ngIf="loadingMain">
                 <div>
                     <div role="status" class="flex h-12 py-3 box-content justify-center w-full sticky top-[40%] left-0">
@@ -128,9 +128,11 @@
                     </div>
                 </div>
                 <div i18n>Please wait...</div>
-            </div>
+            </div -->
 
-            <app-ai-assistant-animation [state]="workingState"></app-ai-assistant-animation>
+            <app-ai-assistant-animation
+                [visible]="workingStateVisible"
+                [state]="workingState"></app-ai-assistant-animation>
         </div>
     </div>
 </div>

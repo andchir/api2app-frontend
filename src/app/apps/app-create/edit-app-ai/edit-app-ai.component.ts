@@ -47,6 +47,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     items$: Observable<ApiItem[]>;
     resultJsonString: string = '';
     workingState: 'greeting'|'thinking'|'idea'|'working'|'done' = 'greeting';
+    workingStateVisible = true;
     searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 
@@ -78,6 +79,10 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
                 console.log(err);
                 this.loadingMain = false;
             });
+        setTimeout(() => {
+            this.workingStateVisible = false;
+            this.cdr.detectChanges();
+        }, 3000);
     }
 
     loadApiItemsDetails(): Promise<any> {
@@ -155,6 +160,8 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         }
         this.errorMessage = '';
         this.loadingMain = true;
+        this.workingStateVisible = true;
+        this.workingState = 'thinking';
         this.cdr.detectChanges();
 
         const apiUuidList = this.selectedApiList.map((item) => {
