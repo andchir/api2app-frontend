@@ -48,6 +48,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
     resultJsonString: string = '';
     workingState: 'greeting'|'thinking'|'idea'|'working'|'done' = 'greeting';
     workingStateVisible = true;
+    workingStateStopped = false;
     searchInput$ = new Subject<string>();
     destroyed$: Subject<void> = new Subject();
 
@@ -160,6 +161,7 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
         }
         this.errorMessage = '';
         this.loadingMain = true;
+        this.workingStateStopped = false;
         this.workingState = 'thinking';
         this.workingStateVisible = true;
         this.cdr.detectChanges();
@@ -183,6 +185,8 @@ export class EditAppAiComponent implements OnInit, OnDestroy {
                 error: (err) => {
                     this.errorMessage = this.localizeServerMessages(err.error || err.detail || $localize `Error.`);
                     this.loadingMain = false;
+                    this.workingStateStopped = true;
+                    this.workingStateVisible = false;
                     this.cdr.detectChanges();
                 }
             });
