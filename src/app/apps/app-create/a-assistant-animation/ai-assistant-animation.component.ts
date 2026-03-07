@@ -29,11 +29,6 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
     containerVisible: boolean = true;
 
-    @Input() set visible(v: boolean) {
-        this.containerVisible = v;
-        this.cdr.detectChanges();
-    }
-
     currentImg: string = 'assets/img/robot-4.png';
     currentPhrase: string = '';
     phraseVisible: boolean = false;
@@ -111,6 +106,11 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
             next: null
         }
     };
+
+    @Input() set visible(v: boolean) {
+        this.containerVisible = v;
+        this.cdr.detectChanges();
+    }
 
     @Input() set state(value: string) {
         if (value && this.states[value as keyof typeof this.states]) {
