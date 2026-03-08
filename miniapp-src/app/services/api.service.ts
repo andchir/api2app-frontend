@@ -10,6 +10,15 @@ import { RequestDataField } from '../apis/models/request-data-field.interface';
 import { DataService } from './data.service.abstract';
 import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 
+export interface ImportApiItem {
+    method: string;
+    path: string;
+    url: string;
+    name: string;
+    description: string;
+    tags: string[];
+}
+
 @Injectable()
 export class ApiService extends DataService<ApiItem> {
 
@@ -593,9 +602,17 @@ export class ApiService extends DataService<ApiItem> {
             );
     }
 
-    importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
+    importItem(inputString: string, inputLink: string = '', names?: string[]): Observable<{success: boolean}> {
         const url = `${BASE_URL}${this.locale}/api/v1/api_import_from_curl`;
-        return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
+        return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink, names}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    getImportList(inputLink: string): Observable<{success: boolean, apis: ImportApiItem[]}> {
+        const url = `${BASE_URL}${this.locale}/api/v1/api_import_list`;
+        return this.httpClient.post<{success: boolean, data: ImportApiItem[]}>(url, {inputLink}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -604,6 +621,14 @@ export class ApiService extends DataService<ApiItem> {
     cloneItem(uuid: string): Observable<{success: boolean}> {
         const url = `${this.requestUrl}/${uuid}/clone`
         return this.httpClient.post<{success: boolean}>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    editByAi(prompt: string, appData: any, apiUuidList: string[]): Observable<{result: string}> {
+        const url = `${BASE_URL}${this.locale}/api/v1/ai_assistant/edit_by_ai`
+        return this.httpClient.post<{result: string}>(url, {prompt, appData, apiUuidList}, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

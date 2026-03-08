@@ -37,7 +37,7 @@ export interface ApiItem {
     url?: string;
     method?: string;
 
-    urlPartIndex?: number,
+    urlPartIndex?: string | null,
     urlPartValue?: string | null,
 
     user?: User;
