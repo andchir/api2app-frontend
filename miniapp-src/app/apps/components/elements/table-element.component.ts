@@ -105,4 +105,20 @@ export class TableElementComponent implements ControlValueAccessor {
     removeRow(index: number): void {
         this.value.splice(index, 1);
     }
+
+    getExtension(value: string): string {
+        const lastDotIndex = value.lastIndexOf('.');
+        if (lastDotIndex === -1 || lastDotIndex === 0) {
+            return '';
+        }
+        return value.slice(lastDotIndex + 1).toLowerCase();
+    }
+
+    isImage(value: string): boolean {
+        const extension = this.getExtension(value);
+        const imageExtensions = [
+            'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'avif', 'heic', 'heif'
+        ];
+        return imageExtensions.includes(extension.toLowerCase());
+    }
 }
