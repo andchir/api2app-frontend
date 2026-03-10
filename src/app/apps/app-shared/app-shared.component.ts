@@ -273,7 +273,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         : targetValue !== hiddenByField[1];
                 } else if (['input-switch'].includes(targetElement.type)) {
                     element.hidden = !targetElement.enabled;
-                } else if (['image'].includes(targetElement.type)) {
+                } else if (['image', 'video', 'audio'].includes(targetElement.type)) {
                     element.hidden = !targetValue;
                 }
             }
@@ -609,10 +609,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let hiddenCount = 0;
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (element.hidden) {
+            if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
                 hiddenCount++;
             }
-            if (apiUuid !== targetApiUuid || element.hidden || !element.required) {
+            if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
