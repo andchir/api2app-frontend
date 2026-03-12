@@ -286,6 +286,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             && this.previewMode) {
                 element.hidden = true;
             }
+        // console.log('elementHiddenStateUpdate', element.type, element.value, element.hidden);
     }
 
     switchTab(tabIndex: number): void {
@@ -1014,13 +1015,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const responseContentType = response.headers.has('Content-type')
             ? response.headers.get('Content-type')
             : apiItem.responseContentType;
-        const elements = this.findElements(currentApiUuid, 'output', currentElement);
+
+        // const elements = this.findElements(currentApiUuid, 'output', currentElement);
+        const elements = this.appElements.output[currentApiUuid] || [];
+
         const blocks = this.findBlocksByElements(elements);
         blocks.forEach((block) => {
             if (block.options?.autoClear) {
                 this.clearElementsValues(block);
             }
         });
+
+        // console.log('createAppResponse', currentApiUuid, elements);
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
@@ -1335,6 +1341,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
+
+        // console.log('onElementValueChanged', element);
+
         const block = this.findBlock(element);
 
         if (element.loadValueInto && element.value) {
