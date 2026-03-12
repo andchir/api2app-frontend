@@ -358,7 +358,9 @@ Action button that triggers API calls.
 | `isDownloadMode`   | boolean | Download file on click                                       |
 | `isStickyPosition` | boolean | Sticky on scroll                                             |
 
-The button can receive a value, but it doesn't display that value. It only uses it for download mode (if it's a URL) or opening the link in a new browser tab. If the button is hidden, it becomes visible when it receives a value.
+The button can receive a value, but it doesn't display that value. It only uses it for download mode (if it's a URL or base64) or opening the link in a new browser tab. If the button is hidden, it becomes visible when it receives a value.
+
+To make `isDownloadMode` work, you can send the same value to the button as to the media.
 
 #### `input-select-image`
 
