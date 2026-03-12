@@ -524,7 +524,9 @@ Elements connect to API endpoints via the `options` object.
 
 - `inputApiUuid` — UUID of the API endpoint
 - `inputApiFieldName` — Path in request body (dot notation: `data.question`)
-- `inputApiFieldType` — `"input"` for body fields, `"url"` for URL parameters
+- `inputApiFieldType` — `input` for body fields, `url` for URL parameters, `params` for query parameters, `headers` for headers
+
+If you need to use `inputApiFieldType`="url", the `inputApiFieldName` specifies the position of the parameter (number from 0) between the separators `/`.
 
 ### Output Binding (receiving data)
 
