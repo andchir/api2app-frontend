@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
+import {type} from "node:os";
 
 
 @Component({
@@ -107,6 +108,9 @@ export class TableElementComponent implements ControlValueAccessor {
     }
 
     getExtension(value: string): string {
+        if (typeof value !== 'string') {
+            return '';
+        }
         const lastDotIndex = value.lastIndexOf('.');
         if (lastDotIndex === -1 || lastDotIndex === 0) {
             return '';
