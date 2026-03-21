@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
-import { Subject, filter, map, race, take, takeUntil } from 'rxjs';
+import { Subject, Subscription, filter, map, race, take, takeUntil } from 'rxjs';
 import * as ace from 'ace-builds';
 
 import { ApiService } from '../../services/api.service';
@@ -58,6 +58,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     aceEditorRequest: any;
     bodyInputFullScreen: boolean = false;
     destroyed$: Subject<void> = new Subject();
+    private wsTestSubscription?: Subscription;
 
     constructor(
         protected apiService: ApiService,
@@ -169,11 +170,19 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         return u.startsWith('ws://') || u.startsWith('wss://');
     }
 
+    private cancelWebSocketTestSubscriptions(): void {
+        this.wsTestSubscription?.unsubscribe();
+        this.wsTestSubscription = undefined;
+    }
+
     private apiWebSocketTestRequest(url: string): void {
         if (this.loading || this.submitted) {
             return;
         }
         const method = (this.apiItem.requestMethod || 'GET').toUpperCase();
+
+        this.cancelWebSocketTestSubscriptions();
+        this.wsTestSubscription = new Subscription();
 
         this.isResponseError = false;
         this.apiItem.responseBody = '';
@@ -182,22 +191,25 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         this.websocketService.disconnect();
 
         // DEBUG(ws): remove after debugging
-        console.log('[WS debug] api test', {method, url});
+        // console.log('[WS debug] api test', {method, url});
 
         const subscribeInboundStreams = (): void => {
-            this.websocketService.message$
+            const messageSub = this.websocketService.message$
                 .pipe(filter((m) => m.url === url))
                 .subscribe((m) => {
                     // DEBUG(ws): remove after debugging
-                    console.log('[WS debug] inbound (response update)', {url, data: m.data});
+                    // console.log('[WS debug] inbound (response update)', {url, data: m.data});
                     this.applyWebSocketResponseBody(m.data);
                 });
 
-            this.websocketService.error$
+            const errorSub = this.websocketService.error$
                 .pipe(filter((e) => e.url === url))
                 .subscribe(() => {
                     this.setWebSocketTestError('WebSocket error');
                 });
+
+            this.wsTestSubscription!.add(messageSub);
+            this.wsTestSubscription!.add(errorSub);
         };
 
         if (method === 'POST') {
@@ -212,23 +224,22 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                 map(() => 'error' as const)
             );
 
-            race(opened$, failed$)
-                .pipe(takeUntil(this.destroyed$))
-                .subscribe({
-                    next: (outcome) => {
-                        if (outcome === 'error') {
-                            this.setWebSocketTestError('WebSocket error');
-                            this.websocketService.disconnect(url);
-                            return;
-                        }
-                        subscribeInboundStreams();
-                        try {
-                            this.websocketService.sendText(url, this.apiItem.bodyContent ?? '');
-                        } catch (e) {
-                            this.setWebSocketTestError(e instanceof Error ? e.message : String(e));
-                        }
+            const raceSub = race(opened$, failed$).subscribe({
+                next: (outcome) => {
+                    if (outcome === 'error') {
+                        this.setWebSocketTestError('WebSocket error');
+                        this.websocketService.disconnect(url);
+                        return;
                     }
-                });
+                    subscribeInboundStreams();
+                    try {
+                        this.websocketService.sendText(url, this.apiItem.bodyContent ?? '');
+                    } catch (e) {
+                        this.setWebSocketTestError(e instanceof Error ? e.message : String(e));
+                    }
+                }
+            });
+            this.wsTestSubscription.add(raceSub);
         } else {
             subscribeInboundStreams();
         }
@@ -238,8 +249,10 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     private applyWebSocketResponseBody(data: unknown): void {
         if (typeof data === 'object' && data !== null) {
+            this.responseContentTypeUpdate('json');
             this.apiItem.responseBody = JSON.stringify(data, null, 4);
         } else {
+            this.responseContentTypeUpdate('text');
             this.apiItem.responseBody = String(data ?? '');
         }
         if (this.aceEditor && !this.getIsMediaType(this.apiItem.responseContentType)) {
@@ -249,7 +262,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     private setWebSocketTestError(message: string): void {
         this.isResponseError = true;
-        this.apiItem.responseContentType = 'json';
+        this.responseContentTypeUpdate('json');
         this.apiItem.responseBody = JSON.stringify({ error: message }, null, 2);
         if (this.aceEditor) {
             this.aceEditor.session.setValue(this.apiItem.responseBody);
@@ -306,7 +319,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                                 });
                             });
                             if ((res.headers.get('content-type') || '').indexOf('image/') === 0) {
-                                this.apiItem.responseContentType = 'image';
+                                this.responseContentTypeUpdate('image');
                             }
                         }
                         if (res.body) {
@@ -346,7 +359,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                     }
 
                     const errorMessage = err?.message || 'Error.';
-                    this.apiItem.responseContentType = 'json';
+                    this.responseContentTypeUpdate('json');
                     this.apiItem.responseBody = '{"error": "' + errorMessage + '"}';
                     this.aceEditor.session.setValue(this.apiItem.responseBody);
 
@@ -409,6 +422,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     }
 
     ngOnDestroy() {
+        this.cancelWebSocketTestSubscriptions();
         this.websocketService.disconnect();
         this.destroyed$.next();
         this.destroyed$.complete();

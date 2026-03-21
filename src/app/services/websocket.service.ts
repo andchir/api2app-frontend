@@ -26,14 +26,14 @@ export class WebsocketService {
         }
 
         // DEBUG(ws): remove after debugging
-        console.log('[WS debug] connect', url);
+        // console.log('[WS debug] connect', url);
 
         const ws = new WebSocket(url);
         this.sockets.set(url, ws);
 
         ws.onopen = () => {
             // DEBUG(ws): remove after debugging
-            console.log('[WS debug] open', url);
+            // console.log('[WS debug] open', url);
             this.open$.next(url);
         };
 
@@ -47,13 +47,13 @@ export class WebsocketService {
                 }
             }
             // DEBUG(ws): remove after debugging
-            console.log('[WS debug] inbound', {url, raw: event.data, data});
+            // console.log('[WS debug] inbound', {url, raw: event.data, data});
             this.message$.next({url, data});
         };
 
         ws.onerror = (event: Event) => {
             // DEBUG(ws): remove after debugging
-            console.log('[WS debug] error event', {url, event});
+            // console.log('[WS debug] error event', {url, event});
             this.error$.next({url, event});
         };
 
@@ -62,7 +62,7 @@ export class WebsocketService {
                 this.sockets.delete(url);
             }
             // DEBUG(ws): remove after debugging
-            console.log('[WS debug] close', {url, code: event.code, reason: event.reason});
+            // console.log('[WS debug] close', {url, code: event.code, reason: event.reason});
             this.close$.next({url, code: event.code, reason: event.reason});
         };
     }
@@ -84,7 +84,7 @@ export class WebsocketService {
         }
         const out = JSON.stringify(payload);
         // DEBUG(ws): remove after debugging
-        console.log('[WS debug] sendJson', {url, payload});
+        // console.log('[WS debug] sendJson', {url, payload});
         ws.send(out);
     }
 
@@ -94,7 +94,7 @@ export class WebsocketService {
             throw new Error(`WebSocket is not open for ${url}`);
         }
         // DEBUG(ws): remove after debugging
-        console.log('[WS debug] sendText', {url, text});
+        // console.log('[WS debug] sendText', {url, text});
         ws.send(text);
     }
 
