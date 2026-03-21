@@ -26,6 +26,7 @@ import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { AuthService } from '../../services/auth.service';
+import { WebsocketService } from '../../services/websocket.service';
 import { EditAppAiComponent } from './edit-app-ai/edit-app-ai.component';
 import { ApplicationItem } from '../models/application-item.interface';
 
@@ -107,10 +108,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         routerEventsService: RouterEventsService,
         vkBridgeService: VkBridgeService,
         authService: AuthService,
+        websocketService: WebsocketService,
         private dragulaService: DragulaService
     ) {
         super(cdr, titleService, sanitizer, route, router, tokenStorageService, dataService, apiService,
-            modalService, routerEventsService, vkBridgeService, authService);
+            modalService, routerEventsService, vkBridgeService, authService, websocketService);
         dragulaService.createGroup('BLOCK_ELEMENTS', {
             removeOnSpill: false,
             moves: (el, container, handle) => {
