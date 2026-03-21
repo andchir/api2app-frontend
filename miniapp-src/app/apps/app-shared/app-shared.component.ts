@@ -12,8 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { take } from 'rxjs/operators';
-import { firstValueFrom, Subject, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
@@ -29,6 +28,7 @@ import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
+import { WebsocketService } from '../../services/websocket.service';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -76,6 +76,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
+    private wsAppSubmitSubscription?: Subscription;
 
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
@@ -91,7 +92,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected dataService: ApplicationService,
         protected apiService: ApiService,
         protected modalService: ModalService,
-        protected vkBridgeService: VkBridgeService
+        protected vkBridgeService: VkBridgeService,
+        protected websocketService: WebsocketService
     ) {}
 
     ngOnInit(): void {
@@ -387,6 +389,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         let timer: any;
 
+        const requestUrl = (apiItem.requestUrl || '').trim();
+        if (this.isWebSocketRequestUrl(requestUrl)) {
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            return;
+        }
+
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -460,6 +468,130 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.stateLoadingUpdate(blocks, false, false);
                 }
             });
+    }
+
+    private isWebSocketRequestUrl(url: string): boolean {
+        const u = url.toLowerCase();
+        return u.startsWith('ws://') || u.startsWith('wss://');
+    }
+
+    private cancelAppSubmitWebSocketSubscription(): void {
+        this.wsAppSubmitSubscription?.unsubscribe();
+        this.wsAppSubmitSubscription = undefined;
+    }
+
+    private appSubmitWebSocketRequest(
+        appUuid: string,
+        apiUuid: string,
+        apiItem: ApiItem,
+        currentApi: ApiItem,
+        currentElement: AppBlockElement,
+        blocks: AppBlock[],
+        showMessages: boolean
+    ): void {
+        const url = (apiItem.requestUrl || '').trim();
+        const method = (apiItem.requestMethod || 'GET').toUpperCase();
+
+        this.cancelAppSubmitWebSocketSubscription();
+        this.wsAppSubmitSubscription = new Subscription();
+        this.websocketService.disconnect();
+
+        let firstInbound = true;
+        let errorSettled = false;
+
+        const onWsError = (msg?: string): void => {
+            if (errorSettled) {
+                return;
+            }
+            errorSettled = true;
+            this.loading = false;
+            this.submitted = false;
+            this.progressUpdating = false;
+            this.messageType = 'error';
+            this.message = msg ?? 'WebSocket error';
+            this.onError(apiUuid);
+            this.stateLoadingUpdate(blocks, false, false);
+            this.websocketService.disconnect(url);
+            this.cancelAppSubmitWebSocketSubscription();
+            this.cdr.detectChanges();
+        };
+
+        const applyInbound = (data: unknown): void => {
+            if (firstInbound) {
+                if (this.appsAutoStarted.includes(apiUuid)) {
+                    this.afterAutoStarted(apiUuid);
+                }
+                this.loading = false;
+                this.submitted = false;
+                this.stateLoadingUpdate(
+                    blocks,
+                    false,
+                    showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating
+                );
+                this.progressUpdating = false;
+                firstInbound = false;
+            }
+            this.applyParsedApiResponseToApp(currentApi, data as any, currentElement);
+            this.cdr.detectChanges();
+        };
+
+        const subscribeInboundStreams = (): void => {
+            const messageSub = this.websocketService.message$
+                .pipe(
+                    filter((m) => m.url === url),
+                    takeUntil(this.destroyed$)
+                )
+                .subscribe((m) => {
+                    applyInbound(m.data);
+                });
+
+            const errorSub = this.websocketService.error$
+                .pipe(
+                    filter((e) => e.url === url),
+                    takeUntil(this.destroyed$)
+                )
+                .subscribe(() => {
+                    onWsError();
+                });
+
+            this.wsAppSubmitSubscription!.add(messageSub);
+            this.wsAppSubmitSubscription!.add(errorSub);
+        };
+
+        if (method === 'POST') {
+            const opened$ = this.websocketService.open$.pipe(
+                filter((u) => u === url),
+                take(1),
+                takeUntil(this.destroyed$),
+                map(() => 'open' as const)
+            );
+            const failed$ = this.websocketService.error$.pipe(
+                filter((e) => e.url === url),
+                take(1),
+                takeUntil(this.destroyed$),
+                map(() => 'error' as const)
+            );
+
+            const raceSub = race(opened$, failed$).subscribe({
+                next: (outcome) => {
+                    if (outcome === 'error') {
+                        onWsError();
+                        return;
+                    }
+                    subscribeInboundStreams();
+                    try {
+                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                    } catch (e) {
+                        onWsError(e instanceof Error ? e.message : String(e));
+                    }
+                }
+            });
+            this.wsAppSubmitSubscription!.add(raceSub);
+        } else {
+            subscribeInboundStreams();
+        }
+
+        this.websocketService.connect(url);
     }
 
     removeAutoStart(apiUuid: string): void {
@@ -995,14 +1127,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!response.body) {
             return;
         }
-        const currentApiUuid = apiItem.uuid;
         const responseContentType = response.headers.has('Content-type')
             ? response.headers.get('Content-type')
             : apiItem.responseContentType;
 
-        // const elements = this.findElements(currentApiUuid, 'output', currentElement);
-        const elements = this.appElements.output[currentApiUuid] || [];
+        this.apiService.getDataFromBlob(response.body, responseContentType)
+            .then((data) => {
+                this.applyParsedApiResponseToApp(apiItem, data, currentElement);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    }
 
+    private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement): void {
+        const currentApiUuid = apiItem.uuid;
+        const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
         blocks.forEach((block) => {
             if (block.options?.autoClear) {
@@ -1010,37 +1150,28 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
 
-        // console.log('createAppResponse', currentApiUuid, elements);
+        const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
+        const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
-        this.apiService.getDataFromBlob(response.body, responseContentType)
-            .then((data) => {
-                const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
-                const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
+        elements.forEach((element, index) => {
+            if (element.type === 'input-chart-line') {
+                this.chartElementValueApply(element, data);
+            } else if (element.type === 'input-pagination') {
+                this.paginationValueApply(element, valuesObj, data);
+            } else {
+                this.blockElementValueApply(element, valuesObj, data);
+            }
+            this.elementHiddenStateUpdate(element);
+        });
 
-                elements.forEach((element, index) => {
-                    if (element.type === 'input-chart-line') {
-                        this.chartElementValueApply(element, data);
-                    } else if (element.type === 'input-pagination') {
-                        this.paginationValueApply(element, valuesObj, data);
-                    } else {
-                        this.blockElementValueApply(element, valuesObj, data);
-                    }
-                    this.elementHiddenStateUpdate(element);
-                });
+        if (this.isVkApp && data?.result_data?.vk_file_to_save) {
+            this.vkSaveFile(data.result_data.vk_file_to_save, elements);
+        }
+        if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
+            this.vkBridgeService.showAds(this.vkAppOptions);
+        }
 
-                // Save file to VK files section
-                if (this.isVkApp && data?.result_data?.vk_file_to_save) {
-                    this.vkSaveFile(data.result_data.vk_file_to_save, elements);
-                }
-                if (this.isVkApp && currentElement.type === 'button' && this.data.advertising) {
-                    this.vkBridgeService.showAds(this.vkAppOptions);
-                }
-
-                this.afterResponseCreated(blocks);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        this.afterResponseCreated(blocks);
     }
 
     createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
@@ -1714,6 +1845,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        this.cancelAppSubmitWebSocketSubscription();
+        this.websocketService.disconnect();
         this.destroyed$.next();
         this.destroyed$.complete();
     }
