@@ -370,7 +370,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, actionType, elements);
+        const apiItem = this.prepareApiItem(currentApi, 'input', elements);
 
         // Clear output blocks
         const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
