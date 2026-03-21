@@ -7,10 +7,9 @@ import {
     EventEmitter,
     forwardRef,
     Input,
-    OnChanges,
+    NgZone,
     OnDestroy,
     Output,
-    SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { NgClass, NgIf } from '@angular/common';
@@ -33,7 +32,7 @@ import WaveSurfer from 'wavesurfer.js';
     }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnChanges, OnDestroy {
+export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy {
 
     @ViewChild('waveformContainer', { static: false }) waveformContainer!: ElementRef<HTMLDivElement>;
 
@@ -75,46 +74,74 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         return this._value;
     }
 
-    @Input()
-    set value(val: string | Blob) {
-        if (val !== this._value) {
-            if (typeof val === 'string' && val.startsWith('data:audio/pcm')) {
-                this.value = this.pcmBase64ToWav(val);
-                return;
-            }
-            this._value = val || '';
-            this.onChange(this._value);
-            if (this.wavesurfer && val) {
-                this.loadAudio(val);
-            }
-            this.cdr.detectChanges();
-        }
-    }
-
     constructor(
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private ngZone: NgZone
     ) {}
 
     ngAfterViewInit(): void {
-        if (this._value && this.waveformContainer) {
-            this.initWavesurfer();
-        }
+        this.syncWavesurferWithValue();
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['value'] && !changes['value'].firstChange) {
-            const newValue = changes['value'].currentValue;
-            if (newValue && this.waveformContainer) {
-                if (!this.wavesurfer) {
-                    this.initWavesurfer();
-                } else {
-                    this.loadAudio(newValue);
-                }
+    private setAudioSource(raw: string | Blob | null | undefined): void {
+        const normalized = this.normalizeIncomingValue(raw);
+        if (normalized === this._value) {
+            return;
+        }
+        this._value = normalized;
+        this.syncWavesurferWithValue();
+        this.runInZoneAndMarkForCheck();
+    }
+
+    private normalizeIncomingValue(raw: string | Blob | null | undefined): string | Blob {
+        if (raw == null) {
+            return '';
+        }
+        if (typeof raw === 'string') {
+            if (raw === '') {
+                return '';
             }
+            if (raw.startsWith('data:audio/pcm')) {
+                return this.pcmBase64ToWav(raw);
+            }
+            return raw;
         }
+        return raw;
     }
 
-    pcmBase64ToWav(base64Audio: string, sampleRate: number = 24000, numChannels: number = 1, bitsPerSample: number = 16): any {
+    private syncWavesurferWithValue(): void {
+        if (!this._value) {
+            this.destroyWavesurfer();
+            return;
+        }
+        if (!this.waveformContainer?.nativeElement) {
+            return;
+        }
+        if (!this.wavesurfer) {
+            this.initWavesurfer();
+            return;
+        }
+        this.loadAudio(this._value);
+    }
+
+    private destroyWavesurfer(): void {
+        if (this.wavesurfer) {
+            this.wavesurfer.destroy();
+            this.wavesurfer = null;
+        }
+        this.isPlaying = false;
+        this.isLoading = false;
+        this.currentTime = '0:00';
+        this.duration = '0:00';
+        this.hasError = false;
+        this.errorMessage = '';
+    }
+
+    private runInZoneAndMarkForCheck(): void {
+        this.ngZone.run(() => this.cdr.markForCheck());
+    }
+
+    pcmBase64ToWav(base64Audio: string, sampleRate: number = 24000, numChannels: number = 1, bitsPerSample: number = 16): Blob {
         if (base64Audio.startsWith('data:')) {
             base64Audio = base64Audio.substring(base64Audio.indexOf(',') + 1);
         }
@@ -199,7 +226,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.isLoading = true;
         this.hasError = false;
         this.errorMessage = '';
-        this.cdr.detectChanges();
+        this.runInZoneAndMarkForCheck();
 
         this.wavesurfer = WaveSurfer.create({
             container: this.waveformContainer.nativeElement,
@@ -220,27 +247,27 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.wavesurfer.on('ready', () => {
             this.isLoading = false;
             this.duration = this.formatTime(this.wavesurfer?.getDuration() || 0);
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('play', () => {
             this.isPlaying = true;
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('pause', () => {
             this.isPlaying = false;
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('finish', () => {
             this.isPlaying = false;
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('timeupdate', (currentTime: number) => {
             this.currentTime = this.formatTime(currentTime);
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('error', (error: Error) => {
@@ -248,13 +275,13 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
             this.hasError = true;
             this.errorMessage = $localize `Failed to load audio`;// error.message || 'Failed to load audio';
             console.error('Wavesurfer error:', error);
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('loading', () => {
             this.isLoading = true;
             this.hasError = false;
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         });
 
         if (this._value) {
@@ -272,8 +299,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.errorMessage = '';
         this.currentTime = '0:00';
         this.duration = '0:00';
-        this.cdr.detectChanges();
-
+        this.runInZoneAndMarkForCheck();
 
         try {
             if (this.wavesurfer && url instanceof Blob) {
@@ -284,9 +310,9 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         } catch (error) {
             this.isLoading = false;
             this.hasError = true;
-            this.errorMessage = $localize `Failed to load audio`;;
+            this.errorMessage = $localize `Failed to load audio`;
             console.error('Failed to load audio:', error);
-            this.cdr.detectChanges();
+            this.runInZoneAndMarkForCheck();
         }
     }
 
@@ -324,14 +350,27 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     }
 
     downloadFromUrl(downloadUrl: string): void {
+        this.isLoading = true;
+        this.runInZoneAndMarkForCheck();
         fetch(downloadUrl)
-            .then(response => response.blob())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                return response.blob();
+            })
             .then(blob => {
                 const mimeType = blob.type || null;
                 const filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
                 this.downloadBlob(blob, filename);
             })
-            .catch(console.error);
+            .catch(err => {
+                console.error('Download failed:', err);
+            })
+            .finally(() => {
+                this.isLoading = false;
+                this.runInZoneAndMarkForCheck();
+            });
     }
 
     generateFilename(
@@ -365,19 +404,8 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
 
     onTouched(_: any) {}
 
-    writeValue(value: string): void {
-        this._value = value || '';
-        if (this._value && this.waveformContainer) {
-            if (!this.wavesurfer) {
-                // Delay initialization to ensure the container is ready
-                setTimeout(() => {
-                    this.initWavesurfer();
-                }, 0);
-            } else {
-                this.loadAudio(this._value);
-            }
-        }
-        this.cdr.detectChanges();
+    writeValue(value: string | Blob | null | undefined): void {
+        this.setAudioSource(value);
     }
 
     registerOnChange(fn: (_: any) => void) {
@@ -389,9 +417,6 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     }
 
     ngOnDestroy(): void {
-        if (this.wavesurfer) {
-            this.wavesurfer.destroy();
-            this.wavesurfer = null;
-        }
+        this.destroyWavesurfer();
     }
 }

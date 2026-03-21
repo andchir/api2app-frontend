@@ -423,7 +423,8 @@
             <div class="block w-full max-w-[600px] mx-auto">
                 <app-audio-player
                     [editorMode]="editorMode"
-                    [value]="options?.value"></app-audio-player>
+                    [(ngModel)]="options.value"
+                    (ngModelChange)="onFieldValueChanged()"></app-audio-player>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
