@@ -56,15 +56,32 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     hasError: boolean = false;
     errorMessage: string = '';
 
-    private _value: string = '';
+    MIME_TO_EXTENSION: Record<string, string> = {
+        'audio/wav': 'wav',
+        'audio/mpeg': 'mp3',
+        'audio/mp3': 'mp3',
+        'audio/ogg': 'ogg',
+        'audio/webm': 'webm',
+        'audio/flac': 'flac',
+        'audio/aac': 'aac',
+        'audio/x-m4a': 'm4a',
+        'audio/pcm': 'pcm',
+        'audio/x-pcm': 'pcm'
+    };
 
-    get value(): string {
+    private _value: string | Blob = '';
+
+    get value(): string | Blob {
         return this._value;
     }
 
     @Input()
-    set value(val: string) {
+    set value(val: string | Blob) {
         if (val !== this._value) {
+            if (typeof val === 'string' && val.startsWith('data:audio/pcm')) {
+                this.value = this.pcmBase64ToWav(val);
+                return;
+            }
             this._value = val || '';
             this.onChange(this._value);
             if (this.wavesurfer && val) {
@@ -95,6 +112,77 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
                 }
             }
         }
+    }
+
+    pcmBase64ToWav(base64Audio: string, sampleRate: number = 24000, numChannels: number = 1, bitsPerSample: number = 16): any {
+        if (base64Audio.startsWith('data:')) {
+            base64Audio = base64Audio.substring(base64Audio.indexOf(',') + 1);
+        }
+
+        let binaryString;
+        try {
+            binaryString = atob(base64Audio);
+        } catch (e) {
+            console.error('Base64 decoding error:', e);
+            throw new Error('Invalid base64 data');
+        }
+
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+
+        // 3. Receive PCM data (16-bit little-endian)
+        // Ensure the buffer contains an even number of bytes for 16-bit data
+        if (bytes.length % 2 !== 0) {
+            console.warn('PCM data has an odd number of bytes, trim the last byte');
+        }
+
+        const pcmData = new Int16Array(bytes.buffer, bytes.byteOffset, Math.floor(bytes.length / 2));
+
+        // 4. Create a WAV header
+        const byteRate = sampleRate * numChannels * (bitsPerSample / 8);
+        const blockAlign = numChannels * (bitsPerSample / 8);
+        const dataSize = pcmData.length * (bitsPerSample / 8);
+        const headerSize = 44;
+        const totalSize = headerSize + dataSize;
+
+        const wavBuffer = new ArrayBuffer(totalSize);
+        const view = new DataView(wavBuffer);
+
+        // RIFF chunk
+        writeString(view, 0, 'RIFF');
+        view.setUint32(4, totalSize - 8, true); // размер файла минус RIFF и размер
+        writeString(view, 8, 'WAVE');
+
+        // fmt subchunk
+        writeString(view, 12, 'fmt ');
+        view.setUint32(16, 16, true); // размер fmt чанка (16 для PCM)
+        view.setUint16(20, 1, true);  // PCM формат
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, byteRate, true);
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, bitsPerSample, true);
+
+        // data subchunk
+        writeString(view, 36, 'data');
+        view.setUint32(40, dataSize, true);
+
+        // Writing PCM data
+        let offset = 44;
+        for (let i = 0; i < pcmData.length; i++) {
+            view.setInt16(offset, pcmData[i], true);
+            offset += 2;
+        }
+
+        function writeString(view, offset, string) {
+            for (let i = 0; i < string.length; i++) {
+                view.setUint8(offset + i, string.charCodeAt(i));
+            }
+        }
+
+        return new Blob([wavBuffer], { type: 'audio/wav' });
     }
 
     private initWavesurfer(): void {
@@ -174,7 +262,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         }
     }
 
-    private loadAudio(url: string): void {
+    private loadAudio(url: string | Blob): void {
         if (!this.wavesurfer) {
             return;
         }
@@ -186,8 +274,13 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.duration = '0:00';
         this.cdr.detectChanges();
 
+
         try {
-            this.wavesurfer.load(url);
+            if (this.wavesurfer && url instanceof Blob) {
+                this.wavesurfer.loadBlob(url);
+            } else {
+                this.wavesurfer.load(String(url));
+            }
         } catch (error) {
             this.isLoading = false;
             this.hasError = true;
@@ -202,6 +295,61 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
             return;
         }
         this.wavesurfer.playPause();
+    }
+
+    downloadAudio(): void {
+        if (!this.wavesurfer || this.isLoading || this.hasError) {
+            return;
+        }
+        if (this.value instanceof Blob) {
+            this.downloadBlob(this.value);
+        } else {
+            this.downloadFromUrl(String(this.value));
+        }
+    }
+
+    downloadBlob(blob: Blob, filename: string = ''): void {
+        if (!filename) {
+            const mimeType = blob.type || null;
+            filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
+        }
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    downloadFromUrl(downloadUrl: string): void {
+        fetch(downloadUrl)
+            .then(response => response.blob())
+            .then(blob => {
+                const mimeType = blob.type || null;
+                const filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
+                this.downloadBlob(blob, filename);
+            })
+            .catch(console.error);
+    }
+
+    generateFilename(
+        mimeType: string,
+        filename: string = 'audio'
+    ): string {
+        const extension = this.getExtensionFromMimeType(mimeType);
+
+        // Очищаем имя файла от недопустимых символов
+        const safeFilename = filename.replace(/[<>:"/\\|?*\x00-\x1f]/g, '_');
+        const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+
+        return `${safeFilename}_${timestamp}.${extension}`;
+    }
+
+    getExtensionFromMimeType(mimeType: string): string {
+        const cleanMime = mimeType.split(';')[0].trim();
+        return this.MIME_TO_EXTENSION[cleanMime] || cleanMime.split('/')[1] || 'txt';
     }
 
     private formatTime(seconds: number): string {
