@@ -47,6 +47,15 @@
                 <div class="flex-grow min-w-0">
                     <div #waveformContainer class="w-full cursor-pointer"></div>
                 </div>
+
+                <button type="button"
+                        class="flex-shrink-0 w-8 h-8 text-center rounded-md bg-gray-200 hover:bg-gray-300 border border-gray-300 text-gray-600 hover:text-gray-800 transition-colors shadow-md focus:outline-none focus:ring-4 focus:ring-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Download"
+                        i18n-title
+                        [disabled]="isLoading || hasError || !value"
+                        (click)="downloadAudio()">
+                    <i class="bi bi-download"></i>
+                </button>
             </div>
 
             <!-- Time Display -->
