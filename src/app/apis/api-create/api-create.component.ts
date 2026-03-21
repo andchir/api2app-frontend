@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ApiItem } from '../models/api-item.interface';
+import { ApiItemMessageEvent } from '../api-item/api-item.component';
 import { ApiService } from '../../services/api.service';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { ModalService } from '../../services/modal.service';
@@ -187,6 +188,11 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     onSenderChange(sender: string) {
         this.senderValue = sender;
+    }
+
+    onApiItemMessage(event: ApiItemMessageEvent): void {
+        this.message = event.text;
+        this.messageType = event.type;
     }
 
     apiSettingsToggle(): void {

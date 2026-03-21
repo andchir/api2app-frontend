@@ -440,6 +440,8 @@
         "4984038534046452095": "Lecteur audio",
         "7627108528255498101": "Impossible de charger l'audio",
         "42192924057069166": "Développement assisté par l'IA",
-        "6168645628279325593": "La configuration de l'API a été importée avec succès."
+        "6168645628279325593": "La configuration de l'API a été importée avec succès.",
+        "4556705427290559215": "Impossible de se connecter au serveur WebSocket.",
+        "493309775979575288": "Connexion au serveur WebSocket établie."
     }
 }

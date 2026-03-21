@@ -19,6 +19,11 @@ import { WebsocketService } from '../../services/websocket.service';
 import { SseErrorEvent } from 'ngx-sse-client';
 import { ApiItem } from '../models/api-item.interface';
 
+export interface ApiItemMessageEvent {
+    text: string;
+    type: 'error' | 'success';
+}
+
 @Component({
     selector: 'app-api-item',
     templateUrl: './api-item.component.html',
@@ -31,6 +36,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     @Input() authorized = true;
     @Output() senderChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() urlEnter: EventEmitter<string> = new EventEmitter<string>();
+    @Output() message = new EventEmitter<ApiItemMessageEvent>();
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
 
@@ -205,7 +211,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
             const errorSub = this.websocketService.error$
                 .pipe(filter((e) => e.url === url))
                 .subscribe(() => {
-                    this.setWebSocketTestError('WebSocket error');
+                    this.setWebSocketTestError($localize `Не удалось установить соединение с WebSocket сервером`);
                 });
 
             this.wsTestSubscription!.add(messageSub);
@@ -227,10 +233,11 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
             const raceSub = race(opened$, failed$).subscribe({
                 next: (outcome) => {
                     if (outcome === 'error') {
-                        this.setWebSocketTestError('WebSocket error');
+                        this.setWebSocketTestError($localize `Не удалось установить соединение с WebSocket сервером`);
                         this.websocketService.disconnect(url);
                         return;
                     }
+                    this.emitItemMessage($localize `Соединение с WebSocket сервером установлено`, 'success');
                     subscribeInboundStreams();
                     try {
                         this.websocketService.sendText(url, this.apiItem.bodyContent ?? '');
@@ -241,6 +248,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
             });
             this.wsTestSubscription.add(raceSub);
         } else {
+            const openSub = this.websocketService.open$
+                .pipe(filter((u) => u === url), take(1))
+                .subscribe(() => {
+                    this.emitItemMessage($localize `Соединение с WebSocket сервером установлено`, 'success');
+                });
+            this.wsTestSubscription.add(openSub);
             subscribeInboundStreams();
         }
 
@@ -260,7 +273,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         }
     }
 
+    private emitItemMessage(text: string, type: 'error' | 'success'): void {
+        this.message.emit({ text, type });
+    }
+
     private setWebSocketTestError(message: string): void {
+        this.emitItemMessage(message, 'error');
         this.isResponseError = true;
         this.responseContentTypeUpdate('json');
         this.apiItem.responseBody = JSON.stringify({ error: message }, null, 2);
