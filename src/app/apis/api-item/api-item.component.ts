@@ -240,7 +240,7 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
                     this.emitItemMessage($localize `Соединение с WebSocket сервером установлено`, 'success');
                     subscribeInboundStreams();
                     try {
-                        this.websocketService.sendText(url, this.apiItem.bodyContent ?? '');
+                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText('test', this.apiItem));
                     } catch (e) {
                         this.setWebSocketTestError(e instanceof Error ? e.message : String(e));
                     }

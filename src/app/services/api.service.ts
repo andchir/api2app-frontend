@@ -259,21 +259,19 @@ export class ApiService extends DataService<ApiItem> {
         return inputString;
     }
 
-    apiRequest(appUuid: string, apiItem: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>|Event> {
-        const requestUrl = ApiService.getApiRequestUrl(apiItem, isApiTesting);
-        const requestMethod = ApiService.getApiRequestMethod(apiItem);
+    /**
+     * Same body / FormData assembly as apiRequest uses before server wrapping and applyInnerParams.
+     * Mutates apiItem.bodyFields (VK data field) like apiRequest.
+     */
+    private buildInitialRequestBodyData(apiItem: ApiItem): {
+        body: any;
+        bodyRaw: any;
+        bodyRawFlatten: any;
+        formData: FormData;
+        sendAsFormData: boolean;
+    } {
         const bodyDataSource = apiItem.bodyDataSource;
         const sendAsFormData = (apiItem?.sendAsFormData || false) && bodyDataSource === 'fields';
-        const headersData: {[header: string]: string} = ApiService.getApiHeaders(apiItem);
-
-        if (sendAsFormData) {
-            // headersData['Enctype'] = 'multipart/form-data';
-            // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
-            delete headersData['Content-Type'];
-            delete headersData['content-Type'];
-        }
-
-        // Request body
         const bodyContent = apiItem.requestContentType === 'json' && apiItem.bodyContent
             ? JSON.parse(apiItem.bodyContent)
             : apiItem.bodyContent || null;
@@ -359,6 +357,45 @@ export class ApiService extends DataService<ApiItem> {
                     }
                 }
             });
+        }
+        return {body, bodyRaw, bodyRawFlatten, formData, sendAsFormData};
+    }
+
+    /**
+     * WebSocket POST text payload with {SESSION_ID} / {DATE_SESSION_ID} and __inner applied, matching apiRequest.
+     */
+    getWebSocketPostBodyText(appUuid: string, apiItem: ApiItem): string {
+        const {body, bodyRaw, formData, sendAsFormData} = this.buildInitialRequestBodyData(apiItem);
+        if (apiItem.sender === 'server' || sendAsFormData) {
+            return apiItem.bodyContent ?? '';
+        }
+        let requestData = body || bodyRaw;
+        if (requestData === null || requestData === undefined) {
+            return '';
+        }
+        requestData = this.applyInnerParams(appUuid, requestData);
+        if (requestData === null || requestData === undefined) {
+            return '';
+        }
+        if (typeof requestData === 'object') {
+            return JSON.stringify(requestData);
+        }
+        return String(requestData);
+    }
+
+    apiRequest(appUuid: string, apiItem: ApiItem, isApiTesting = true, vkAppOptions?: VkAppOptions): Observable<HttpResponse<any>|Event> {
+        const requestUrl = ApiService.getApiRequestUrl(apiItem, isApiTesting);
+        const requestMethod = ApiService.getApiRequestMethod(apiItem);
+        const headersData: {[header: string]: string} = ApiService.getApiHeaders(apiItem);
+
+        const {body: bodyInit, bodyRaw, bodyRawFlatten, formData, sendAsFormData} = this.buildInitialRequestBodyData(apiItem);
+        let body: any = bodyInit;
+
+        if (sendAsFormData) {
+            // headersData['Enctype'] = 'multipart/form-data';
+            // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
+            delete headersData['Content-Type'];
+            delete headersData['content-Type'];
         }
 
         // Query parameters

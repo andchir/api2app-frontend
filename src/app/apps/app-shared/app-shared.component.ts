@@ -407,7 +407,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
-            this.appSubmitWebSocketRequest(apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
             return;
         }
 
@@ -497,6 +497,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     private appSubmitWebSocketRequest(
+        appUuid: string,
         apiUuid: string,
         apiItem: ApiItem,
         currentApi: ApiItem,
@@ -595,7 +596,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                     subscribeInboundStreams();
                     try {
-                        this.websocketService.sendText(url, apiItem.bodyContent ?? '');
+                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
                     } catch (e) {
                         onWsError(e instanceof Error ? e.message : String(e));
                     }
