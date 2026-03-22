@@ -42,7 +42,7 @@
                     <div class="flex gap-2 items-center"
                          [ngClass]="{'p-3': options?.border || options?.showHeader}">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                        <div class="grow text-content"
+                        <div class="grow text-content overflow-x-hidden"
                              [style.max-height]="options?.maxHeight ? options?.maxHeight + 'px' : 'none'"
                              [ngClass]="{'w-full text-center': options?.alignCenter, 'overflow-y-auto': options?.maxHeight}">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
