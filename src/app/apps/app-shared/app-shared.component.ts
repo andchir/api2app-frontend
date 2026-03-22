@@ -212,7 +212,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                         this.appElements.buttons[element.options.inputApiUuid].push(element);
                     }
-                    if (!isButton || isMessages) {
+                    if (!isButton) {
                         if (!this.appElements.input[element.options.inputApiUuid]) {
                             this.appElements.input[element.options.inputApiUuid] = [];
                         }
