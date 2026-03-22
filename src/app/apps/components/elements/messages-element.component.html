@@ -22,7 +22,7 @@
                          'bg-blue-500 text-white rounded-br-sm': msg.direction === 'outgoing',
                          'bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm': msg.direction === 'incoming'
                      }">
-                    <div [innerHTML]="msg.text"></div>
+                    <div>{{ msg.text }}</div>
                     <div class="text-[10px] mt-1"
                          [ngClass]="{'text-blue-200': msg.direction === 'outgoing', 'text-gray-400': msg.direction === 'incoming'}">
                         {{ msg.timestamp | date:'HH:mm' }}
