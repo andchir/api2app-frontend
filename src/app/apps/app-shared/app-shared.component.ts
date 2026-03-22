@@ -344,6 +344,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.submitted = true;
         this.cdr.detectChanges();
+
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
@@ -397,6 +398,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
 
+        const requestUrl = (apiItem.requestUrl || '').trim();
+        if (this.isWebSocketRequestUrl(requestUrl)) {
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            return;
+        }
+
         if (!isAutoStart) {
             this.stateLoadingUpdate(blocks, true, false);
         }
@@ -404,12 +411,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
         let timer: any;
-
-        const requestUrl = (apiItem.requestUrl || '').trim();
-        if (this.isWebSocketRequestUrl(requestUrl)) {
-            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
-            return;
-        }
 
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
@@ -492,6 +493,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     private cancelAppSubmitWebSocketSubscription(): void {
+        if (!this.wsAppSubmitSubscription) {
+            return;
+        }
         this.wsAppSubmitSubscription?.unsubscribe();
         this.wsAppSubmitSubscription = undefined;
     }
@@ -508,9 +512,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const url = (apiItem.requestUrl || '').trim();
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
-        this.cancelAppSubmitWebSocketSubscription();
-        this.wsAppSubmitSubscription = new Subscription();
-        this.websocketService.disconnect();
+        console.log('appSubmitWebSocketRequest', url);
+
+        // this.cancelAppSubmitWebSocketSubscription();
+        if (!this.wsAppSubmitSubscription) {
+            this.wsAppSubmitSubscription = new Subscription();
+        }
+        // this.websocketService.disconnect();
 
         let firstInbound = true;
         let errorSettled = false;
@@ -528,7 +536,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.onError(apiUuid);
             this.stateLoadingUpdate(blocks, false, false);
             this.websocketService.disconnect(url);
-            this.cancelAppSubmitWebSocketSubscription();
+            // this.cancelAppSubmitWebSocketSubscription();
             this.cdr.detectChanges();
         };
 
@@ -574,6 +582,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.wsAppSubmitSubscription!.add(errorSub);
         };
 
+        this.websocketService.connect(url);
+
         if (method === 'POST') {
             const opened$ = this.websocketService.open$.pipe(
                 filter((u) => u === url),
@@ -590,6 +600,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
             const raceSub = race(opened$, failed$).subscribe({
                 next: (outcome) => {
+                    console.log(outcome);
                     if (outcome === 'error') {
                         onWsError();
                         return;
@@ -606,8 +617,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             subscribeInboundStreams();
         }
-
-        this.websocketService.connect(url);
     }
 
     removeAutoStart(apiUuid: string): void {
