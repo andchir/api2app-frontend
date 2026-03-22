@@ -22,7 +22,6 @@ export class WebsocketService {
     connect(url: string): void {
         const previous = this.sockets.get(url);
         if (previous) {
-            // previous.close();
             return;
         }
 

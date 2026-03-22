@@ -539,7 +539,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         };
 
         if (this.websocketService.isConnected(url)) {
-            sendMessage();
+            if (method === 'POST') {
+                sendMessage();
+            }
             return;
         }
 
@@ -597,8 +599,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.wsAppSubmitSubscription!.add(errorSub);
         };
 
-        this.websocketService.connect(url);
-
         if (method === 'POST') {
             const opened$ = this.websocketService.open$.pipe(
                 filter((u) => u === url),
@@ -627,6 +627,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } else {
             subscribeInboundStreams();
         }
+        this.websocketService.connect(url);
     }
 
     removeAutoStart(apiUuid: string): void {
