@@ -20,7 +20,7 @@
                 </div>
                 <div *ngIf="isOwner">
                     <a class="p-2 rounded-md border border-blue-500 text-blue-500 hover:border-blue-700 hover:text-blue-700 text-md cursor-pointer"
-                       href="/{{ data?.language }}/apps/edit/{{ data?.id }}"
+                       [href]="appEditUrl"
                        target="_blank"
                        title="Edit" i18n-title>
                         <i class="bi bi-pencil"></i>

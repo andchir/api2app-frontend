@@ -103,6 +103,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected websocketService: WebsocketService
     ) {}
 
+    get appEditUrl(): string {
+        const baseUrl = `${window.location.protocol}//${window.location.host}`;
+        return environment.production && this.data.language
+            ? `${baseUrl}/${this.data.language}}/apps/edit/${this.data.id}`
+            : `${baseUrl}/apps/edit/${this.data.id}`;
+    }
+
     ngOnInit(): void {
         this.data.blocks = [];
         this.isLoggedIn = !!this.tokenStorageService.getToken();
@@ -584,6 +591,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 subscribeInboundStreams();
                 try {
                     this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                    if (blocks.length) {
+                        this.messageType = 'success';
+                        this.message = blocks[0].options.messageSuccess;
+                        this.cdr.detectChanges();
+                    }
                 } catch (e) {
                     onWsError(e instanceof Error ? e.message : String(e));
                 }
