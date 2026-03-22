@@ -442,6 +442,7 @@
         "42192924057069166": "AI-assisted development",
         "6168645628279325593": "The API configuration has been imported successfully.",
         "4556705427290559215": "Could not connect to the WebSocket server.",
-        "493309775979575288": "WebSocket connection established."
+        "493309775979575288": "WebSocket connection established.",
+        "8964236046922785706": "New message received."
     }
 }

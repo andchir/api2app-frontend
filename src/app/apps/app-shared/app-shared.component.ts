@@ -503,7 +503,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.wsAppSubmitSubscription) {
             return;
         }
-        this.wsAppSubmitSubscription?.unsubscribe();
+        this.wsAppSubmitSubscription.unsubscribe();
         this.wsAppSubmitSubscription = undefined;
     }
 
@@ -516,11 +516,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         blocks: AppBlock[],
         showMessages: boolean
     ): void {
+        this.loading = false;
+        this.submitted = false;
         const url = (apiItem.requestUrl || '').trim();
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
         if (!this.wsAppSubmitSubscription) {
             this.wsAppSubmitSubscription = new Subscription();
+        }
+
+        if (this.websocketService.isConnected(url)) {
+            if (method === 'POST') {
+                this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                if (showMessages && blocks.length) {
+                    this.messageType = 'success';
+                    this.message = blocks[0].options.messageSuccess;
+                    this.cdr.detectChanges();
+                }
+            }
+            return;
         }
 
         let firstInbound = true;
@@ -531,9 +545,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             errorSettled = true;
-            this.loading = false;
-            this.submitted = false;
-            this.progressUpdating = false;
             this.messageType = 'error';
             this.message = msg ?? 'WebSocket error';
             this.onError(apiUuid);
@@ -543,19 +554,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         };
 
         const applyInbound = (data: unknown): void => {
+            if (this.appsAutoStarted.includes(apiUuid)) {
+                this.afterAutoStarted(apiUuid);
+            }
             if (firstInbound) {
-                if (this.appsAutoStarted.includes(apiUuid)) {
-                    this.afterAutoStarted(apiUuid);
-                }
-                this.loading = false;
-                this.submitted = false;
-                this.stateLoadingUpdate(
-                    blocks,
-                    false,
-                    showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating
-                );
-                this.progressUpdating = false;
                 firstInbound = false;
+            } else {
+                this.messageType = 'success';
+                this.message = $localize `New message received.`;
+                this.cdr.detectChanges();
             }
             this.applyParsedApiResponseToApp(currentApi, data as any, currentElement);
             this.cdr.detectChanges();
@@ -587,47 +594,39 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.websocketService.connect(url);
 
         if (method === 'POST') {
-            const sendPostAfterOpen = (): void => {
-                subscribeInboundStreams();
-                try {
-                    this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
-                    if (blocks.length) {
-                        this.messageType = 'success';
-                        this.message = blocks[0].options.messageSuccess;
-                        this.cdr.detectChanges();
+            const opened$ = this.websocketService.open$.pipe(
+                filter((u) => u === url),
+                take(1),
+                takeUntil(this.destroyed$),
+                map(() => 'open' as const)
+            );
+            const failed$ = this.websocketService.error$.pipe(
+                filter((e) => e.url === url),
+                take(1),
+                takeUntil(this.destroyed$),
+                map(() => 'error' as const)
+            );
+
+            const raceSub = race(opened$, failed$).subscribe({
+                next: (outcome) => {
+                    if (outcome === 'error') {
+                        onWsError();
+                        return;
                     }
-                } catch (e) {
-                    onWsError(e instanceof Error ? e.message : String(e));
-                }
-            };
-
-            if (this.websocketService.isConnected(url)) {
-                sendPostAfterOpen();
-            } else {
-                const opened$ = this.websocketService.open$.pipe(
-                    filter((u) => u === url),
-                    take(1),
-                    takeUntil(this.destroyed$),
-                    map(() => 'open' as const)
-                );
-                const failed$ = this.websocketService.error$.pipe(
-                    filter((e) => e.url === url),
-                    take(1),
-                    takeUntil(this.destroyed$),
-                    map(() => 'error' as const)
-                );
-
-                const raceSub = race(opened$, failed$).subscribe({
-                    next: (outcome) => {
-                        if (outcome === 'error') {
-                            onWsError();
-                            return;
+                    subscribeInboundStreams();
+                    try {
+                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                        if (showMessages && blocks.length) {
+                            this.messageType = 'success';
+                            this.message = blocks[0].options.messageSuccess;
+                            this.cdr.detectChanges();
                         }
-                        sendPostAfterOpen();
+                    } catch (e) {
+                        onWsError(e instanceof Error ? e.message : String(e));
                     }
-                });
-                this.wsAppSubmitSubscription!.add(raceSub);
-            }
+                }
+            });
+            this.wsAppSubmitSubscription!.add(raceSub);
         } else {
             subscribeInboundStreams();
         }
