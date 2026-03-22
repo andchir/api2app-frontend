@@ -1501,8 +1501,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
 
-        // console.log('onElementValueChanged', element);
-
         const block = this.findBlock(element);
 
         if (element.loadValueInto && element.value) {
@@ -1549,11 +1547,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (inputApiUuid && this.errors[inputApiUuid]) {
                 delete this.errors[inputApiUuid][element.name];
             }
-            if (buttonElement && !['input-pagination'].includes(element.type)) {
+            if ((buttonElement && buttonElement !== element) && !['input-pagination'].includes(element.type)) {
                 return;
             }
             this.removeAutoStart(inputApiUuid);
-            // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
         }
     }
