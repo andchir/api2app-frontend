@@ -1383,6 +1383,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
+        if (element.type === 'messages') {
+            element.value = typeof value === 'string' ? value : JSON.stringify(value);
+            this.cdr.detectChanges();
+            return;
+        }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createStringValue(element, value);
             this.onElementValueChanged(element);

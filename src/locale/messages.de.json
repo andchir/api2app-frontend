@@ -443,6 +443,8 @@
         "6168645628279325593": "Die API-Konfiguration wurde erfolgreich importiert.",
         "4556705427290559215": "Verbindung zum WebSocket-Server konnte nicht hergestellt werden.",
         "493309775979575288": "Verbindung zum WebSocket-Server hergestellt.",
-        "8964236046922785706": "Neue Nachricht empfangen."
+        "8964236046922785706": "Neue Nachricht empfangen.",
+        "6452372740127749380": "Nachrichten",
+        "7488391890629635569": "Noch keine Nachrichten"
     }
 }

@@ -684,6 +684,24 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'messages'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <app-messages-element
+                [editorMode]="editorMode"
+                [name]="options.name"
+                [label]="options.label"
+                [placeholder]="options.placeholder"
+                [parentIndex]="parentIndex"
+                [index]="index"
+                [maxHeight]="options.maxHeight || 400"
+                [value]="value"
+                [options]="options"
+                (elementValueChange)="onFieldValueChanged()"
+                (message)="onMessage($event)"></app-messages-element>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'image-crop'">
         <div class="rounded-[0.7rem]"
              [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">

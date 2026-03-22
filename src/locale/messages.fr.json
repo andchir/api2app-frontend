@@ -443,6 +443,8 @@
         "6168645628279325593": "La configuration de l'API a été importée avec succès.",
         "4556705427290559215": "Impossible de se connecter au serveur WebSocket.",
         "493309775979575288": "Connexion au serveur WebSocket établie.",
-        "8964236046922785706": "Nouveau message reçu."
+        "8964236046922785706": "Nouveau message reçu.",
+        "6452372740127749380": "Messages",
+        "7488391890629635569": "Pas encore de messages"
     }
 }

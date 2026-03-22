@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { DragulaModule } from 'ng2-dragula';
+import {NgxTippyModule} from 'ngx-tippy-wrapper';
 
 import { authInterceptorProviders } from '../helpers/auth.interceptor';
 import { SharedModule } from '../shared.module';
@@ -29,7 +30,7 @@ import { ElementImageComponent } from './components/elements/element-image.compo
 import { ImageComparisonComponent } from './components/elements/image-comparison.component';
 import { ElementIframeComponent } from './components/elements/element-iframe.component';
 import { AudioPlayerComponent } from './components/elements/audio-player.component';
-import {NgxTippyModule} from "ngx-tippy-wrapper";
+import { MessagesElementComponent } from './components/elements/messages-element.component';
 
 @NgModule({
     declarations: [
@@ -59,6 +60,7 @@ import {NgxTippyModule} from "ngx-tippy-wrapper";
         ImageComparisonComponent,
         ElementIframeComponent,
         AudioPlayerComponent,
+        MessagesElementComponent,
         NgxTippyModule
     ],
     exports: [

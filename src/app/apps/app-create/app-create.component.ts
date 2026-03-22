@@ -90,7 +90,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
         {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'},
-        {name: 'iframe', title: 'Iframe', icon: 'bi-window-dock'}
+        {name: 'iframe', title: 'Iframe', icon: 'bi-window-dock'},
+        {name: 'messages', title: $localize `Messages`, icon: 'bi-chat-dots'}
         // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}
     ];
 
