@@ -106,7 +106,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     get appEditUrl(): string {
         const baseUrl = `${window.location.protocol}//${window.location.host}`;
         return environment.production && this.data.language
-            ? `${baseUrl}/${this.data.language}}/apps/edit/${this.data.id}`
+            ? `${baseUrl}/${this.data.language}/apps/edit/${this.data.id}`
             : `${baseUrl}/apps/edit/${this.data.id}`;
     }
 
