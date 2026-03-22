@@ -204,12 +204,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }
                 if (element.options?.inputApiUuid) {
-                    if (element.type === 'button') {
+                    const isButton = element.type === 'button';
+                    const isMessages = element.type === 'messages';
+                    if (isButton || isMessages) {
                         if (!this.appElements.buttons[element.options.inputApiUuid]) {
                             this.appElements.buttons[element.options.inputApiUuid] = [];
                         }
                         this.appElements.buttons[element.options.inputApiUuid].push(element);
-                    } else {
+                    }
+                    if (!isButton || isMessages) {
                         if (!this.appElements.input[element.options.inputApiUuid]) {
                             this.appElements.input[element.options.inputApiUuid] = [];
                         }
