@@ -585,35 +585,43 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.websocketService.connect(url);
 
         if (method === 'POST') {
-            const opened$ = this.websocketService.open$.pipe(
-                filter((u) => u === url),
-                take(1),
-                takeUntil(this.destroyed$),
-                map(() => 'open' as const)
-            );
-            const failed$ = this.websocketService.error$.pipe(
-                filter((e) => e.url === url),
-                take(1),
-                takeUntil(this.destroyed$),
-                map(() => 'error' as const)
-            );
-
-            const raceSub = race(opened$, failed$).subscribe({
-                next: (outcome) => {
-                    console.log(outcome);
-                    if (outcome === 'error') {
-                        onWsError();
-                        return;
-                    }
-                    subscribeInboundStreams();
-                    try {
-                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
-                    } catch (e) {
-                        onWsError(e instanceof Error ? e.message : String(e));
-                    }
+            const sendPostAfterOpen = (): void => {
+                subscribeInboundStreams();
+                try {
+                    this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                } catch (e) {
+                    onWsError(e instanceof Error ? e.message : String(e));
                 }
-            });
-            this.wsAppSubmitSubscription!.add(raceSub);
+            };
+
+            if (this.websocketService.isConnected(url)) {
+                sendPostAfterOpen();
+            } else {
+                const opened$ = this.websocketService.open$.pipe(
+                    filter((u) => u === url),
+                    take(1),
+                    takeUntil(this.destroyed$),
+                    map(() => 'open' as const)
+                );
+                const failed$ = this.websocketService.error$.pipe(
+                    filter((e) => e.url === url),
+                    take(1),
+                    takeUntil(this.destroyed$),
+                    map(() => 'error' as const)
+                );
+
+                const raceSub = race(opened$, failed$).subscribe({
+                    next: (outcome) => {
+                        console.log(outcome);
+                        if (outcome === 'error') {
+                            onWsError();
+                            return;
+                        }
+                        sendPostAfterOpen();
+                    }
+                });
+                this.wsAppSubmitSubscription!.add(raceSub);
+            }
         } else {
             subscribeInboundStreams();
         }
