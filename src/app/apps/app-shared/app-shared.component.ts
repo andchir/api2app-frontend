@@ -512,13 +512,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const url = (apiItem.requestUrl || '').trim();
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
-        console.log('appSubmitWebSocketRequest', url);
-
-        // this.cancelAppSubmitWebSocketSubscription();
         if (!this.wsAppSubmitSubscription) {
             this.wsAppSubmitSubscription = new Subscription();
         }
-        // this.websocketService.disconnect();
 
         let firstInbound = true;
         let errorSettled = false;
@@ -536,7 +532,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.onError(apiUuid);
             this.stateLoadingUpdate(blocks, false, false);
             this.websocketService.disconnect(url);
-            // this.cancelAppSubmitWebSocketSubscription();
             this.cdr.detectChanges();
         };
 
@@ -612,7 +607,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 const raceSub = race(opened$, failed$).subscribe({
                     next: (outcome) => {
-                        console.log(outcome);
                         if (outcome === 'error') {
                             onWsError();
                             return;
