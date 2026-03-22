@@ -525,15 +525,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.wsAppSubmitSubscription = new Subscription();
         }
 
-        if (this.websocketService.isConnected(url)) {
-            if (method === 'POST') {
+        const sendMessage = () => {
+            try {
                 this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
                 if (showMessages && blocks.length) {
                     this.messageType = 'success';
                     this.message = blocks[0].options.messageSuccess;
                     this.cdr.detectChanges();
                 }
+            } catch (e) {
+                onWsError(e instanceof Error ? e.message : String(e));
             }
+        };
+
+        if (this.websocketService.isConnected(url)) {
+            sendMessage();
             return;
         }
 
@@ -614,16 +620,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     subscribeInboundStreams();
-                    try {
-                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
-                        if (showMessages && blocks.length) {
-                            this.messageType = 'success';
-                            this.message = blocks[0].options.messageSuccess;
-                            this.cdr.detectChanges();
-                        }
-                    } catch (e) {
-                        onWsError(e instanceof Error ? e.message : String(e));
-                    }
+                    sendMessage();
                 }
             });
             this.wsAppSubmitSubscription!.add(raceSub);
