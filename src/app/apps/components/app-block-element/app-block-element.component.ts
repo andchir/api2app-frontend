@@ -1,10 +1,11 @@
-import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
+import { MessagesElementComponent } from '../elements/messages-element.component';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
@@ -40,6 +41,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() selected: EventEmitter<string> = new EventEmitter<string>();
     @Output() unselected: EventEmitter<string> = new EventEmitter<string>();
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
+
+    @ViewChild(MessagesElementComponent) messagesEl?: MessagesElementComponent;
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
@@ -325,6 +328,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 behavior: 'smooth'
             });
         }
+    }
+
+    undoLastOutgoing(): void {
+        this.messagesEl?.undoLastOutgoing();
     }
 
     onMessage(msg: string[]) {

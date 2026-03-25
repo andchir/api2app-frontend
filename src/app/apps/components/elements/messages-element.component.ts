@@ -101,6 +101,13 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
         this.cdr.markForCheck();
     }
 
+    undoLastOutgoing(): void {
+        this.messagesService.removeLastOutgoing(this.elementId);
+        this.messages = this.messagesService.getHistory(this.elementId);
+        this.lastOutgoingText = '';
+        this.cdr.markForCheck();
+    }
+
     private scrollToBottom(): void {
         const el = this.messagesContainer?.nativeElement;
         if (el) {

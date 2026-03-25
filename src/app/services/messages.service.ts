@@ -25,6 +25,14 @@ export class MessagesService {
         history.push({ text, direction, timestamp: new Date() });
     }
 
+    removeLastOutgoing(elementId: string): void {
+        const history = this.getHistory(elementId);
+        const lastOutgoingIndex = [...history].reverse().findIndex(m => m.direction === 'outgoing');
+        if (lastOutgoingIndex !== -1) {
+            history.splice(history.length - 1 - lastOutgoingIndex, 1);
+        }
+    }
+
     clearHistory(elementId: string): void {
         this.histories.set(elementId, []);
     }

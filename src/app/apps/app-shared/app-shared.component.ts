@@ -5,7 +5,7 @@ import {
     HostListener,
     Input,
     OnDestroy,
-    OnInit, ViewChild, ViewContainerRef
+    OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -33,6 +33,7 @@ import { AppAdultValidationComponent } from '../components/app-adult-validation/
 import { AuthService } from '../../services/auth.service';
 import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 import { WebsocketService } from '../../services/websocket.service';
+import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -46,6 +47,7 @@ declare const vkBridge: any;
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     @ViewChild('dynamic', { read: ViewContainerRef }) protected viewRef: ViewContainerRef;
+    @ViewChildren(AppBlockElementComponent) protected blockElements: QueryList<AppBlockElementComponent>;
 
     @Input('itemUuid') itemUuid: string;
     @Input('showHeader') showHeader: boolean = true;
@@ -377,6 +379,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         if (!this.getIsValid(apiUuid, actionType, elements, showMessages)) {
+            if (currentElement?.type === 'messages') {
+                this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
+            }
             if (this.appsAutoStarted.includes(apiUuid)) {
                 this.removeAutoStart(apiUuid);
             } else if (showMessages) {
