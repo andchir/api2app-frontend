@@ -113,8 +113,18 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
             });
     }
 
+    private hasPrivateFields(): boolean {
+        const hasPrivate = (fields: { private?: boolean }[] | undefined) =>
+            !!fields?.some(f => f.private);
+        return hasPrivate(this.data.bodyFields)
+            || hasPrivate(this.data.headers)
+            || hasPrivate(this.data.queryParams)
+            || !!this.data.bodyContentPrivate;
+    }
+
     validateData(): boolean {
-        if (this.data.sender === 'browser' && !this.isNotified) {
+        const needsWarning = this.data.sender === 'browser' && this.hasPrivateFields();
+        if (needsWarning && !this.isNotified) {
             const initialData = {
                 message: $localize `Your API configuration is in "browser" mode, in this case an advanced user will be able to see all your private data (authorization keys, etc.). Are you sure you want to continue?`,
                 isLargeFontSize: false,
