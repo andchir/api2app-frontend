@@ -94,7 +94,7 @@ If the field is hidden (hiddenByDefault=true), it becomes visible when the value
 
 ## Element Types
 
-Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `crop-image`, `iframe`.
+Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `crop-image`, `iframe`, `messages`.
 
 ## List output
 
@@ -448,6 +448,55 @@ Progress bar with queue tracking.
 | `taskIdFieldName`          | string  | Task ID field            |
 | `operationDurationSeconds` | number  | Estimated duration       |
 | `isBooleanValue`           | boolean | Status is true/false     |
+
+### Chat Elements
+
+#### `messages`
+
+Chat-style messaging interface for conversational interactions with an API.
+
+| Field         | Type   | Description                                        |
+|---------------|--------|----------------------------------------------------|
+| `label`       | string | Label displayed above the chat window              |
+| `placeholder` | string | Placeholder text in the message input field        |
+| `maxHeight`   | number | Max height of the messages area in px (default: 400) |
+
+**Behavior:**
+
+- Displays a chat bubble UI with a scrollable message history and a text input at the bottom.
+- **Outgoing messages** (sent by the user) appear on the right in blue.
+- **Incoming messages** (received from the API) appear on the left in white.
+- Each message shows a timestamp (`HH:mm`).
+- The user types a message and submits it by pressing **Enter** or clicking the send button. The typed text becomes the element's value and triggers the bound API call.
+- When the API returns a response, it is automatically added as an incoming message in the chat.
+- Message history is preserved for the duration of the session.
+
+**API binding:**
+
+- Bind the element as **input** to send the user's message text to the API.
+- Bind the element as **output** to receive the API response and display it as an incoming message.
+
+**Example — chat bot block:**
+
+```json
+{
+    "name": "chat",
+    "type": "messages",
+    "label": "Chat",
+    "placeholder": "Type a message...",
+    "maxHeight": 500,
+    "blockIndex": 0,
+    "orderIndex": 0,
+    "options": {
+        "inputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
+        "inputApiFieldName": "data.message",
+        "inputApiFieldType": "input",
+        "outputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
+        "outputApiFieldName": "result_data.reply",
+        "outputApiFieldType": "output"
+    }
+}
+```
 
 ### Special Elements
 
