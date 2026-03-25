@@ -50,6 +50,25 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
     private lastOutgoingText = '';
     private needsScroll = false;
 
+    private static readonly EMOJI_MAP: [RegExp, string][] = [
+        [/>:\(|>:-\(/g, '😠'],
+        [/o:-\)|O:-\)|0:-\)/g, '😇'],
+        [/B-\)|B\)/g, '😎'],
+        [/:-\*|:\*/g, '😘'],
+        [/;-\)|;\)/g, '😉'],
+        [/:-D|:D/g, '😁'],
+        [/:'-\(|:'\(/g, '😭'],
+        [/:-\(|:\(/g, '😢'],
+        [/:-\)|:\)/g, '😊'],
+        [/:-\||:\|/g, '😐'],
+        [/:-O|:O|:-o|:o/g, '😮'],
+        [/:-P|:P|:-p|:p/g, '😛'],
+        [/<\/3/g, '💔'],
+        [/<3/g, '❤️'],
+        [/\(y\)/gi, '👍'],
+        [/\(n\)/gi, '👎'],
+    ];
+
     constructor(
         private messagesService: MessagesService,
         private cdr: ChangeDetectorRef
@@ -67,7 +86,7 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
         if (changes['value']?.currentValue && !changes['value'].firstChange) {
             const text = String(changes['value'].currentValue).trim();
             if (text && text !== this.lastOutgoingText) {
-                this.messagesService.addMessage(this.elementId, text, 'incoming');
+                this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'incoming');
                 this.messages = this.messagesService.getHistory(this.elementId);
                 this.needsScroll = true;
                 this.cdr.markForCheck();
@@ -89,7 +108,7 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
             return;
         }
         this.lastOutgoingText = text;
-        this.messagesService.addMessage(this.elementId, text, 'outgoing');
+        this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'outgoing');
         this.messages = this.messagesService.getHistory(this.elementId);
 
         if (this.options) {
@@ -115,6 +134,14 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
                 el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
             }, 50);
         }
+    }
+
+    private replaceEmojis(text: string): string {
+        let result = text;
+        for (const [pattern, emoji] of MessagesElementComponent.EMOJI_MAP) {
+            result = result.replace(pattern, emoji);
+        }
+        return result;
     }
 
     ngOnDestroy(): void {}
