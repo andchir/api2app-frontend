@@ -244,6 +244,7 @@
                                                            (showOptions)="showElementOptions(element, index, ind)"
                                                            (selectAction)="elementActionSelect(element, index, $event)"
                                                            (delete)="deleteElement(block, ind)"
+                                                           (addAfter)="addElementAfter(index, ind)"
                                                            (elementClick)="onElementClick(element)"
                                                            (elementValueChange)="onElementValueChanged(element)"
                                                            (itemSelected)="onItemSelected(element, $event)"
@@ -260,36 +261,34 @@
                                             <i class="bi bi-arrows-move no-pointer-events"></i>
                                         </div>
                                     </div>
-                                </ng-container>
-                            </div>
 
-                            <div *ngIf="newElementBlockIndex === index">
-                                <div class="flex gap-2 w-full max-w-[600px] mx-auto">
-                                    <div class="grow">
-                                        <ng-select class="ng-select-custom" [items]="inputTypes"
-                                                   bindLabel="title"
-                                                   bindValue="name"
-                                                   placeholder="Select Element Type"
-                                                   i18n-placeholder
-                                                   [clearable]="false"
-                                                   [(ngModel)]="newElementType"
-                                                   (ngModelChange)="onNewElementTypeSelected($event, index)">
-                                            <ng-template ng-option-tmp let-item="item">
-                                                <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
-                                                {{ item.title }}
-                                            </ng-template>
-                                        </ng-select>
+                                    <div class="flex gap-2 w-full max-w-[600px] mx-auto" *ngIf="element.type === null">
+                                        <div class="grow">
+                                            <ng-select class="ng-select-custom" [items]="inputTypes"
+                                                       bindLabel="title"
+                                                       bindValue="name"
+                                                       placeholder="Select Element Type"
+                                                       i18n-placeholder
+                                                       [clearable]="false"
+                                                       [(ngModel)]="newElementType"
+                                                       (ngModelChange)="onNewElementTypeSelected($event, index)">
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
+                                                    {{ item.title }}
+                                                </ng-template>
+                                            </ng-select>
+                                        </div>
+                                        <div>
+                                            <button type="button"
+                                                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg px-2 py-1 leading-3"
+                                                    ngxTippy="Cancel"
+                                                    i18n-ngxTippy
+                                                    (click)="blockElementCancel(block)">
+                                                <i class="bi bi-x text-2xl"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <button type="button"
-                                                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg px-2 py-1 leading-3"
-                                                ngxTippy="Cancel"
-                                                i18n-ngxTippy
-                                                (click)="blockElementCancel(block)">
-                                            <i class="bi bi-x text-2xl"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                </ng-container>
                             </div>
 
                             <div class="pt-3" *ngIf="block.elements.length > 0 && !previewMode">

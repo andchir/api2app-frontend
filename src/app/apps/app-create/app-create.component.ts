@@ -433,6 +433,24 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
+    addElementAfter(blockIndex: number, elementIndex: number): void {
+        console.log('addElementAfter', blockIndex, elementIndex);
+
+        // const block = this.data.blocks[blockIndex];
+        // this.deleteEmptyElements(block);
+        //
+        // block.tabIndex = this.tabIndex;
+        //
+        // block.elements.splice(elementIndex + 1, 0, {type: null});
+        // this.newElementBlockIndex = blockIndex;
+        // this.newElementType = null;
+        //
+        //
+        // this.deleteEmptyBlockByGrid();
+        // this.addEmptyBlockByGrid();
+        // this.cdr.markForCheck();
+    }
+
     updateItemOptions(): void {
         if (this.selectedElement) {
             Object.assign(this.selectedElement, ApplicationService.fieldsToOptionsObject(this.selectedItemOptionsFields));

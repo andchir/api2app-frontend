@@ -31,6 +31,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
     @Output() delete: EventEmitter<void> = new EventEmitter<void>();
+    @Output() addAfter: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
@@ -114,6 +115,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.delete.emit();
     }
 
+    addElementAfter(): void {
+        this.addAfter.emit();
+    }
     numberIncrease(keyName = 'value', max?: number): void {
         this.options[keyName] = Number(this.options[keyName] || 0);
         if (typeof max === 'number' && this.options[keyName] >= max) {

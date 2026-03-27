@@ -747,6 +747,12 @@
                 (click)="elementDeleteInit()">
             <i class="bi bi-trash3-fill text-base"></i>
         </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-gray-700 bg-white border border-gray-300 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Add element after"
+                i18n-ngxTippy
+                (click)="addElementAfter()">
+            <i class="bi bi-plus-lg text-base"></i>
+        </button>
         <div>
             <div class="flex items-center me-4">
                 <input id="select-element-{{ parentIndex }}-{{ index }}"
