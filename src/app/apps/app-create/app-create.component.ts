@@ -61,6 +61,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     subs = new Subscription();
 
+    private dragSourceBlockIndex = -1;
+    private dragSourceElementIndex = -1;
+
     newElementBlockIndex: number = -1;
     newElementType: string = null;
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
@@ -124,15 +127,47 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             // }
         });
         this.subs.add(dragulaService.drag('BLOCK_ELEMENTS')
-            .subscribe((e) => {
-                e.el.classList.add('shadow-lg', 'bg-white');
+            .subscribe(({ el, source }) => {
+                (el as HTMLElement).classList.add('shadow-lg', 'bg-white');
+                this.dragSourceBlockIndex = parseInt((source as HTMLElement).getAttribute('data-block-index'), 10);
+                this.dragSourceElementIndex = Array.from(source.children).indexOf(el as HTMLElement);
             })
         );
         this.subs.add(dragulaService.drop('BLOCK_ELEMENTS')
-            .subscribe((e) => {
+            .subscribe(({ el, target, source }) => {
+                (el as HTMLElement).classList.remove('shadow-lg', 'bg-white');
+
+                const targetBlockIndex = parseInt((target as HTMLElement).getAttribute('data-block-index'), 10);
+                const targetElementIndex = Array.from(target.children).indexOf(el as HTMLElement);
+                const sourceBlockIndex = this.dragSourceBlockIndex;
+                const sourceElementIndex = this.dragSourceElementIndex;
+                this.dragSourceBlockIndex = -1;
+                this.dragSourceElementIndex = -1;
+
+                if (targetElementIndex === -1 || sourceBlockIndex < 0 || targetBlockIndex < 0) {
+                    return;
+                }
+
+                // Revert dragula's direct DOM change so Angular renders from the updated model
+                const refNode = source.children[sourceElementIndex] || null;
+                source.insertBefore(el, refNode);
+
+                const sourceBlock = this.data.blocks[sourceBlockIndex];
+                const targetBlock = this.data.blocks[targetBlockIndex];
+                if (sourceBlock && targetBlock) {
+                    const [element] = sourceBlock.elements.splice(sourceElementIndex, 1);
+                    targetBlock.elements.splice(Math.max(0, targetElementIndex), 0, element);
+                }
+
                 this.message = $localize `The element has been moved`;
                 this.messageType = 'success';
-                e.el.classList.remove('shadow-lg', 'bg-white');
+                this.cdr.detectChanges();
+            })
+        );
+        this.subs.add(dragulaService.cancel('BLOCK_ELEMENTS')
+            .subscribe(() => {
+                this.dragSourceBlockIndex = -1;
+                this.dragSourceElementIndex = -1;
             })
         );
         this.subs.add(dragulaService.over('BLOCK_ELEMENTS')
@@ -312,6 +347,23 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.newElementType = null;
 
         this.deleteEmptyElements(block);
+        this.deleteEmptyBlockByGrid();
+        this.addEmptyBlockByGrid();
+        this.cdr.markForCheck();
+    }
+
+    blockElementCancel(block: AppBlock): void {
+        if (block.elements.length === 0) {
+            return;
+        }
+        const elementIndex = block.elements.findIndex(item => {
+            return item.type === null;
+        });
+        if (elementIndex > -1) {
+            block.elements.splice(elementIndex, 1);
+        }
+        this.newElementBlockIndex = -1;
+        this.newElementType = null;
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
         this.cdr.markForCheck();

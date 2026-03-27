@@ -225,7 +225,7 @@
                             <div class="flex flex-col gap-3"
                                  [ngClass]="{'opacity-20 pointer-events-none': block.loading}"
                                  dragula="BLOCK_ELEMENTS"
-                                 [(dragulaModel)]="block.elements">
+                                 [attr.data-block-index]="index">
                                 <ng-container *ngFor="let element of block.elements; index as ind">
                                     <div class="relative group/element rounded"
                                          [ngClass]="{'hidden': element?.hidden && previewMode, 'py-1 sticky bottom-0 bg-white': element?.isStickyPosition && previewMode}">
@@ -264,20 +264,31 @@
                             </div>
 
                             <div *ngIf="newElementBlockIndex === index">
-                                <div class="w-full max-w-[600px] mx-auto">
-                                    <ng-select class="ng-select-custom" [items]="inputTypes"
-                                               bindLabel="title"
-                                               bindValue="name"
-                                               placeholder="Select Element Type"
-                                               i18n-placeholder
-                                               [clearable]="false"
-                                               [(ngModel)]="newElementType"
-                                               (ngModelChange)="onNewElementTypeSelected($event, index)">
-                                        <ng-template ng-option-tmp let-item="item">
-                                            <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
-                                            {{ item.title }}
-                                        </ng-template>
-                                    </ng-select>
+                                <div class="flex gap-2 w-full max-w-[600px] mx-auto">
+                                    <div class="grow">
+                                        <ng-select class="ng-select-custom" [items]="inputTypes"
+                                                   bindLabel="title"
+                                                   bindValue="name"
+                                                   placeholder="Select Element Type"
+                                                   i18n-placeholder
+                                                   [clearable]="false"
+                                                   [(ngModel)]="newElementType"
+                                                   (ngModelChange)="onNewElementTypeSelected($event, index)">
+                                            <ng-template ng-option-tmp let-item="item">
+                                                <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
+                                                {{ item.title }}
+                                            </ng-template>
+                                        </ng-select>
+                                    </div>
+                                    <div>
+                                        <button type="button"
+                                                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 rounded-lg px-2 py-1 leading-3"
+                                                ngxTippy="Cancel"
+                                                i18n-ngxTippy
+                                                (click)="blockElementCancel(block)">
+                                            <i class="bi bi-x text-2xl"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
