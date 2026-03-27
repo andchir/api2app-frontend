@@ -128,14 +128,14 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         });
         this.subs.add(dragulaService.drag('BLOCK_ELEMENTS')
             .subscribe(({ el, source }) => {
-                (el as HTMLElement).classList.add('shadow-lg', 'bg-white');
+                (el as HTMLElement).classList.add('shadow-lg', 'bg-white', 'rounded-lg');
                 this.dragSourceBlockIndex = parseInt((source as HTMLElement).getAttribute('data-block-index'), 10);
                 this.dragSourceElementIndex = Array.from(source.children).indexOf(el as HTMLElement);
             })
         );
         this.subs.add(dragulaService.drop('BLOCK_ELEMENTS')
             .subscribe(({ el, target, source }) => {
-                (el as HTMLElement).classList.remove('shadow-lg', 'bg-white');
+                (el as HTMLElement).classList.remove('shadow-lg', 'bg-white', 'rounded-lg');
 
                 const targetBlockIndex = parseInt((target as HTMLElement).getAttribute('data-block-index'), 10);
                 const targetElementIndex = Array.from(target.children).indexOf(el as HTMLElement);
@@ -179,7 +179,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         );
         this.subs.add(dragulaService.out('BLOCK_ELEMENTS')
             .subscribe((e) => {
-                e.el.classList.remove('shadow-lg', 'bg-white');
+                e.el.classList.remove('shadow-lg', 'bg-white', 'rounded-lg');
                 Array.from(e.container.querySelectorAll('.app-element-buttons')).forEach((el) => {
                     el.classList.remove('hidden');
                 });
