@@ -1595,19 +1595,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.appSubmit(this.data.uuid, apiUuid, 'input', element);
     }
 
-    onItemClone(data: number[]): void {
-        if (data.length < 2) {
-            return;
-        }
-        const parentIndex = data[0];
-        const elementIndex = data[1];
-        const element = this.data.blocks[parentIndex].elements[elementIndex];
-        const elementCloned = Object.assign({}, element, {options: {}});
-
-        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
-        this.cdr.markForCheck();
-    }
-
     onProgressUpdate(currentElement: AppBlockElement): void {
         this.progressUpdating = true;
         const apiUuid = currentElement.options?.outputApiUuid;

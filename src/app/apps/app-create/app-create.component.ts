@@ -64,7 +64,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     private dragSourceBlockIndex = -1;
     private dragSourceElementIndex = -1;
 
-    newElementBlockIndex: number = -1;
     newElementType: string = null;
     inputTypes: {name: AppBlockElementType, title: string, icon: string}[] = [
         {name: 'text-header', title: $localize `Text Header`, icon: 'bi-type-h1'},
@@ -272,6 +271,16 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         });
     }
 
+    findEmptyElementsIndexes(block: AppBlock): number[] {
+        const indexes = [];
+        block.elements.forEach((item, index) => {
+            if (['empty', null].includes(item.type)) {
+                indexes.push(index);
+            }
+        });
+        return indexes;
+    }
+
     deleteEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
@@ -318,35 +327,56 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
-    onNewElementTypeSelected(type: AppBlockElementType, blockIndex: number): void {
-        const block = this.data.blocks[blockIndex];
-        const newElement = block.elements.find((elem) => {
-            return elem.type === null;
-        });
-        if (!newElement) {
-            return;
-        }
-        newElement.type = type;
-        this.onElementUpdate(newElement, type);
-
-        this.newElementBlockIndex = -1;
+    changeElementType(type: AppBlockElementType, element: AppBlockElement): void {
+        element.type = type;
+        this.onElementUpdate(element, type);
         this.newElementType = null;
         this.cdr.markForCheck();
     }
 
-    blockAddElement(blockIndex: number): void {
-        const block = this.data.blocks[blockIndex];
-        const emptyElements = this.findEmptyElements(block);
-        if (emptyElements.length > 0) {
+    onItemClone(data: number[]): void {
+        if (data.length < 2) {
             return;
         }
+        const parentIndex = data[0];
+        const elementIndex = data[1];
+        const element = this.data.blocks[parentIndex].elements[elementIndex];
+        const elementCloned = Object.assign({}, element, {options: {}});
+
+        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
+        this.cdr.markForCheck();
+    }
+
+    addElementAfter(data: number[]): void {
+        if (data.length < 2) {
+            return;
+        }
+        const parentIndex = data[0];
+        const elementIndex = data[1];
+        this.blockAddElement(parentIndex, elementIndex);
+    }
+
+    blockAddElement(blockIndex: number, previousIndex: number = -1): void {
+        const block = this.data.blocks[blockIndex];
+        const emptyElementsIndexes = this.findEmptyElementsIndexes(block);
+        if (emptyElementsIndexes.length > 0) {
+            emptyElementsIndexes.forEach((ind) => {
+                if (ind < previousIndex) {
+                    previousIndex--;
+                }
+            });
+        }
+        this.deleteEmptyElements();
         block.tabIndex = this.tabIndex;
 
-        block.elements.push({type: null});
-        this.newElementBlockIndex = blockIndex;
+        if (previousIndex === -1) {
+            block.elements.push({type: null});
+        } else {
+            block.elements.splice(previousIndex + 1, 0, {type: null});
+        }
+
         this.newElementType = null;
 
-        this.deleteEmptyElements(block);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
         this.cdr.markForCheck();
@@ -362,7 +392,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if (elementIndex > -1) {
             block.elements.splice(elementIndex, 1);
         }
-        this.newElementBlockIndex = -1;
         this.newElementType = null;
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
@@ -423,32 +452,21 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
-    deleteElement(block: AppBlock, elementIndex: number): void {
+    deleteElement(data: number[]): void {
+        if (data.length < 2) {
+            return;
+        }
+        const parentIndex = data[0];
+        const elementIndex = data[1];
+        const block = this.data.blocks[parentIndex];
         if (block.elements.length === 0) {
             return;
         }
+
         block.elements.splice(elementIndex, 1);
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
         this.cdr.detectChanges();
-    }
-
-    addElementAfter(blockIndex: number, elementIndex: number): void {
-        console.log('addElementAfter', blockIndex, elementIndex);
-
-        // const block = this.data.blocks[blockIndex];
-        // this.deleteEmptyElements(block);
-        //
-        // block.tabIndex = this.tabIndex;
-        //
-        // block.elements.splice(elementIndex + 1, 0, {type: null});
-        // this.newElementBlockIndex = blockIndex;
-        // this.newElementType = null;
-        //
-        //
-        // this.deleteEmptyBlockByGrid();
-        // this.addEmptyBlockByGrid();
-        // this.cdr.markForCheck();
     }
 
     updateItemOptions(): void {

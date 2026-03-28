@@ -30,15 +30,15 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
-    @Output() delete: EventEmitter<void> = new EventEmitter<void>();
-    @Output() addAfter: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
     @Output() progressCompleted: EventEmitter<string> = new EventEmitter<string>();
+    @Output() delete: EventEmitter<number[]> = new EventEmitter<number[]>();
     @Output() cloneElement: EventEmitter<number[]> = new EventEmitter<number[]>();
+    @Output() addAfter: EventEmitter<number[]> = new EventEmitter<number[]>();
     @Output() selected: EventEmitter<string> = new EventEmitter<string>();
     @Output() unselected: EventEmitter<string> = new EventEmitter<string>();
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
@@ -95,6 +95,22 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.cloneElement.emit([parentIndex, index]);
     }
 
+    elementAddAfter(index: number, parentIndex: number, event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.addAfter.emit([parentIndex, index]);
+    }
+
+    elementDelete(index: number, parentIndex: number, event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        this.delete.emit([parentIndex, index]);
+    }
+
     elementOptionsInit(event?: MouseEvent) {
         if (event) {
             event.preventDefault();
@@ -111,13 +127,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.selectAction.emit(actionType);
     }
 
-    elementDeleteInit(): void {
-        this.delete.emit();
-    }
-
-    addElementAfter(): void {
-        this.addAfter.emit();
-    }
     numberIncrease(keyName = 'value', max?: number): void {
         this.options[keyName] = Number(this.options[keyName] || 0);
         if (typeof max === 'number' && this.options[keyName] >= max) {
