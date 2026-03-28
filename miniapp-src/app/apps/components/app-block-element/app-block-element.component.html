@@ -42,7 +42,7 @@
                     <div class="flex gap-2 items-center"
                          [ngClass]="{'p-3': options?.border || options?.showHeader}">
                         <div *ngIf="options?.icon"><i class="bi" [ngClass]="options?.icon"></i></div>
-                        <div class="grow text-content"
+                        <div class="grow text-content overflow-x-hidden"
                              [style.max-height]="options?.maxHeight ? options?.maxHeight + 'px' : 'none'"
                              [ngClass]="{'w-full text-center': options?.alignCenter, 'overflow-y-auto': options?.maxHeight}">
                             <span *ngIf="options?.prefixText && editorMode">{{ options?.prefixText }}</span>
@@ -235,6 +235,7 @@
                                [placeholder]="options.placeholder"
                                [clearable]="options.clearable"
                                [searchable]="options.searchable"
+                               [addTag]="options.addTag"
                                notFoundText="No items found"
                                i18n-notFoundText
                                addTagText="Add item"
@@ -680,6 +681,24 @@
                     [border]="options.border"
                     (refreshContent)="refreshIframeContent.emit($event)"></app-element-iframe>
             </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'messages'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <app-messages-element
+                [editorMode]="editorMode"
+                [name]="options.name"
+                [label]="options.label"
+                [placeholder]="options.placeholder"
+                [parentIndex]="parentIndex"
+                [index]="index"
+                [maxHeight]="options.maxHeight || 400"
+                [value]="value"
+                [options]="options"
+                (elementValueChange)="onFieldValueChanged()"
+                (message)="onMessage($event)"></app-messages-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>

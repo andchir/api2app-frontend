@@ -5,7 +5,7 @@ import {
     HostListener,
     Input,
     OnDestroy,
-    OnInit, ViewChild, ViewContainerRef
+    OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef
 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
@@ -29,6 +29,7 @@ import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
 import { WebsocketService } from '../../services/websocket.service';
+import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -42,6 +43,7 @@ declare const vkBridge: any;
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     @ViewChild('dynamic', { read: ViewContainerRef }) protected viewRef: ViewContainerRef;
+    @ViewChildren(AppBlockElementComponent) protected blockElements: QueryList<AppBlockElementComponent>;
 
     @Input('itemUuid') itemUuid: string;
     @Input('showHeader') showHeader: boolean = true;
@@ -96,6 +98,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         protected websocketService: WebsocketService
     ) {}
 
+    get appEditUrl(): string {
+        const baseUrl = `${window.location.protocol}//${window.location.host}`;
+        return environment.production && this.data.language
+            ? `${baseUrl}/${this.data.language}/apps/edit/${this.data.id}`
+            : `${baseUrl}/apps/edit/${this.data.id}`;
+    }
+
     ngOnInit(): void {
         this.itemUuid = 'data';
         this.getData();
@@ -110,6 +119,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     return;
                 }
                 this.tabIndex = parseInt(params['tab']) - 1;
+                this.checkExistenceTab();
                 this.cdr.detectChanges();
             });
     }
@@ -160,6 +170,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
+        this.checkExistenceTab();
+
         if (this.data.adultsOnly && (
                 !window.localStorage.getItem(`${this.data.uuid}-appUserDob`)
                 || window.localStorage.getItem(`${this.data.uuid}-ageRestricted`)
@@ -181,12 +193,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }
                 if (element.options?.inputApiUuid) {
-                    if (element.type === 'button') {
+                    const isButton = element.type === 'button';
+                    const isMessages = element.type === 'messages';
+                    if (isButton || isMessages) {
                         if (!this.appElements.buttons[element.options.inputApiUuid]) {
                             this.appElements.buttons[element.options.inputApiUuid] = [];
                         }
                         this.appElements.buttons[element.options.inputApiUuid].push(element);
-                    } else {
+                    }
+                    if (!isButton) {
                         if (!this.appElements.input[element.options.inputApiUuid]) {
                             this.appElements.input[element.options.inputApiUuid] = [];
                         }
@@ -234,6 +249,37 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
+    checkExistenceTab(): void {
+        if (!this.data || this.loading) {
+            return;
+        }
+        if (this.tabIndex > this.data.tabs.length - 1) {
+            const tabBlocks = this.data.blocks.filter(block => {
+                return block.tabIndex === this.tabIndex;
+            });
+            if (tabBlocks.length === 0) {
+                this.switchTab(0);
+                return;
+            }
+        }
+    }
+
+    addTab(tabNumber: number = -1): void {
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
+        if (tabNumber === -1) {
+            this.addTab(this.data.tabs.length + 1);
+            return;
+        }
+        const tabName = ($localize `Tab`) + ' ' + tabNumber;
+        if (this.data.tabs.find(name => name === tabName)) {
+            this.addTab(tabNumber + 1);
+            return;
+        }
+        this.data.tabs.push(tabName);
+    }
+
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
         if ((!window['isVKApp'] && element.showOnlyInVK) && this.previewMode) {
             element.hidden = true;
@@ -279,8 +325,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.tabIndex === tabIndex) {
             return;
         }
-        // this.tabIndex = tabIndex;
-        // this.cdr.detectChanges();
         const queryParams: Params = {
             tab: tabIndex + 1
         };
@@ -328,6 +372,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.submitted = true;
         this.cdr.detectChanges();
+
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
@@ -350,6 +395,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         if (!this.getIsValid(apiUuid, actionType, elements, showMessages)) {
+            if (currentElement?.type === 'messages') {
+                this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
+            }
             if (this.appsAutoStarted.includes(apiUuid)) {
                 this.removeAutoStart(apiUuid);
             } else if (showMessages) {
@@ -381,6 +429,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         });
 
+        const requestUrl = (apiItem.requestUrl || '').trim();
+        if (this.isWebSocketRequestUrl(requestUrl)) {
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            return;
+        }
+
         if (!isAutoStart) {
             this.stateLoadingUpdate(blocks, true, false);
         }
@@ -388,12 +442,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
         let timer: any;
-
-        const requestUrl = (apiItem.requestUrl || '').trim();
-        if (this.isWebSocketRequestUrl(requestUrl)) {
-            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
-            return;
-        }
 
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
@@ -476,7 +524,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     private cancelAppSubmitWebSocketSubscription(): void {
-        this.wsAppSubmitSubscription?.unsubscribe();
+        if (!this.wsAppSubmitSubscription) {
+            return;
+        }
+        this.wsAppSubmitSubscription.unsubscribe();
         this.wsAppSubmitSubscription = undefined;
     }
 
@@ -489,12 +540,34 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         blocks: AppBlock[],
         showMessages: boolean
     ): void {
+        this.loading = false;
+        this.submitted = false;
         const url = (apiItem.requestUrl || '').trim();
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
-        this.cancelAppSubmitWebSocketSubscription();
-        this.wsAppSubmitSubscription = new Subscription();
-        this.websocketService.disconnect();
+        if (!this.wsAppSubmitSubscription) {
+            this.wsAppSubmitSubscription = new Subscription();
+        }
+
+        const sendMessage = () => {
+            try {
+                this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
+                if (showMessages && blocks.length) {
+                    this.messageType = 'success';
+                    this.message = blocks[0].options.messageSuccess;
+                    this.cdr.detectChanges();
+                }
+            } catch (e) {
+                onWsError(e instanceof Error ? e.message : String(e));
+            }
+        };
+
+        if (this.websocketService.isConnected(url)) {
+            if (method === 'POST') {
+                sendMessage();
+            }
+            return;
+        }
 
         let firstInbound = true;
         let errorSettled = false;
@@ -504,32 +577,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             errorSettled = true;
-            this.loading = false;
-            this.submitted = false;
-            this.progressUpdating = false;
             this.messageType = 'error';
             this.message = msg ?? 'WebSocket error';
             this.onError(apiUuid);
             this.stateLoadingUpdate(blocks, false, false);
             this.websocketService.disconnect(url);
-            this.cancelAppSubmitWebSocketSubscription();
             this.cdr.detectChanges();
         };
 
         const applyInbound = (data: unknown): void => {
+            if (this.appsAutoStarted.includes(apiUuid)) {
+                this.afterAutoStarted(apiUuid);
+            }
             if (firstInbound) {
-                if (this.appsAutoStarted.includes(apiUuid)) {
-                    this.afterAutoStarted(apiUuid);
-                }
-                this.loading = false;
-                this.submitted = false;
-                this.stateLoadingUpdate(
-                    blocks,
-                    false,
-                    showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating
-                );
-                this.progressUpdating = false;
                 firstInbound = false;
+            } else {
+                this.messageType = 'success';
+                this.message = $localize `New message received.`;
+                this.cdr.detectChanges();
             }
             this.applyParsedApiResponseToApp(currentApi, data as any, currentElement);
             this.cdr.detectChanges();
@@ -579,18 +644,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                     subscribeInboundStreams();
-                    try {
-                        this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
-                    } catch (e) {
-                        onWsError(e instanceof Error ? e.message : String(e));
-                    }
+                    sendMessage();
                 }
             });
             this.wsAppSubmitSubscription!.add(raceSub);
         } else {
             subscribeInboundStreams();
         }
-
         this.websocketService.connect(url);
     }
 
@@ -1347,6 +1407,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
+        if (element.type === 'messages') {
+            element.value = typeof value === 'string' ? value : JSON.stringify(value);
+            this.cdr.detectChanges();
+            return;
+        }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createStringValue(element, value);
             this.onElementValueChanged(element);
@@ -1457,8 +1522,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
 
-        // console.log('onElementValueChanged', element);
-
         const block = this.findBlock(element);
 
         if (element.loadValueInto && element.value) {
@@ -1505,11 +1568,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (inputApiUuid && this.errors[inputApiUuid]) {
                 delete this.errors[inputApiUuid][element.name];
             }
-            if (buttonElement && !['input-pagination'].includes(element.type)) {
+            if ((buttonElement && buttonElement !== element) && !['input-pagination'].includes(element.type)) {
                 return;
             }
             this.removeAutoStart(inputApiUuid);
-            // this.appAutoStart(inputApiUuid, 'input', element);
             this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
         }
     }
@@ -1547,19 +1609,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         // console.log('onItemSelected', element);
         this.appSubmit(this.data.uuid, apiUuid, 'input', element);
-    }
-
-    onItemClone(data: number[]): void {
-        if (data.length < 2) {
-            return;
-        }
-        const parentIndex = data[0];
-        const elementIndex = data[1];
-        const element = this.data.blocks[parentIndex].elements[elementIndex];
-        const elementCloned = Object.assign({}, element, {options: {}});
-
-        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
-        this.cdr.markForCheck();
     }
 
     onProgressUpdate(currentElement: AppBlockElement): void {
@@ -1804,44 +1853,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     startPayment(): void {
-        // if (!this.isLoggedIn) {
-        //     this.authService.navigateAuthPage('login');
-        //     return;
-        // }
-        // const initialData = {
-        //     appUuid: this.data.uuid
-        // };
-        // this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
-        //     .pipe(take(1))
-        //     .subscribe({
-        //         next: (reason) => {
-        //             // console.log(reason);
-        //             if (reason === 'confirmed') {
-        //
-        //             } else if (reason === 'promo_code_success') {
-        //                 this.updateUserBalance();
-        //                 this.message = $localize `Congratulations! Promo code accepted.`;
-        //                 this.messageType = 'success';
-        //             }
-        //         }
-        //     });
+
     }
 
     updateUserBalance(): void {
-        // if (!this.isLoggedIn) {
-        //     return;
-        // }
-        // this.dataService.userBalance(this.data.uuid)
-        //     .pipe(takeUntil(this.destroyed$))
-        //     .subscribe({
-        //         next: (res) => {
-        //             this.userBalance = res?.balance || 0;
-        //             this.cdr.markForCheck();
-        //         },
-        //         error: (err) => {
-        //             // console.log(err);
-        //         }
-        //     });
+
     }
 
     ngOnDestroy(): void {
