@@ -942,7 +942,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             return;
         }
         if (!confirmed) {
-            this.confirm('Вы уверены, что хотите удалить вкладку со всеми полями?')
+            this.confirm($localize `Are you sure you want to delete the tab with all fields?`)
                 .then(() => {
                     this.removeTab(true);
                 });
