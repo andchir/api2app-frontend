@@ -258,6 +258,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 }
             });
         });
+        this.addEmptyBlockByGrid();
     }
 
     findEmptyBlocks(): AppBlock[] {
@@ -286,7 +287,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     deleteEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
-        // console.log('deleteEmptyBlockByGrid', gridColumns, emptyItems.length);
+        console.log('deleteEmptyBlockByGrid', gridColumns, emptyItems.length);
         if (emptyItems.length <= gridColumns) {
             return;
         }
@@ -304,7 +305,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     addEmptyBlockByGrid(): void {
         const gridColumns = this.data.gridColumns;
         let emptyItems = this.findEmptyBlocks();
-        // console.log('addEmptyBlockByGrid', gridColumns, emptyItems.length);
+        console.log('addEmptyBlockByGrid', gridColumns, emptyItems.length);
         if (emptyItems.length >= gridColumns) {
             return;
         }
