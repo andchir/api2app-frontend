@@ -817,7 +817,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
     navigateToEdit(appItemId: number): void {
         const editUrl = environment.production && this.data.language
-            ? `${this.data.language}/apps/edit/${appItemId}`
+            ? `/${this.data.language}/apps/edit/${appItemId}`
             : `/apps/edit/${appItemId}`;
         this.router.navigate([editUrl]);
     }
