@@ -212,11 +212,13 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     return;
                 }
                 this.tabIndex = parseInt(params['tab']) - 1;
+                this.checkExistenceTab();
                 this.cdr.detectChanges();
             });
     }
 
     override getData(): void {
+        this.loading = true;
         this.dataService.getItem(this.itemId)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -231,7 +233,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                             block.options.showLoading = true;
                         }
                     });
-                    this.addEmptyBlockByGrid();
                     this.createAppOptions();
                     this.cdr.detectChanges();
                 },
@@ -243,6 +244,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     override createAppOptions(): void {
+        this.checkExistenceTab();
         this.data.blocks.forEach((block, blockIndex) => {
             if (typeof block.tabIndex === 'undefined') {
                 block.tabIndex = 0;
@@ -862,22 +864,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
             this.addTab();
         }
-    }
-
-    addTab(tabNumber: number = -1): void {
-        if (!this.data.tabs) {
-            this.data.tabs = [];
-        }
-        if (tabNumber === -1) {
-            this.addTab(this.data.tabs.length + 1);
-            return;
-        }
-        const tabName = ($localize `Tab`) + ' ' + tabNumber;
-        if (this.data.tabs.find(name => name === tabName)) {
-            this.addTab(tabNumber + 1);
-            return;
-        }
-        this.data.tabs.push(tabName);
     }
 
     removeTab(): void {

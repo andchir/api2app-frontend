@@ -131,6 +131,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     return;
                 }
                 this.tabIndex = parseInt(params['tab']) - 1;
+                this.checkExistenceTab();
                 this.cdr.detectChanges();
             });
     }
@@ -181,6 +182,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.isVkApp = true;
             this.vkAppInit();
         }
+        this.checkExistenceTab();
         const currentUser = this.tokenStorageService.getUser();
         const currentUserId = currentUser ? parseInt(currentUser.url.split('/').pop()) : 0;
         this.isOwner = this.data.user_id === currentUserId;
@@ -262,6 +264,37 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
+    checkExistenceTab(): void {
+        if (!this.data || this.loading) {
+            return;
+        }
+        if (this.tabIndex > this.data.tabs.length - 1) {
+            const tabBlocks = this.data.blocks.filter(block => {
+                return block.tabIndex === this.tabIndex;
+            });
+            if (tabBlocks.length === 0) {
+                this.switchTab(0);
+                return;
+            }
+        }
+    }
+
+    addTab(tabNumber: number = -1): void {
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
+        if (tabNumber === -1) {
+            this.addTab(this.data.tabs.length + 1);
+            return;
+        }
+        const tabName = ($localize `Tab`) + ' ' + tabNumber;
+        if (this.data.tabs.find(name => name === tabName)) {
+            this.addTab(tabNumber + 1);
+            return;
+        }
+        this.data.tabs.push(tabName);
+    }
+
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
         if ((!window['isVKApp'] && element.showOnlyInVK) && this.previewMode) {
             element.hidden = true;
@@ -307,8 +340,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.tabIndex === tabIndex) {
             return;
         }
-        // this.tabIndex = tabIndex;
-        // this.cdr.detectChanges();
         const queryParams: Params = {
             tab: tabIndex + 1
         };
