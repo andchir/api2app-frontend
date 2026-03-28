@@ -816,10 +816,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
     }
 
     navigateToEdit(appItemId: number): void {
-        const editUrl = environment.production && this.data.language
-            ? `/${this.data.language}/apps/edit/${appItemId}`
-            : `/apps/edit/${appItemId}`;
-        this.router.navigate([editUrl]);
+        this.router.navigate(['apps', 'edit', String(appItemId)]);
     }
 
     elementActionSelect(element: AppBlockElement, blockIndex: number, actionType: 'input'|'output' = 'input'): void {
