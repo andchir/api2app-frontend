@@ -173,32 +173,43 @@
             </div>
 
             <div class="w-full overflow-y-hidden overflow-x-auto mb-4">
-                <ul class="block md:flex text-sm font-medium md:border-b md:border-b-gray-300" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
-                    <li class="me-0 md:me-2" *ngFor="let tabName of data.tabs; index as index">
+                <ul class="block md:flex gap-2 items-center text-sm font-medium md:border-b md:border-b-gray-300" *ngIf="data.tabs && (data.tabs.length > 1 || !previewMode)">
+                    <ng-container *ngFor="let tabName of data.tabs; index as index">
+                        <li class="flex gap-2 items-center mb-3 md:mb-0"
+                            (mouseenter)="onTabMouseEnter($event, index)"
+                            (mouseleave)="onTabMouseLeave($event, index)">
+                            <button type="button"
+                                    class="relative block md:inline-block w-full md:w-auto md:whitespace-nowrap z-[8] top-[1px] px-4 py-3 rounded-lg md:rounded-none md:rounded-t-lg border"
+                                    [ngClass]="{'border-gray-300 text-blue-700 border-b-300 md:border-b-gray-100': tabIndex == index, 'border-gray-100 border-b-gray-100 md:border-b-gray-300 text-gray-500 hover:text-gray-700 bg-gray-200 hover:border-gray-300': tabIndex !== index}"
+                                    (click)="switchTab(index)">
+                                {{ tabName }}
+                            </button>
+                            <button type="button"
+                                    class="hidden px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                    ngxTippy="Add tab"
+                                    i18n-ngxTippy
+                                    (click)="addTab(index)">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </li>
+                    </ng-container>
+                    <li class="min-h-[45px] flex gap-2 items-center">
                         <button type="button"
-                                class="relative block md:inline-block w-full md:w-auto md:whitespace-nowrap z-[8] top-[1px] px-4 py-3 rounded-lg md:rounded-none md:rounded-t-lg border mb-3 md:mb-0"
-                                [ngClass]="{'border-gray-300 text-blue-700 border-b-300 md:border-b-gray-100': tabIndex == index, 'border-gray-100 border-b-gray-100 md:border-b-gray-300 text-gray-500 hover:text-gray-700 bg-gray-200 hover:border-gray-300': tabIndex !== index}"
-                                (click)="switchTab(index)">
-                            {{ tabName }}
-                        </button>
-                    </li>
-                    <li class="me-2 min-h-[45px] whitespace-nowrap" *ngIf="!previewMode">
-                        <button type="button"
-                                class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                class="inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
                                 ngxTippy="Add tab"
                                 i18n-ngxTippy
                                 (click)="addTab()">
                             <i class="bi bi-plus"></i>
                         </button>
                         <button type="button"
-                                class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                class="inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
                                 ngxTippy="Delete tab"
                                 i18n-ngxTippy
                                 (click)="removeTab()" *ngIf="data.tabs.length > 1">
                             <i class="bi bi-trash3"></i>
                         </button>
                         <button type="button"
-                                class="relative me-2 z-10 top-[9px] inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
+                                class="inline-block px-1 py-1 rounded-lg text-gray-500 hover:text-gray-600 border border-gray-400 hover:border-gray-500 text-xl leading-3"
                                 ngxTippy="Rename tab"
                                 i18n-ngxTippy
                                 (click)="editTab()">

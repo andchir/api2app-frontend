@@ -785,6 +785,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
 
         const formData = this.dataService.creteFormData(data, this.files);
         const itemId = data.id || 0;
+        const isNewItem = !data.id;
 
         this.dataService.updateItem(formData, itemId)
             .pipe(takeUntil(this.destroyed$))
@@ -793,11 +794,15 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     this.itemId = res.id;
                     this.data.id = this.itemId;
                     this.data.uuid = res.uuid;
+                    this.data.language = res.language;
                     this.loading = false;
                     this.saving = false;
                     this.message = $localize `Saved successfully.`;
                     this.messageType = 'success';
                     this.cdr.detectChanges();
+                    if (isNewItem) {
+                        this.navigateToEdit(this.data.id);
+                    }
                 },
                 error: (err) => {
                     this.errorsObj = err;
@@ -808,6 +813,13 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     this.cdr.detectChanges();
                 }
             });
+    }
+
+    navigateToEdit(appItemId: number): void {
+        const editUrl = environment.production && this.data.language
+            ? `${this.data.language}/apps/edit/${appItemId}`
+            : `/apps/edit/${appItemId}`;
+        this.router.navigate([editUrl]);
     }
 
     elementActionSelect(element: AppBlockElement, blockIndex: number, actionType: 'input'|'output' = 'input'): void {
@@ -878,26 +890,86 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         }
     }
 
-    removeTab(): void {
+    onTabMouseEnter(event: MouseEvent, index: number): void {
+        if (index + 1 === this.data.tabs.length) {
+            return;
+        }
+        const buttons = Array.from((event.target as HTMLElement).querySelectorAll('button'));
+        if (buttons.length >= 2) {
+            buttons[1].classList.remove('hidden');
+        }
+    }
+
+    onTabMouseLeave(event: MouseEvent, index: number): void {
+        const buttons = Array.from((event.target as HTMLElement).querySelectorAll('button'));
+        if (buttons.length >= 2) {
+            buttons[1].classList.add('hidden');
+        }
+    }
+
+    addTab(index: number = -1): void {
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
+        const baseName = $localize `Tab`;
+        let newTabIndex = index + 1;
+        if (index === -1) {
+            const tabName = baseName + ' ' + (this.data.tabs.length + 1);
+            this.data.tabs.push(tabName);
+            newTabIndex = this.data.tabs.length - 1;
+        } else {
+            this.data.tabs.splice(index + 1, 0, baseName);
+        }
+
+        this.data.tabs.forEach((tabName, index) => {
+            if (tabName.startsWith(baseName)) {
+                this.data.tabs[index] = baseName + ' ' + (index + 1);
+            }
+        });
+
+        this.data.blocks.forEach(block => {
+            if (block.tabIndex >= newTabIndex) {
+                block.tabIndex++;
+            }
+        });
+
+        this.cdr.markForCheck();
+        this.switchTab(newTabIndex);
+    }
+
+    removeTab(confirmed: boolean = false): void {
         if (!this.data?.tabs || this.data?.tabs.length <= 1) {
             return;
         }
+        if (!confirmed) {
+            this.confirm('Вы уверены, что хотите удалить вкладку со всеми полями?')
+                .then(() => {
+                    this.removeTab(true);
+                });
+            return;
+        }
+
         const tabIndex = this.tabIndex;
-        const blocks = this.data.blocks.filter((block) => {
-            return block.tabIndex >= tabIndex;
-        });
         this.data?.tabs.splice(this.tabIndex, 1);
+
+        const blocks = this.data.blocks.filter((block) => {
+            return block.tabIndex !== tabIndex;
+        });
         blocks.forEach((block) => {
-            if (block.tabIndex > 0) {
-                block.tabIndex--;
+            if (block.tabIndex < tabIndex) {
+                return;
             }
-            if (block.tabIndex > this.data?.tabs.length - 1) {
+            if (block.tabIndex > tabIndex) {
                 block.tabIndex--;
+                return;
             }
         });
+        this.data.blocks = blocks;
+
         if (this.data?.tabs.length - 1 < this.tabIndex) {
             this.switchTab(this.tabIndex - 1);
         }
+        this.cdr.markForCheck();
     }
 
     editTab(): void {
@@ -993,6 +1065,26 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             (element as HTMLInputElement).checked = false;
         });
         this.cdr.detectChanges();
+    }
+
+    confirm(message: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            const initialData = {
+                message: message,
+                isActive: true
+            };
+            this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+                .pipe(take(1))
+                .subscribe({
+                    next: (reason) => {
+                        if (reason === 'confirmed') {
+                            resolve();
+                        } else {
+                            reject();
+                        }
+                    }
+                });
+        });
     }
 
     override ngOnDestroy(): void {
