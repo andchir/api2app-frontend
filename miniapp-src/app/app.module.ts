@@ -23,6 +23,7 @@ import { ElementImageComponent } from './apps/components/elements/element-image.
 import { ImageComparisonComponent } from './apps/components/elements/image-comparison.component';
 import { ElementIframeComponent } from "./apps/components/elements/element-iframe.component";
 import { AudioPlayerComponent } from './apps/components/elements/audio-player.component';
+import { MessagesElementComponent } from './apps/components/elements/messages-element.component';
 
 @NgModule({
     declarations: [
@@ -50,6 +51,7 @@ import { AudioPlayerComponent } from './apps/components/elements/audio-player.co
         ImageComparisonComponent,
         ElementIframeComponent,
         AudioPlayerComponent,
+        MessagesElementComponent,
         NgxTippyModule
     ],
     providers: [ApplicationService, ApiService, ModalService],

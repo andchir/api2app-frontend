@@ -22,7 +22,7 @@ export class WebsocketService {
     connect(url: string): void {
         const previous = this.sockets.get(url);
         if (previous) {
-            previous.close();
+            return;
         }
 
         // DEBUG(ws): remove after debugging
@@ -33,7 +33,7 @@ export class WebsocketService {
 
         ws.onopen = () => {
             // DEBUG(ws): remove after debugging
-            // console.log('[WS debug] open', url);
+            console.log('[WS debug] open', url);
             this.open$.next(url);
         };
 
@@ -47,7 +47,7 @@ export class WebsocketService {
                 }
             }
             // DEBUG(ws): remove after debugging
-            // console.log('[WS debug] inbound', {url, raw: event.data, data});
+            console.log('[WS debug] inbound', {url, raw: event.data, data});
             this.message$.next({url, data});
         };
 
@@ -62,7 +62,7 @@ export class WebsocketService {
                 this.sockets.delete(url);
             }
             // DEBUG(ws): remove after debugging
-            // console.log('[WS debug] close', {url, code: event.code, reason: event.reason});
+            console.log('[WS debug] close', {url, code: event.code, reason: event.reason});
             this.close$.next({url, code: event.code, reason: event.reason});
         };
     }
@@ -94,7 +94,7 @@ export class WebsocketService {
             throw new Error(`WebSocket is not open for ${url}`);
         }
         // DEBUG(ws): remove after debugging
-        // console.log('[WS debug] sendText', {url, text});
+        console.log('[WS debug] sendText', {url, text});
         ws.send(text);
     }
 

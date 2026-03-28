@@ -1456,6 +1456,38 @@ export class ElementOptions {
                     enabled: options?.showOnlyInVK
                 });
                 break;
+            case 'messages':
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'placeholder',
+                    label: $localize `Placeholder`,
+                    type: 'input-text',
+                    value: options?.placeholder
+                });
+                output.push({
+                    name: 'maxHeight',
+                    label: $localize `Maximum container height`,
+                    type: 'input-number',
+                    value: options?.maxHeight || 400
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'hiddenByDefault',
+                    label: $localize `Hidden by default`,
+                    type: 'input-switch',
+                    enabled: options?.hiddenByDefault || false
+                });
+                break;
             case 'iframe':
                 output.push({
                     name: 'label',
@@ -1901,6 +1933,17 @@ export class ElementOptions {
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null
+                });
+                break;
+            case 'messages':
+                Object.assign(output, {
+                    name: 'messages',
+                    label: '',
+                    placeholder: '',
+                    maxHeight: 400,
+                    hiddenByField: '',
+                    hiddenByDefault: false,
+                    value: ''
                 });
                 break;
             case 'iframe':
