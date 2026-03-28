@@ -213,6 +213,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 }
                 this.tabIndex = parseInt(params['tab']) - 1;
                 this.checkExistenceTab();
+                this.deleteEmptyBlockByGrid();
+                this.addEmptyBlockByGrid(true);
                 this.cdr.detectChanges();
             });
     }
@@ -302,17 +304,26 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         }
     }
 
-    addEmptyBlockByGrid(): void {
+    addEmptyBlockByGrid(clear: boolean = false): void {
         const gridColumns = this.data.gridColumns;
-        let emptyItems = this.findEmptyBlocks();
-        // console.log('addEmptyBlockByGrid', gridColumns, emptyItems.length);
-        if (emptyItems.length >= gridColumns) {
+        let emptyBlocks = this.findEmptyBlocks();
+        // console.log('addEmptyBlockByGrid', gridColumns, emptyBlocks.length);
+        if (emptyBlocks.length >= gridColumns) {
+            emptyBlocks.forEach(block => {
+                if (clear) {
+                    block.elements = [];
+                }
+                if (block.elements.length === 0) {
+                    block.tabIndex = -1;
+                }
+            });
+            this.cdr.markForCheck();
             return;
         }
         const newBlock = Object.assign({}, ApplicationService.getBlockDefaults(), {tabIndex: -1});
         this.data.blocks.push(newBlock);
-        emptyItems = this.findEmptyBlocks();
-        if (emptyItems.length < gridColumns) {
+        emptyBlocks = this.findEmptyBlocks();
+        if (emptyBlocks.length < gridColumns) {
             this.addEmptyBlockByGrid();
         }
         if ((!this.data.tabs || this.data.tabs.length === 0) && !this.previewMode) {
