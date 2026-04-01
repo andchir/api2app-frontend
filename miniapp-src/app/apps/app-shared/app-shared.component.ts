@@ -425,14 +425,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let chunkIndex = 0;
         const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
-        let timer: any;
+        let isSseStream = false;
+        let sseFinalized = false;
+
+        const finalizeSseResponse = () => {
+            if (sseFinalized) return;
+            sseFinalized = true;
+            outputElements.forEach((element) => {
+                if (element.suffixText) {
+                    element.value += element.suffixText;
+                }
+            });
+            this.afterResponseCreated(blocks);
+            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
+        };
 
         this.apiService.apiRequest(appUuid, apiItem, false, this.vkAppOptions)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
                     if (res instanceof MessageEvent) {
-                        let content = '';
+                        isSseStream = true;
                         if (res.type === 'error') {
                             const event = res as unknown as SseErrorEvent;
                             console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
@@ -440,26 +453,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             this.messageType = 'error';
                             this.afterResponseCreated(blocks);
                         } else {
-                            content = (res as MessageEvent).data;
+                            const content = (res as MessageEvent).data;
                             if (content !== '[DONE]') {
                                 if (chunkIndex === 0) {
                                     this.stateLoadingUpdate(blocks, false, false);
                                 }
-                                let dataObj = JSON.parse(content);
+                                const dataObj = JSON.parse(content);
                                 this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
                                 chunkIndex++;
+                            } else {
+                                finalizeSseResponse();
                             }
                         }
-                        clearTimeout(timer);
-                        timer = setTimeout(() => {
-                            outputElements.forEach((element, index) => {
-                                if (element.suffixText) {
-                                    element.value += element.suffixText;
-                                }
-                            });
-                            this.afterResponseCreated(blocks);
-                            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-                        }, (content === '[DONE]' ? 0 : 4000));
                     } else if(res instanceof HttpResponse) {
                         if (this.appsAutoStarted.includes(apiUuid)) {
                             this.afterAutoStarted(apiUuid);
@@ -498,6 +503,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                     this.onError(apiUuid);
                     this.stateLoadingUpdate(blocks, false, false);
+                },
+                complete: () => {
+                    // Finalize SSE stream when the connection is closed by the server
+                    if (isSseStream) {
+                        finalizeSseResponse();
+                    }
                 }
             });
     }
