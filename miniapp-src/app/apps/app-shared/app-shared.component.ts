@@ -264,22 +264,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    addTab(tabNumber: number = -1): void {
-        if (!this.data.tabs) {
-            this.data.tabs = [];
-        }
-        if (tabNumber === -1) {
-            this.addTab(this.data.tabs.length + 1);
-            return;
-        }
-        const tabName = ($localize `Tab`) + ' ' + tabNumber;
-        if (this.data.tabs.find(name => name === tabName)) {
-            this.addTab(tabNumber + 1);
-            return;
-        }
-        this.data.tabs.push(tabName);
-    }
-
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
         if ((!window['isVKApp'] && element.showOnlyInVK) && this.previewMode) {
             element.hidden = true;
@@ -1651,7 +1635,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let htmlContent = '';
         if (element.valueFrom) {
             const sourceElement = this.findBlockElementByName(element.valueFrom);
-            let htmlContent = String(sourceElement.value);
+            htmlContent = String(sourceElement.value);
 
             if (!htmlContent.includes('<body')) {
                 this.message = $localize `Incorrect HTML code.`;
@@ -1667,7 +1651,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         htmlContent = this.trimSubstring(htmlContent, '```html', '```');
         htmlContent = ApplicationService.processStringTags(htmlContent, this.data.blocks);
 
-        iframeEl.srcdoc = htmlContent;
+        try {
+            iframeEl.srcdoc = htmlContent;
+        } catch (error) {
+            console.log(error);
+        }
 
         setTimeout(() => {
             block.loading = false;

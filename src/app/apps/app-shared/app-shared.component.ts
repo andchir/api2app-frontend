@@ -1650,7 +1650,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let htmlContent = '';
         if (element.valueFrom) {
             const sourceElement = this.findBlockElementByName(element.valueFrom);
-            let htmlContent = String(sourceElement.value);
+            htmlContent = String(sourceElement.value);
 
             if (!htmlContent.includes('<body')) {
                 this.message = $localize `Incorrect HTML code.`;
@@ -1666,7 +1666,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         htmlContent = this.trimSubstring(htmlContent, '```html', '```');
         htmlContent = ApplicationService.processStringTags(htmlContent, this.data.blocks);
 
-        iframeEl.srcdoc = htmlContent;
+        try {
+            iframeEl.srcdoc = htmlContent;
+        } catch (error) {
+            console.log(error);
+        }
 
         setTimeout(() => {
             block.loading = false;
