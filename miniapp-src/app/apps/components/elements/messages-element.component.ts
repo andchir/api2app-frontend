@@ -17,6 +17,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ChatMessage, MessagesService } from '../../../services/messages.service';
+import { SharedModule } from '../../../shared.module';
 
 @Component({
     selector: 'app-messages-element',
@@ -24,7 +25,8 @@ import { ChatMessage, MessagesService } from '../../../services/messages.service
     standalone: true,
     imports: [
         CommonModule,
-        FormsModule
+        FormsModule,
+        SharedModule
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
