@@ -192,7 +192,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
     onUrlEnter(url: string): void {
         if (!this.data.name) {
             this.data.name = url.replace(/^https?:\/\//, '')
-                .replace(/\//g, ' - ');
+                .replace(/^wss?:\/\//, '')
+                .replace(/\//g, ' - ').trim();
         }
     }
 
