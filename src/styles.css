@@ -4,8 +4,8 @@
 @tailwind utilities;
 
 @media (min-width: 475px) {
-    .xs\:max-w-48 {
-        max-width: 12rem; /* 192px */
+    .xs\:max-w-80 {
+        max-width: 20rem; /* 320px */
     }
 }
 .element-hidden { display: none; }

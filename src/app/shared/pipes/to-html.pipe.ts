@@ -19,7 +19,7 @@ export class ToHtmlPipe implements PipeTransform {
         const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^"']*)?$/i;
 
         const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
-        const imgClass = 'rounded-lg max-w-full xs:max-w-48 mt-1 block';
+        const imgClass = 'rounded-lg max-w-full xs:max-w-80 mt-1 block';
 
         // URL/email detection must happen on the original text BEFORE HTML escaping,
         // otherwise escaped quotes (&quot;) bleed into the matched URL.
@@ -38,7 +38,7 @@ export class ToHtmlPipe implements PipeTransform {
                 const target = value.includes('#') ? '_self' : '_blank';
                 const safeHref = this.escapeHtml(value);
                 if (imageExtRegex.test(value)) {
-                    result += `<a class="${linkClass}" rel="nofollow noopener noreferrer" href="${safeHref}" target="${target}">` +
+                    result += `<a class="${linkClass.replace('inline-block', 'block')}" rel="nofollow noopener noreferrer" href="${safeHref}" target="${target}">` +
                         `<img class="${imgClass}" src="${safeHref}" alt="" /></a>`;
                 } else {
                     result += `<a class="${linkClass}" rel="nofollow noopener noreferrer" href="${safeHref}" target="${target}">${safeHref}</a>`;
