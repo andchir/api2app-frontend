@@ -695,9 +695,8 @@
                 [parentIndex]="parentIndex"
                 [index]="index"
                 [maxHeight]="options.maxHeight || 400"
-                [value]="value"
-                [options]="options"
-                (elementValueChange)="onFieldValueChanged()"
+                [(ngModel)]="options.value"
+                (ngModelChange)="onFieldValueChanged()"
                 (message)="onMessage($event)"></app-messages-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -713,5 +712,55 @@
 </ng-container>
 
 <ng-template #templateButtonOptions>
-
+    <div class="flex gap-2 items-center app-element-buttons absolute -right-2 -top-2 z-20 invisible group-hover/element:visible" *ngIf="editorMode && type">
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Options"
+                i18n-ngxTippy
+                (click)="elementOptionsInit($event)">
+            <i class="bi bi-gear-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Clone"
+                i18n-ngxTippy
+                (click)="elementClone(index, parentIndex, $event)">
+            <i class="bi bi-copy text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Add element after"
+                i18n-ngxTippy
+                (click)="elementAddAfter(index, parentIndex, $event)">
+            <i class="bi bi-plus-lg text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Input Action"
+                i18n-ngxTippy
+                (click)="elementActionSelect('input', $event)"
+                *ngIf="type.includes('input-') || ['button', 'audio', 'image', 'messages'].includes(type)">
+            <i class="bi bi-arrow-down text-base"></i>
+            <i class="bi bi-lightning-charge-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-violet-500 hover:bg-violet-600 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Output Action"
+                i18n-ngxTippy
+                (click)="elementActionSelect('output', $event)">
+            <i class="bi bi-arrow-up text-base"></i>
+            <i class="bi bi-lightning-charge-fill text-base"></i>
+        </button>
+        <button type="button" class="cursor-pointer shadow-md shadow-gray-400 text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-gray-300 rounded-lg px-2 py-1"
+                ngxTippy="Delete"
+                i18n-ngxTippy
+                (click)="elementDelete(index, parentIndex, $event)">
+            <i class="bi bi-trash3-fill text-base"></i>
+        </button>
+        <div>
+            <div class="flex items-center me-4">
+                <input id="select-element-{{ parentIndex }}-{{ index }}"
+                       type="checkbox"
+                       value="{{ parentIndex }}-{{ index }}"
+                       class="element-select-checkbox w-6 h-6 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500 focus:ring-2 shadow-md"
+                       (click)="onSelected($event)">
+                <label for="select-element-{{ parentIndex }}-{{ index }}" class="ms-2 text-sm font-medium text-gray-900"></label>
+            </div>
+        </div>
+    </div>
 </ng-template>

@@ -182,6 +182,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return typeof element.value === 'string'
                     ? parseFloat(String(element.value).replace(',', '.'))
                     : element.value as number;
+            case 'messages': {
+                const OUTGOING_PREFIX = '\u200B__out__';
+                const raw = String(element.value);
+                return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
+            }
         }
         return element.value ? String(element.value) : null;
     }

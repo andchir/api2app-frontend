@@ -5,16 +5,15 @@ import {
     Component,
     ElementRef,
     EventEmitter,
+    forwardRef,
     Input,
-    OnChanges,
     OnDestroy,
     OnInit,
     Output,
-    SimpleChanges,
     ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import { ChatMessage, MessagesService } from '../../../services/messages.service';
 import { SharedModule } from '../../../shared.module';
@@ -28,9 +27,14 @@ import { SharedModule } from '../../../shared.module';
         FormsModule,
         SharedModule
     ],
+    providers: [{
+        provide: NG_VALUE_ACCESSOR,
+        useExisting: forwardRef(() => MessagesElementComponent),
+        multi: true
+    }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, AfterViewChecked {
+export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChecked, ControlValueAccessor {
 
     @ViewChild('messagesContainer') messagesContainer: ElementRef<HTMLDivElement>;
 
@@ -41,16 +45,16 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
     @Input() parentIndex: number;
     @Input() index: number;
     @Input() maxHeight: number = 400;
-    @Input() value: any;
-    @Input() options: any;
-    @Output() elementValueChange: EventEmitter<void> = new EventEmitter<void>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
 
     inputText = '';
     messages: ChatMessage[] = [];
 
-    private lastOutgoingText = '';
+    private static readonly OUTGOING_PREFIX = '\u200B__out__';
     private needsScroll = false;
+    private initialized = false;
+    private onChange: (value: any) => void = () => {};
+    private onTouched: () => void = () => {};
 
     private static readonly EMOJI_MAP: [RegExp, string][] = [
         [/>:\(|>:-\(/g, '😠'],
@@ -82,19 +86,32 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
 
     ngOnInit(): void {
         this.messages = this.messagesService.getHistory(this.elementId);
+        this.initialized = true;
     }
 
-    ngOnChanges(changes: SimpleChanges): void {
-        if (changes['value']?.currentValue && !changes['value'].firstChange) {
-            const text = String(changes['value'].currentValue).trim();
-            if (text && text !== this.lastOutgoingText) {
-                this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'incoming');
-                this.messages = this.messagesService.getHistory(this.elementId);
-                this.needsScroll = true;
-                this.cdr.markForCheck();
-            }
-            this.lastOutgoingText = '';
+    writeValue(value: any): void {
+        if (!this.initialized || !value) {
+            return;
         }
+        const raw = String(value);
+        if (raw.startsWith(MessagesElementComponent.OUTGOING_PREFIX)) {
+            return;
+        }
+        const text = raw.trim();
+        if (text) {
+            this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'incoming');
+            this.messages = this.messagesService.getHistory(this.elementId);
+            this.needsScroll = true;
+            this.cdr.markForCheck();
+        }
+    }
+
+    registerOnChange(fn: (value: any) => void): void {
+        this.onChange = fn;
+    }
+
+    registerOnTouched(fn: () => void): void {
+        this.onTouched = fn;
     }
 
     ngAfterViewChecked(): void {
@@ -109,23 +126,18 @@ export class MessagesElementComponent implements OnInit, OnChanges, OnDestroy, A
         if (!text) {
             return;
         }
-        this.lastOutgoingText = text;
         this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'outgoing');
         this.messages = this.messagesService.getHistory(this.elementId);
-
-        if (this.options) {
-            this.options.value = text;
-        }
         this.inputText = '';
         this.needsScroll = true;
-        this.elementValueChange.emit();
+        this.onChange(MessagesElementComponent.OUTGOING_PREFIX + text);
+        this.onTouched();
         this.cdr.markForCheck();
     }
 
     undoLastOutgoing(): void {
         this.messagesService.removeLastOutgoing(this.elementId);
         this.messages = this.messagesService.getHistory(this.elementId);
-        this.lastOutgoingText = '';
         this.cdr.markForCheck();
     }
 

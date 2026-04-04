@@ -695,9 +695,8 @@
                 [parentIndex]="parentIndex"
                 [index]="index"
                 [maxHeight]="options.maxHeight || 400"
-                [value]="value"
-                [options]="options"
-                (elementValueChange)="onFieldValueChanged()"
+                [(ngModel)]="options.value"
+                (ngModelChange)="onFieldValueChanged()"
                 (message)="onMessage($event)"></app-messages-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
