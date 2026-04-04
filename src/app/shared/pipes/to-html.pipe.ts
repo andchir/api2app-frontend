@@ -14,22 +14,46 @@ export class ToHtmlPipe implements PipeTransform {
             return text;
         }
 
-        text = this.escapeHtml(text);
-
         const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig;
         const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/ig;
+        const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^"']*)?$/i;
 
         const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
+        const imgClass = 'rounded-lg max-w-xs max-h-48 mt-1 block';
 
-        text = text.replace(emailRegex, (value) =>
-            `<a class="${linkClass}" href="mailto:${value}">${value}</a>`
-        );
-        text = text.replace(urlRegex, (value) => {
-            const target = value.includes('#') ? '_self' : '_blank';
-            return `<a class="${linkClass}" rel="nofollow noopener noreferrer" href="${value}" target="${target}">${value}</a>`;
-        });
+        // URL/email detection must happen on the original text BEFORE HTML escaping,
+        // otherwise escaped quotes (&quot;) bleed into the matched URL.
+        const combinedRegex = new RegExp(`(${urlRegex.source}|${emailRegex.source})`, 'ig');
 
-        return this.sanitizer.bypassSecurityTrustHtml(text);
+        let result = '';
+        let lastIndex = 0;
+        let match: RegExpExecArray | null;
+
+        while ((match = combinedRegex.exec(text)) !== null) {
+            result += this.escapeHtml(text.slice(lastIndex, match.index));
+
+            const value = match[0];
+
+            if (/^https?:\/\//i.test(value)) {
+                const target = value.includes('#') ? '_self' : '_blank';
+                const safeHref = this.escapeHtml(value);
+                if (imageExtRegex.test(value)) {
+                    result += `<a class="${linkClass}" rel="nofollow noopener noreferrer" href="${safeHref}" target="${target}">` +
+                        `<img class="${imgClass}" src="${safeHref}" alt="" /></a>`;
+                } else {
+                    result += `<a class="${linkClass}" rel="nofollow noopener noreferrer" href="${safeHref}" target="${target}">${safeHref}</a>`;
+                }
+            } else {
+                const safeValue = this.escapeHtml(value);
+                result += `<a class="${linkClass}" href="mailto:${safeValue}">${safeValue}</a>`;
+            }
+
+            lastIndex = match.index + value.length;
+        }
+
+        result += this.escapeHtml(text.slice(lastIndex));
+
+        return this.sanitizer.bypassSecurityTrustHtml(result);
     }
 
     private escapeHtml(text: string): string {
