@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (min-width: 475px) {
+    .xs\:max-w-48 {
+        max-width: 12rem; /* 192px */
+    }
+}
 .element-hidden { display: none; }
 .first-letter-uppercase:first-letter { text-transform: uppercase; }
 .no-pointer-events { pointer-events: none; }
