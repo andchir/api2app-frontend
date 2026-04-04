@@ -154,6 +154,9 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
         this.errors = {};
         this.loading = true;
         this.submitted = true;
+
+        const isNewItem = !this.data.id;
+
         this.apiService.updateItem(this.data)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -164,6 +167,9 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                     this.message = $localize `Saved successfully.`;
                     this.messageType = 'success';
+                    if (isNewItem) {
+                        this.navigateToEdit(this.data.id);
+                    }
                 },
                 error: (err) => {
                     this.errors = err;
@@ -181,6 +187,10 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                 }
             });
+    }
+
+    navigateToEdit(appItemId: number): void {
+        this.router.navigate(['apis', 'edit', String(appItemId)]);
     }
 
     deleteErrorMessages(name: string) {
