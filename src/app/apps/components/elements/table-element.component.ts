@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {type} from "node:os";
+import {SharedModule} from "../../../shared.module";
 
 
 @Component({
@@ -25,7 +25,8 @@ import {type} from "node:os";
         NgForOf,
         NgIf,
         NgClass,
-        FormsModule
+        FormsModule,
+        SharedModule
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -101,10 +102,12 @@ export class TableElementComponent implements ControlValueAccessor {
             this.value = [];
         }
         this.value.push(row);
+        this.cdr.detectChanges();
     }
 
     removeRow(index: number): void {
         this.value.splice(index, 1);
+        this.cdr.detectChanges();
     }
 
     getExtension(value: string): string {

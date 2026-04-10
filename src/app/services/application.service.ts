@@ -149,7 +149,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|number|boolean|string[]|File|File[]|SafeResourceUrl|null
+    static getElementValue(element: AppBlockElement): string|any[]|number|boolean|File|File[]|null
     {
         if (!element) {
             return null;
@@ -189,7 +189,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 const raw = String(element.value);
                 return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
             case 'table':
-                return element.valueArr || element.value;
+                return element.valueArr;
         }
         return element.value ? String(element.value) : null;
     }

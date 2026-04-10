@@ -21,7 +21,7 @@
 
                 <ng-template #templateTextItem>
                     <ng-container *ngIf="!editable; else inputField">
-                        <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key]"></div>
+                        <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key] | toHtml"></div>
                         <div *ngIf="!isHTML">{{ item[key] }}</div>
                     </ng-container>
                     <ng-template #inputField>
