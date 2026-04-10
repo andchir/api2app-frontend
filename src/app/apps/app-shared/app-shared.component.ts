@@ -249,7 +249,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
-                        if (!this.appElements.buttons[uuid]) {
+                        if (!this.appElements.buttons[uuid]
+                            || this.appElements.buttons[uuid].length === 0
+                            || this.appElements.buttons[uuid][0].hidden) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });
@@ -434,6 +436,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
 
+        if (currentApi.useLocalStorage) {
+            this.handleLocalStorageSubmit(currentApi, apiItem, currentElement, blocks, showMessages, isAutoStart, appUuid, apiUuid);
+            return;
+        }
+
         if (!isAutoStart) {
             this.stateLoadingUpdate(blocks, true, false);
         }
@@ -531,6 +538,117 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     private isWebSocketRequestUrl(url: string): boolean {
         const u = url.toLowerCase();
         return u.startsWith('ws://') || u.startsWith('wss://');
+    }
+
+    // --- Local Storage API methods ---
+
+    private handleLocalStorageSubmit(
+        currentApi: ApiItem,
+        apiItem: ApiItem,
+        currentElement: AppBlockElement,
+        blocks: AppBlock[],
+        showMessages: boolean,
+        isAutoStart: boolean,
+        appUuid: string,
+        apiUuid: string
+    ): void {
+        const requestMethod = ApiService.getApiRequestMethod(apiItem);
+        let responseData: any;
+
+        if (['POST', 'PUT', 'PATCH'].includes(requestMethod)) {
+            const postData = this.getLocalStoragePostData(apiItem);
+            responseData = this.updateLocalStorageApiData(appUuid, postData, currentApi.responseBody);
+        } else {
+            responseData = this.getLocalStorageApiData(appUuid, currentApi.responseBody);
+        }
+
+        if (this.appsAutoStarted.includes(apiUuid)) {
+            this.afterAutoStarted(apiUuid);
+        }
+
+        this.loading = false;
+        this.submitted = false;
+
+        if (responseData) {
+            this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
+            this.applyParsedApiResponseToApp(currentApi, responseData, currentElement);
+        } else {
+            this.stateLoadingUpdate(blocks, false, false);
+        }
+        this.cdr.detectChanges();
+    }
+
+    private getLocalStorageApiData(appUuid: string, responseBody: string): any {
+        const key = `app_local_${appUuid}`;
+        const stored = window.localStorage.getItem(key);
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch (e) {
+                return null;
+            }
+        }
+        if (responseBody) {
+            try {
+                const data = JSON.parse(responseBody);
+                this.setLocalStorageApiData(appUuid, data);
+                return data;
+            } catch (e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    private setLocalStorageApiData(appUuid: string, data: any): void {
+        const key = `app_local_${appUuid}`;
+        try {
+            window.localStorage.setItem(key, JSON.stringify(data));
+        } catch (e) {
+            console.log('Failed to save data to localStorage', e);
+        }
+    }
+
+    private updateLocalStorageApiData(appUuid: string, updateData: any, responseBody: string): any {
+        const existingData = this.getLocalStorageApiData(appUuid, responseBody);
+        if (existingData && typeof existingData === 'object' && !Array.isArray(existingData)) {
+            const mergedData = Object.assign({}, existingData, updateData);
+            this.setLocalStorageApiData(appUuid, mergedData);
+            return mergedData;
+        }
+        const data = updateData || existingData;
+        this.setLocalStorageApiData(appUuid, data);
+        return data;
+    }
+
+    private getLocalStoragePostData(apiItem: ApiItem): any {
+        if (apiItem.bodyDataSource === 'raw') {
+            if (apiItem.bodyContent) {
+                try {
+                    return JSON.parse(apiItem.bodyContent);
+                } catch (e) {}
+            }
+            if (apiItem.bodyContentFlatten) {
+                try {
+                    return JSON.parse(apiItem.bodyContentFlatten);
+                } catch (e) {}
+            }
+            return {};
+        }
+        const postData: any = {};
+        if (apiItem.bodyFields) {
+            apiItem.bodyFields.forEach(field => {
+                if (field.hidden) return;
+                let value: any = field.value;
+                if (typeof value === 'string' && ApiService.isJson(value)) {
+                    try { value = JSON.parse(value); } catch (e) {}
+                }
+                if (value !== undefined && value !== null && value !== '') {
+                    postData[field.name] = value;
+                }
+            });
+        }
+        return postData;
     }
 
     private cancelAppSubmitWebSocketSubscription(): void {
