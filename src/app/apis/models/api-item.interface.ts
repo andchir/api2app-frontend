@@ -14,6 +14,7 @@ export interface ApiItem {
     authLogin: string;
     authPassword: string;
     sendAsFormData: boolean;
+    useLocalStorage: boolean;
     dailyLimitUsage: number;
     dailyLimitForUniqueUsers: boolean;
     paidOnly: boolean;

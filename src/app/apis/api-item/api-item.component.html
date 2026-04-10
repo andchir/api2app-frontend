@@ -316,6 +316,24 @@
     <div class="flex flex-col">
         <h3 class="mb-2" i18n>Preview</h3>
 
+        <div class="relative">
+            <div class="static xl:absolute right-0 top-2 flex justify-between items-center w-full xl:w-[350px]">
+                <div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" value="" class="sr-only peer" [(ngModel)]="apiItem.useLocalStorage">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                        <span class="ml-3 text-sm font-medium text-gray-900" i18n>Use local storage</span>
+                    </label>
+                </div>
+                <div>
+                    <i class="bi bi-question-circle text-blue-500 hover:text-blue-600"
+                       ngxTippy="In this mode, the data from this field will only be used for the initial state, but updated data will be stored in your browser."
+                       i18n-ngxTippy
+                       [tippyProps]="{placement: 'bottom'}"></i>
+                </div>
+            </div>
+        </div>
+
         <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
             <ul class="flex flex-wrap -mb-px">
                 <li class="mr-2">
