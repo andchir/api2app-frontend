@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { BASE_URL } from '../../environments/environment';
 import { environment } from '../../environments/environment';
 
@@ -148,11 +149,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+    static getElementValue(element: AppBlockElement): string|number|boolean|string[]|File|File[]|SafeResourceUrl|null
+    {
         if (!element) {
             return null;
         }
-        if (!element.value) {
+        if (!element.value && !element.valueArr && !element.valueObj) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
         switch (element.type) {
@@ -182,11 +184,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return typeof element.value === 'string'
                     ? parseFloat(String(element.value).replace(',', '.'))
                     : element.value as number;
-            case 'messages': {
+            case 'messages':
                 const OUTGOING_PREFIX = '\u200B__out__';
                 const raw = String(element.value);
                 return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
-            }
+            case 'table':
+                return element.valueArr || element.value;
         }
         return element.value ? String(element.value) : null;
     }

@@ -1357,6 +1357,12 @@ export class ElementOptions {
                     enabled: options?.isHTML || false
                 });
                 output.push({
+                    name: 'editable',
+                    label: $localize `Editable`,
+                    type: 'input-switch',
+                    enabled: options?.editable || false
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
