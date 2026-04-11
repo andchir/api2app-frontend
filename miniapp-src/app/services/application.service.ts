@@ -148,11 +148,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return output;
     }
 
-    static getElementValue(element: AppBlockElement): string|string[]|number|boolean|File|File[]|null {
+    static getElementValue(element: AppBlockElement): string|any[]|number|boolean|File|File[]|null
+    {
         if (!element) {
             return null;
         }
-        if (!element.value) {
+        if (!element.value && !element.valueArr && !element.valueObj) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
         switch (element.type) {
@@ -182,11 +183,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return typeof element.value === 'string'
                     ? parseFloat(String(element.value).replace(',', '.'))
                     : element.value as number;
-            case 'messages': {
+            case 'messages':
                 const OUTGOING_PREFIX = '\u200B__out__';
                 const raw = String(element.value);
                 return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
-            }
+            case 'table':
+                return element.valueArr;
         }
         return element.value ? String(element.value) : null;
     }

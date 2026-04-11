@@ -44,6 +44,7 @@ export class ApiService extends DataService<ApiItem> {
             requestContentType: 'json',
             basicAuth: false,
             sendAsFormData: false,
+            useLocalStorage: false,
             dailyLimitUsage: 0,
             dailyLimitForUniqueUsers: false,
             paidOnly: false,

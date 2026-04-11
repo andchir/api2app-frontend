@@ -13,22 +13,14 @@
                 [ngClass]="{'py-2 px-3': !editable}"
                 *ngFor="let key of keys; let colIndex = index">
 
-                <ng-container *ngIf="isImage(item[key]); else templateTextItem">
-                    <a [href]="item[key]" target="_blank">
-                        <img class="rounded-lg max-w-[150px]" [src]="item[key]" alt="">
-                    </a>
+                <ng-container *ngIf="!editable; else inputField">
+                    <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key] | toHtml"></div>
+                    <div *ngIf="!isHTML">{{ item[key] }}</div>
                 </ng-container>
-
-                <ng-template #templateTextItem>
-                    <ng-container *ngIf="!editable; else inputField">
-                        <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key]"></div>
-                        <div *ngIf="!isHTML">{{ item[key] }}</div>
-                    </ng-container>
-                    <ng-template #inputField>
-                        <input type="text"
-                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                               [(ngModel)]="item[key]">
-                    </ng-template>
+                <ng-template #inputField>
+                    <input type="text"
+                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                           [(ngModel)]="item[key]">
                 </ng-template>
 
                 <button type="button"

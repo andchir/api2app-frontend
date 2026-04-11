@@ -1149,8 +1149,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 Object.keys(outputData).forEach((key: string) => {
                     let element = findElement(key, actionType);
-                    if (!element && key.includes('.')) { // trying to find an element with an array type value
-                        const tmp = key.split('.')[0];
+                    if (!element && /\.\d\./.test(key)) { // trying to find an element with an array type value
+                        const tmp = key.replace(/\.\d+\..*$/, '');
                         if (arrayValueKeys.includes(tmp)) {
                             delete outputData[key];
                             return;
