@@ -270,6 +270,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data || this.loading) {
             return;
         }
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
         if (this.tabIndex > this.data.tabs.length - 1) {
             const tabBlocks = this.data.blocks.filter(block => {
                 return block.tabIndex === this.tabIndex;
