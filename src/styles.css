@@ -7,6 +7,9 @@
     .xs\:max-w-80 {
         max-width: 20rem; /* 320px */
     }
+    .xs\:max-w-64 {
+        max-width: 16rem; /* 256px */
+    }
 }
 .element-hidden { display: none; }
 .first-letter-uppercase:first-letter { text-transform: uppercase; }

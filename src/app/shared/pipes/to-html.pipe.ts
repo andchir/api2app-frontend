@@ -19,7 +19,7 @@ export class ToHtmlPipe implements PipeTransform {
         const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^"']*)?$/i;
 
         const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
-        const imgClass = 'rounded-lg max-w-full xs:max-w-80 mt-1 block';
+        const imgClass = 'rounded-lg max-w-full xs:max-w-64 mt-1 block';
 
         // URL/email detection must happen on the original text BEFORE HTML escaping,
         // otherwise escaped quotes (&quot;) bleed into the matched URL.
