@@ -20,13 +20,33 @@ export class ToHtmlPipe implements PipeTransform {
             return '';
         }
 
+        const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
+        const imgClass = 'rounded-lg max-w-full w-64 mt-1 block';
+        const dateClass = 'text-gray-600';
+
+        const locale = document.documentElement.lang || navigator.language || 'en';
+
+        const isoDateTimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})?$/;
+        if (isoDateTimeRegex.test(text.trim())) {
+            const date = new Date(text.trim());
+            if (!isNaN(date.getTime())) {
+                return `<span class="${dateClass}"><i class="bi bi-clock"></i> ${date.toLocaleString(locale)}</span>`;
+            }
+        }
+
+        const isoDateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (isoDateOnlyRegex.test(text.trim())) {
+            const date = new Date(text.trim());
+            if (!isNaN(date.getTime())) {
+                const formatted = date.toLocaleDateString(locale, { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+                return `<span class="${dateClass}"><i class="bi bi-calendar"></i> ${formatted}</span>`;
+            }
+        }
+
         const urlRegex = /https?:\/\/[^\s<>"'`]+/i;
         const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/i;
         const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^\s"']*)?$/i;
         const trailingPunct = /[.,;:!?)\]]+$/;
-
-        const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
-        const imgClass = 'rounded-lg max-w-full w-64 mt-1 block';
 
         // URL/email detection must happen on the original text BEFORE HTML escaping,
         // otherwise escaped quotes (&quot;) bleed into the matched URL.
