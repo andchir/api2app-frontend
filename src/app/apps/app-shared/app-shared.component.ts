@@ -1369,7 +1369,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement.linkedField) {
             const linkedField = this.findBlockElementByName(currentElement.linkedField);
             if (linkedField && linkedField.options.inputApiUuid) {
-                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField);
+                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true);
+            } else if (linkedField && linkedField.options.outputApiUuid) {
+                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true);
             }
         }
 
