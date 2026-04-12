@@ -1365,6 +1365,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.vkBridgeService.showAds(this.vkAppOptions);
         }
 
+        // Autostart a linked element
+        if (currentElement.linkedField) {
+            const linkedField = this.findBlockElementByName(currentElement.linkedField);
+            if (linkedField && linkedField.options.inputApiUuid) {
+                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField);
+            }
+        }
+
         this.afterResponseCreated(blocks);
     }
 

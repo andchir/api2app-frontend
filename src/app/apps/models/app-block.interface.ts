@@ -80,6 +80,7 @@ export interface AppBlockElement {
     valueFrom?: string;
     autoHeight?: boolean;
     isBooleanValue?: boolean;
+    linkedField?: string;
 }
 
 export interface AppBlockOptions {
