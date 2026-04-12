@@ -13,7 +13,7 @@
 
 /* Thick separator between records */
 .tbl-record + .tbl-record {
-    border-top: 4px solid #9ca3af; /* gray-400 */
+    border-top: 2px solid #9ca3af; /* gray-400 */
 }
 
 /* Each field is a 2-column row: label | value */
