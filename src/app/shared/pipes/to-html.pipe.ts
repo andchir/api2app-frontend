@@ -7,11 +7,17 @@ export class ToHtmlPipe implements PipeTransform {
     constructor(private sanitizer: DomSanitizer) {}
 
     transform(text: string): SafeHtml {
+        if (text === null) {
+            text = '';
+        }
         if (typeof text === 'object') {
             text = JSON.stringify(text, null, 2);
         }
-        if (typeof text !== 'string') {
-            return text;
+        if (typeof text === 'number') {
+            text = String(text);
+        }
+        if (typeof text !== 'string' || !text) {
+            return '';
         }
 
         const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig;
