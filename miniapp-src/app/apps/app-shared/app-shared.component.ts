@@ -1579,7 +1579,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
         ApplicationService.localStoreValue(element);
-        if ((element.value || element.valueArr || element.valueObj)/* && !['input-select'].includes(element.type)*/) {
+        if ((element.value || element.valueArr || element.valueObj) && !['button'].includes(element.type)) {
             this.onElementValueChanged(element);
         }
     }
