@@ -286,6 +286,12 @@ export class ElementOptions {
                     value: options?.valueFrom || ''
                 });
                 output.push({
+                    name: 'linkedField',
+                    label: $localize `Linked element`,
+                    type: 'input-text',
+                    value: options?.linkedField || ''
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -1619,6 +1625,7 @@ export class ElementOptions {
                     color: 'Green',
                     hiddenByField: '',
                     valueFrom: '',
+                    linkedField: '',
                     hiddenByDefault: false,
                     isClearForm: false,
                     isDownloadMode: false,

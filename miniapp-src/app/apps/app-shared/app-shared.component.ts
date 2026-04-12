@@ -255,6 +255,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data || this.loading) {
             return;
         }
+        if (!this.data.tabs) {
+            this.data.tabs = [];
+        }
         if (this.tabIndex > this.data.tabs.length - 1) {
             const tabBlocks = this.data.blocks.filter(block => {
                 return block.tabIndex === this.tabIndex;
@@ -1347,6 +1350,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.vkBridgeService.showAds(this.vkAppOptions);
         }
 
+        // Autostart a linked element
+        if (currentElement.linkedField) {
+            const linkedField = this.findBlockElementByName(currentElement.linkedField);
+            if (linkedField && linkedField.options.inputApiUuid) {
+                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField);
+            }
+        }
+
         this.afterResponseCreated(blocks);
     }
 
@@ -1554,6 +1565,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
             element.value = value;
+        } else if (['table'].includes(element.type) && typeof value === 'object') {
+            element.valueArr = [value];
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
