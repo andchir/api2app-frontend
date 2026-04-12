@@ -16,7 +16,7 @@ import { ElementInputTextComponent } from './apps/components/elements/element-in
 import { ApplicationService } from './services/application.service';
 import { ApiService } from './services/api.service';
 import { ModalService } from './services/modal.service';
-import { TableElementComponent } from './apps/components/elements/table-element.component';
+import { TableElementComponent } from './apps/components/elements/table-element/table-element.component';
 import { SelectImageComponent } from './apps/components/elements/select-image.component';
 import { ProgressElementComponent } from './apps/components/elements/progress-element.component';
 import { ElementImageComponent } from './apps/components/elements/element-image.component';

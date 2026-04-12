@@ -9,12 +9,13 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {SharedModule} from "../../../shared.module";
+import {SharedModule} from "../../../../shared.module";
 
 
 @Component({
     selector: 'app-table-element',
     templateUrl: 'table-element.component.html',
+    styleUrls: ['table-element.component.css'],
     providers: [{
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => TableElementComponent),
@@ -38,6 +39,7 @@ export class TableElementComponent implements ControlValueAccessor {
     @Input() index: number;
     @Input() isHTML: boolean = false;
     @Input() editable: boolean = false;
+    @Input() vertical: boolean = false;
     @Input() keys: string[] = [];
     @Input() headers: string[] = [];
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
@@ -62,6 +64,9 @@ export class TableElementComponent implements ControlValueAccessor {
     stringifyValues(val: any): any {
         if (!val) {
             return null;
+        }
+        if (!Array.isArray(val)) {
+            val = [val];
         }
         val.forEach((row) => {
             for (const [key, value] of Object.entries(row)) {

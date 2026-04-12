@@ -1,0 +1,83 @@
+<div class="tbl-outer border border-gray-300 overflow-hidden w-full"
+     [class.tbl-vertical]="vertical">
+
+    <!-- Header row — visible only in horizontal mode via CSS -->
+    <div class="tbl-head-row">
+        <div class="tbl-head-cell py-2 px-3 font-bold text-sm break-words"
+             *ngFor="let headerText of headers">
+            {{ headerText }}
+        </div>
+    </div>
+
+    <!-- Editor-mode placeholder records -->
+    <ng-container *ngIf="editorMode">
+        <div class="tbl-record" *ngFor="let _ of [1, 2, 3]">
+            <div class="tbl-cell"
+                 [class.tbl-cell--last]="i === keys.length - 1"
+                 *ngFor="let key of keys; let i = index">
+                <div class="tbl-label py-2 px-3 bg-gray-100 font-bold text-sm border-r border-gray-300 break-words">
+                    {{ key }}
+                </div>
+                <div class="tbl-value py-2 px-3 text-gray-400">{{ key }}</div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Live data records -->
+    <ng-container *ngIf="!editorMode">
+        <ng-container *ngIf="value && value.length > 0; else templateEmpty">
+            <div class="tbl-record group"
+                 *ngFor="let item of value; let ind = index">
+
+                <div class="tbl-cell"
+                     [class.tbl-cell--last]="i === keys.length - 1"
+                     *ngFor="let key of keys; let i = index">
+
+                    <!-- Left column: header label (shown in vertical mode) -->
+                    <div class="tbl-label py-2 px-3 bg-gray-100 font-bold text-sm border-r border-gray-300 break-words">
+                        {{ headers[i] }}
+                    </div>
+
+                    <!-- Right column / cell value -->
+                    <div class="tbl-value min-w-0 break-words"
+                         [ngClass]="{'py-2 px-3': !editable}">
+                        <ng-container *ngIf="!editable; else inputField">
+                            <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key] | toHtml"></div>
+                            <div *ngIf="!isHTML">{{ item[key] }}</div>
+                        </ng-container>
+                        <ng-template #inputField>
+                            <input type="text"
+                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   [(ngModel)]="item[key]">
+                        </ng-template>
+                    </div>
+                </div>
+
+                <!-- Delete button row (vertical) / floating overlay (horizontal) -->
+                <div class="tbl-delete-row flex justify-end px-2 py-1 bg-gray-50 border-t border-gray-200"
+                     *ngIf="editable">
+                    <button type="button"
+                            class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition-colors"
+                            title="Delete"
+                            i18n-title
+                            (click)="removeRow(ind)">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #templateEmpty>
+            <div class="p-3 text-center text-gray-500" i18n>Empty.</div>
+        </ng-template>
+    </ng-container>
+</div>
+
+<!-- Add row button -->
+<div class="text-center pt-3" *ngIf="editable">
+    <button type="button"
+            class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-xs px-8 py-1"
+            (click)="addRow()">
+        <i class="bi bi-plus-lg mr-2"></i>
+        <span i18n>Add</span>
+    </button>
+</div>

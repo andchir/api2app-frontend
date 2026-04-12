@@ -23,7 +23,7 @@ import { ModalService } from '../services/modal.service';
 import { ElementInputTextComponent } from './components/elements/element-input-text.component';
 import { ApplicationImportComponent } from './app-import/app-import.component';
 import { RenameComponent } from '../shared/rename/rename.component';
-import { TableElementComponent } from './components/elements/table-element.component';
+import { TableElementComponent } from './components/elements/table-element/table-element.component';
 import { SelectImageComponent } from './components/elements/select-image.component';
 import { ProgressElementComponent } from './components/elements/progress-element.component';
 import { ElementImageComponent } from './components/elements/element-image.component';

@@ -1,0 +1,116 @@
+/* ================================================================
+   VERTICAL MODE  — default (mobile-first)
+   ================================================================ */
+
+/* Header row is hidden: labels are shown inline as .tbl-label */
+.tbl-head-row {
+    display: none;
+}
+
+.tbl-record {
+    display: block;
+}
+
+/* Thick separator between records */
+.tbl-record + .tbl-record {
+    border-top: 4px solid #9ca3af; /* gray-400 */
+}
+
+/* Each field is a 2-column row: label | value */
+.tbl-cell {
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+/* Thin divider between fields inside a record */
+.tbl-cell:not(.tbl-cell--last) {
+    border-bottom: 1px solid #e5e7eb; /* gray-200 */
+}
+
+.tbl-delete-row {
+    /* shown as a normal row below all fields */
+}
+
+
+/* ================================================================
+   HORIZONTAL MODE  — md+ screens, only when NOT .tbl-vertical
+   ================================================================ */
+
+@media (min-width: 768px) {
+
+    /* --- Header row --- */
+    .tbl-outer:not(.tbl-vertical) .tbl-head-row {
+        display: flex;
+        background-color: #f3f4f6; /* gray-100 */
+        border-bottom: 2px solid #d1d5db; /* gray-300 */
+    }
+
+    .tbl-outer:not(.tbl-vertical) .tbl-head-cell {
+        flex: 1;
+        min-width: 0;
+        border-right: 1px solid #d1d5db;
+        overflow: hidden;
+    }
+
+    .tbl-outer:not(.tbl-vertical) .tbl-head-cell:last-child {
+        border-right: none;
+    }
+
+    /* --- Data records --- */
+    .tbl-outer:not(.tbl-vertical) .tbl-record {
+        display: flex;
+        position: relative; /* anchor for the floating delete button */
+        border-top: none;
+        border-bottom: 1px solid #d1d5db;
+    }
+
+    .tbl-outer:not(.tbl-vertical) .tbl-record:last-child {
+        border-bottom: none;
+    }
+
+    /* Override the thick vertical separator */
+    .tbl-outer:not(.tbl-vertical) .tbl-record + .tbl-record {
+        border-top: none;
+    }
+
+    /* --- Cells --- */
+    .tbl-outer:not(.tbl-vertical) .tbl-cell {
+        display: block;
+        flex: 1;
+        min-width: 0;
+        border-bottom: none;
+        border-right: 1px solid #d1d5db;
+        overflow: hidden;
+    }
+
+    .tbl-outer:not(.tbl-vertical) .tbl-cell.tbl-cell--last {
+        border-right: none;
+    }
+
+    /* Hide the label column — headers are shown in .tbl-head-row */
+    .tbl-outer:not(.tbl-vertical) .tbl-label {
+        display: none;
+    }
+
+    /* Value fills the full cell width */
+    .tbl-outer:not(.tbl-vertical) .tbl-value {
+        width: 100%;
+    }
+
+    /* --- Delete button: floating overlay on hover --- */
+    .tbl-outer:not(.tbl-vertical) .tbl-delete-row {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        width: auto;
+        background-color: transparent;
+        border: none;
+        padding: 0;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+    }
+
+    .tbl-outer:not(.tbl-vertical) .tbl-record:hover .tbl-delete-row {
+        opacity: 1;
+    }
+}
