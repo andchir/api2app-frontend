@@ -16,7 +16,7 @@
                  [class.tbl-cell--last]="i === keys.length - 1"
                  *ngFor="let key of keys; let i = index">
                 <div class="tbl-label py-2 px-3 bg-gray-100 font-bold text-sm border-r border-gray-300 break-words">
-                    {{ key }}
+                    {{ headers[i] || '' }}
                 </div>
                 <div class="tbl-value py-2 px-3 text-gray-400">{{ key }}</div>
             </div>
