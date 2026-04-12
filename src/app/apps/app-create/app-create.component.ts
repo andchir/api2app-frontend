@@ -764,11 +764,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 if (element.type === 'input-date' && element.useDefault) {
                     element.value = null;
                 }
-                if (element.options.outputApiUuid && element.options.outputApiFieldName) {
-                    // element.value = null;
-                    element.valueObj = null;
-                    element.valueArr = null;
-                }
             });
         });
         data.blocks = blocks;
@@ -777,11 +772,6 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.loading = true;
         this.saving = true;
         this.cdr.detectChanges();
-
-        // if (data.id) {
-        //     delete data.shared;
-        //     delete data.hidden;
-        // }
 
         const formData = this.dataService.creteFormData(data, this.files);
         const itemId = data.id || 0;
