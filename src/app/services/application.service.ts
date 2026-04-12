@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, LOCALE_ID } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
 import { BASE_URL } from '../../environments/environment';
 import { environment } from '../../environments/environment';
 

@@ -446,6 +446,10 @@
         "8964236046922785706": "New message received.",
         "6452372740127749380": "Messages",
         "7488391890629635569": "No messages yet",
-        "2498902103213431436": "Add element after"
+        "2498902103213431436": "Add element after",
+        "6886549570421278468": "Are you sure you want to delete the tab with all fields?",
+        "872691187703152069": "Use local storage",
+        "6850626273383035706": "In this mode, the data from this field will only be used for the initial state, but updated data will be stored in your browser.",
+        "8167888978246490648": "Vertical view"
     }
 }
