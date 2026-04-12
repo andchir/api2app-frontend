@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import {ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR} from '@angular/forms';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import {SharedModule} from "../../../shared.module";
+import {SharedModule} from "../../../../shared.module";
 
 
 @Component({
