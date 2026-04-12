@@ -20,12 +20,13 @@ export class ToHtmlPipe implements PipeTransform {
             return '';
         }
 
-        const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig;
-        const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/ig;
-        const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^"']*)?$/i;
+        const urlRegex = /https?:\/\/[^\s<>"'`]+/i;
+        const emailRegex = /[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/i;
+        const imageExtRegex = /\.(png|jpe?g|gif|webp|svg|bmp|ico)(\?[^\s"']*)?$/i;
+        const trailingPunct = /[.,;:!?)\]]+$/;
 
         const linkClass = 'inline-block align-bottom max-w-full whitespace-nowrap overflow-hidden text-ellipsis app-text-link';
-        const imgClass = 'rounded-lg max-w-full xs:max-w-64 mt-1 block';
+        const imgClass = 'rounded-lg max-w-full w-64 mt-1 block';
 
         // URL/email detection must happen on the original text BEFORE HTML escaping,
         // otherwise escaped quotes (&quot;) bleed into the matched URL.
@@ -38,7 +39,9 @@ export class ToHtmlPipe implements PipeTransform {
         while ((match = combinedRegex.exec(text)) !== null) {
             result += this.escapeHtml(text.slice(lastIndex, match.index));
 
-            const value = match[0];
+            const raw = match[0];
+            const value = /^https?:\/\//i.test(raw) ? raw.replace(trailingPunct, '') : raw;
+            const tail = raw.slice(value.length);
 
             if (/^https?:\/\//i.test(value)) {
                 const target = value.includes('#') ? '_self' : '_blank';
@@ -54,7 +57,8 @@ export class ToHtmlPipe implements PipeTransform {
                 result += `<a class="${linkClass}" href="mailto:${safeValue}">${safeValue}</a>`;
             }
 
-            lastIndex = match.index + value.length;
+            result += this.escapeHtml(tail);
+            lastIndex = match.index + raw.length;
         }
 
         result += this.escapeHtml(text.slice(lastIndex));
