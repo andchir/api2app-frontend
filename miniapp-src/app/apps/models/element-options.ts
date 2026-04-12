@@ -1357,6 +1357,18 @@ export class ElementOptions {
                     enabled: options?.isHTML || false
                 });
                 output.push({
+                    name: 'editable',
+                    label: $localize `Editable`,
+                    type: 'input-switch',
+                    enabled: options?.editable || false
+                });
+                output.push({
+                    name: 'vertical',
+                    label: $localize `Vertical view`,
+                    type: 'input-switch',
+                    enabled: options?.vertical || false
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -1909,7 +1921,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     isHTML: false,
                     hiddenByDefault: false,
-                    editable: false
+                    editable: false,
+                    vertical: false
                 });
                 break;
             case 'input-select-image':
