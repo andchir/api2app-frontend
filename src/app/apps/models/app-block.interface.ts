@@ -70,6 +70,7 @@ export interface AppBlockElement {
     rows?: number;
     loadValueInto?: string;
     note?: string;
+    noteOutput?: string;
     storeValue?: boolean;
     useCropper?: boolean;
     isClearForm?: boolean;

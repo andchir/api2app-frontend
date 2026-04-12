@@ -1874,7 +1874,9 @@ export class ElementOptions {
                     maxSize: 9,
                     autoHide: false,
                     useAsOffset: false,
-                    value: 1
+                    value: 1,
+                    note: $localize `Please select the field with the page number.`,
+                    noteOutput: $localize `Please select a field to display the number of records.`
                 });
                 break;
             case 'status':
@@ -1897,7 +1899,7 @@ export class ElementOptions {
             case 'progress':
                 Object.assign(output, {
                     name: 'progress',
-                    note: $localize `Please select an object that contains data about the queue number and the operation status.`,
+                    noteOutput: $localize `Please select an object that contains data about the queue number and the operation status.`,
                     statusCompleted: 'completed',
                     statusError: 'error',
                     statusProcessing: 'processing',

@@ -828,7 +828,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             selectedFieldName: actionType === 'input' ? element.options?.inputApiFieldName : element.options?.outputApiFieldName,
             selectedFieldType: actionType === 'input' ? element.options?.inputApiFieldType : element.options?.outputApiFieldType,
             elementType: element.type,
-            note: element.note || '',
+            note: actionType === 'input' ? (element.note || '') : (element.noteOutput || ''),
             actionType
         };
         if (!initialData.selectedUuid) {

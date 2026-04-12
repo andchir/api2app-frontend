@@ -450,6 +450,8 @@
         "6886549570421278468": "Êtes-vous sûr de vouloir supprimer l'onglet contenant tous les champs?",
         "872691187703152069": "Use local storage",
         "6850626273383035706": "In this mode, the data from this field will only be used for the initial state, but updated data will be stored in your browser.",
-        "8167888978246490648": "Vertical view"
+        "8167888978246490648": "Vertical view",
+        "2924860033036650438": "Please select a field to display the number of records.",
+        "3821755137589858808": "Please select the field with the page number."
     }
 }
