@@ -506,7 +506,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             }
             if (this.selectedBlock.tabIndex !== newTabIndex) {
                 this.selectedBlock.tabIndex = newTabIndex;
-                this.tabIndex = newTabIndex;
+                this.switchTab(newTabIndex);
             }
             Object.assign(this.selectedBlock.options, options);
             if (this.selectedBlock?.options?.orderIndex !== this.selectedBlockIndex) {
