@@ -252,7 +252,7 @@
                                                            [valueObj]="element.valueObj"
                                                            [valueArr]="element.valueArr"
                                                            [editorMode]="!previewMode"
-                                                           (typeChange)="onElementUpdate(element, $event)"
+                                                           (typeChange)="onElementTypeUpdate(element, $event, index, ind)"
                                                            (showOptions)="showElementOptions(element, index, ind)"
                                                            (selectAction)="elementActionSelect(element, index, $event)"
                                                            (elementClick)="onElementClick(element)"
@@ -531,7 +531,7 @@
                            i18n-placeholder
                            [clearable]="false"
                            [(ngModel)]="newElementType"
-                           (ngModelChange)="changeElementType($event, element)">
+                           (ngModelChange)="changeElementType($event, element, index, parentIndex)">
                     <ng-template ng-option-tmp let-item="item">
                         <i class="bi mr-1 text-gray-400" [ngClass]="item.icon"></i>
                         {{ item.title }}

@@ -341,9 +341,9 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
-    changeElementType(type: AppBlockElementType, element: AppBlockElement): void {
+    changeElementType(type: AppBlockElementType, element: AppBlockElement, index: number = 0, blockIndex: number = 0): void {
         element.type = type;
-        this.onElementUpdate(element, type);
+        this.onElementTypeUpdate(element, type, index, blockIndex);
         this.newElementType = null;
         this.cdr.markForCheck();
     }
@@ -429,10 +429,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.addEmptyBlockByGrid();
     }
 
-    onElementUpdate(element: AppBlockElement, type: AppBlockElementType): void {
+    onElementTypeUpdate(element: AppBlockElement, type: AppBlockElementType, index: number = 0, blockIndex: number = 0): void {
         if (!element.name) {
             Object.assign(element, ElementOptions.getBlockElementDefault(type));
         }
+        element.name += `-${blockIndex + 1}-${index + 1}`;
         element.type = type;
         this.deleteEmptyBlockByGrid();
         this.addEmptyBlockByGrid();
