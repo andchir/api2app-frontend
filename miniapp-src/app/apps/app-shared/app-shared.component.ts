@@ -1132,7 +1132,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 apiItem.bodyContent = ApplicationService.getElementValue(element) as string;
             } else if (apiItem.bodyContent) {
                 const inputData = JSON.parse(apiItem.bodyContent);
-                const outputData = this.flattenObj(inputData);
+                const outputData = this.dataService.flattenObj(inputData);
                 const arrayValueKeys = [];
 
                 Object.keys(outputData).forEach((key: string) => {
@@ -1169,7 +1169,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         outputData[key] = ApplicationService.createStringValue(element, outputData[key]);
                     }
                 });
-                apiItem.bodyContent = JSON.stringify(this.unFlattenObject(outputData));
+                apiItem.bodyContent = JSON.stringify(this.dataService.unFlattenObject(outputData));
 
             } else {
                 const outputData = {};
@@ -1354,7 +1354,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement.linkedField) {
             const linkedField = this.findBlockElementByName(currentElement.linkedField);
             if (linkedField && linkedField.options.inputApiUuid) {
-                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField);
+                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true);
+            } else if (linkedField && linkedField.options.outputApiUuid) {
+                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true);
             }
         }
 
@@ -1549,10 +1551,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
-            let valueArr = this.flattenObjInArray(value);
+            let valueArr = this.dataService.flattenObjInArray(value, true);
             if (element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
                 // Filter array values
-                valueArr = this.filterArrayValues(valueArr, element.itemFieldName);
+                valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
             }
             element.valueArr = valueArr;
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
@@ -1793,7 +1795,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             htmlContent = element['htmlContent'] || '';
         }
 
-        htmlContent = this.trimSubstring(htmlContent, '```html', '```');
+        htmlContent = this.dataService.trimSubstring(htmlContent, '```html', '```');
         htmlContent = ApplicationService.processStringTags(htmlContent, this.data.blocks);
 
         try {
@@ -1806,169 +1808,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.loading = false;
             this.cdr.detectChanges();
         }, 1000);
-    }
-
-    trimSubstring(str: string, substringStart: string, substringEnd: string): string {
-        let result = str;
-        while (result.startsWith(substringStart)) {
-            result = result.slice(substringStart.length);
-        }
-        while (result.endsWith(substringEnd)) {
-            result = result.slice(0, -substringEnd.length);
-        }
-        return result;
-    }
-
-    flattenObjInArray(inputArr: any[]): any[] {
-        return inputArr.map((item) => {
-            return this.flattenObj(item);
-        });
-    }
-
-    filterArrayValues(valueArr: any[], itemFieldName: string): any[] {
-        if (!itemFieldName || !valueArr) {
-            return valueArr;
-        }
-        valueArr = valueArr.filter((item) => {
-            const value = item[itemFieldName] || '';
-            return !!value && !ApiService.isJson(value);
-        });
-        return valueArr;
-    }
-
-    flattenObj(
-        obj: any,
-        parent: string = '',
-        res: Record<string, any> = {},
-        seen: WeakSet<object> = new WeakSet()
-    ): Record<string, any> {
-        // Handle null and primitive values
-        if (obj === null || typeof obj !== 'object') {
-            if (parent !== '') {
-                res[parent] = obj; // Store primitive with its full path
-            } else {
-                // If no parent key, store under an empty string key
-                res[''] = obj;
-            }
-            return res;
-        }
-
-        // Detect and handle circular references
-        if (seen.has(obj)) {
-            res[parent] = '[Circular]'; // Mark circular reference instead of recursing infinitely
-            return res;
-        }
-        seen.add(obj); // Mark this object as visited
-
-        // Handle arrays
-        if (Array.isArray(obj)) {
-            if (obj.length === 0) {
-                // Empty array: store it as an empty array if there's a parent key
-                if (parent !== '') {
-                    res[parent] = [];
-                }
-                return res;
-            }
-
-            // Non‑empty array: recursively flatten each element without storing the array itself
-            obj.forEach((item, index) => {
-                const propName = parent ? `${parent}.${index}` : String(index);
-                this.flattenObj(item, propName, res, seen);
-            });
-            return res;
-        }
-
-        // Handle plain objects
-        const keys = Object.keys(obj);
-        if (keys.length === 0) {
-            // Empty object: store it as an empty object if there's a parent key
-            if (parent !== '') {
-                res[parent] = {};
-            }
-            return res;
-        }
-
-        // Non‑empty object: recursively flatten each property without storing the object itself
-        for (const key of keys) {
-            const propName = parent ? `${parent}.${key}` : key;
-            this.flattenObj(obj[key], propName, res, seen);
-        }
-
-        return res;
-    }
-
-    getNodeTypes(flatObj: any): Record<string, 'array' | 'object'> {
-        const types: Record<string, 'array' | 'object'> = {};
-
-        for (const key in flatObj) {
-            if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
-
-            const segments = key.split('.');
-            // For every parent path (prefix) we check the next segment
-            for (let i = 0; i < segments.length - 1; i++) {
-                const prefix = segments.slice(0, i + 1).join('.');
-                const nextSegment = segments[i + 1];
-                const isNextNumeric = /^\d+$/.test(nextSegment);
-
-                if (isNextNumeric) {
-                    // This prefix must be an array because it has a numeric child
-                    types[prefix] = 'array';
-                } else if (types[prefix] !== 'array') {
-                    // If not forced to be array, it's an object (default)
-                    types[prefix] = 'object';
-                }
-            }
-        }
-        return types;
-    }
-
-    unFlattenObject(flatObj: any): any {
-        const nodeTypes = this.getNodeTypes(flatObj);
-        const result: any = {};
-
-        for (const key in flatObj) {
-            if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
-
-            const segments = key.split('.');
-            let current = result;
-
-            for (let i = 0; i < segments.length; i++) {
-                const segment = segments[i];
-                const isLast = i === segments.length - 1;
-                const parentPath = segments.slice(0, i + 1).join('.');
-
-                if (!isLast) {
-                    const shouldBeArray = nodeTypes[parentPath] === 'array';
-
-                    if (shouldBeArray) {
-                        // Ensure we have an array at this level
-                        if (!current[segment]) {
-                            current[segment] = [];
-                        } else if (!Array.isArray(current[segment])) {
-                            // Convert existing object to array (preserve string keys)
-                            const obj = current[segment];
-                            current[segment] = [];
-                            for (const prop in obj) {
-                                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
-                                    current[segment][prop] = obj[prop];
-                                }
-                            }
-                        }
-                    } else {
-                        // Object case
-                        if (!current[segment] || Array.isArray(current[segment])) {
-                            // If it's an array but should be object, convert (rare)
-                            current[segment] = {};
-                        }
-                    }
-                    current = current[segment];
-                } else {
-                    // Assign the leaf value
-                    current[segment] = flatObj[key];
-                }
-            }
-        }
-        return result;
     }
 
     maintenanceModalToggle(): void {

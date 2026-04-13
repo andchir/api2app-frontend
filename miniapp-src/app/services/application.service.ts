@@ -3,7 +3,7 @@ import { Inject, Injectable, LOCALE_ID } from '@angular/core';
 import { BASE_URL } from '../../environments/environment';
 import { environment } from '../../environments/environment';
 
-import { catchError, Observable } from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import * as moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
@@ -11,7 +11,6 @@ import { DataService } from './data.service.abstract';
 import {
     AppBlock,
     AppBlockElement,
-    AppBlockElementType,
     AppBlockOptions,
     AppOptions
 } from '../apps/models/app-block.interface';
@@ -518,5 +517,187 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     static deleteBlockElementsByIndexArr(block: AppBlock, indexes: number[]): void {
         block.elements = block.elements.filter((_, index) => !indexes.includes(index));
+    }
+
+    trimSubstring(str: string, substringStart: string, substringEnd: string): string {
+        let result = str;
+        while (result.startsWith(substringStart)) {
+            result = result.slice(substringStart.length);
+        }
+        while (result.endsWith(substringEnd)) {
+            result = result.slice(0, -substringEnd.length);
+        }
+        return result;
+    }
+
+    flattenObjInArray(inputArr: any[], includeParents: boolean = false): any[] {
+        return inputArr.map((item) => {
+            return this.flattenObj(item, includeParents);
+        });
+    }
+
+    isJson(str: any): boolean {
+        if (typeof str !== 'string' || !str.match(/^[\[{]/)) {
+            return false;
+        }
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            return false;
+        }
+        return true;
+    }
+
+    filterArrayValues(valueArr: any[], itemFieldName: string): any[] {
+        if (!itemFieldName || !valueArr) {
+            return valueArr;
+        }
+        valueArr = valueArr.filter((item) => {
+            const value = item[itemFieldName] || '';
+            return !!value && !this.isJson(value);
+        });
+        return valueArr;
+    }
+
+    flattenObj(
+        obj: any,
+        includeParents: boolean = false,
+        parent: string = '',
+        res: Record<string, any> = {},
+        seen: WeakSet<object> = new WeakSet()
+    ): Record<string, any> {
+        // Handle null and primitive values
+        if (obj === null || typeof obj !== 'object') {
+            if (parent !== '') {
+                res[parent] = obj; // Store primitive with its full path
+            } else {
+                // If no parent key, store under an empty string key
+                res[''] = obj;
+            }
+            return res;
+        }
+
+        // Detect and handle circular references
+        if (seen.has(obj)) {
+            res[parent] = '[Circular]'; // Mark circular reference instead of recursing infinitely
+            return res;
+        }
+        seen.add(obj); // Mark this object as visited
+
+        // Handle arrays
+        if (Array.isArray(obj)) {
+            if (obj.length === 0) {
+                // Empty array: store it as an empty array if there's a parent key
+                if (parent !== '') {
+                    res[parent] = [];
+                }
+                return res;
+            }
+
+            if (includeParents && parent !== '') {
+                res[parent] = obj;
+            }
+
+            obj.forEach((item, index) => {
+                const propName = parent ? `${parent}.${index}` : String(index);
+                this.flattenObj(item, includeParents, propName, res, seen);
+            });
+            return res;
+        }
+
+        // Handle plain objects
+        const keys = Object.keys(obj);
+        if (keys.length === 0) {
+            // Empty object: store it as an empty object if there's a parent key
+            if (parent !== '') {
+                res[parent] = {};
+            }
+            return res;
+        }
+
+        if (includeParents && parent !== '') {
+            res[parent] = obj;
+        }
+
+        for (const key of keys) {
+            const propName = parent ? `${parent}.${key}` : key;
+            this.flattenObj(obj[key], includeParents, propName, res, seen);
+        }
+
+        return res;
+    }
+
+    getNodeTypes(flatObj: any): Record<string, 'array' | 'object'> {
+        const types: Record<string, 'array' | 'object'> = {};
+
+        for (const key in flatObj) {
+            if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
+
+            const segments = key.split('.');
+            // For every parent path (prefix) we check the next segment
+            for (let i = 0; i < segments.length - 1; i++) {
+                const prefix = segments.slice(0, i + 1).join('.');
+                const nextSegment = segments[i + 1];
+                const isNextNumeric = /^\d+$/.test(nextSegment);
+
+                if (isNextNumeric) {
+                    // This prefix must be an array because it has a numeric child
+                    types[prefix] = 'array';
+                } else if (types[prefix] !== 'array') {
+                    // If not forced to be array, it's an object (default)
+                    types[prefix] = 'object';
+                }
+            }
+        }
+        return types;
+    }
+
+    unFlattenObject(flatObj: any): any {
+        const nodeTypes = this.getNodeTypes(flatObj);
+        const result: any = {};
+
+        for (const key in flatObj) {
+            if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
+
+            const segments = key.split('.');
+            let current = result;
+
+            for (let i = 0; i < segments.length; i++) {
+                const segment = segments[i];
+                const isLast = i === segments.length - 1;
+                const parentPath = segments.slice(0, i + 1).join('.');
+
+                if (!isLast) {
+                    const shouldBeArray = nodeTypes[parentPath] === 'array';
+
+                    if (shouldBeArray) {
+                        // Ensure we have an array at this level
+                        if (!current[segment]) {
+                            current[segment] = [];
+                        } else if (!Array.isArray(current[segment])) {
+                            // Convert existing object to array (preserve string keys)
+                            const obj = current[segment];
+                            current[segment] = [];
+                            for (const prop in obj) {
+                                if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+                                    current[segment][prop] = obj[prop];
+                                }
+                            }
+                        }
+                    } else {
+                        // Object case
+                        if (!current[segment] || Array.isArray(current[segment])) {
+                            // If it's an array but should be object, convert (rare)
+                            current[segment] = {};
+                        }
+                    }
+                    current = current[segment];
+                } else {
+                    // Assign the leaf value
+                    current[segment] = flatObj[key];
+                }
+            }
+        }
+        return result;
     }
 }
