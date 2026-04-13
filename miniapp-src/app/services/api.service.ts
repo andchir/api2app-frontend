@@ -28,7 +28,6 @@ export class ApiService extends DataService<ApiItem> {
         private sseClient: SseClient
     ) {
         super(httpClient);
-        // this.requestUrl = `${BASE_URL}${this.locale}/api/v1/api_items`;
         this.requestUrl = 'assets/api_item_';
     }
 

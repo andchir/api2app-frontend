@@ -26,7 +26,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         httpClient: HttpClient
     ) {
         super(httpClient);
-        this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
+        this.requestUrl = `${BASE_URL}assets/`;
     }
 
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
