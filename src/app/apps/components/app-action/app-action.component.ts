@@ -39,8 +39,9 @@ export class AppActionComponent implements OnInit, OnDestroy {
     elementType: AppBlockElementType;
     selectedApi: ApiItem;
     selectedFieldName: string | number | null = null;
-    selectedFieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | number | null = null;
+    selectedFieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | 'query_parameter' | number | null = null;
     actionType: 'input'|'output';
+    queryParameterName: string = '';
     note: string;
     loading = false;
     submitted = false;
