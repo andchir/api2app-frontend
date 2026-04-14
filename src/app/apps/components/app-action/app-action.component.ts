@@ -190,6 +190,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
         }
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
+        this.queryParameterName = '';
         this.cdr.detectChanges();
     }
 
