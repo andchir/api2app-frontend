@@ -235,6 +235,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
                     this.apiUuidsList.output.push(element.options.outputApiUuid);
                 }
+                this.fillDataFromQueryString(element);
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
@@ -280,6 +281,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (tabBlocks.length === 0) {
                 this.switchTab(0);
                 return;
+            }
+        }
+    }
+
+    fillDataFromQueryString(element: AppBlockElement): void {
+        if (element.options?.outputApiFieldType === 'query_parameter' && element.options?.outputApiFieldName) {
+            const value = this.route.snapshot.queryParamMap.get(String(element.options.outputApiFieldName));
+            if (value !== null) {
+                element.value = value;
             }
         }
     }
