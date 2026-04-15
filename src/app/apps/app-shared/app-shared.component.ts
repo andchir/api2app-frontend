@@ -286,12 +286,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     fillDataFromQueryString(element: AppBlockElement): void {
-        if (element.options?.outputApiFieldType === 'query_parameter' && element.options?.outputApiFieldName) {
-            const value = this.route.snapshot.queryParamMap.get(String(element.options.outputApiFieldName));
-            if (value !== null) {
-                element.value = value;
-            }
+        if (element.options?.outputApiFieldType !== 'query_parameter' || !element.options?.outputApiFieldName) {
+            return;
         }
+        let value = this.route.snapshot.queryParamMap.get(String(element.options.outputApiFieldName));
+        if (value === null) {
+            return;
+        }
+        value = value.trim().slice(0, 2000);
+        if (element.type === 'iframe' && !/^https?:\/\//i.test(value)) {
+            return;
+        }
+        element.value = value;
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
