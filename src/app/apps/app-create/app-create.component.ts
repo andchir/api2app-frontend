@@ -819,9 +819,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             selectedFieldName: actionType === 'input' ? element.options.inputApiFieldName : element.options.outputApiFieldName,
             selectedFieldType: actionType === 'input' ? element.options.inputApiFieldType : element.options.outputApiFieldType,
             elementType: element.type,
-            queryParameterName: actionType === 'output' && element.options.outputApiFieldType === 'query_parameter'
-                ? element.options.outputApiFieldName
-                : '',
+            queryParameterName: element.options.queryParameterName || '',
             note: actionType === 'input' ? (element.note || '') : (element.noteOutput || ''),
             actionType
         };
@@ -847,17 +845,12 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                             element.options.inputApiFieldName = this.modalService.content.selectedFieldName;
                             element.options.inputApiFieldType = this.modalService.content.selectedFieldType;
                         } else {
-                            if (this.modalService.content.queryParameterName) {
-                                element.options.outputApiUuid = null;
-                                element.options.outputApiFieldName = this.modalService.content.queryParameterName;
-                                element.options.outputApiFieldType = 'query_parameter';
-                            } else {
-                                element.options.outputApiUuid = this.modalService.content.selectedFieldName !== null
-                                    ? this.modalService.content.selectedApi?.uuid
-                                    : null;
-                                element.options.outputApiFieldName = this.modalService.content.selectedFieldName;
-                                element.options.outputApiFieldType = this.modalService.content.selectedFieldType;
-                            }
+                            element.options.outputApiUuid = this.modalService.content.selectedFieldName !== null
+                                ? this.modalService.content.selectedApi?.uuid
+                                : null;
+                            element.options.outputApiFieldName = this.modalService.content.selectedFieldName;
+                            element.options.outputApiFieldType = this.modalService.content.selectedFieldType;
+                            element.options.queryParameterName = this.modalService.content.queryParameterName;
                         }
                     }
                     this.cdr.detectChanges();

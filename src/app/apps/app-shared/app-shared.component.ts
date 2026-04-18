@@ -286,10 +286,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     fillDataFromQueryString(element: AppBlockElement): void {
-        if (element.options?.outputApiFieldType !== 'query_parameter' || !element.options?.outputApiFieldName) {
+        if (!element.options?.queryParameterName) {
             return;
         }
-        let value = this.route.snapshot.queryParamMap.get(String(element.options.outputApiFieldName));
+        let value = this.route.snapshot.queryParamMap.get(String(element.options.queryParameterName));
         if (value === null) {
             return;
         }
