@@ -16,6 +16,7 @@ export interface AppBlockElementOptions {
     outputApiUuid?: string;
     outputApiFieldName?: string|number;
     outputApiFieldType?: string;
+    queryParameterName?: string;
 }
 
 export interface AppBlockElement {
