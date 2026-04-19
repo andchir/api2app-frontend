@@ -235,6 +235,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
+                        if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
+                            return;
+                        }
                         if (!this.appElements.buttons[uuid]
                             || this.appElements.buttons[uuid].length === 0
                             || this.appElements.buttons[uuid][0].hidden) {
