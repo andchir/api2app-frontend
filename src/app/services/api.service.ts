@@ -175,6 +175,13 @@ export class ApiService extends DataService<ApiItem> {
         return headersData;
     }
 
+    static isFullUrl(url: string): boolean {
+        if (!url) {
+            return false;
+        }
+        return /https?:\/\//.test(url);
+    }
+
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
         let responseTypeValue = 'json';
         const headersData: {[header: string]: string} = {};

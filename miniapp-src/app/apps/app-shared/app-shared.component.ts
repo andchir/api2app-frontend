@@ -1294,8 +1294,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         let urlParts = [];
         const tmp = requestUrl.split('/');
-        urlParts.push(`${tmp[0]}//${tmp[2]}`);
-        tmp.splice(0, 3);
+        if (ApiService.isFullUrl(requestUrl)) {
+            urlParts.push(`${tmp[0]}//${tmp[2]}`);
+            tmp.splice(0, 3);
+        }
         urlParts = [...urlParts, ...tmp];
         if (urlParts.length < urlPartIndex + 2) {
             return;

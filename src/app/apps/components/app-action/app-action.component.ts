@@ -133,10 +133,7 @@ export class AppActionComponent implements OnInit, OnDestroy {
     }
 
     isFullUrl(url: string): boolean {
-        if (!url) {
-            return false;
-        }
-        return /https?:\/\//.test(url);
+        return ApiService.isFullUrl(url);
     }
 
     getApiOptions(): void {
