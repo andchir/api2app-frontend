@@ -37,9 +37,7 @@ export class AuthInterceptor implements HttpInterceptor {
             `${BASE_URL}${this.locale}/api/v1/auth/jwt/refresh/`,
             `${BASE_URL}${this.locale}/api/v1/auth/jwt/verify/`,
             `${BASE_URL}${this.locale}/api/v1/api_items/list_shared`,
-            `${BASE_URL}${this.locale}/api/v1/applications/list_shared`,
-            `${BASE_URL}${this.locale}/api/v1/inference`,
-            `${BASE_URL}api/v1/inference`
+            `${BASE_URL}${this.locale}/api/v1/applications/list_shared`
         ];
         if (authReq.url.match(/\/api_items\/[^\/]+\/shared$/)) {
             urlsWhitelist.push(authReq.url);
@@ -80,9 +78,17 @@ export class AuthInterceptor implements HttpInterceptor {
                 catchError((err) => {
                     this.isRefreshing = false;
                     this.tokenStorageService.signOut();
-                    setTimeout(() => {
-                        this.authService.navigateAuthPage('login');
-                    }, 1);
+
+                    const requestUrl = request.url;
+                    const inferenceUrls = [
+                        `${BASE_URL}${this.locale}/api/v1/inference`,
+                        `${BASE_URL}api/v1/inference`
+                    ];
+                    if (!inferenceUrls.includes(requestUrl)) {
+                        setTimeout(() => {
+                            this.authService.navigateAuthPage('login');
+                        }, 1);
+                    }
                     return throwError(err);
                 })
             );
