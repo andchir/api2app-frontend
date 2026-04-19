@@ -132,6 +132,13 @@ export class AppActionComponent implements OnInit, OnDestroy {
             });
     }
 
+    isFullUrl(url: string): boolean {
+        if (!url) {
+            return false;
+        }
+        return /https?:\/\//.test(url);
+    }
+
     getApiOptions(): void {
         this.inputFields = [];
         if (!this.selectedApi || ['button'].includes(this.elementType) && this.actionType === 'input') {
@@ -143,8 +150,10 @@ export class AppActionComponent implements OnInit, OnDestroy {
         if (this.actionType === 'input') {
             if (this.selectedApi.requestUrl) {
                 const tmp = this.selectedApi.requestUrl.split('/');
-                this.urlParts.push(`${tmp[0]}//${tmp[2]}`);
-                tmp.splice(0, 3);
+                if (this.isFullUrl(this.selectedApi.requestUrl)) {
+                    this.urlParts.push(`${tmp[0]}//${tmp[2]}`);
+                    tmp.splice(0, 3);
+                }
                 this.urlParts = [...this.urlParts, ...tmp];
             }
 
