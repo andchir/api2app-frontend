@@ -1,8 +1,12 @@
 <div class="relative block w-full text-center min-h-[50px]"
      [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
-        <div class="min-h-[50px] text-center" [ngClass]="{'hidden': !mediaUrl, 'loading-bg-image': type == 'image'}"
-            #imageContainer>
+        <div class="min-h-[50px] text-center"
+             [ngClass]="{
+                'hidden': !mediaUrl,
+                'loading-bg-image': type == 'image' && isImageLoading,
+                'error-bg-image': isError
+             }">
             <ng-container *ngTemplateOutlet="useLink ? withLink : withoutLink"></ng-container>
             <ng-template #withLink>
                 <a class="inline-block min-h-12"
@@ -11,8 +15,8 @@
                    target="_blank">
                     <img class="inline-block max-w-full" loading="lazy"
                          [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                         (load)="onImageLoaded(imageContainer)"
-                         (error)="onImageError(imageContainer, $event)"
+                         (load)="onImageLoaded()"
+                         (error)="onImageError($event)"
                          [src]="previewImageUrl" alt="">
                     <div class="absolute left-0 top-0 w-full h-full flex justify-center items-center text-white text-8xl opacity-50 pointer-events-none"
                          *ngIf="type == 'video'">
@@ -23,8 +27,8 @@
             <ng-template #withoutLink>
                 <img class="inline-block max-w-full" loading="lazy"
                      [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                     (load)="onImageLoaded(imageContainer)"
-                     (error)="onImageError(imageContainer, $event)"
+                     (load)="onImageLoaded()"
+                     (error)="onImageError($event)"
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"

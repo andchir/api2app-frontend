@@ -6,7 +6,7 @@ import {
     Input,
     OnChanges, OnInit,
     Output, SecurityContext,
-    SimpleChanges, ViewChild
+    SimpleChanges
 } from '@angular/core';
 import { NgClass, NgIf, NgTemplateOutlet } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -36,8 +36,6 @@ import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video
 })
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
 
-    @ViewChild('imageContainer', { static: false }) imageContainer!: HTMLElement;
-
     @Input() editorMode = false;
     @Input() type: string = 'image';
     @Input() name: string;
@@ -60,6 +58,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     isCropped: boolean = false;
+    isError: boolean = false;
+    isImageLoading: boolean = true;
     imageWidth: number = 0;
     imageHeight: number = 0;
     imageOutputWidth: number = 0;
@@ -98,14 +98,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input()
     set value(val: SafeUrl | File | string) {
         if ((!this.mediaOriginalUrl && val) || !this.useCropper) {
-            if (val instanceof File) {
-                this.mediaOriginalUrl = URL.createObjectURL(val);
-            } else {
-                this.mediaOriginalUrl = typeof val === 'string' ? val : '';
-                // this.mediaOriginalUrl = val && typeof val === 'string'
-                //     ? this.sanitizer.bypassSecurityTrustUrl(val)
-                //     : val;
+            const newUrl = val instanceof File
+                ? URL.createObjectURL(val)
+                : (typeof val === 'string' ? val : '');
+            if (newUrl !== this.mediaOriginalUrl) {
+                this.resetImageState();
             }
+            this.mediaOriginalUrl = newUrl;
         }
         this._value = val || '';
         this.onChange(this._value);
@@ -176,6 +175,22 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (changes['imageUrl'] && this.useCropper) {
             this.loading = true;
         }
+        const srcAffectingInputs = [
+            'data',
+            'mediaOriginalUrl',
+            'thumbnailFieldName',
+            'largeFieldName',
+            'poster',
+            'type'
+        ];
+        if (srcAffectingInputs.some(key => changes[key] && !changes[key].firstChange)) {
+            this.resetImageState();
+        }
+    }
+
+    private resetImageState(): void {
+        this.isError = false;
+        this.isImageLoading = true;
     }
 
     createOriginalFileUrl(): string | null {
@@ -254,38 +269,19 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             .catch(console.error);
     }
 
-    onImageLoaded(imageContainer: HTMLElement): void {
-        if (imageContainer) {
-            imageContainer.classList.remove('error-bg-image');
-            imageContainer.classList.remove('loading-bg-image');
-        }
+    onImageLoaded(): void {
+        this.isImageLoading = false;
+        this.isError = false;
     }
 
-    onImageError(imageContainer: HTMLElement, event?: Event): void {
+    onImageError(event?: Event): void {
         if (event?.target
             && (!(event.target as HTMLImageElement).src
             || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
             return;
         }
-        console.log('onImageError', event);
-        if (imageContainer) {
-            imageContainer.classList.remove('loading-bg-image');
-            imageContainer.classList.add('error-bg-image');
-        }
-        if (this.editorMode) {
-            return;
-        }
-        // const imageBrokenUrl = 'assets/img/image-broken.png';
-        // if (typeof index !== 'undefined' && element.valueArr) {
-        //     if (element.itemThumbnailFieldName) {
-        //         element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
-        //     } else {
-        //         element.valueArr[index] = imageBrokenUrl;
-        //     }
-        // } else {
-        //     element.value = imageBrokenUrl;
-        // }
-        // this.onFieldValueChanged();
+        this.isImageLoading = false;
+        this.isError = true;
     }
 
     cropperImageLoaded(image: LoadedImage): void {
