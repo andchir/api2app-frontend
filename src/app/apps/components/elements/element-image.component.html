@@ -14,7 +14,7 @@
                    [href]="mediaUrl"
                    target="_blank">
                     <img class="inline-block max-w-full" loading="lazy"
-                         [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
+                         [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow, 'opacity-50': isImageLoading}"
                          (load)="onImageLoaded()"
                          (error)="onImageError($event)"
                          [src]="previewImageUrl" alt="">
@@ -26,7 +26,7 @@
             </ng-template>
             <ng-template #withoutLink>
                 <img class="inline-block max-w-full" loading="lazy"
-                     [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
+                     [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow, 'opacity-50': isImageLoading}"
                      (load)="onImageLoaded()"
                      (error)="onImageError($event)"
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
