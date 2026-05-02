@@ -332,6 +332,7 @@
         "1539087618449290566": "VK-Anwendungs-ID",
         "6415590762976423652": "Geheimer VK-Schlüssel",
         "627089735404804017": "Benutzer-Abonnement",
+        "6381190991219701768": "User payment",
         "4269950870078766571": "Mein Abonnement",
         "7794054246585444749": "Abonnement-ID",
         "5742602824263397018": "Sie sind bereits abonniert.",
@@ -454,6 +455,7 @@
         "2924860033036650438": "Please select a field to display the number of records.",
         "3821755137589858808": "Please select the field with the page number.",
         "5058697657318376212": "Linked element",
-        "6090557500929628692": "Query string parameter"
+        "6090557500929628692": "Query string parameter",
+        "2149165958319691680": "Buy"
     }
 }

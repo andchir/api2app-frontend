@@ -223,6 +223,21 @@ export class VkBridgeService {
             });
     }
 
+    showOrderBox(paymentValue: number, appUuid: string): Promise<any> {
+        return vkBridge.send('VKWebAppShowOrderBox', {
+            type: 'item',
+            item: `${paymentValue}_${appUuid}`
+        })
+            .then((data) => {
+                console.log('The purchase was successful.', data);
+                return data;
+            })
+            .catch((e) => {
+                // Ошибка
+                console.log('Error!', e);
+            });
+    }
+
     hasAnyString(mainArray: string[], searchStrings: string[]): boolean {
         return searchStrings.some(str => mainArray.includes(str));
     }
