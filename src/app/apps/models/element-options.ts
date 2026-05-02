@@ -1997,7 +1997,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     icon: '',
                     name: 'user-payment',
-                    label: $localize `Buy`,
+                    label: $localize `Top up balance`,
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null

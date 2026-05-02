@@ -223,10 +223,10 @@ export class VkBridgeService {
             });
     }
 
-    showOrderBox(paymentValue: number, appUuid: string): Promise<any> {
+    showOrderBox(paymentValue: number): Promise<any> {
         return vkBridge.send('VKWebAppShowOrderBox', {
             type: 'item',
-            item: `${paymentValue}_${appUuid}`
+            item: `top_up_${paymentValue}`
         })
             .then((data) => {
                 console.log('The purchase was successful.', data);
