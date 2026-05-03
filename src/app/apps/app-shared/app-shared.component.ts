@@ -292,7 +292,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!element.options?.queryParameterName) {
             return;
         }
-        let value = this.route.snapshot.queryParamMap.get(String(element.options.queryParameterName));
+        const paramName = String(element.options.queryParameterName);
+        let value = this.route.snapshot.queryParamMap.get(paramName);
+        if (value === null) {
+            value = this.getQueryParamFromLocationHash(paramName);
+        }
         if (value === null) {
             return;
         }
@@ -301,6 +305,34 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         element.value = value;
+    }
+
+    private getQueryParamFromLocationHash(paramName: string): string | null {
+        if (typeof window === 'undefined') {
+            return null;
+        }
+        const hash = window.location.hash;
+        if (!hash || hash.length < 2) {
+            return null;
+        }
+        const withoutHash = hash.slice(1);
+        const qIndex = withoutHash.indexOf('?');
+        let queryPart: string;
+        if (qIndex >= 0) {
+            queryPart = withoutHash.slice(qIndex + 1);
+        } else if (withoutHash.includes('=')) {
+            queryPart = withoutHash;
+        } else {
+            return null;
+        }
+        if (!queryPart) {
+            return null;
+        }
+        try {
+            return new URLSearchParams(queryPart).get(paramName);
+        } catch {
+            return null;
+        }
     }
 
     elementHiddenStateUpdate(element: AppBlockElement, block?: AppBlock): void {
@@ -356,7 +388,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             {
                 relativeTo: this.route,
                 queryParams,
-                queryParamsHandling: 'merge'
+                queryParamsHandling: 'merge',
+                preserveFragment: true
             }
         );
     }
