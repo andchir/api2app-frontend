@@ -301,10 +301,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         value = value.trim().slice(0, 2000);
-        if (element.type === 'iframe' && !/^https?:\/\//i.test(value)) {
+        if (!value || (element.type === 'iframe' && !/^https?:\/\//i.test(value))) {
             return;
         }
         element.value = value;
+        this.onElementValueChanged(element);
     }
 
     private getQueryParamFromLocationHash(paramName: string): string | null {
