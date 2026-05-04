@@ -290,7 +290,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         element.value = value;
-        this.onElementValueChanged(element);
+        this.onElementValueChanged(element, false, true);
     }
 
     private getQueryParamFromLocationHash(paramName: string): string | null {
@@ -1645,62 +1645,77 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.previewMode) {
             return;
         }
-        if (element.type === 'button') {
-
-            let fieldValue = element.value;
-            if (element.valueFrom) {
-                const sourceElement = this.findBlockElementByName(element.valueFrom);
-                fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
-            }
-
-            if (element.isClearForm) {
-                this.clearAllValues();
-            } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
-                if (this.data.maintenance) {
-                    this.maintenanceModalToggle();
-                } else {
-                    this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
+        switch (element.type) {
+            case 'button':
+                let fieldValue = element.value;
+                if (element.valueFrom) {
+                    const sourceElement = this.findBlockElementByName(element.valueFrom);
+                    fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
                 }
-            } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
-                if (element.isDownloadMode) {
-                    const block = this.findBlock(element);
-                    if (block) {
-                        block.loading = true;
-                        this.cdr.detectChanges();
+
+                if (element.isClearForm) {
+                    this.clearAllValues();
+                } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
+                    if (this.data.maintenance) {
+                        this.maintenanceModalToggle();
+                    } else {
+                        this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                     }
-                    ApplicationService.downloadFile(String(fieldValue))
-                        .then(() => {
-                            if (block) {
-                                block.loading = false;
+                } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
+                    if (element.isDownloadMode) {
+                        const block = this.findBlock(element);
+                        if (block) {
+                            block.loading = true;
+                            this.cdr.detectChanges();
+                        }
+                        ApplicationService.downloadFile(String(fieldValue))
+                            .then(() => {
+                                if (block) {
+                                    block.loading = false;
+                                    this.cdr.detectChanges();
+                                }
+                            });
+                    } else {
+                        window.open(String(fieldValue), '_blank').focus();
+                    }
+                }
+                break;
+            case 'user-subscription':
+                if (this.isVkApp) {
+                    this.message = '';
+                    if (element.value) {
+                        this.message = $localize `You are already subscribed.`;
+                        this.messageType = 'success';
+                    } else if (element.subscriptionId) {
+                        this.vkBridgeService.showSubscriptionBox(element.subscriptionId)
+                            .then((data: any) => {
+                                if (data?.success) {
+                                    this.vkAppOptions.userSubscriptions.push(element.subscriptionId);
+                                    element.value = true;
+                                    this.message = $localize `The purchase was successful.`;
+                                    this.messageType = 'success';
+                                    this.cdr.detectChanges();
+                                }
+                            });
+                    }
+                }
+                break;
+            case 'user-payment':
+                if (this.isVkApp) {
+                    this.vkBridgeService.showOrderBox(parseInt(String(element.value)))
+                        .then((data: any) => {
+                            if (data?.success) {
+                                this.message = $localize `The purchase was successful.`;
+                                this.messageType = 'success';
                                 this.cdr.detectChanges();
                             }
                         });
-                } else {
-                    window.open(String(fieldValue), '_blank').focus();
                 }
-            }
-        }
-        if (element.type === 'user-subscription' && this.isVkApp) {
-            this.message = '';
-            if (element.value) {
-                this.message = $localize `You are already subscribed.`;
-                this.messageType = 'success';
-            } else if (element.subscriptionId) {
-                this.vkBridgeService.showSubscriptionBox(element.subscriptionId)
-                    .then((data: any) => {
-                        if (data?.success) {
-                            this.vkAppOptions.userSubscriptions.push(element.subscriptionId);
-                            element.value = true;
-                            this.message = $localize `The purchase was successful.`;
-                            this.messageType = 'success';
-                            this.cdr.detectChanges();
-                        }
-                    });
-            }
+                break;
         }
     }
 
-    onElementValueChanged(element: AppBlockElement): void {
+    onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
         if (!this.previewMode
             || this.data.maintenance
             || (!element.value && !['input-switch'].includes(element.type))
@@ -1758,7 +1773,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             this.removeAutoStart(inputApiUuid);
-            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
         }
     }
 

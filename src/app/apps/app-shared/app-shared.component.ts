@@ -305,7 +305,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         element.value = value;
-        this.onElementValueChanged(element);
+        this.onElementValueChanged(element, false, true);
     }
 
     private getQueryParamFromLocationHash(paramName: string): string | null {
@@ -1730,7 +1730,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    onElementValueChanged(element: AppBlockElement): void {
+    onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
         if (!this.previewMode
             || this.data.maintenance
             || (!element.value && !['input-switch'].includes(element.type))
@@ -1788,7 +1788,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             this.removeAutoStart(inputApiUuid);
-            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
         }
     }
 
