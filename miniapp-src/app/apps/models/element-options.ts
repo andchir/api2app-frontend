@@ -1474,6 +1474,42 @@ export class ElementOptions {
                     enabled: options?.showOnlyInVK
                 });
                 break;
+            case 'user-payment':
+                output.push({
+                    name: 'icon',
+                    label: $localize `Icon`,
+                    type: 'input-text',
+                    placeholder: ($localize `Example`) + ': bi-info-circle',
+                    value: options?.icon || ''
+                });
+                output.push({
+                    name: 'info',
+                    type: 'text',
+                    markdown: true,
+                    color: 'Blue',
+                    icon: 'bi-box-arrow-up-right',
+                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'showOnlyInVK',
+                    label: $localize `Show only in VK app`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.showOnlyInVK
+                });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                break;
             case 'messages':
                 output.push({
                     name: 'label',
@@ -1952,6 +1988,16 @@ export class ElementOptions {
                     name: 'user-subscription',
                     label: $localize `My subscription`,
                     subscriptionId: '',
+                    hiddenByField: '',
+                    showOnlyInVK: true,
+                    value: null
+                });
+                break;
+            case 'user-payment':
+                Object.assign(output, {
+                    icon: '',
+                    name: 'user-payment',
+                    label: $localize `Top up balance`,
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null
