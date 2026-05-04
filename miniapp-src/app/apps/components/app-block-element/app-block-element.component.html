@@ -668,6 +668,32 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'user-payment'">
+        <div class="rounded-[0.7rem]"
+             [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="block w-full max-w-[600px] mx-auto">
+                <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md">
+                    <div class="px-3">
+                        <i class="bi bi-wallet2 text-xl"></i>
+                    </div>
+                    <div class="flex-grow">
+                        <button type="button"
+                            class="w-full flex gap-3 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-sm text-white border rounded rounded-[0.7rem] justify-center cursor-pointer"
+                            (click)="onClick()">
+                            <span>
+                                <i class="bi" [ngClass]="options?.icon"></i>
+                            </span>
+                            <span>
+                                {{ options?.label }}
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'iframe'">
         <div class="rounded-[0.7rem]"
              [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
