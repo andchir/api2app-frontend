@@ -235,7 +235,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
                     this.apiUuidsList.output.push(element.options.outputApiUuid);
                 }
-                this.fillDataFromQueryString(element);
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
@@ -260,6 +259,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         }
                     });
                     this.cdr.detectChanges();
+                });
+
+                // Get values from query string
+                Object.keys(this.appElements.input).forEach((uuid) => {
+                    this.appElements.input[uuid].forEach(element => {
+                        this.fillDataFromQueryString(element);
+                    });
                 });
             });
         }
