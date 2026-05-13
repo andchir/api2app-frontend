@@ -323,9 +323,10 @@ export class ApiService extends DataService<ApiItem> {
                         value = [];
                     } else if (['true', 'false'].includes(String(value))) {
                         value = value === 'true';
-                    } else if (!Number.isNaN(Number(value))) {
-                        value = Number(value);
                     }
+                    // else if (!Number.isNaN(Number(value))) {
+                    //     value = Number(value);
+                    // }
                 }
                 body[item.name] = value;
                 if (apiItem.sendAsFormData) {
@@ -398,6 +399,8 @@ export class ApiService extends DataService<ApiItem> {
 
         const {body: bodyInit, bodyRaw, bodyRawFlatten, formData, sendAsFormData} = this.buildInitialRequestBodyData(apiItem);
         let body: any = bodyInit;
+
+        console.log(body);
 
         if (sendAsFormData) {
             // headersData['Enctype'] = 'multipart/form-data';

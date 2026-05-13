@@ -323,9 +323,10 @@ export class ApiService extends DataService<ApiItem> {
                         value = [];
                     } else if (['true', 'false'].includes(String(value))) {
                         value = value === 'true';
-                    } else if (!Number.isNaN(Number(value))) {
-                        value = Number(value);
                     }
+                    // else if (!Number.isNaN(Number(value))) {
+                    //     value = Number(value);
+                    // }
                 }
                 body[item.name] = value;
                 if (apiItem.sendAsFormData) {
