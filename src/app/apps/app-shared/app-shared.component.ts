@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil, iif } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
@@ -2005,7 +2005,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         const initialData = {
-            appUuid: this.data.uuid
+            appUuid: this.data.uuid,
+            isVkApp: this.isVkApp
         };
         this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
             .pipe(take(1))
@@ -2024,10 +2025,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     updateUserBalance(): void {
-        if (!this.isLoggedIn) {
+        if (!this.isLoggedIn && !this.isVkApp) {
             return;
         }
-        this.dataService.userBalance(this.data.uuid)
+        iif (() => this.isVkApp,
+            this.dataService.userBalanceVkApp(this.data.uuid, this.vkAppOptions),
+            this.dataService.userBalance(this.data.uuid))
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {

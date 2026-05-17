@@ -27,6 +27,7 @@ export class ModalTopUpBalanceComponent implements OnInit {
 
     submitted: boolean = false;
     appUuid: string = '';
+    isVkApp: boolean = false;
     value: number = 100;
     messageType: string = 'success';
     message: string = '';

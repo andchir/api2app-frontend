@@ -14,6 +14,7 @@ import {
     AppBlockOptions,
     AppOptions
 } from '../apps/models/app-block.interface';
+import { VkAppOptions } from "../apps/models/vk-app-options.interface";
 
 declare const vkBridge: any;
 
@@ -47,6 +48,16 @@ export class ApplicationService extends DataService<ApplicationItem> {
     userBalance(appUuid: string): Observable<{success: boolean, balance?: number}> {
         const url = `${BASE_URL}user_balance/${appUuid}`;
         return this.httpClient.get<{success: boolean, balance?: number}>(url, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    userBalanceVkApp(appUuid: string, vkAppOptions: VkAppOptions): Observable<{success: boolean, balance?: number}> {
+        const url = `${BASE_URL}user_balance_vk/${appUuid}`;
+        const formData = new FormData();
+        formData.append('vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
+        return this.httpClient.post<{success: boolean, balance?: number}>(url, formData, this.httpOptionsFormData)
             .pipe(
                 catchError(this.handleError)
             );
