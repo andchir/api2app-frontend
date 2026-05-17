@@ -2000,7 +2000,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     startPayment(): void {
-        if (!this.isLoggedIn) {
+        if (!this.isLoggedIn && !this.isVkApp) {
             this.authService.navigateAuthPage('login');
             return;
         }

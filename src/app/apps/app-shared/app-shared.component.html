@@ -38,8 +38,8 @@
                     <button type="button"
                             class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 rounded-full text-sm px-4 py-2 text-center"
                             (click)="startPayment()">
-                        <span *ngIf="isLoggedIn" i18n>Top up balance</span>
-                        <span *ngIf="!isLoggedIn" i18n>Log in</span>
+                        <span *ngIf="isLoggedIn || isVkApp" i18n>Top up balance</span>
+                        <span *ngIf="!isLoggedIn && !isVkApp" i18n>Log in</span>
                     </button>
                 </div>
             </div>
