@@ -1944,6 +1944,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
+                this.updateUserBalance();
             })
             .catch(() => {
                 this.vkAppOptions = {};
@@ -2025,7 +2026,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     updateUserBalance(): void {
-        if (!this.isLoggedIn && !this.isVkApp) {
+        if (!this.isLoggedIn && !this.vkAppOptions?.appLaunchParamsJson) {
             return;
         }
         iif (() => this.isVkApp,
