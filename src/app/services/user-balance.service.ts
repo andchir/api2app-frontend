@@ -5,6 +5,31 @@ import { catchError, Observable, throwError } from 'rxjs';
 
 import { DataService } from './data.service.abstract';
 import { BASE_URL } from '../../environments/environment';
+import { VkAppOptions } from '../apps/models/vk-app-options.interface';
+
+export interface VkPayParams {
+    amount: number;
+    description: string;
+    action: 'pay-to-service';
+    merchant_id: number;
+    version: number;
+    sign: string;
+    data: {
+        currency: string;
+        merchant_data: string;
+        merchant_sign: string;
+        order_id: string;
+        ts: string;
+        cashback?: any;
+    };
+}
+
+export interface VkPayTopUpResponse {
+    success: boolean;
+    app_id: number;
+    order_id: number;
+    params: VkPayParams;
+}
 
 @Injectable()
 export class UserBalanceService {
@@ -33,6 +58,18 @@ export class UserBalanceService {
         const url = `${BASE_URL}user_balance_top_up`;
         const httpOptions = this.httpOptions;
         return this.httpClient.post<{success: boolean, confirmation_url?: string}>(url, {appUuid, value}, httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    vkPayTopUp(appUuid: string, value: number, vkAppOptions: VkAppOptions): Observable<VkPayTopUpResponse> {
+        const url = `${BASE_URL}vk_pay_top_up/${appUuid}`;
+        const body = {
+            value,
+            vk_app_launch_params: vkAppOptions?.appLaunchParamsJson || ''
+        };
+        return this.httpClient.post<VkPayTopUpResponse>(url, body, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

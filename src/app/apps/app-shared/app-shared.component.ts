@@ -2007,7 +2007,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const initialData = {
             appUuid: this.data.uuid,
-            isVkApp: this.isVkApp
+            isVkApp: this.isVkApp,
+            vkAppOptions: this.vkAppOptions
         };
         this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
             .pipe(take(1))
@@ -2019,6 +2020,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     } else if (reason === 'promo_code_success') {
                         this.updateUserBalance();
                         this.message = $localize `Congratulations! Promo code accepted.`;
+                        this.messageType = 'success';
+                    } else if (reason === 'vk_pay_success') {
+                        this.updateUserBalance();
+                        this.message = $localize `Payment successful. Your balance will be updated shortly.`;
                         this.messageType = 'success';
                     }
                 }

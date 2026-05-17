@@ -332,6 +332,7 @@
         "1539087618449290566": "VK Application ID",
         "6415590762976423652": "VK Secret key",
         "627089735404804017": "User subscription",
+        "6381190991219701768": "User payment",
         "4269950870078766571": "My subscription",
         "7794054246585444749": "Subscription ID",
         "5742602824263397018": "You are already subscribed.",
@@ -390,6 +391,10 @@
         "2604092838016078854": "Top up balance",
         "5524317351763991090": "Price per use",
         "6984540085242925648": "Top-up amount",
+        "1350120548657532787": "Please enter a valid amount.",
+        "6612439504075152757": "Unable to start payment.",
+        "3360977077245514225": "Payment successful. Your balance will be updated shortly.",
+        "7304165440093183145": "Payment was not completed.",
         "4664106702671272009": "Insufficient funds.",
         "5894745684813170419": "You do not have permission to accept payments. For more information, you can contact support.",
         "6446188882403579809": "User ID for forwarding messages",
@@ -453,6 +458,8 @@
         "8167888978246490648": "Vertical view",
         "2924860033036650438": "Please select a field to display the number of records.",
         "3821755137589858808": "Please select the field with the page number.",
-        "5058697657318376212": "Linked element"
+        "5058697657318376212": "Linked element",
+        "6090557500929628692": "Query string parameter",
+        "2149165958319691680": "Buy"
     }
 }

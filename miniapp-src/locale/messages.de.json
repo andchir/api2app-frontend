@@ -332,6 +332,7 @@
         "1539087618449290566": "VK-Anwendungs-ID",
         "6415590762976423652": "Geheimer VK-Schlüssel",
         "627089735404804017": "Benutzer-Abonnement",
+        "6381190991219701768": "User payment",
         "4269950870078766571": "Mein Abonnement",
         "7794054246585444749": "Abonnement-ID",
         "5742602824263397018": "Sie sind bereits abonniert.",
@@ -390,6 +391,10 @@
         "2604092838016078854": "Guthaben aufladen",
         "5524317351763991090": "Preis pro Nutzung",
         "6984540085242925648": "Aufladebetrag",
+        "1350120548657532787": "Bitte geben Sie einen gültigen Betrag ein.",
+        "6612439504075152757": "Zahlung konnte nicht gestartet werden.",
+        "3360977077245514225": "Zahlung erfolgreich. Ihr Guthaben wird in Kürze aktualisiert.",
+        "7304165440093183145": "Die Zahlung wurde nicht abgeschlossen.",
         "4664106702671272009": "Unzureichende Mittel.",
         "5894745684813170419": "Sie sind nicht berechtigt, Zahlungen anzunehmen. Für weitere Informationen wenden Sie sich bitte an den Support.",
         "6446188882403579809": "Benutzerkennung zum Weiterleiten von Nachrichten",
@@ -453,6 +458,8 @@
         "8167888978246490648": "Vertical view",
         "2924860033036650438": "Please select a field to display the number of records.",
         "3821755137589858808": "Please select the field with the page number.",
-        "5058697657318376212": "Linked element"
+        "5058697657318376212": "Linked element",
+        "6090557500929628692": "Query string parameter",
+        "2149165958319691680": "Buy"
     }
 }

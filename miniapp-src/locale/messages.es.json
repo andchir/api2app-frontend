@@ -332,6 +332,7 @@
         "1539087618449290566": "ID de Aplicación VK",
         "6415590762976423652": "Clave secreta VK",
         "627089735404804017": "Suscripción de usuario",
+        "6381190991219701768": "User payment",
         "4269950870078766571": "Mi suscripción",
         "7794054246585444749": "ID de SUSCRIPCIÓN",
         "5742602824263397018": "Ya estás suscrito.",
@@ -390,6 +391,10 @@
         "2604092838016078854": "Saldo de recarga",
         "5524317351763991090": "Precio por uso",
         "6984540085242925648": "Monto de la recarga",
+        "1350120548657532787": "Por favor, introduzca un importe válido.",
+        "6612439504075152757": "No se pudo iniciar el pago.",
+        "3360977077245514225": "Pago realizado con éxito. Su saldo se actualizará en breve.",
+        "7304165440093183145": "El pago no se ha completado.",
         "4664106702671272009": "Fondos insuficientes.",
         "5894745684813170419": "No tiene permiso para aceptar pagos. Para obtener más información, puede ponerse en contacto con el servicio de asistencia.",
         "6446188882403579809": "ID de usuario para reenviar mensajes",
@@ -453,6 +458,8 @@
         "8167888978246490648": "Vertical view",
         "2924860033036650438": "Please select a field to display the number of records.",
         "3821755137589858808": "Please select the field with the page number.",
-        "5058697657318376212": "Linked element"
+        "5058697657318376212": "Linked element",
+        "6090557500929628692": "Query string parameter",
+        "2149165958319691680": "Buy"
     }
 }

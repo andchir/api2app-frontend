@@ -6,6 +6,9 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { UserBalanceService } from '../../services/user-balance.service';
 import { SharedModule } from '../../shared.module';
+import { VkAppOptions } from '../models/vk-app-options.interface';
+
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-top-up-balance',
@@ -28,6 +31,7 @@ export class ModalTopUpBalanceComponent implements OnInit {
     submitted: boolean = false;
     appUuid: string = '';
     isVkApp: boolean = false;
+    vkAppOptions: VkAppOptions = {};
     value: number = 100;
     messageType: string = 'success';
     message: string = '';
@@ -95,8 +99,19 @@ export class ModalTopUpBalanceComponent implements OnInit {
     }
 
     submit(): void {
+        if (this.value < 1) {
+            this.messageType = 'error';
+            this.message = $localize `Please enter a valid amount.`;
+            return;
+        }
         this.message = '';
         this.submitted = true;
+
+        if (this.isVkApp) {
+            this.submitVkPay();
+            return;
+        }
+
         this.userBalanceService.topUpBalance(this.appUuid, this.value)
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
@@ -113,6 +128,52 @@ export class ModalTopUpBalanceComponent implements OnInit {
                         this.messageType = 'error';
                         this.message = err.message;
                     }
+                    this.cdr.markForCheck();
+                }
+            });
+    }
+
+    private submitVkPay(): void {
+        this.userBalanceService.vkPayTopUp(this.appUuid, this.value, this.vkAppOptions)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: (res) => {
+                    if (!res?.success || !res.params || typeof vkBridge === 'undefined') {
+                        this.submitted = false;
+                        this.messageType = 'error';
+                        this.message = $localize `Unable to start payment.`;
+                        this.cdr.markForCheck();
+                        return;
+                    }
+                    vkBridge.send('VKWebAppOpenPayForm', {
+                        app_id: res.app_id,
+                        action: 'pay-to-service',
+                        params: res.params
+                    })
+                        .then((data: any) => {
+                            this.submitted = false;
+                            if (data?.status) {
+                                this.messageType = 'success';
+                                this.message = $localize `Payment successful. Your balance will be updated shortly.`;
+                                this.closeModal('vk_pay_success');
+                            } else {
+                                this.messageType = 'error';
+                                this.message = $localize `Payment was not completed.`;
+                            }
+                            this.cdr.markForCheck();
+                        })
+                        .catch((error: any) => {
+                            console.log(error);
+                            this.submitted = false;
+                            this.messageType = 'error';
+                            this.message = $localize `Payment was not completed.`;
+                            this.cdr.markForCheck();
+                        });
+                },
+                error: (err) => {
+                    this.submitted = false;
+                    this.messageType = 'error';
+                    this.message = err?.message || $localize `Unable to start payment.`;
                     this.cdr.markForCheck();
                 }
             });
