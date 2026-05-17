@@ -55,9 +55,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     userBalanceVkApp(appUuid: string, vkAppOptions: VkAppOptions): Observable<{success: boolean, balance?: number}> {
         const url = `${BASE_URL}user_balance_vk/${appUuid}`;
-        const formData = new FormData();
-        formData.append('vk_app_launch_params', vkAppOptions.appLaunchParamsJson);
-        return this.httpClient.post<{success: boolean, balance?: number}>(url, formData, this.httpOptionsFormData)
+        const data = {
+            'vk_app_launch_params': vkAppOptions?.appLaunchParamsJson
+        };
+        return this.httpClient.post<{success: boolean, balance?: number}>(url, data, this.httpOptionsFormData)
             .pipe(
                 catchError(this.handleError)
             );
