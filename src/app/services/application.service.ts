@@ -58,7 +58,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         const data = {
             'vk_app_launch_params': vkAppOptions?.appLaunchParamsJson
         };
-        return this.httpClient.post<{success: boolean, balance?: number}>(url, data, this.httpOptionsFormData)
+        return this.httpClient.post<{success: boolean, balance?: number}>(url, data, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
