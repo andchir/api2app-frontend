@@ -400,8 +400,6 @@ export class ApiService extends DataService<ApiItem> {
         const {body: bodyInit, bodyRaw, bodyRawFlatten, formData, sendAsFormData} = this.buildInitialRequestBodyData(apiItem);
         let body: any = bodyInit;
 
-        console.log(body);
-
         if (sendAsFormData) {
             // headersData['Enctype'] = 'multipart/form-data';
             // headersData['Content-Type'] = 'application/x-www-form-urlencoded';
