@@ -34,6 +34,7 @@ import { AuthService } from '../../services/auth.service';
 import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
+import { MapFieldsByBlock } from '../models/element-options';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -457,7 +458,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
 
-        if (!this.getIsValid(apiUuid, actionType, elements, showMessages)) {
+        if (!this.getIsValid(apiUuid, actionType, elements, showMessages, currentElement.blockIndex)) {
             if (currentElement?.type === 'messages') {
                 this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
             }
@@ -470,6 +471,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
+
         const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
@@ -970,14 +972,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true): boolean {
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true, blockIndex: number = -1): boolean {
         this.clearValidationErrors();
         const errors = {};
         let hiddenCount = 0;
+        const mapFieldsByBlock: MapFieldsByBlock = new Map();
         elements.forEach((element) => {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
                 hiddenCount++;
+            }
+            if (!mapFieldsByBlock.get(element.blockIndex)) {
+                mapFieldsByBlock.set(element.blockIndex, []);
             }
             if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
                 return;
@@ -989,19 +995,52 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                 }
+                mapFieldsByBlock.get(element.blockIndex).push({
+                    elementName: element.name,
+                    fieldName
+                });
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
             }
         });
         if (createErrorMessages) {
-            this.errors[targetApiUuid] = errors;
+            this.errors[targetApiUuid] = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
         }
-        // console.log('getIsValid', errors, elements.length, hiddenCount);
+        // console.log('getIsValid', this.errors[targetApiUuid], elements.length, hiddenCount);
         if (hiddenCount && hiddenCount === elements.length) {
             return false;
         }
         return Object.keys(errors).length === 0;
+    }
+
+    /**
+     * Removes duplicate validation errors coming from non-main blocks.
+     *
+     * When a form is submitted from a specific block (the "main" block, identified by `blockIndex`),
+     * elements from other blocks bound to the same API may also be validated and produce errors.
+     * If another block contains a field with the same `fieldName` as a field in the main block,
+     * the error from that other block is considered a duplicate of the main block's field and
+     * is removed, so the user only sees the error for the field in the main block.
+     */
+    filterFieldsErrors(errors: any, mapFieldsByBlock: MapFieldsByBlock, blockIndex: number): any {
+        const mainFields = mapFieldsByBlock.get(blockIndex) || [];
+        if (mainFields.length === 0) {
+            return errors;
+        }
+        const mainFieldNames = new Set(mainFields.map(field => field.fieldName));
+        const filtered = {...errors};
+        mapFieldsByBlock.forEach((fields, currentBlockIndex) => {
+            if (currentBlockIndex === blockIndex) {
+                return;
+            }
+            fields.forEach((field) => {
+                if (mainFieldNames.has(field.fieldName)) {
+                    delete filtered[field.elementName];
+                }
+            });
+        });
+        return filtered;
     }
 
     stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {

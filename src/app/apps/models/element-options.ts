@@ -2037,3 +2037,10 @@ export class ElementOptions {
     constructor() {
     }
 }
+
+interface FieldInfo {
+    elementName: string;
+    fieldName: string|number;
+}
+
+export type MapFieldsByBlock = Map<number, FieldInfo[]>;
