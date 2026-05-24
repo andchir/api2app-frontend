@@ -483,7 +483,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, 'input', elements);
+        const apiItem = this.prepareApiItem(currentApi, 'input', elements, currentElement.blockIndex);
 
         // Clear output blocks
         const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
@@ -1151,18 +1151,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[], blockIndex: number = -1): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
 
-        currentElements.reverse();
-
         const findElement = (key: string, actType: 'input'|'output' = 'input') => {
-            return currentElements.find((elem) => {
+            const matchedElements = currentElements.filter((elem) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType);
                 return apiUuid === apiItem.uuid
                     && fieldName === key
                     && fieldType === actType;
             });
+            return matchedElements.find((elem) => elem.blockIndex === blockIndex) || matchedElements[0];
         };
 
         // Body data
