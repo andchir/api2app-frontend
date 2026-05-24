@@ -88,6 +88,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         }
         this._value = val;
         this.onChange(this._value);
+        this.scrollTextareaBottom();
         this.cdr.detectChanges();
     }
 
@@ -319,6 +320,20 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         }
         textAreaEl.style.overflowY = 'hidden';
         textAreaEl.style.height = `${scrollHeight}px`;
+    }
+
+    private scrollTextareaBottom(): void {
+        if (this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
+            return;
+        }
+        setTimeout(() => {
+            const textAreaEl = this.inputControl?.nativeElement;
+            if (!textAreaEl) {
+                return;
+            }
+            this.onInput();
+            textAreaEl.scrollTop = textAreaEl.scrollHeight;
+        }, 1);
     }
 
     onKeyUp(event: KeyboardEvent|ClipboardEvent) {
