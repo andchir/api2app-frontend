@@ -1154,6 +1154,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
 
+        currentElements.reverse();
+
         const findElement = (key: string, actType: 'input'|'output' = 'input') => {
             return currentElements.find((elem) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType);
@@ -1173,6 +1175,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
+                if (!bodyField.name) {
+                    return;
+                }
                 let element;
                 // JSON field value
                 if (ApiService.isJson(bodyField.value)) {
