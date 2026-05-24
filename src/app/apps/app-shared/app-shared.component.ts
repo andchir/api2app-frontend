@@ -974,16 +974,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true, blockIndex: number = -1): boolean {
         this.clearValidationErrors();
-        const errors = {};
+        let errors = {};
         let hiddenCount = 0;
         const mapFieldsByBlock: MapFieldsByBlock = new Map();
         elements.forEach((element) => {
+            if (!mapFieldsByBlock.get(element.blockIndex)) {
+                mapFieldsByBlock.set(element.blockIndex, []);
+            }
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
                 hiddenCount++;
-            }
-            if (!mapFieldsByBlock.get(element.blockIndex)) {
-                mapFieldsByBlock.set(element.blockIndex, []);
+            } else {
+                mapFieldsByBlock.get(element.blockIndex).push({
+                    elementName: element.name,
+                    fieldName
+                });
             }
             if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
                 return;
@@ -995,17 +1000,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
                 }
-                mapFieldsByBlock.get(element.blockIndex).push({
-                    elementName: element.name,
-                    fieldName
-                });
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
             }
         });
+        errors = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
         if (createErrorMessages) {
-            this.errors[targetApiUuid] = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
+            this.errors[targetApiUuid] = errors;
         }
         // console.log('getIsValid', this.errors[targetApiUuid], elements.length, hiddenCount);
         if (hiddenCount && hiddenCount === elements.length) {
