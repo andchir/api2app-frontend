@@ -573,17 +573,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (err?.error instanceof Blob) {
                         this.createErrorMessage(currentApi, err.error);
                     } else {
-                        let errorMessage = '';
-                        if (typeof err?.error === 'string') {
-                            try {
-                                const errObj = JSON.parse(err?.error);
-                                errorMessage = errObj?.detail || errObj?.message || '';
-                            } catch (error) {
-
-                            }
-                        } else {
-                            errorMessage = err?.detail || err?.message || '';
-                        }
+                        const errorData = err?.error !== undefined ? err.error : err;
+                        const errorMessage = this.getErrorMessageFromObject(errorData);
                         this.messageType = 'error';
                         this.message = this.localizeServerMessages(errorMessage || 'Error.');
                     }
@@ -1161,7 +1152,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     && fieldName === key
                     && fieldType === actType;
             });
-            return matchedElements.find((elem) => elem.blockIndex === blockIndex) || matchedElements[0];
+            return matchedElements.find((elem) => elem.blockIndex === blockIndex && !elem.hidden) || matchedElements[0];
         };
 
         // Body data
@@ -1516,7 +1507,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
-                let errorMessage = data.detail || data.message || $localize `Error.`;
+                let errorMessage = this.getErrorMessageFromObject(data) || $localize `Error.`;
                 this.errors[apiItem.uuid] = {};
                 if (typeof data === 'object' && !Array.isArray(data)) {
                     const errorsObj = {};
@@ -1524,9 +1515,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         errorsObj[key] = Array.isArray(data[key]) ? data[key].join(' ') : data[key];
                     }
                     this.errors[apiItem.uuid] = errorsObj;
-                    if (data.detail) {
-                        errorMessage = data.detail;
-                    }
                 }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
@@ -1546,6 +1534,50 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    private getErrorMessageFromObject(error: any): string {
+        if (!error) {
+            return '';
+        }
+
+        if (typeof error === 'string') {
+            try {
+                return this.getErrorMessageFromObject(JSON.parse(error)) || error;
+            } catch (e) {
+                return error;
+            }
+        }
+
+        if (Array.isArray(error)) {
+            for (const item of error) {
+                const message = this.getErrorMessageFromObject(item);
+                if (message) {
+                    return message;
+                }
+            }
+            return '';
+        }
+
+        if (typeof error !== 'object') {
+            return String(error);
+        }
+
+        for (const key of ['detail', 'message', 'msg', 'error']) {
+            const message = this.getErrorMessageFromObject(error[key]);
+            if (message) {
+                return message;
+            }
+        }
+
+        for (const key of Object.keys(error)) {
+            const message = this.getErrorMessageFromObject(error[key]);
+            if (message) {
+                return message;
+            }
+        }
+
+        return '';
     }
 
     localizeServerMessages(errorMessage: string): string {
