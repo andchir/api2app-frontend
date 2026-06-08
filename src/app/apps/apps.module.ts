@@ -31,6 +31,7 @@ import { ImageComparisonComponent } from './components/elements/image-comparison
 import { ElementIframeComponent } from './components/elements/element-iframe.component';
 import { AudioPlayerComponent } from './components/elements/audio-player.component';
 import { MessagesElementComponent } from './components/elements/messages-element.component';
+import { InputDateElementComponent } from './components/elements/input-date-element/input-date-element.component';
 
 @NgModule({
     declarations: [
@@ -61,6 +62,7 @@ import { MessagesElementComponent } from './components/elements/messages-element
         ElementIframeComponent,
         AudioPlayerComponent,
         MessagesElementComponent,
+        InputDateElementComponent,
         NgxTippyModule
     ],
     exports: [

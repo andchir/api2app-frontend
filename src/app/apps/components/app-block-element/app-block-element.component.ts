@@ -169,7 +169,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                     const now = moment();
                     // now.set({hour: 0, minutes: 0, seconds: 0});
                     now.add(offsetDays, 'days');
-                    this.options.value = now.format('YYYY-MM-DD HH:mm');
+                    this.options.value = this.options?.includeTime === false ? now.format('YYYY-MM-DD') : now.format('YYYY-MM-DD HH:mm');
                 }
                 break;
             case 'input-pagination':

@@ -855,6 +855,19 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'busyDates',
+                    label: $localize `Occupied dates`,
+                    type: 'input-tags',
+                    value: options?.busyDates || [],
+                    choices: []
+                });
+                output.push({
+                    name: 'busyDatesFieldName',
+                    label: $localize `Occupied dates field`,
+                    type: 'input-text',
+                    value: options?.busyDatesFieldName || ''
+                });
+                output.push({
                     name: 'offset',
                     label: $localize `Default Days Offset`,
                     type: 'input-number',
@@ -865,6 +878,27 @@ export class ElementOptions {
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'includeTime',
+                    label: $localize `Enable time`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.includeTime !== false
+                });
+                output.push({
+                    name: 'compactView',
+                    label: $localize `Compact view`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.compactView || false
+                });
+                output.push({
+                    name: 'rangeMode',
+                    label: $localize `Date range`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.rangeMode || false
                 });
                 output.push({
                     name: 'useDefault',
@@ -1810,6 +1844,11 @@ export class ElementOptions {
                     format: 'YYYY-MM-DD HH:mm',
                     hiddenByField: '',
                     offset: 0,
+                    includeTime: true,
+                    busyDates: [],
+                    busyDatesFieldName: '',
+                    compactView: false,
+                    rangeMode: false,
                     useDefault: false,
                     required: true,
                     value: ''

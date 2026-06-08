@@ -369,17 +369,21 @@
 
     <ng-container *ngSwitchCase="'input-date'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <div class="p-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md">
-                    <input type="datetime-local"
-                           class="block border-0 w-full bg-transparent"
-                           id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                           [(ngModel)]="options.value">
-                </div>
-            </div>
+            <app-input-date-element
+                [editorMode]="editorMode"
+                [name]="options?.name"
+                [label]="options?.label"
+                [parentIndex]="parentIndex"
+                [index]="index"
+                [includeTime]="options?.includeTime !== false"
+                [compactView]="options?.compactView || false"
+                [rangeMode]="options?.rangeMode || false"
+                [busyDates]="options?.busyDates || []"
+                [busyDatesFieldName]="options?.busyDatesFieldName || ''"
+                [dataJson]="options.valueObj | json"
+                [dataArrJson]="options.valueArr | json"
+                [(value)]="options.value"
+                (valueChange)="onFieldValueChanged()"></app-input-date-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
