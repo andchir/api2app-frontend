@@ -1269,6 +1269,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
                         : ApplicationService.getElementValue(element);
 
+                    console.log(value);
+
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
                         delete inputData[key];

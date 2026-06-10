@@ -229,6 +229,7 @@ export class InputDateElementComponent implements OnChanges {
         this.calendarDays = this.createCalendarDays();
         this.lastEmittedValue = outputValue;
         this.valueChange.emit(outputValue);
+        console.log(this.value);
         if (this.compactView) {
             this.isOpened = false;
         }

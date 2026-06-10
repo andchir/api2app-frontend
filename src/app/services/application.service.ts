@@ -171,8 +171,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'input-tags':
                 return Array.isArray(element?.value) ? element?.value : [];
             case 'input-date':
+                const value = String(element?.value);
+                const dateRangeValues = value.split(/\s+-\s+/);
+                if (dateRangeValues.length === 2 && dateRangeValues.every((dateValue) => dateValue.trim())) {
+                    return value;
+                }
                 const dateFormat = element?.format;
-                const date = moment(String(element?.value));
+                const date = moment(value);
                 return date.format(dateFormat);
             case 'audio':
                 if (element.value && element.value['changingThisBreaksApplicationSecurity']) {
