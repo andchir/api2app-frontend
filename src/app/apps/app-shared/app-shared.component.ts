@@ -1704,8 +1704,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
-            let valueArr = this.dataService.flattenObjInArray(value, true);
-            if (element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
+            const isStringArray = value.every((item) => typeof item === 'string');
+            let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
+            if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
                 // Filter array values
                 valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
             }

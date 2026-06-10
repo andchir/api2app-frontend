@@ -50,8 +50,8 @@ export class InputDateElementComponent implements OnChanges {
     @Input() rangeMode = false;
     @Input() busyDates: string[] = [];
     @Input() busyDatesFieldName: string = '';
-    @Input() dataJson: string|null = null;
-    @Input() dataArrJson: string|null = null;
+    @Input() dataJson: any = null;
+    @Input() dataArrJson: any = null;
     @Input() value: string | null = '';
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
@@ -72,6 +72,8 @@ export class InputDateElementComponent implements OnChanges {
     weekDays: string[] = [];
     hours = Array.from({length: 24}, (_, index) => this.pad(index));
     minutes = Array.from({length: 60}, (_, index) => this.pad(index));
+    private syncedBusyDates: string[] = [];
+    private lastEmittedValue: string | null = null;
 
     constructor(
         private cdr: ChangeDetectorRef
@@ -83,6 +85,10 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     ngOnChanges(changes: SimpleChanges): void {
+        if (this.isOwnValueChange(changes)) {
+            this.lastEmittedValue = null;
+            return;
+        }
         if (changes['value'] || changes['includeTime'] || changes['rangeMode'] || changes['busyDates'] || changes['busyDatesFieldName'] || changes['dataJson'] || changes['dataArrJson']) {
             this.syncStateFromValue(this.value || '');
         }
@@ -103,7 +109,7 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     get normalizedBusyDates(): string[] {
-        return this.getBusyDates()
+        return this.syncedBusyDates
             .map((date) => this.normalizeComparable(date))
             .filter(Boolean);
     }
@@ -183,6 +189,7 @@ export class InputDateElementComponent implements OnChanges {
         this.value = '';
         this.isBusy = false;
         this.calendarDays = this.createCalendarDays();
+        this.lastEmittedValue = '';
         this.valueChange.emit('');
         this.cdr.detectChanges();
     }
@@ -220,6 +227,7 @@ export class InputDateElementComponent implements OnChanges {
 
         this.value = outputValue;
         this.calendarDays = this.createCalendarDays();
+        this.lastEmittedValue = outputValue;
         this.valueChange.emit(outputValue);
         if (this.compactView) {
             this.isOpened = false;
@@ -243,6 +251,7 @@ export class InputDateElementComponent implements OnChanges {
         const outputValue = `${this.createRangeDateValue(this.rangeStartDate, 'start')} - ${this.createRangeDateValue(this.rangeEndDate, 'end')}`;
         this.value = outputValue;
         this.calendarDays = this.createCalendarDays();
+        this.lastEmittedValue = outputValue;
         this.valueChange.emit(outputValue);
         if (this.compactView) {
             this.isOpened = false;
@@ -251,7 +260,24 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     private syncStateFromValue(value: string): void {
-        if (!value) {
+        const busyDates = [...(this.busyDates || [])];
+        const data = this.parseDataSource(this.dataJson);
+        const dataArr = this.parseDataSource(this.dataArrJson);
+        const sourceValue = this.busyDatesFieldName ? this.readFieldValue(data, this.busyDatesFieldName) : null;
+
+        if (Array.isArray(sourceValue)) {
+            busyDates.push(...this.normalizeSourceArray(sourceValue, this.busyDatesFieldName));
+        } else if (sourceValue) {
+            busyDates.push(String(sourceValue));
+        }
+
+        if (Array.isArray(dataArr)) {
+            busyDates.push(...this.normalizeSourceArray(dataArr, this.busyDatesFieldName));
+        }
+
+        this.syncedBusyDates = busyDates.map((date) => String(date || '').trim()).filter(Boolean);
+
+        if (!value || typeof value !== 'string') {
             this.selectedDate = '';
             this.rangeStartDate = '';
             this.rangeEndDate = '';
@@ -394,44 +420,26 @@ export class InputDateElementComponent implements OnChanges {
         return value.replace('T', ' ').substring(0, 16);
     }
 
-    private getBusyDates(): string[] {
-        const dates = [...(this.busyDates || [])];
-        const fieldDates = this.getBusyDatesFromField();
-        dates.push(...fieldDates);
-        return dates.map((date) => String(date || '').trim()).filter(Boolean);
-    }
-
-    private getBusyDatesFromField(): string[] {
-        if (!this.busyDatesFieldName) {
-            return [];
-        }
-
-        const data = this.parseJson(this.dataJson);
-        const dataArr = this.parseJson(this.dataArrJson);
-        const sourceValue = this.readFieldValue(data, this.busyDatesFieldName);
-
-        if (Array.isArray(sourceValue)) {
-            return this.normalizeSourceArray(sourceValue, this.busyDatesFieldName);
-        }
-        if (sourceValue) {
-            return [String(sourceValue)];
-        }
-        if (Array.isArray(dataArr)) {
-            return this.normalizeSourceArray(dataArr, this.busyDatesFieldName);
-        }
-        return [];
-    }
-
     private normalizeSourceArray(items: any[], fieldName: string): string[] {
         return items
             .map((item) => {
-                if (item && typeof item === 'object' && !Array.isArray(item)) {
+                if (item && typeof item === 'object' && !Array.isArray(item) && fieldName) {
                     return this.readFieldValue(item, fieldName);
+                }
+                if (item && typeof item === 'object' && !Array.isArray(item) && '' in item) {
+                    return item[''];
                 }
                 return item;
             })
             .filter((item) => item !== null && typeof item !== 'undefined')
             .map((item) => String(item));
+    }
+
+    private isOwnValueChange(changes: SimpleChanges): boolean {
+        return Object.keys(changes).length === 1 &&
+            !!changes['value'] &&
+            this.lastEmittedValue !== null &&
+            (changes['value'].currentValue || '') === this.lastEmittedValue;
     }
 
     private readFieldValue(data: any, fieldName: string): any {
@@ -446,9 +454,12 @@ export class InputDateElementComponent implements OnChanges {
         }, data);
     }
 
-    private parseJson(value: string|null): any {
+    private parseDataSource(value: any): any {
         if (!value) {
             return null;
+        }
+        if (typeof value !== 'string') {
+            return value;
         }
         try {
             return JSON.parse(value);

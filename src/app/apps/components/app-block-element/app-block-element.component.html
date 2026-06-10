@@ -380,8 +380,8 @@
                 [rangeMode]="options?.rangeMode || false"
                 [busyDates]="options?.busyDates || []"
                 [busyDatesFieldName]="options?.busyDatesFieldName || ''"
-                [dataJson]="options.valueObj | json"
-                [dataArrJson]="options.valueArr | json"
+                [dataJson]="options.valueObj"
+                [dataArrJson]="options.valueArr"
                 [(value)]="options.value"
                 (valueChange)="onFieldValueChanged()"></app-input-date-element>
         </div>
