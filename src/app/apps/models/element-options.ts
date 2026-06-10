@@ -1851,7 +1851,9 @@ export class ElementOptions {
                     rangeMode: false,
                     useDefault: false,
                     required: true,
-                    value: ''
+                    value: '',
+                    note: $localize `Please select the date field.`,
+                    noteOutput: $localize `Please select a field with an array of booked dates.`
                 });
                 break;
             case 'input-color':
