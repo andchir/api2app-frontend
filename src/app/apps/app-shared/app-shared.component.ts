@@ -931,6 +931,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return resultElement;
     }
 
+    private getValueSourceElement(element: AppBlockElement): AppBlockElement {
+        return element?.valueFrom
+            ? this.findBlockElementByName(element.valueFrom)
+            : element;
+    }
+
+    private getElementValueFromSource(element: AppBlockElement, storeValue: boolean = false): string|any[]|number|boolean|File|File[]|null {
+        const sourceElement = this.getValueSourceElement(element);
+        const value = ApplicationService.getElementValue(sourceElement);
+        if (storeValue && sourceElement) {
+            ApplicationService.localStoreValue(sourceElement);
+        }
+        return value;
+    }
+
+    private hasValueFromValue(element: AppBlockElement): boolean {
+        const sourceElement = this.getValueSourceElement(element);
+        return !!sourceElement?.value;
+    }
+
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
         const buttons = this.appElements.buttons[targetApiUuid] || [];
         if (typeof blockIndex !== 'undefined') {
@@ -985,11 +1005,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
-                if (element.valueFrom) {
-                    const targetElement = this.findBlockElementByName(element.valueFrom);
-                    if (targetElement && targetElement.value) {
-                        return;
-                    }
+                if (element.valueFrom && this.hasValueFromValue(element)) {
+                    return;
                 }
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
@@ -1182,7 +1199,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            const targetElement = this.findBlockElementByName(element.valueFrom);
+                            const targetElement = this.getValueSourceElement(element);
                             valueObj[key] = element.valueFrom && targetElement
                                 ? targetElement.value
                                 : element.value;
@@ -1200,11 +1217,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
-                ApplicationService.localStoreValue(element);
 
-                bodyField.value = element.valueFrom
-                    ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
-                    : ApplicationService.getElementValue(element);
+                bodyField.value = this.getElementValueFromSource(element, true);
 
                 if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
@@ -1263,11 +1277,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (!element) {
                         return;
                     }
-                    ApplicationService.localStoreValue(element);
 
-                    const value = element.valueFrom
-                        ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
-                        : ApplicationService.getElementValue(element);
+                    const value = this.getElementValueFromSource(element, true);
 
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
@@ -1288,11 +1299,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
                         return;
                     }
-                    ApplicationService.localStoreValue(elem);
 
-                    const value = elem.valueFrom
-                        ? ApplicationService.getElementValue(this.findBlockElementByName(elem.valueFrom))
-                        : ApplicationService.getElementValue(elem);
+                    const value = this.getElementValueFromSource(elem, true);
 
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
@@ -1325,10 +1333,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            ApplicationService.localStoreValue(element);
-            param.value = element.value
-                ? ApplicationService.getElementValue(element) as string
-                : null;
+            const value = this.getElementValueFromSource(element, true);
+            param.value = value ? value as string : null;
             if (element.type === 'input-switch') {
                 param.hidden = !element?.enabled;
             }
@@ -1352,9 +1358,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            header.value = element.valueFrom
-                ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom)) as string
-                : ApplicationService.getElementValue(element) as string;
+            header.value = this.getElementValueFromSource(element) as string;
         });
         apiItem.headers = headers;
 
@@ -1367,9 +1371,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         apiItem.urlPartIndex = '';
         apiItem.urlPartValue = '';
         elements.forEach((el) => {
-            const value = el.valueFrom
-                ? ApplicationService.getElementValue(this.findBlockElementByName(el.valueFrom))
-                : el.value;
+            const value = el.valueFrom ? this.getElementValueFromSource(el, true) : el.value;
+            if (!el.valueFrom) {
+                ApplicationService.localStoreValue(el);
+            }
+
             if (value && el.options?.inputApiFieldName !== null) {
                 apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + String(el.options?.inputApiFieldName);
                 apiItem.urlPartValue += (apiItem.urlPartValue ? ',' : '') + String(value);
@@ -1748,7 +1754,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             case 'button':
                 let fieldValue = element.value;
                 if (element.valueFrom) {
-                    const sourceElement = this.findBlockElementByName(element.valueFrom);
+                    const sourceElement = this.getValueSourceElement(element);
                     fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
                 }
 
@@ -1950,7 +1956,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         let htmlContent = '';
         if (element.valueFrom) {
-            const sourceElement = this.findBlockElementByName(element.valueFrom);
+            const sourceElement = this.getValueSourceElement(element);
             htmlContent = String(sourceElement.value);
 
             if (!htmlContent.includes('<body')) {
