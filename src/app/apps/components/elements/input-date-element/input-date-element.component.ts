@@ -90,6 +90,7 @@ export class InputDateElementComponent implements OnChanges {
             return;
         }
         if (changes['value'] || changes['includeTime'] || changes['rangeMode'] || changes['busyDates'] || changes['busyDatesFieldName'] || changes['dataJson'] || changes['dataArrJson']) {
+            this.clearValue();
             this.syncStateFromValue(this.value || '');
         }
         this.calendarDays = this.createCalendarDays();
