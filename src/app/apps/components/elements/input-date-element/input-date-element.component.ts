@@ -89,8 +89,13 @@ export class InputDateElementComponent implements OnChanges {
             this.lastEmittedValue = null;
             return;
         }
+        const shouldClearUncommittedSelection = changes['dataArrJson'] && !changes['dataArrJson'].firstChange;
+
+        if (shouldClearUncommittedSelection && !this.hasFixedSelection()) {
+            this.clearUncommittedSelection();
+        }
+
         if (changes['value'] || changes['includeTime'] || changes['rangeMode'] || changes['busyDates'] || changes['busyDatesFieldName'] || changes['dataJson'] || changes['dataArrJson']) {
-            this.clearValue();
             this.syncStateFromValue(this.value || '');
         }
         this.calendarDays = this.createCalendarDays();
@@ -245,7 +250,6 @@ export class InputDateElementComponent implements OnChanges {
         this.calendarDays = this.createCalendarDays();
         this.lastEmittedValue = outputValue;
         this.valueChange.emit(outputValue);
-        console.log(this.value);
         if (this.compactView) {
             this.isOpened = false;
         }
@@ -317,6 +321,23 @@ export class InputDateElementComponent implements OnChanges {
         this.viewYear = selected.getFullYear();
         this.viewMonth = selected.getMonth();
         this.isBusy = this.isBusyDate(this.selectedDate, this.selectedHour, this.selectedMinute);
+    }
+
+    private clearUncommittedSelection(): void {
+        this.selectedDate = '';
+        this.rangeStartDate = '';
+        this.rangeEndDate = '';
+        this.value = '';
+        this.isBusy = false;
+        this.lastEmittedValue = '';
+        this.valueChange.emit('');
+    }
+
+    private hasFixedSelection(): boolean {
+        if (this.rangeMode) {
+            return !!this.rangeStartDate && !!this.rangeEndDate && this.isRangeBusy();
+        }
+        return !!this.selectedDate && this.isBusyDate(this.selectedDate, this.selectedHour, this.selectedMinute);
     }
 
     private syncRangeStateFromValue(value: string): void {
