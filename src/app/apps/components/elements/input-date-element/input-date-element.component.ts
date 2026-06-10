@@ -125,6 +125,9 @@ export class InputDateElementComponent implements OnChanges {
     toggleDropdown(event: MouseEvent): void {
         event.preventDefault();
         event.stopPropagation();
+        if (this.editorMode) {
+            return;
+        }
         this.isOpened = !this.isOpened;
         this.cdr.detectChanges();
     }
@@ -134,6 +137,9 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     previousMonth(): void {
+        if (this.editorMode) {
+            return;
+        }
         const date = new Date(this.viewYear, this.viewMonth - 1, 1);
         this.viewYear = date.getFullYear();
         this.viewMonth = date.getMonth();
@@ -142,6 +148,9 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     nextMonth(): void {
+        if (this.editorMode) {
+            return;
+        }
         const date = new Date(this.viewYear, this.viewMonth + 1, 1);
         this.viewYear = date.getFullYear();
         this.viewMonth = date.getMonth();
@@ -150,6 +159,9 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     selectDate(day: CalendarDay): void {
+        if (this.editorMode) {
+            return;
+        }
         if (day.busy) {
             this.isBusy = true;
             this.cdr.detectChanges();
@@ -168,6 +180,9 @@ export class InputDateElementComponent implements OnChanges {
     }
 
     onTimeChange(): void {
+        if (this.editorMode) {
+            return;
+        }
         if (!this.selectedDate && (!this.rangeStartDate || !this.rangeEndDate)) {
             return;
         }
