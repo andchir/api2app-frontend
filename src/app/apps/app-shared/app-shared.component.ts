@@ -1370,17 +1370,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         apiItem.urlPartIndex = '';
         apiItem.urlPartValue = '';
+        const urlPartIndexes = new Set<string>();
         elements.forEach((el) => {
             const value = el.valueFrom ? this.getElementValueFromSource(el, true) : el.value;
             if (!el.valueFrom) {
                 ApplicationService.localStoreValue(el);
             }
 
-            if (value && el.options?.inputApiFieldName !== null) {
-                apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + String(el.options?.inputApiFieldName);
+            if (value && el.options?.inputApiFieldName != null) {
+                const urlPartIndex = String(el.options?.inputApiFieldName);
+                if (urlPartIndexes.has(urlPartIndex)) {
+                    return;
+                }
+                urlPartIndexes.add(urlPartIndex);
+
+                apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + urlPartIndex;
                 apiItem.urlPartValue += (apiItem.urlPartValue ? ',' : '') + String(value);
                 ApplicationService.localStoreValue(el);
-                this.apiRequestUrlUpdate(apiItem, Number(el.options?.inputApiFieldName), String(value));
+                this.apiRequestUrlUpdate(apiItem, Number(urlPartIndex), String(value));
             }
         });
 
