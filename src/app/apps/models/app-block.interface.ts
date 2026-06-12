@@ -82,6 +82,7 @@ export interface AppBlockElement {
     autoHeight?: boolean;
     isBooleanValue?: boolean;
     linkedField?: string;
+    allowAutoSubmit?: boolean;
 }
 
 export interface AppBlockOptions {

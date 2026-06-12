@@ -1881,9 +1881,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (inputApiUuid && this.errors[inputApiUuid]) {
                 delete this.errors[inputApiUuid][element.name];
             }
-            if ((buttonElement && buttonElement !== element) && !['input-pagination'].includes(element.type)) {
+            if ((buttonElement && !buttonElement.allowAutoSubmit && buttonElement !== element)
+                && !['input-pagination'].includes(element.type)) {
                 return;
             }
+            buttonElement.allowAutoSubmit = false;
             this.removeAutoStart(inputApiUuid);
             this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
         }
