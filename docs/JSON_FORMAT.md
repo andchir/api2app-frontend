@@ -94,7 +94,7 @@ If the field is hidden (hiddenByDefault=true), it becomes visible when the value
 
 ## Element Types
 
-Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `crop-image`, `iframe`, `messages`.
+Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `user-payment`, `crop-image`, `iframe`, `messages`.
 
 ## List output
 
@@ -174,11 +174,12 @@ Same fields as `input-text`, plus:
 
 Numeric input.
 
-| Field   | Type   | Description   |
-|---------|--------|---------------|
-| `label` | string | Field label   |
-| `min`   | number | Minimum value |
-| `max`   | number | Maximum value |
+| Field   | Type   | Description    |
+|---------|--------|----------------|
+| `label` | string | Field label    |
+| `min`   | number | Minimum value  |
+| `max`   | number | Maximum value  |
+| `value` | any    | Default value  |
 
 #### `input-slider`
 
@@ -190,6 +191,7 @@ Range slider.
 | `min`   | number | Minimum value  |
 | `max`   | number | Maximum value  |
 | `step`  | number | Step increment |
+| `value` | number | Default value  |
 
 #### `input-hidden`
 
@@ -258,13 +260,18 @@ Tag/chip input for multiple values.
 
 Date/time picker.
 
-| Field        | Type    | Description                             |
-|--------------|---------|-----------------------------------------|
-| `label`      | string  | Field label                             |
-| `format`     | string  | Date format (e.g. `"YYYY-MM-DD HH:mm"`) |
-| `offset`     | number  | Default days offset from today          |
-| `useDefault` | boolean | Use current date as default             |
-| `required`   | boolean | Required field                          |
+| Field                | Type     | Description                             |
+|----------------------|----------|-----------------------------------------|
+| `label`              | string   | Field label                             |
+| `format`             | string   | Date format (e.g. `"YYYY-MM-DD HH:mm"`) |
+| `offset`             | number   | Default days offset from today          |
+| `useDefault`         | boolean  | Use current date as default             |
+| `includeTime`        | boolean  | Enable time selection (default: true)   |
+| `compactView`        | boolean  | Compact calendar view                   |
+| `rangeMode`          | boolean  | Enable date range selection             |
+| `busyDates`          | string[] | List of unavailable dates               |
+| `busyDatesFieldName` | string   | Field name for busy dates from API      |
+| `required`           | boolean  | Required field                          |
 
 #### `input-color`
 
@@ -353,10 +360,12 @@ Action button that triggers API calls.
 | `prefixText`       | string  | Prefix for resulting value                                   |
 | `suffixText`       | string  | Suffix for resulting value                                   |
 | `valueFrom`        | string  | Take value from another field                                |
+| `linkedField`      | string  | Name of another button whose API will be automatically triggered after this button's API call completes |
 | `hiddenByDefault`  | boolean | Hidden until value is retrieved                              |
 | `isClearForm`      | boolean | Reset form on click                                          |
 | `isDownloadMode`   | boolean | Download file on click                                       |
 | `isStickyPosition` | boolean | Sticky on scroll                                             |
+| `allowAutoSubmit`  | boolean | Allow one automatic API call when a linked field value changes  |
 
 The button can receive a value, but it doesn't display that value. It only uses it for download mode (if it's a URL or base64) or opening the link in a new browser tab. If the button is hidden, it becomes visible when it receives a value.
 
@@ -387,6 +396,8 @@ Data table.
 | `keys`            | string[] | Object keys for each column            |
 | `valueArr`        | object[] | An array of objects with table entries |
 | `isHTML`          | boolean  | Render values as HTML                  |
+| `editable`        | boolean  | Enable inline editing                  |
+| `vertical`        | boolean  | Vertical layout mode                   |
 | `hiddenByDefault` | boolean  | Hidden until API response              |
 
 #### `input-chart-line`
@@ -455,11 +466,12 @@ Progress bar with queue tracking.
 
 Chat-style messaging interface for conversational interactions with an API.
 
-| Field         | Type   | Description                                        |
-|---------------|--------|----------------------------------------------------|
-| `label`       | string | Label displayed above the chat window              |
-| `placeholder` | string | Placeholder text in the message input field        |
-| `maxHeight`   | number | Max height of the messages area in px (default: 400) |
+| Field             | Type    | Description                                        |
+|-------------------|---------|----------------------------------------------------|
+| `label`           | string  | Label displayed above the chat window              |
+| `placeholder`     | string  | Placeholder text in the message input field        |
+| `maxHeight`       | number  | Max height of the messages area in px (default: 400) |
+| `hiddenByDefault` | boolean | Hidden until API response                          |
 
 **Behavior:**
 
@@ -554,6 +566,16 @@ Subscription widget (VK apps).
 | `subscriptionId` | string  | Subscription ID          |
 | `icon`           | string  | Bootstrap icon class     |
 | `showOnlyInVK`   | boolean | Show only in VK mini app |
+
+#### `user-payment`
+
+Payment widget (VK apps).
+
+| Field          | Type    | Description              |
+|----------------|---------|--------------------------|
+| `label`        | string  | Label text               |
+| `icon`         | string  | Bootstrap icon class     |
+| `showOnlyInVK` | boolean | Show only in VK mini app |
 
 ---
 
