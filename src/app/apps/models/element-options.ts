@@ -315,6 +315,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.isStickyPosition || false
                 });
+                output.push({
+                    name: 'allowAutoSubmit',
+                    label: $localize `Allow auto-submit`,
+                    type: 'input-switch',
+                    enabled: options?.allowAutoSubmit || false
+                });
                 break;
             case 'input-text':
                 // output.push({
@@ -1699,7 +1705,8 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     isClearForm: false,
                     isDownloadMode: false,
-                    isStickyPosition: false
+                    isStickyPosition: false,
+                    allowAutoSubmit: false
                 });
                 break;
             case 'input-text':
