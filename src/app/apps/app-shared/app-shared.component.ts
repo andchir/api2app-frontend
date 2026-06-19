@@ -1775,45 +1775,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
                     if (element.isDownloadMode) {
-                        const block = this.findBlock(element);
-                        if (block) {
-                            block.loading = true;
-                            this.cdr.detectChanges();
-                        }
-                        if (this.isVkApp && String(fieldValue).match(/https?:\/\//)) {
-                            const filename = String(fieldValue).split('/').pop();
-                            vkBridge.send('VKWebAppDownloadFile', {
-                                    url: String(fieldValue),
-                                    filename
-                                })
-                                .then((data) => {
-                                    if (data.result) {
-                                        // Файл скачивается
-                                    }
-                                    else {
-                                        // Ошибка
-                                    }
-                                    if (block) {
-                                        block.loading = false;
-                                        this.cdr.detectChanges();
-                                    }
-                                })
-                                .catch( (error) => {
-                                    console.log("Error: " + error.error_type, error.error_data);
-                                    if (block) {
-                                        block.loading = false;
-                                        this.cdr.detectChanges();
-                                    }
-                                });
-                        } else {
-                            ApplicationService.downloadFile(String(fieldValue))
-                                .then(() => {
-                                    if (block) {
-                                        block.loading = false;
-                                        this.cdr.detectChanges();
-                                    }
-                                });
-                        }
+                        this.downloadFile(element, String(fieldValue));
                     } else {
                         window.open(String(fieldValue), '_blank').focus();
                     }
@@ -1851,6 +1813,44 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         });
                 }
                 break;
+        }
+    }
+
+    downloadFile(element: AppBlockElement, fileUrl: string, useNativeOnly: boolean = false): void {
+        const block = this.findBlock(element);
+        if (block) {
+            block.loading = true;
+            this.cdr.detectChanges();
+        }
+        if (this.isVkApp && !useNativeOnly && fileUrl.match(/https?:\/\//)) {
+            const filename = fileUrl.split('/').pop();
+            vkBridge.send('VKWebAppDownloadFile', {
+                    url: fileUrl,
+                    filename
+                })
+                .then((data) => {
+                    if (data.result) {
+                        if (block) {
+                            block.loading = false;
+                            this.cdr.detectChanges();
+                        }
+                    }
+                    else {
+                        this.downloadFile(element, fileUrl, true);
+                    }
+                })
+                .catch( (error) => {
+                    console.log("Error: " + error.error_type, error.error_data);
+                    this.downloadFile(element, fileUrl, true);
+                });
+        } else {
+            ApplicationService.downloadFile(fileUrl)
+                .then(() => {
+                    if (block) {
+                        block.loading = false;
+                        this.cdr.detectChanges();
+                    }
+                });
         }
     }
 
