@@ -15,6 +15,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 // @ts-ignore
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+declare const vkBridge: any;
+
 @Component({
     selector: 'app-element-input-text',
     templateUrl: 'element-input-text.component.html',
@@ -48,6 +50,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
 
+    isVkApp: boolean = false;
     private timer: any;
     private _value = '';
     isChanged = false;
@@ -64,6 +67,9 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     ) {}
 
     ngOnInit(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+            this.isVkApp = true;
+        }
         this.calculatePadding();
     }
 
@@ -159,15 +165,37 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         inputEl.select();
         inputEl.setSelectionRange(0, 99999);
 
-        this.writeClipboardText(inputEl.value)
-            .then(() => {
-                const message = $localize `The value has been successfully copied to the clipboard.`;
-                this.message.emit([message, 'success']);
-            })
-            .catch(() => {
-                const message = $localize `Sorry, copying to clipboard is not allowed.`;
-                this.message.emit([message, 'error']);
-            });
+        const textContent: string = String(inputEl.value);
+
+        if (this.isVkApp) {
+            vkBridge.send('VKWebAppCopyText', {
+                    text: textContent
+                })
+                .then((data) => {
+                    if (data.result) {
+                        const message = $localize `The value has been successfully copied to the clipboard.`;
+                        this.message.emit([message, 'success']);
+                    } else {
+                        const message = $localize `Sorry, copying to clipboard is not allowed.`;
+                        this.message.emit([message, 'error']);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    const message = $localize `Sorry, copying to clipboard is not allowed.`;
+                    this.message.emit([message, 'error']);
+                });
+        } else {
+            this.writeClipboardText(textContent)
+                .then(() => {
+                    const message = $localize `The value has been successfully copied to the clipboard.`;
+                    this.message.emit([message, 'success']);
+                })
+                .catch(() => {
+                    const message = $localize `Sorry, copying to clipboard is not allowed.`;
+                    this.message.emit([message, 'error']);
+                });
+        }
     }
 
     async writeClipboardText(text: string): Promise<void> {

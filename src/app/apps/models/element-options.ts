@@ -1153,6 +1153,13 @@ export class ElementOptions {
                         enabled: options?.useCropper
                     });
                 }
+                output.push({
+                    name: 'vkUseSendToFiles',
+                    label: $localize `VK: Use upload to My Files`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.vkUseSendToFiles || false
+                });
                 break;
             case 'input-chart-line':
                 output.push({
