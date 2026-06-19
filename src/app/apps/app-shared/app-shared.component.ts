@@ -1780,13 +1780,40 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             block.loading = true;
                             this.cdr.detectChanges();
                         }
-                        ApplicationService.downloadFile(String(fieldValue))
-                            .then(() => {
-                                if (block) {
-                                    block.loading = false;
-                                    this.cdr.detectChanges();
-                                }
-                            });
+                        if (this.isVkApp && String(fieldValue).match(/https?:\/\//)) {
+                            const filename = String(fieldValue).split('/').pop();
+                            vkBridge.send('VKWebAppDownloadFile', {
+                                    url: String(fieldValue),
+                                    filename
+                                })
+                                .then((data) => {
+                                    if (data.result) {
+                                        // Файл скачивается
+                                    }
+                                    else {
+                                        // Ошибка
+                                    }
+                                    if (block) {
+                                        block.loading = false;
+                                        this.cdr.detectChanges();
+                                    }
+                                })
+                                .catch( (error) => {
+                                    console.log("Error: " + error.error_type, error.error_data);
+                                    if (block) {
+                                        block.loading = false;
+                                        this.cdr.detectChanges();
+                                    }
+                                });
+                        } else {
+                            ApplicationService.downloadFile(String(fieldValue))
+                                .then(() => {
+                                    if (block) {
+                                        block.loading = false;
+                                        this.cdr.detectChanges();
+                                    }
+                                });
+                        }
                     } else {
                         window.open(String(fieldValue), '_blank').focus();
                     }
