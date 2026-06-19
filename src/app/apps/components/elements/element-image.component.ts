@@ -16,6 +16,10 @@ import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm.js';
+import { VkBridgeService } from '../../../services/vk-bridge.service';
+import { VkAppOptions } from '../../models/vk-app-options.interface';
+
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-image-elem',
@@ -31,7 +35,7 @@ import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => ElementImageComponent),
         multi: true
-    }],
+    }, VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {
@@ -52,11 +56,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() useLink: boolean;
     @Input() useCropper: boolean = false;
     @Input() useLightbox: boolean = false;
+    @Input() vkUseSendToFiles: boolean = false;
     @Input() valueFieldName: string;
     @Input() cropperMaintainAspectRatio: boolean = false;
     @Input() cropperAspectRatio: number = 4 / 3;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
+    isVkApp: boolean = false;
     isCropped: boolean = false;
     isError: boolean = false;
     isImageLoading: boolean = true;
@@ -65,11 +71,24 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     imageOutputWidth: number = 0;
     imageOutputHeight: number = 0;
     loading: boolean = false;
+    vkFileUploading: boolean = false;
+    vkFileUploaded: boolean = false;
+    vkFileUploadError: string = '';
     imageChangedEvent: Event | null = null;
     croppedImage: SafeUrl | string = '';
 
     overlay: HTMLElement;
     lightbox: PhotoSwipeLightbox;
+    vkAppOptions: VkAppOptions = {
+        appId: 0,
+        userId: 0,
+        userToken: '',
+        userFileUploadUrl: '',
+        userSubscriptions: [],
+        adEnabled: true,
+        adAvailableInterstitial: false,
+        appLaunchParamsJson: ''
+    };
 
     private _cropperAspectRatioString: string = '';
 
@@ -113,7 +132,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
 
     constructor(
         private sanitizer: DomSanitizer,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private vkBridgeService: VkBridgeService
     ) {}
 
     get previewImageUrl(): string | SafeResourceUrl | null {
@@ -163,6 +183,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     ngOnInit(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+            this.isVkApp = true;
+        }
         if (this.useLightbox) {
             this.lightboxInit();
         }
@@ -191,6 +214,8 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     private resetImageState(): void {
         this.isError = false;
         this.isImageLoading = true;
+        this.vkFileUploaded = false;
+        this.vkFileUploadError = '';
     }
 
     createOriginalFileUrl(): string | null {
@@ -267,6 +292,98 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
                 }, 100);
             })
             .catch(console.error);
+    }
+
+    get showVkSendToFiles(): boolean {
+        return this.vkUseSendToFiles && this.isVkApp && !!this.createOriginalFileUrl() && !this.editorMode;
+    }
+
+    async vkSendToFiles(event?: MouseEvent): Promise<void> {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const mediaUrl = this.createOriginalFileUrl();
+        if (!mediaUrl || this.vkFileUploading) {
+            return;
+        }
+        this.vkFileUploading = true;
+        this.vkFileUploadError = '';
+        this.cdr.detectChanges();
+
+        try {
+            await this.vkPrepareAppOptions();
+            const uploadUrl = this.vkAppOptions.userFileUploadUrl
+                || await this.vkBridgeService.getFileUploadUrl(this.vkAppOptions);
+            if (!uploadUrl) {
+                throw new Error('Unable to obtain VK file upload URL.');
+            }
+
+            const file = await this.createFileFromUrl(mediaUrl);
+            const formData = new FormData();
+            formData.append('file', file, file.name);
+
+            const uploadResponse = await fetch(uploadUrl, {
+                method: 'POST',
+                body: formData
+            });
+            if (!uploadResponse.ok) {
+                throw new Error('VK file upload failed.');
+            }
+            const uploadData = await uploadResponse.json();
+            if (!uploadData?.file) {
+                throw new Error('VK did not return uploaded file data.');
+            }
+
+            await this.vkBridgeService.saveFile(
+                this.name || 'file',
+                window.document.documentElement.lang,
+                this.vkAppOptions,
+                uploadData.file
+            );
+            this.vkFileUploaded = true;
+        } catch (error) {
+            console.log(error);
+            this.vkFileUploadError = 'Не удалось загрузить файл в ВК.';
+        } finally {
+            this.vkFileUploading = false;
+            this.cdr.detectChanges();
+        }
+    }
+
+    private async vkPrepareAppOptions(): Promise<void> {
+        if (this.vkAppOptions.appId && this.vkAppOptions.userId) {
+            return;
+        }
+        const data = await vkBridge.send('VKWebAppGetLaunchParams');
+        this.vkAppOptions.appId = data?.vk_app_id || 0;
+        this.vkAppOptions.userId = data?.vk_user_id || 0;
+        this.vkAppOptions.appLaunchParamsJson = JSON.stringify(data || {});
+        if (!this.vkAppOptions.appId || !this.vkAppOptions.userId) {
+            throw new Error('VK launch params are missing.');
+        }
+    }
+
+    private async createFileFromUrl(fileUrl: string): Promise<File> {
+        const response = await fetch(fileUrl);
+        if (!response.ok) {
+            throw new Error('Unable to download source file.');
+        }
+        const blob = await response.blob();
+        return new File([blob], this.createFileName(fileUrl, blob.type), {
+            type: blob.type || 'application/octet-stream'
+        });
+    }
+
+    private createFileName(fileUrl: string, mimeType: string): string {
+        const fallbackExtension = this.type === 'video' ? 'mp4' : 'jpg';
+        const extensionFromMime = mimeType?.split('/')[1]?.split(';')[0];
+        const cleanUrl = fileUrl.split('?')[0].split('#')[0];
+        const fileName = cleanUrl.split('/').pop();
+        if (fileName && fileName.includes('.')) {
+            return fileName;
+        }
+        return `${this.name || 'file'}.${extensionFromMime || fallbackExtension}`;
     }
 
     onImageLoaded(): void {
