@@ -539,6 +539,9 @@
         "UserDataNoDescription": "Aucune description.",
         "UserDataDeleteTableConfirm": "Voulez-vous vraiment supprimer cette table de données ?",
         "UserDataShowAccessKey": "Afficher la clé d’accès",
-        "UserDataHideAccessKey": "Masquer la clé d’accès"
+        "UserDataHideAccessKey": "Masquer la clé d’accès",
+        "UserDataCreateApi": "Créer une API",
+        "UserDataApiCreated": "Les configurations API ont été créées avec succès.",
+        "UserDataCreateApiConfirm": "Créer les configurations API pour cette table ?"
     }
 }

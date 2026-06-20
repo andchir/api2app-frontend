@@ -539,6 +539,9 @@
         "UserDataNoDescription": "Keine Beschreibung.",
         "UserDataDeleteTableConfirm": "Möchten Sie diese Datentabelle wirklich löschen?",
         "UserDataShowAccessKey": "Zugriffsschlüssel anzeigen",
-        "UserDataHideAccessKey": "Zugriffsschlüssel ausblenden"
+        "UserDataHideAccessKey": "Zugriffsschlüssel ausblenden",
+        "UserDataCreateApi": "API erstellen",
+        "UserDataApiCreated": "API-Konfigurationen wurden erfolgreich erstellt.",
+        "UserDataCreateApiConfirm": "API-Konfigurationen für diese Tabelle erstellen?"
     }
 }

@@ -539,6 +539,9 @@
         "UserDataNoDescription": "No description.",
         "UserDataDeleteTableConfirm": "Are you sure you want to delete this data table?",
         "UserDataShowAccessKey": "Show access key",
-        "UserDataHideAccessKey": "Hide access key"
+        "UserDataHideAccessKey": "Hide access key",
+        "UserDataCreateApi": "Create API",
+        "UserDataApiCreated": "API configurations created successfully.",
+        "UserDataCreateApiConfirm": "Create API configurations for this table?"
     }
 }

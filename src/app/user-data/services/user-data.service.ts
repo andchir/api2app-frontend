@@ -59,4 +59,12 @@ export class UserDataService extends DataService<CustomTable> {
                 catchError(this.handleError)
             );
     }
+
+    createApiItem(tableId: number): Observable<unknown> {
+        const url = `${this.requestUrl}/${tableId}/create_api_item`;
+        return this.httpClient.post<unknown>(url, {}, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
 }

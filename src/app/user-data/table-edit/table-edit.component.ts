@@ -32,12 +32,14 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
+    createApiLoading = false;
     accessKeyVisible = false;
     hiddenAccessKey = '************************';
     showAccessKeyLabel = $localize`:@@UserDataShowAccessKey:Show access key`;
     hideAccessKeyLabel = $localize`:@@UserDataHideAccessKey:Hide access key`;
     selectedField: CustomTableField = null;
     isDeleteFieldAction = false;
+    isCreateApiAction = false;
     destroyed$: Subject<void> = new Subject();
 
     constructor(
@@ -135,6 +137,38 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
                     this.message = this.getErrorMessage(this.errors);
                     this.messageType = 'error';
                     this.loading = false;
+                }
+            });
+    }
+
+    createApiItem(): void {
+        if (!this.data.id || this.createApiLoading) {
+            return;
+        }
+        this.isCreateApiAction = true;
+    }
+
+    createApiItemConfirmed(): void {
+        if (!this.data.id || this.createApiLoading) {
+            return;
+        }
+        this.isCreateApiAction = false;
+        this.message = '';
+        this.errors = {};
+        this.createApiLoading = true;
+        this.userDataService.createApiItem(this.data.id)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.message = $localize`:@@UserDataApiCreated:API configurations created successfully.`;
+                    this.messageType = 'success';
+                    this.createApiLoading = false;
+                },
+                error: (err) => {
+                    this.errors = this.normalizeErrors(err);
+                    this.message = this.getErrorMessage(this.errors);
+                    this.messageType = 'error';
+                    this.createApiLoading = false;
                 }
             });
     }

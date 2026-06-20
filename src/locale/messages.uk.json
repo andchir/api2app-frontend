@@ -539,6 +539,9 @@
         "UserDataNoDescription": "Без опису.",
         "UserDataDeleteTableConfirm": "Ви впевнені, що хочете видалити цю таблицю даних?",
         "UserDataShowAccessKey": "Показати ключ доступу",
-        "UserDataHideAccessKey": "Сховати ключ доступу"
+        "UserDataHideAccessKey": "Сховати ключ доступу",
+        "UserDataCreateApi": "Створити API",
+        "UserDataApiCreated": "Конфігурації API успішно створено.",
+        "UserDataCreateApiConfirm": "Створити API конфігурації для цієї таблиці?"
     }
 }
