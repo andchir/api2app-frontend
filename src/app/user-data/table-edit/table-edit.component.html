@@ -63,7 +63,7 @@
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="fieldName" i18n="@@UserDataTechnicalName">Technical name</label>
                             <input type="text"
-                                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-100 disabled:text-gray-500"
+                                   class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                                    id="fieldName"
                                    [disabled]="!isNewItem"
                                    [ngClass]="{'bg-red-50 border border-red-500 text-red-900 placeholder-red-700': errors['name']}"
@@ -125,20 +125,20 @@
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldName">Name</label>
                         <input type="text"
-                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-100 disabled:text-gray-500"
+                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                                [disabled]="!!field.id"
                                [(ngModel)]="field.name">
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldColumn">Column</label>
                         <input type="text"
-                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-100 disabled:text-gray-500"
+                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                                [disabled]="!!field.id"
                                [(ngModel)]="field.column_name">
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldType">Type</label>
-                        <select class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-100 disabled:text-gray-500"
+                        <select class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                                 [disabled]="!!field.id"
                                 [(ngModel)]="field.field_type">
                             <option *ngFor="let type of fieldTypes" [value]="type.name">{{ type.title }}</option>
@@ -146,15 +146,15 @@
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldRequired">Required</label>
-                        <label class="relative inline-flex items-center cursor-pointer">
+                        <label class="relative inline-flex items-center" [ngClass]="field.id ? 'cursor-not-allowed' : 'cursor-pointer'">
                             <input type="checkbox" class="sr-only peer" [disabled]="!!field.id" [(ngModel)]="field.required">
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-indigo-200 focus:ring-opacity-50 peer-disabled:bg-gray-300 peer-disabled:cursor-not-allowed peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldMaxLength">Max length</label>
                         <input type="number"
-                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-100 disabled:text-gray-500"
+                               class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner disabled:bg-gray-200 disabled:border-gray-300 disabled:text-gray-600 disabled:cursor-not-allowed"
                                min="1"
                                [disabled]="!!field.id || !['string', 'file'].includes(field.field_type)"
                                [(ngModel)]="field.max_length">

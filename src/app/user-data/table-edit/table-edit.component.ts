@@ -95,7 +95,7 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     this.errors = this.normalizeErrors(err);
-                    this.message = $localize `Please correct the errors.`;
+                    this.message = this.getErrorMessage(this.errors);
                     this.messageType = 'error';
                     this.loading = false;
                 }
@@ -132,7 +132,7 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     this.errors = this.normalizeErrors(err);
-                    this.message = $localize `Please correct the errors.`;
+                    this.message = this.getErrorMessage(this.errors);
                     this.messageType = 'error';
                     this.loading = false;
                 }
@@ -188,7 +188,7 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
                 },
                 error: (err) => {
                     this.errors = this.normalizeErrors(err);
-                    this.message = $localize `Please correct the errors.`;
+                    this.message = this.getErrorMessage(this.errors);
                     this.messageType = 'error';
                     this.loading = false;
                     this.submitted = false;
@@ -243,6 +243,10 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
             errors[key] = Array.isArray(err[key]) ? err[key] : [String(err[key])];
         });
         return errors;
+    }
+
+    private getErrorMessage(errors: {[name: string]: string[]}): string {
+        return errors['detail']?.join(' ') || $localize `Please correct the errors.`;
     }
 
     ngOnDestroy(): void {

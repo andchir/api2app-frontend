@@ -50,7 +50,30 @@ export class UserDataListComponent extends ListAbstractComponent<CustomTable> im
                     this.onDataLoaded();
                 },
                 error: (err) => {
-                    console.log(err);
+                    this.message = this.getServerDetailMessage(err);
+                    this.messageType = 'error';
+                    this.loading = false;
+                }
+            });
+    }
+
+    override deleteItemConfirmed(): void {
+        if (!this.selectedId) {
+            return;
+        }
+        this.isDeleteAction = false;
+        const itemId = this.selectedId;
+        this.loading = true;
+        this.dataService.deleteItem(itemId)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: () => {
+                    this.selectionClear();
+                    this.getData();
+                },
+                error: (err) => {
+                    this.message = this.getServerDetailMessage(err);
+                    this.messageType = 'error';
                     this.loading = false;
                 }
             });
@@ -85,5 +108,12 @@ export class UserDataListComponent extends ListAbstractComponent<CustomTable> im
             return item.fields_count;
         }
         return item.fields ? item.fields.length : 0;
+    }
+
+    private getServerDetailMessage(err: any): string {
+        if (err?.detail) {
+            return Array.isArray(err.detail) ? err.detail.join(' ') : String(err.detail);
+        }
+        return $localize `Error.`;
     }
 }

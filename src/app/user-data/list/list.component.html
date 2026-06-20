@@ -115,6 +115,8 @@
     [(isActive)]="isDeleteAction"
     (confirmed)="deleteItemConfirmed()"></app-confirm>
 
+<app-alert [(message)]="message" [type]="messageType"></app-alert>
+
 <ng-template #templateNoDescription>
     <p class="text-sm text-gray-400 mb-4 min-h-10" i18n="@@UserDataNoDescription">No description.</p>
 </ng-template>
