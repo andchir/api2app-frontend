@@ -320,8 +320,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
                 throw new Error('Unable to obtain VK file upload URL.');
             }
 
-            const file = await this.createFileFromUrl(mediaUrl);
-            const uploadData = await firstValueFrom(this.vkBridgeService.uploadUserFile(uploadUrl, file));
+            const uploadData = await firstValueFrom(this.vkBridgeService.uploadUserFile(uploadUrl, undefined, mediaUrl));
             if (!uploadData?.file) {
                 throw new Error('VK did not return uploaded file data.');
             }
@@ -353,28 +352,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (!this.vkAppOptions.appId || !this.vkAppOptions.userId) {
             throw new Error('VK launch params are missing.');
         }
-    }
-
-    private async createFileFromUrl(fileUrl: string): Promise<File> {
-        const response = await fetch(fileUrl);
-        if (!response.ok) {
-            throw new Error('Unable to download source file.');
-        }
-        const blob = await response.blob();
-        return new File([blob], this.createFileName(fileUrl, blob.type), {
-            type: blob.type || 'application/octet-stream'
-        });
-    }
-
-    private createFileName(fileUrl: string, mimeType: string): string {
-        const fallbackExtension = this.type === 'video' ? 'mp4' : 'jpg';
-        const extensionFromMime = mimeType?.split('/')[1]?.split(';')[0];
-        const cleanUrl = fileUrl.split('?')[0].split('#')[0];
-        const fileName = cleanUrl.split('/').pop();
-        if (fileName && fileName.includes('.')) {
-            return fileName;
-        }
-        return `${this.name || 'file'}.${extensionFromMime || fallbackExtension}`;
     }
 
     onImageLoaded(): void {

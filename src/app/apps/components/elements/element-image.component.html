@@ -38,7 +38,7 @@
         </div>
         <div class="pt-3" *ngIf="showVkSendToFiles">
             <button type="button"
-                    class="px-4 py-1.5 text-sm inline-flex items-center justify-center shadow-md transition-colors rounded-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    class="px-4 py-1 text-sm inline-flex items-center justify-center shadow-md transition-colors rounded-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
                     [disabled]="vkFileUploading"
                     *ngIf="!vkFileUploaded; else vkFileUploadedTemplate"
                     (click)="vkSendToFiles($event)">

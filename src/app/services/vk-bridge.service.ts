@@ -91,10 +91,15 @@ export class VkBridgeService {
             );
     }
 
-    uploadUserFile(uploadUrl: string, file: File): Observable<any> {
+    uploadUserFile(uploadUrl: string, file?: File, fileUrl?: string): Observable<any> {
         const url = `${BASE_URL}api/v1/vk_file_upload`;
         const formData = new FormData();
-        formData.append('file', file, file.name);
+        if (file) {
+            formData.append('file', file, file.name);
+        }
+        if (fileUrl) {
+            formData.append('file_url', fileUrl);
+        }
         formData.append('url', uploadUrl);
         return this.httpClient.post<any>(url, formData, this.httpOptionsFormData)
             .pipe(
