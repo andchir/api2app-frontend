@@ -296,7 +296,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get showVkSendToFiles(): boolean {
-        return true;// this.vkUseSendToFiles && this.isVkApp && !!this.createOriginalFileUrl() && !this.editorMode;
+        return this.vkUseSendToFiles && this.isVkApp && !!this.createOriginalFileUrl() && !this.editorMode;
     }
 
     async vkSendToFiles(event?: MouseEvent): Promise<void> {
