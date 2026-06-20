@@ -16,6 +16,7 @@ import { ImageCroppedEvent, ImageCropperComponent, LoadedImage } from 'ngx-image
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm.js';
+import { firstValueFrom } from 'rxjs';
 import { VkBridgeService } from '../../../services/vk-bridge.service';
 import { VkAppOptions } from '../../models/vk-app-options.interface';
 
@@ -295,7 +296,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get showVkSendToFiles(): boolean {
-        return this.vkUseSendToFiles && this.isVkApp && !!this.createOriginalFileUrl() && !this.editorMode;
+        return true;// this.vkUseSendToFiles && this.isVkApp && !!this.createOriginalFileUrl() && !this.editorMode;
     }
 
     async vkSendToFiles(event?: MouseEvent): Promise<void> {
@@ -320,17 +321,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
             }
 
             const file = await this.createFileFromUrl(mediaUrl);
-            const formData = new FormData();
-            formData.append('file', file, file.name);
-
-            const uploadResponse = await fetch(uploadUrl, {
-                method: 'POST',
-                body: formData
-            });
-            if (!uploadResponse.ok) {
-                throw new Error('VK file upload failed.');
-            }
-            const uploadData = await uploadResponse.json();
+            const uploadData = await firstValueFrom(this.vkBridgeService.uploadUserFile(uploadUrl, file));
             if (!uploadData?.file) {
                 throw new Error('VK did not return uploaded file data.');
             }

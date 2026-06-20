@@ -35,27 +35,27 @@
                        [poster]="poster || null"
                        [src]="mediaUrl" controlsList="nodownload" controls *ngIf="type == 'video'"></video>
             </ng-template>
-            <div class="pt-3" *ngIf="showVkSendToFiles">
-                <button type="button"
-                        class="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
-                        [disabled]="vkFileUploading"
-                        *ngIf="!vkFileUploaded; else vkFileUploadedTemplate"
-                        (click)="vkSendToFiles($event)">
-                    <i class="bi bi-cloud-arrow-up mr-2" aria-hidden="true"></i>
-                    <span *ngIf="!vkFileUploading">Загрузить в «Мои файлы»</span>
-                    <span *ngIf="vkFileUploading">Загрузка...</span>
-                </button>
-                <ng-template #vkFileUploadedTemplate>
-                    <a class="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
-                       href="https://vk.com/docs"
-                       target="_blank"
-                       rel="noopener noreferrer">
-                        <i class="bi bi-folder2-open mr-2" aria-hidden="true"></i>
-                        <span>Перейти в «Мои файлы»</span>
-                    </a>
-                </ng-template>
-                <div class="pt-2 text-sm text-red-600" *ngIf="vkFileUploadError">{{ vkFileUploadError }}</div>
-            </div>
+        </div>
+        <div class="pt-3" *ngIf="showVkSendToFiles">
+            <button type="button"
+                    class="px-4 py-1.5 text-sm inline-flex items-center justify-center shadow-md transition-colors rounded-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    [disabled]="vkFileUploading"
+                    *ngIf="!vkFileUploaded; else vkFileUploadedTemplate"
+                    (click)="vkSendToFiles($event)">
+                <i class="bi bi-cloud-arrow-up mr-2" aria-hidden="true"></i>
+                <span *ngIf="!vkFileUploading">Загрузить в «ВК Файлы»</span>
+                <span *ngIf="vkFileUploading">Загрузка...</span>
+            </button>
+            <ng-template #vkFileUploadedTemplate>
+                <a class="inline-flex items-center justify-center rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                   href="https://vk.com/docs"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="bi bi-folder2-open mr-2" aria-hidden="true"></i>
+                    <span>Перейти в «ВК Файлы»</span>
+                </a>
+            </ng-template>
+            <div class="pt-2 text-sm text-red-600" *ngIf="vkFileUploadError">{{ vkFileUploadError }}</div>
         </div>
     </ng-container>
     <div class="px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
