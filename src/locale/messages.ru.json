@@ -509,6 +509,8 @@
         "UserDataEdit": "Редактировать",
         "UserDataDelete": "Удалить",
         "UserDataNoDescription": "Без описания.",
-        "UserDataDeleteTableConfirm": "Вы уверены, что хотите удалить эту таблицу данных?"
+        "UserDataDeleteTableConfirm": "Вы уверены, что хотите удалить эту таблицу данных?",
+        "UserDataShowAccessKey": "Показать ключ доступа",
+        "UserDataHideAccessKey": "Скрыть ключ доступа"
     }
 }

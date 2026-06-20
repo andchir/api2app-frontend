@@ -506,6 +506,8 @@
         "UserDataEdit": "Editar",
         "UserDataDelete": "Eliminar",
         "UserDataNoDescription": "Sin descripción.",
-        "UserDataDeleteTableConfirm": "¿Seguro que quieres eliminar esta tabla de datos?"
+        "UserDataDeleteTableConfirm": "¿Seguro que quieres eliminar esta tabla de datos?",
+        "UserDataShowAccessKey": "Mostrar clave de acceso",
+        "UserDataHideAccessKey": "Ocultar clave de acceso"
     }
 }

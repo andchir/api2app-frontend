@@ -93,7 +93,18 @@
                     </div>
                     <div class="flex items-start justify-between gap-3" *ngIf="data.access_key">
                         <span class="text-gray-500 shrink-0" i18n="@@UserDataAccessKey">Access key</span>
-                        <span class="font-mono text-xs text-gray-700 text-right break-all">{{ data.access_key }}</span>
+                        <span class="flex items-center justify-end gap-2 min-w-0">
+                            <span class="font-mono text-xs text-gray-700 text-right break-all">{{ accessKeyVisible ? data.access_key : hiddenAccessKey }}</span>
+                            <button type="button"
+                                    class="inline-flex items-center justify-center w-7 h-7 rounded border border-gray-200 text-gray-700 hover:bg-gray-50 shrink-0"
+                                    (click)="accessKeyVisible = !accessKeyVisible"
+                                    [ngxTippy]="accessKeyVisible ? hideAccessKeyLabel : showAccessKeyLabel"
+                                    [tippyProps]="{placement: 'bottom'}"
+                                    [attr.aria-label]="accessKeyVisible ? hideAccessKeyLabel : showAccessKeyLabel">
+                                <i class="bi bi-eye-slash" *ngIf="accessKeyVisible"></i>
+                                <i class="bi bi-eye" *ngIf="!accessKeyVisible"></i>
+                            </button>
+                        </span>
                     </div>
                     <div class="flex items-center justify-between gap-3" *ngIf="data.date_updated">
                         <span class="text-gray-500" i18n="@@UserDataUpdated">Updated</span>

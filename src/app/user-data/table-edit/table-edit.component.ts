@@ -32,6 +32,10 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
     messageType: 'error'|'success' = 'error';
     loading = false;
     submitted = false;
+    accessKeyVisible = false;
+    hiddenAccessKey = '************************';
+    showAccessKeyLabel = $localize`:@@UserDataShowAccessKey:Show access key`;
+    hideAccessKeyLabel = $localize`:@@UserDataHideAccessKey:Hide access key`;
     selectedField: CustomTableField = null;
     isDeleteFieldAction = false;
     destroyed$: Subject<void> = new Subject();
