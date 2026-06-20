@@ -14,6 +14,7 @@ import { MyProfileComponent } from './my-profile/my-profile.component';
 import { DocumentationComponent } from './docs/documentation.component';
 import { AuthSessionComponent } from './auth/auth-session.component';
 import { DownloadComponent } from './download/download.component';
+import { AuthGuard } from './helpers/auth.guard';
 
 const routes: Routes = [
     {
@@ -77,6 +78,7 @@ const routes: Routes = [
     {
         path: 'my-profile',
         component: MyProfileComponent,
+        canActivate: [AuthGuard],
         title: $localize `My profile`
     },
     {

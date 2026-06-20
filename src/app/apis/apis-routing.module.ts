@@ -7,6 +7,7 @@ import { ApiCreateComponent } from './api-create/api-create.component';
 import { ApiSharedComponent } from './api-shared/api-shared.component';
 import { ListPersonalComponent } from './list/personal/personal.component';
 import { ListSharedComponent } from './list/shared/shared.component';
+import { AuthGuard } from '../helpers/auth.guard';
 
 const routes: Routes = [
     {
@@ -30,11 +31,13 @@ const routes: Routes = [
     },
     {
         path: 'create',
-        component: ApiCreateComponent
+        component: ApiCreateComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'edit/:id',
-        component: ApiCreateComponent
+        component: ApiCreateComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'shared/:uuid',

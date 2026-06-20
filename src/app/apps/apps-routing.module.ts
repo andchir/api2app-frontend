@@ -8,6 +8,7 @@ import { ApplicationsListPersonalComponent } from './list/personal/personal.comp
 import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { ApplicationSharedComponent } from './app-shared/app-shared.component';
 import { ApplicationEmbeddedComponent } from './app-shared/app-embedded.component';
+import { AuthGuard } from '../helpers/auth.guard';
 
 const routes: Routes = [
     {
@@ -31,11 +32,13 @@ const routes: Routes = [
     },
     {
         path: 'create',
-        component: ApplicationCreateComponent
+        component: ApplicationCreateComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'edit/:id',
-        component: ApplicationCreateComponent
+        component: ApplicationCreateComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: 'shared/:uuid',
