@@ -211,7 +211,7 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
     cleanField(field: CustomTableField, index: number = field.order_index): CustomTableField {
         const cleanField = Object.assign({}, field, {
             name: field.name.trim(),
-            column_name: (field.column_name || field.name).trim(),
+            column_name: field.column_name.trim(),
             order_index: index
         });
         if (!['string', 'file'].includes(cleanField.field_type)) {

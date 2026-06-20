@@ -85,9 +85,9 @@
                 </div>
             </section>
 
-            <aside>
+            <aside *ngIf="data.db_table_name">
                 <div class="bg-white border border-gray-200 rounded-lg shadow p-4 text-sm space-y-3">
-                    <div class="flex items-center justify-between gap-3" *ngIf="data.db_table_name">
+                    <div class="flex items-center justify-between gap-3">
                         <span class="text-gray-500" i18n="@@UserDataDbTable">DB table</span>
                         <span class="font-mono text-xs text-gray-700 text-right break-all">{{ data.db_table_name }}</span>
                     </div>
@@ -120,7 +120,7 @@
             </div>
 
             <div class="space-y-3">
-                <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr_170px_110px_120px_44px] gap-3 items-end border border-gray-100 rounded-lg p-3"
+                <div class="grid grid-cols-1 lg:grid-cols-[1fr_1fr_170px_110px_120px_44px] gap-3 items-end border border-gray-200 rounded-lg p-3"
                      *ngFor="let field of data.fields; index as index">
                     <div>
                         <label class="block mb-2 text-sm font-medium text-gray-900" i18n="@@UserDataFieldName">Name</label>
