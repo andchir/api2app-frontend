@@ -65,7 +65,7 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
             name: '',
             column_name: '',
             field_type: 'string',
-            required: false,
+            required: true,
             default_value: null,
             max_length: 255,
             order_index: orderIndex
