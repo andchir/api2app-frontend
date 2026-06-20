@@ -46,11 +46,11 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         greetings: {
             img: 'assets/img/robot-4.png',
             phrases: [
-                'Привет! Готов помочь.',
-                'Привет! Чем могу помочь?',
-                'Привет! Рад тебя видеть.',
-                'Добро пожаловать! Чем займёмся?',
-                'Привет! Давай создадим что-нибудь интересное.',
+                $localize`:@@AiAssistantGreetingReady:Hi! Ready to help.`,
+                $localize`:@@AiAssistantGreetingHowCanHelp:Hi! How can I help?`,
+                $localize`:@@AiAssistantGreetingGladSee:Hi! Glad to see you.`,
+                $localize`:@@AiAssistantGreetingWelcome:Welcome! What shall we work on?`,
+                $localize`:@@AiAssistantGreetingCreateInteresting:Hi! Let's create something interesting.`,
             ],
             max: 1,
             next: null
@@ -58,12 +58,12 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         thinking: {
             img: 'assets/img/robot-1.png',
             phrases: [
-                'Принял, анализирую...',
-                'Обрабатываю запрос...',
-                'Разбираюсь в задаче...',
-                'Собираю данные...',
-                'Формирую решение...',
-                'Почти готово...',
+                $localize`:@@AiAssistantThinkingAnalyzing:Got it, analyzing...`,
+                $localize`:@@AiAssistantThinkingProcessing:Processing the request...`,
+                $localize`:@@AiAssistantThinkingTask:Looking into the task...`,
+                $localize`:@@AiAssistantThinkingGatheringData:Gathering data...`,
+                $localize`:@@AiAssistantThinkingSolution:Preparing a solution...`,
+                $localize`:@@AiAssistantThinkingAlmostReady:Almost ready...`,
             ],
             max: 1,
             next: 'idea'
@@ -71,11 +71,11 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         idea: {
             img: 'assets/img/robot-2.png',
             phrases: [
-                'Есть идея! Приступаю.',
-                'Понял задачу, начинаю!',
-                'Отлично, знаю что делать.',
-                'Всё ясно, берусь за работу.',
-                'Придумал! Сейчас реализую.',
+                $localize`:@@AiAssistantIdeaStarting:I have an idea! Starting now.`,
+                $localize`:@@AiAssistantIdeaUnderstood:I understand the task, getting started!`,
+                $localize`:@@AiAssistantIdeaKnowWhat:Great, I know what to do.`,
+                $localize`:@@AiAssistantIdeaWorking:Everything is clear, starting the work.`,
+                $localize`:@@AiAssistantIdeaImplementing:Got it! Implementing now.`,
             ],
             max: 1,
             next: 'working'
@@ -83,13 +83,13 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         working: {
             img: 'assets/img/robot-3.png',
             phrases: [
-                'Генерирую структуру...',
-                'Настраиваю компоненты...',
-                'Прописываю логику...',
-                'Связываю блоки...',
-                'Проверяю корректность...',
-                'Довожу до ума...',
-                'Ещё совсем немного...',
+                $localize`:@@AiAssistantWorkingStructure:Generating the structure...`,
+                $localize`:@@AiAssistantWorkingComponents:Configuring components...`,
+                $localize`:@@AiAssistantWorkingLogic:Writing the logic...`,
+                $localize`:@@AiAssistantWorkingBlocks:Connecting blocks...`,
+                $localize`:@@AiAssistantWorkingChecking:Checking correctness...`,
+                $localize`:@@AiAssistantWorkingPolishing:Polishing it...`,
+                $localize`:@@AiAssistantWorkingAlmostThere:Just a little more...`,
             ],
             max: 0,
             next: null
@@ -97,10 +97,10 @@ export class AiAssistantAnimationComponent implements OnInit, OnDestroy {
         done: {
             img: 'assets/img/robot-2.png',
             phrases: [
-                'Готово! Можешь проверить.',
-                'Всё сделал. Посмотри результат.',
-                'Приложение готово к работе!',
-                'Задача выполнена. Проверяй!',
+                $localize`:@@AiAssistantDoneCheck:Done! You can check it.`,
+                $localize`:@@AiAssistantDoneResult:Everything is done. Check the result.`,
+                $localize`:@@AiAssistantDoneReady:The application is ready to use!`,
+                $localize`:@@AiAssistantDoneCompleted:Task completed. Take a look!`,
             ],
             max: 1,
             next: null

@@ -91,6 +91,13 @@
                                 "output": "index.html"
                             }
                         },
+                        "en": {
+                            "localize": ["en"],
+                            "index": {
+                                "input": "src/index-dev.html",
+                                "output": "index.html"
+                            }
+                        },
                         "production": {
                             "localize": ["en", "ru", "fr", "de", "es", "uk"],
                             "index": {
@@ -145,6 +152,9 @@
                         },
                         "ru": {
                           "buildTarget": "api2app-frontend:build:development,ru"
+                        },
+                        "en": {
+                            "buildTarget": "api2app-frontend:build:development,en"
                         }
                     },
                     "defaultConfiguration": "development"
