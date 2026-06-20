@@ -17,15 +17,15 @@ export class UserDataTableEditComponent implements OnInit, OnDestroy {
     itemId = 0;
     data: CustomTable = UserDataTableEditComponent.getDefaultTable();
     fieldTypes = [
-        {name: 'string', title: 'String'},
-        {name: 'text', title: 'Text'},
-        {name: 'integer', title: 'Integer'},
-        {name: 'float', title: 'Float'},
-        {name: 'boolean', title: 'Boolean'},
-        {name: 'date', title: 'Date'},
-        {name: 'datetime', title: 'DateTime'},
-        {name: 'json', title: 'JSON'},
-        {name: 'file', title: 'File'}
+        {name: 'string', title: $localize`:@@UserDataFieldTypeString:String`},
+        {name: 'text', title: $localize`:@@UserDataFieldTypeText:Text`},
+        {name: 'integer', title: $localize`:@@UserDataFieldTypeInteger:Integer`},
+        {name: 'float', title: $localize`:@@UserDataFieldTypeFloat:Float`},
+        {name: 'boolean', title: $localize`:@@UserDataFieldTypeBoolean:Boolean`},
+        {name: 'date', title: $localize`:@@UserDataFieldTypeDate:Date`},
+        {name: 'datetime', title: $localize`:@@UserDataFieldTypeDateTime:DateTime`},
+        {name: 'json', title: $localize`:@@UserDataFieldTypeJson:JSON`},
+        {name: 'file', title: $localize`:@@UserDataFieldTypeFile:File`}
     ];
     errors: {[name: string]: string[]} = {};
     message = '';
