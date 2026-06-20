@@ -90,6 +90,11 @@ const routes: Routes = [
         title: $localize `Applications`
     },
     {
+        path: 'user-data',
+        loadChildren: () => import('./user-data/user-data.module').then(m => m.UserDataModule),
+        title: $localize `Data`
+    },
+    {
         path: 'docs',
         component: DocumentationComponent
     },
