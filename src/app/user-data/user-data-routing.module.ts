@@ -3,11 +3,20 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { UserDataListComponent } from './list/list.component';
+import { UserDataTableEditComponent } from './table-edit/table-edit.component';
 
 const routes: Routes = [
     {
         path: '',
         component: UserDataListComponent
+    },
+    {
+        path: 'create',
+        component: UserDataTableEditComponent
+    },
+    {
+        path: 'edit/:id',
+        component: UserDataTableEditComponent
     },
     {
         path: '**',

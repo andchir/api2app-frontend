@@ -6,6 +6,7 @@ import { catchError, map, Observable } from 'rxjs';
 import { BASE_URL } from '../../../environments/environment';
 import { DataService } from '../../services/data.service.abstract';
 import { CustomTable, CustomTableListResponse } from '../models/custom-table.interface';
+import { CustomTableField } from '../models/custom-table-field.interface';
 
 type CustomTableListApiResponse = CustomTable[] | {
     count?: number;
@@ -39,6 +40,22 @@ export class UserDataService extends DataService<CustomTable> {
                         results: res.results || []
                     };
                 }),
+                catchError(this.handleError)
+            );
+    }
+
+    addField(tableId: number, field: CustomTableField): Observable<CustomTableField> {
+        const url = `${this.requestUrl}/${tableId}/fields`;
+        return this.httpClient.post<CustomTableField>(url, field, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    deleteField(tableId: number, fieldId: number): Observable<void> {
+        const url = `${this.requestUrl}/${tableId}/fields/${fieldId}`;
+        return this.httpClient.delete<void>(url, this.httpOptions)
+            .pipe(
                 catchError(this.handleError)
             );
     }

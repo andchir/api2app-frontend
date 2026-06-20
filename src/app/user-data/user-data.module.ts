@@ -8,10 +8,12 @@ import { SharedModule } from '../shared.module';
 import { UserDataRoutingModule } from './user-data-routing.module';
 import { UserDataListComponent } from './list/list.component';
 import { UserDataService } from './services/user-data.service';
+import { UserDataTableEditComponent } from './table-edit/table-edit.component';
 
 @NgModule({
     declarations: [
-        UserDataListComponent
+        UserDataListComponent,
+        UserDataTableEditComponent
     ],
     imports: [
         CommonModule,

@@ -4,11 +4,11 @@ export interface CustomTable {
     id: number;
     date_created: string;
     date_updated: string;
-    title?: string;
-    name: string;
-    db_table_name: string;
-    access_key: string;
-    description: string;
+    title: string;
+    name?: string;
+    db_table_name?: string;
+    access_key?: string;
+    description?: string;
     fields_count?: number;
     fields?: CustomTableField[];
 }
