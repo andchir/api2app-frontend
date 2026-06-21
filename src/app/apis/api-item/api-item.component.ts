@@ -7,7 +7,8 @@ import {
     OnInit,
     Output,
     SimpleChanges,
-    ViewChild
+    ViewChild,
+    ViewContainerRef
 } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
@@ -18,6 +19,9 @@ import { ApiService } from '../../services/api.service';
 import { WebsocketService } from '../../services/websocket.service';
 import { SseErrorEvent } from 'ngx-sse-client';
 import { ApiItem } from '../models/api-item.interface';
+import { ModalService } from '../../services/modal.service';
+import { ApiExportComponent } from '../api-export/api-export.component';
+import { apiItemToCurl } from '../helpers/api-item-to-curl';
 
 export interface ApiItemMessageEvent {
     text: string;
@@ -39,6 +43,8 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     @Output() message = new EventEmitter<ApiItemMessageEvent>();
     @ViewChild('editorRequest') editorRequest!: ElementRef<HTMLElement>;
     @ViewChild('editorResponse') editorResponse!: ElementRef<HTMLElement>;
+    @ViewChild('exportDynamic', { read: ViewContainerRef })
+    private exportViewRef: ViewContainerRef;
 
     requestContentTypes = [
         'text', 'json', 'xml'
@@ -68,7 +74,8 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
 
     constructor(
         protected apiService: ApiService,
-        private websocketService: WebsocketService
+        private websocketService: WebsocketService,
+        private modalService: ModalService
     ) {
         if (!this.apiItem) {
             this.apiItem = ApiService.getDefault();
@@ -433,6 +440,12 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
     senderUpdate(sender: 'browser'|'server'): void {
         this.apiItem.sender = sender;
         this.senderChange.emit(sender);
+    }
+
+    showExportModal(): void {
+        this.modalService.showDynamicComponent(this.exportViewRef, ApiExportComponent, {
+            curlString: apiItemToCurl(this.apiItem)
+        }).pipe(take(1)).subscribe();
     }
 
     bodyInputFullScreenToggle(): void {

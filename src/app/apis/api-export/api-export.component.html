@@ -1,0 +1,43 @@
+<div class="bg-gray-900 bg-opacity-50 fixed inset-0 z-40"></div>
+
+<div class="fixed top-0 left-0 right-0 z-50 p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-[calc(100%-1rem)] max-h-full justify-center items-center flex">
+    <div class="relative p-4 w-full max-w-3xl max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900">
+                        <i class="bi bi-terminal me-2"></i>
+                        <span i18n>Export API</span>
+                    </h3>
+                </div>
+                <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                        (click)="closeModal()">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
+                    </svg>
+                    <span class="sr-only" i18n>Close modal</span>
+                </button>
+            </div>
+            <div class="p-4 md:p-5">
+                <label for="export-curl-string-field" class="block mb-2 text-sm font-medium text-gray-900" i18n>Curl command string</label>
+                <textarea id="export-curl-string-field" rows="10" class="font-mono block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                          readonly
+                          [(ngModel)]="curlString"></textarea>
+            </div>
+            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
+                <button type="button"
+                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-6 py-2.5 text-center"
+                        (click)="copyToClipboard()">
+                    <i class="bi me-2" [ngClass]="{'bi-check-lg': copied, 'bi-copy': !copied}"></i>
+                    <span *ngIf="!copied" i18n>Copy</span>
+                    <span *ngIf="copied" i18n>Copied</span>
+                </button>
+                <button type="button"
+                        class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
+                        (click)="closeModal()">
+                    <span i18n>Close</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

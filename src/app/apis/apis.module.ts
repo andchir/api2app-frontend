@@ -16,6 +16,7 @@ import { ApiSharedComponent } from './api-shared/api-shared.component';
 import { ApiService } from '../services/api.service';
 import { ApiImportComponent } from './api-import/api-import.component';
 import { ModalService } from '../services/modal.service';
+import { ApiExportComponent } from './api-export/api-export.component';
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { ModalService } from '../services/modal.service';
         ApiCreateComponent,
         ApiItemComponent,
         ApiSharedComponent,
-        ApiImportComponent
+        ApiImportComponent,
+        ApiExportComponent
     ],
     imports: [
         CommonModule,

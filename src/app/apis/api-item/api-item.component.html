@@ -61,7 +61,20 @@
         </ul>
     </div>
 
+    <div>
+        <button type="button"
+                class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-lg px-3 py-1.5 shadow-sm"
+                ngxTippy="Export"
+                i18n-ngxTippy
+                [tippyProps]="{placement: 'bottom'}"
+                (click)="showExportModal()">
+            <i class="bi bi-terminal"></i>
+        </button>
+    </div>
+
 </div>
+
+<ng-template #exportDynamic></ng-template>
 
 <div class="relative grid grid-cols-1 lg:grid-cols-2 gap-3">
     <div>
