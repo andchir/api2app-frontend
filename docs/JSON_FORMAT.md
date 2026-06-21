@@ -94,7 +94,7 @@ If the field is hidden (hiddenByDefault=true), it becomes visible when the value
 
 ## Element Types
 
-Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `user-payment`, `crop-image`, `iframe`, `messages`.
+Available types: `text-header`, `text`, `button`, `input-text`, `input-textarea`, `input-number`, `input-rating`, `input-slider`, `input-hidden`, `input-switch`, `input-select`, `input-radio`, `input-tags`, `input-date`, `input-color`, `input-file`, `image`, `video`, `audio`, `image-comparison`, `input-chart-line`, `input-pagination`, `status`, `progress`, `table`, `input-select-image`, `user-subscription`, `user-payment`, `crop-image`, `iframe`, `messages`.
 
 ## List output
 
@@ -180,6 +180,31 @@ Numeric input.
 | `min`   | number | Minimum value  |
 | `max`   | number | Maximum value  |
 | `value` | any    | Default value  |
+
+#### `input-rating`
+
+Star rating input. Displays five Bootstrap icon star buttons without text.
+
+| Field      | Type           | Description                                      |
+|------------|----------------|--------------------------------------------------|
+| `value`    | number\|string | Selected rating from 1 to 5. Use 0 or empty value for no rating. Strings are converted to number |
+| `required` | boolean        | Required field                                   |
+
+Example:
+
+```json
+{
+    "type": "input-rating",
+    "name": "rating",
+    "value": 0,
+    "required": true,
+    "options": {
+        "inputApiUuid": "api-uuid",
+        "inputApiFieldName": "rating",
+        "inputApiFieldType": "input"
+    }
+}
+```
 
 #### `input-slider`
 

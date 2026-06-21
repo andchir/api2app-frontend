@@ -1146,7 +1146,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (['input-file'].includes(element.type)) {
             element.value = [];
         } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
-                'status', 'input-hidden'].includes(element.type)
+                'status', 'input-hidden', 'input-rating'].includes(element.type)
             && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
@@ -1733,8 +1733,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             }
-        } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
-            element.value = value;
+        } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
+            element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
         } else if (['table'].includes(element.type) && typeof value === 'object') {
             element.valueArr = [value];
         } else {
@@ -2179,6 +2179,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const url = this.routerEventsService.getPreviousUrl(true);
         const queryParams = this.routerEventsService.getPreviousQueryParams();
         this.router.navigate([url], {queryParams});
+    }
+
+    private normalizeRatingValue(value: string | number | null): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Math.min(5, Math.max(0, Math.round(numericValue)));
     }
 
     ngOnDestroy(): void {

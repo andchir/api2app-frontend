@@ -557,6 +557,28 @@ export class ElementOptions {
                     value: options?.value
                 });
                 break;
+            case 'input-rating':
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-number',
+                    value: options?.value,
+                    min: 0,
+                    max: 5
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
+                });
+                break;
             case 'input-slider':
                 output.push({
                     name: 'label',
@@ -1768,6 +1790,14 @@ export class ElementOptions {
                     min: 0,
                     max: 10,
                     value: 1
+                });
+                break;
+            case 'input-rating':
+                Object.assign(output, {
+                    name: 'rating',
+                    hiddenByField: '',
+                    required: true,
+                    value: 0
                 });
                 break;
             case 'input-slider':

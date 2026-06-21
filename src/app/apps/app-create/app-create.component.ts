@@ -73,6 +73,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         {name: 'input-hidden', title: $localize `Hidden Text Field`, icon: 'bi-input-cursor'},
         {name: 'input-textarea', title: $localize `Text Area`, icon: 'bi-textarea-resize'},
         {name: 'input-number', title: $localize `Number Field`, icon: 'bi-1-square'},
+        {name: 'input-rating', title: $localize `Rating`, icon: 'bi-star'},
         {name: 'input-slider', title: $localize `Range Slider`, icon: 'bi-sliders'},
         {name: 'input-switch', title: $localize `Switch`, icon: 'bi-toggle-off'},
         {name: 'input-select', title: $localize `Select`, icon: 'bi-menu-button'},
@@ -92,7 +93,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         {name: 'table', title: $localize `Table`, icon: 'bi-table'},
         {name: 'input-select-image', title: $localize `Select image`, icon: 'bi-ui-checks-grid'},
         {name: 'user-subscription', title: $localize `User subscription`, icon: 'bi-cart-check'},
-        {name: 'user-payment', title: $localize `User payment`, icon: 'bi-wallet2'},
+        // {name: 'user-payment', title: $localize `User payment`, icon: 'bi-wallet2'},
         {name: 'iframe', title: 'Iframe', icon: 'bi-window-dock'},
         {name: 'messages', title: $localize `Messages`, icon: 'bi-chat-dots'}
         // {name: 'crop-image', title: $localize `Crop image`, icon: 'bi-crop'}

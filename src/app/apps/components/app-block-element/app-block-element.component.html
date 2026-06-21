@@ -342,6 +342,21 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'input-rating'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="w-full max-w-[600px] mx-auto">
+                <app-rating-element
+                    [editorMode]="editorMode"
+                    [name]="options?.name"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [(ngModel)]="options.value"
+                    (ngModelChange)="onFieldValueChanged()"></app-rating-element>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'input-slider'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="w-full max-w-[600px] mx-auto">

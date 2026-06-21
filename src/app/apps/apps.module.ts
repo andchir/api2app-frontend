@@ -32,6 +32,7 @@ import { ElementIframeComponent } from './components/elements/element-iframe.com
 import { AudioPlayerComponent } from './components/elements/audio-player.component';
 import { MessagesElementComponent } from './components/elements/messages-element.component';
 import { InputDateElementComponent } from './components/elements/input-date-element/input-date-element.component';
+import { RatingElementComponent } from './components/elements/rating-element/rating-element.component';
 
 @NgModule({
     declarations: [
@@ -63,6 +64,7 @@ import { InputDateElementComponent } from './components/elements/input-date-elem
         AudioPlayerComponent,
         MessagesElementComponent,
         InputDateElementComponent,
+        RatingElementComponent,
         NgxTippyModule
     ],
     exports: [

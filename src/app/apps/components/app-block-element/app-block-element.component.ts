@@ -163,6 +163,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     updateStateByOptions(): void {
         switch (this.options.type) {
+            case 'input-rating':
+                this.options.value = this.normalizeRatingValue(this.options.value);
+                break;
             case 'input-date':
                 if (!this.options.value && this.options.useDefault) {
                     const offsetDays = this.options?.offset || 0;
@@ -183,6 +186,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     onFieldValueChanged(): void {
+        if (this.options.type === 'input-rating') {
+            this.options.value = this.normalizeRatingValue(this.options.value);
+        }
         const elementParent = this.elementRef.nativeElement.parentNode?.parentNode;
         // Auto pause audio/video
         if (elementParent) {
@@ -361,5 +367,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     isArray(obj: any ): boolean {
         return Array.isArray(obj);
+    }
+
+    private normalizeRatingValue(value: string | number | null): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Math.min(5, Math.max(0, Math.round(numericValue)));
     }
 }
