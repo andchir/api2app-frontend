@@ -13,7 +13,7 @@ Service for quickly creating a graphical interface for an API. The created appli
 - API testing
 - Application catalog
 - Ability to customize privacy settings for applications
-- Creation of mini-apps and chatbots for VK and chatbots for Telegram
+- Creation of mini-apps and chatbots for VK and Telegram
 - Creating and editing custom database tables with API for creating applications
 - AI assistant for creating apps based on text descriptions
 
