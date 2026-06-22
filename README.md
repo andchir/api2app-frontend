@@ -18,6 +18,7 @@ Service for quickly creating a graphical interface for an API. The created appli
 - AI assistant for creating apps based on text descriptions
 - Streaming support for AI model APIs
 - WebSocket protocol support for applications
+- Ability to set daily usage limits for apps
 
 Run in development mode:
 ~~~
