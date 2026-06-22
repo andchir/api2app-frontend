@@ -9,6 +9,7 @@ Service for quickly creating a graphical interface for an API. The created appli
 ## Features
 
 - Quickly create a graphical web interface without programming
+- Possibility of accepting payments for using applications
 - API testing
 - Application catalog
 - Ability to customize privacy settings for applications
