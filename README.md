@@ -6,6 +6,15 @@ Service for quickly creating a graphical interface for an API. The created appli
 ![Screenshot #2](https://github.com/andchir/api2app-frontend/blob/main/screenshots/002.png?raw=true "Screenshot #2")  
 ![Screenshot #3](https://github.com/andchir/api2app-frontend/blob/main/screenshots/003.png?raw=true "Screenshot #3")
 
+## Features
+
+- Quickly create a graphical web interface without programming
+- API testing
+- Application catalog
+- Ability to customize privacy settings for applications
+- Creating and editing custom database tables with API for creating applications
+- AI assistant for creating apps based on text descriptions
+
 Run in development mode:
 ~~~
 npm start
