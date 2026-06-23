@@ -57,7 +57,7 @@
                             </div>
                         </div>
 
-                        <p class="text-sm text-gray-600 mb-4 min-h-10 break-words" *ngIf="item.description; else templateNoDescription">
+                        <p class="text-sm text-gray-600 mb-4 break-words" *ngIf="item.description; else templateNoDescription">
                             {{ item.description }}
                         </p>
 
@@ -118,7 +118,7 @@
 <app-alert [(message)]="message" [type]="messageType"></app-alert>
 
 <ng-template #templateNoDescription>
-    <p class="text-sm text-gray-400 mb-4 min-h-10" i18n="@@UserDataNoDescription">No description.</p>
+    <p class="text-sm text-gray-400 mb-4" i18n="@@UserDataNoDescription">No description.</p>
 </ng-template>
 
 <ng-template #templateNotLoggedIn>
