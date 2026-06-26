@@ -428,7 +428,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
-              showMessages = true, isAutoStart = false): void {
+              showMessages = true, isAutoStart = false, confirmed: boolean = false): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -470,6 +470,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.messageType = 'error';
             }
             this.cdr.detectChanges();
+            return;
+        }
+
+        if (currentElement?.type === 'button' && currentElement.confirmationText && !confirmed) {
+            const initialData = {
+                message: currentElement.confirmationText,
+                isActive: true
+            };
+            this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+                .pipe(take(1))
+                .subscribe({
+                    next: (reason) => {
+                        if (reason === 'confirmed') {
+                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, true);
+                        }
+                    }
+                });
             return;
         }
 
@@ -1765,7 +1782,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     const sourceElement = this.getValueSourceElement(element);
                     fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
                 }
-
                 if (element.isClearForm) {
                     this.clearAllValues();
                 } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
@@ -1858,7 +1874,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
         if (!this.previewMode
             || this.data.maintenance
-            || (!element.value && !['input-switch'].includes(element.type))
+            // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }

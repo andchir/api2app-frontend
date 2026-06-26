@@ -66,6 +66,7 @@ export interface AppBlockElement {
     showOnlyInVK?: boolean;
     statusCompletedText?: string;
     statusCompletedTextForVK?: string;
+    confirmationText?: string,
     keys?: string[];
     headers?: string[];
     subscriptionId?: string;

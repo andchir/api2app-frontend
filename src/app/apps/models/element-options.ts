@@ -274,6 +274,12 @@ export class ElementOptions {
                     ]
                 });
                 output.push({
+                    name: 'confirmationText',
+                    label: $localize `Confirmation text`,
+                    type: 'input-textarea',
+                    value: options?.confirmationText || ''
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -1741,6 +1747,7 @@ export class ElementOptions {
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
+                    confirmationText: '',
                     valueFrom: '',
                     linkedField: '',
                     hiddenByDefault: false,
