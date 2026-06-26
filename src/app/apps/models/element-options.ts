@@ -1420,6 +1420,12 @@ export class ElementOptions {
                     choices: []
                 });
                 output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -2048,6 +2054,7 @@ export class ElementOptions {
                     label: '',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
+                    loadValueInto: '',
                     hiddenByField: '',
                     isHTML: false,
                     hiddenByDefault: false,

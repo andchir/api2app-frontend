@@ -1867,11 +1867,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (element.loadValueInto && element.value) {
             const allElements = this.getAllElements();
-            const targetElement = allElements.find((elem) => {
-                return elem.name === element.loadValueInto;
-            });
-            if (targetElement) {
+            const targetFieldNames = element.loadValueInto.split(',')
+                .map((fieldName) => fieldName.trim())
+                .filter((fieldName) => !!fieldName);
+            const targetElements = targetFieldNames
+                .map((fieldName) => {
+                    return allElements.find((elem) => {
+                        return elem.name === fieldName;
+                    });
+                })
+                .filter((elem) => !!elem);
+            targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
+            });
+            if (targetElements.length > 0) {
                 setTimeout(() => {
                     this.clearElementValue(element, true);
                     if (element.type === 'input-select') {
