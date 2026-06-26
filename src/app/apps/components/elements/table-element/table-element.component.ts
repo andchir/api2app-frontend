@@ -55,6 +55,7 @@ export class TableElementComponent implements ControlValueAccessor {
 
     @Input()
     set value(val) {
+        this.selectedRowIndex = null;
         this._value = this.stringifyValues(val);
         this.onChange(this._value);
         this.cdr.detectChanges();
