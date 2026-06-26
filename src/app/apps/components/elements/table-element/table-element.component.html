@@ -27,6 +27,9 @@
     <ng-container *ngIf="!editorMode">
         <ng-container *ngIf="value && value.length > 0; else templateEmpty">
             <div class="tbl-record group"
+                 [class.tbl-record--selectable]="isSelectable"
+                 [class.tbl-record--selected]="selectedRowIndex === ind"
+                 (click)="selectRow(item, ind)"
                  *ngFor="let item of value; let ind = index">
 
                 <div class="tbl-cell"
@@ -48,6 +51,7 @@
                         <ng-template #inputField>
                             <input type="text"
                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                   (click)="$event.stopPropagation()"
                                    [(ngModel)]="item[key]">
                         </ng-template>
                     </div>
@@ -60,7 +64,7 @@
                             class="p-1.5 rounded hover:bg-gray-200 text-gray-600 transition-colors"
                             title="Delete"
                             i18n-title
-                            (click)="removeRow(ind)">
+                            (click)="$event.stopPropagation(); removeRow(ind)">
                         <i class="bi bi-trash3"></i>
                     </button>
                 </div>

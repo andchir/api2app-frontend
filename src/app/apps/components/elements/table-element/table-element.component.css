@@ -11,6 +11,18 @@
     display: block;
 }
 
+.tbl-record--selectable {
+    cursor: pointer;
+}
+
+.tbl-record--selectable:hover .tbl-value {
+    background-color: #eff6ff; /* blue-50 */
+}
+
+.tbl-record--selected .tbl-value {
+    background-color: #dbeafe; /* blue-100 */
+}
+
 /* Thick separator between records */
 .tbl-record + .tbl-record {
     border-top: 2px solid #9ca3af; /* gray-400 */

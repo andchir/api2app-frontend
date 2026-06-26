@@ -635,7 +635,10 @@
                 [isHTML]="options.isHTML"
                 [editable]="options.editable"
                 [vertical]="options.vertical"
+                [loadValueInto]="options.loadValueInto"
+                [itemFieldName]="options.itemFieldName"
                 [(ngModel)]="options.valueArr"
+                (valueChange)="onTableValueSelected($event)"
                 (ngModelChange)="onFieldValueChanged()"></app-table-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

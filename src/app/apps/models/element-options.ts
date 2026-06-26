@@ -1426,6 +1426,12 @@ export class ElementOptions {
                     value: options?.loadValueInto || ''
                 });
                 output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Identifier field`,
+                    type: 'input-text',
+                    value: options?.itemFieldName || 'id'
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -2055,6 +2061,7 @@ export class ElementOptions {
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
                     loadValueInto: '',
+                    itemFieldName: 'id',
                     hiddenByField: '',
                     isHTML: false,
                     hiddenByDefault: false,
