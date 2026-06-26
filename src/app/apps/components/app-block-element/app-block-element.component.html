@@ -518,6 +518,7 @@
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <apx-chart
+                #chartLine
                 [title]="{text: options?.label}"
                 [series]="chartOptions?.series"
                 [xaxis]="chartOptions?.xaxis"

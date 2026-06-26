@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
+import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
@@ -44,6 +45,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild(MessagesElementComponent) messagesEl?: MessagesElementComponent;
+    @ViewChild('chartLine') chartLine?: ChartComponent;
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
@@ -68,6 +70,17 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (this.options.type === 'input-chart-line' && changes['valueObj']) {
             if (this.chartOptions) {
                 this.chartOptionsUpdate();
+                this.renderChartLine();
+            }
+        }
+        if (this.options.type === 'input-chart-line' && changes['tabIndexCurrent']) {
+            const previousTabIndex = changes['tabIndexCurrent'].previousValue;
+            const currentTabIndex = changes['tabIndexCurrent'].currentValue;
+            const wasHidden = this.tabIndex !== -1 && previousTabIndex !== this.tabIndex;
+            const isVisible = this.tabIndex === -1 || currentTabIndex === this.tabIndex;
+
+            if (wasHidden && isVisible) {
+                this.renderChartLine();
             }
         }
         if (this.options.type === 'input-pagination' && changes['type']) {
@@ -159,6 +172,20 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             categories: this.options?.valueObj?.xAxisData
         };
         this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
+    }
+
+    renderChartLine(): void {
+        if (!this.chartOptions || !this.chartLine) {
+            return;
+        }
+
+        setTimeout(() => {
+            this.chartLine?.updateOptions({
+                series: this.chartOptions.series,
+                xaxis: this.chartOptions.xaxis,
+                chart: this.chartOptions.chart
+            }, false, true);
+        });
     }
 
     updateStateByOptions(): void {
