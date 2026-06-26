@@ -126,6 +126,11 @@ export class TableElementComponent implements ControlValueAccessor {
         if (!this.isSelectable) {
             return;
         }
+        if (this.selectedRowIndex === index) {
+            this.selectedRowIndex = null;
+            this.cdr.markForCheck();
+            return;
+        }
         const fieldName = this.itemFieldName || 'id';
         const value = row?.[fieldName];
         if (value === null || typeof value === 'undefined' || value === '') {
