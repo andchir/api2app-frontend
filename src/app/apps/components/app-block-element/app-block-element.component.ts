@@ -166,7 +166,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 return Number(numberValue.toFixed(2));
             });
             this.chartOptions.labels = this.valueObj.xAxisData.map((value) => String(value || ''));
-            this.chartOptions.chart.type = 'pie';
+            this.chartOptions.chart.type = 'donut';
             return;
         }
         this.chartOptions.series = [
@@ -180,7 +180,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.chartOptions.xaxis = {
             categories: this.valueObj?.xAxisData
         };
-        this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
+        if (['bar', 'area'].includes(this.chartOptions.chart.type)) {
+            this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
+        }
     }
 
     renderChartLine(): void {
@@ -289,8 +291,8 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             },
             labels: isPieChart && this.editorMode ? ['Category 1', 'Category 2', 'Category 3'] : [],
             chart: {
-                height: 450,
-                type: isPieChart ? 'pie' : 'area',
+                height: 350,
+                type: isPieChart ? 'donut' : 'area',
                 events: {
                     markerClick: (event, chartContext, config) => {
                         this.onItemSelected(config.dataPointIndex);
