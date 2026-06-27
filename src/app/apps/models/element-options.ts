@@ -1239,6 +1239,44 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 break;
+            case 'input-chart-pie':
+                output.push({
+                    name: 'fieldNameCategory',
+                    label: $localize `Field name for category`,
+                    type: 'input-text',
+                    value: options?.fieldNameCategory || ''
+                });
+                output.push({
+                    name: 'fieldNameValue',
+                    label: $localize `Field name for value`,
+                    type: 'input-text',
+                    value: options?.fieldNameValue || ''
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'itemTitle',
+                    label: $localize `Item Title`,
+                    type: 'input-text',
+                    value: options?.itemTitle
+                });
+                output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Field name in the array`,
+                    type: 'input-text',
+                    value: options?.itemFieldName
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                break;
             case 'input-pagination':
                 output.push({
                     name: 'perPage',
@@ -2011,6 +2049,18 @@ export class ElementOptions {
                     itemFieldName: 'id',
                     isXAxisDate: false,
                     format: 'MMM DD, HH:mm',
+                    hiddenByDefault: false
+                });
+                break;
+            case 'input-chart-pie':
+                Object.assign(output, {
+                    name: 'chart',
+                    label: $localize `Pie Chart`,
+                    itemTitle: $localize `Item Title`,
+                    fieldNameCategory: 'category',
+                    fieldNameValue: 'value',
+                    hiddenByField: '',
+                    itemFieldName: 'id',
                     hiddenByDefault: false
                 });
                 break;

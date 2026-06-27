@@ -532,6 +532,20 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'input-chart-pie'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <apx-chart
+                #chartLine
+                [title]="{text: options?.label}"
+                [series]="chartOptions?.series"
+                [labels]="chartOptions?.labels"
+                [chart]="chartOptions?.chart"
+                [colors]="chartOptions?.colors"
+                [dataLabels]="{enabled: true}"></apx-chart>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'input-pagination'">
         <div [ngClass]="{'min-h-[20px] rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="hidden" *ngFor="let item of [] | paginate: options.valueObj"></div>

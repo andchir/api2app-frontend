@@ -1476,7 +1476,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
         elements.forEach((element, index) => {
-            if (element.type === 'input-chart-line') {
+            if (['input-chart-line', 'input-chart-pie'].includes(element.type)) {
                 this.chartElementValueApply(element, data);
             } else if (element.type === 'input-pagination') {
                 this.paginationValueApply(element, valuesObj, data);
@@ -1658,14 +1658,41 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     chartElementValueApply(element: AppBlockElement, data: any): void {
+        const dataKey = element.options?.outputApiFieldName;
+        if (!data) {
+            return;
+        }
+        const outData = Array.isArray(data?.[dataKey])
+            ? data[dataKey]
+            : Array.isArray(data?.results)
+                ? data.results
+                : Array.isArray(data)
+                    ? data
+                    : [];
+        if (!outData.length) {
+            return;
+        }
+
+        if (element.type === 'input-chart-pie') {
+            const fieldNameCategory = element.fieldNameCategory;
+            const fieldNameValue = element.fieldNameValue;
+            if (!fieldNameCategory || !fieldNameValue) {
+                return;
+            }
+            const yAxisData = outData.map((item) => {
+                return parseFloat(item[fieldNameValue]);
+            });
+            const xAxisData = outData.map((item) => item[fieldNameCategory] || '');
+            element.valueObj = {xAxisData, yAxisData, data: outData};
+            return;
+        }
+
         const fieldNameAxisX = element.fieldNameAxisX;
         const fieldNameAxisY = element.fieldNameAxisY;
-        const dataKey = element.options?.outputApiFieldName;
-        if (!fieldNameAxisX || !fieldNameAxisY || (!data[dataKey] && !data)) {
+        if (!fieldNameAxisX || !fieldNameAxisY) {
             return;
         }
         const dateFormat = element?.format;
-        const outData = data[dataKey] || data;
         const yAxisData = outData.map((item) => {
             return parseFloat(item[fieldNameAxisY]);
         });
