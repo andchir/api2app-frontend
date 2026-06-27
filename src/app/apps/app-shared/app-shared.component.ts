@@ -924,11 +924,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    findCombinedField(block: AppBlock, elementName: string): AppBlockElement {
+    findCombinedFields(block: AppBlock, elementName: string): AppBlockElement[] {
         if (!elementName) {
             return null;
         }
-        return block.elements.find((element) => {
+        return block.elements.filter((element) => {
             return element.valueFrom === elementName;
         });
     }
@@ -1163,7 +1163,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (['input-file'].includes(element.type)) {
             element.value = [];
         } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
-                'status', 'input-hidden', 'input-rating'].includes(element.type)
+                'status', 'input-hidden', 'input-rating', 'input-date'].includes(element.type)
             && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
@@ -1937,10 +1937,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Update value for combined field
-        const combinedField = this.findCombinedField(block, element.name);
-        if (combinedField) {
-            combinedField.value = `fromField:${element.name}`;
-            this.elementHiddenStateUpdate(combinedField);
+        const combinedFields = this.findCombinedFields(block, element.name);
+        if (combinedFields.length > 0) {
+            combinedFields.forEach(combinedField => {
+                combinedField.value = `fromField:${element.name}`;
+                this.elementHiddenStateUpdate(combinedField);
+                if (['input-hidden'].includes(combinedField.type)) {
+                    this.onElementValueChanged(combinedField);
+                }
+            });
         }
 
         // Hidden by field switch
