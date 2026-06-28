@@ -274,6 +274,12 @@ export class ElementOptions {
                     ]
                 });
                 output.push({
+                    name: 'confirmationText',
+                    label: $localize `Confirmation text`,
+                    type: 'input-textarea',
+                    value: options?.confirmationText || ''
+                });
+                output.push({
                     name: 'hiddenByField',
                     label: $localize `Hide by field`,
                     type: 'input-text',
@@ -314,6 +320,12 @@ export class ElementOptions {
                     label: $localize `Sticky position`,
                     type: 'input-switch',
                     enabled: options?.isStickyPosition || false
+                });
+                output.push({
+                    name: 'allowAutoSubmit',
+                    label: $localize `Allow auto-submit`,
+                    type: 'input-switch',
+                    enabled: options?.allowAutoSubmit || false
                 });
                 break;
             case 'input-text':
@@ -549,6 +561,28 @@ export class ElementOptions {
                     label: $localize `Default Value`,
                     type: 'input-text',
                     value: options?.value
+                });
+                break;
+            case 'input-rating':
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-number',
+                    value: options?.value,
+                    min: 0,
+                    max: 5
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'required',
+                    label: $localize `Required`,
+                    type: 'input-switch',
+                    enabled: options?.required || false
                 });
                 break;
             case 'input-slider':
@@ -855,6 +889,19 @@ export class ElementOptions {
                     value: options?.value
                 });
                 output.push({
+                    name: 'busyDates',
+                    label: $localize `Occupied dates`,
+                    type: 'input-tags',
+                    value: options?.busyDates || [],
+                    choices: []
+                });
+                output.push({
+                    name: 'busyDatesFieldName',
+                    label: $localize `Occupied dates field`,
+                    type: 'input-text',
+                    value: options?.busyDatesFieldName || ''
+                });
+                output.push({
                     name: 'offset',
                     label: $localize `Default Days Offset`,
                     type: 'input-number',
@@ -865,6 +912,27 @@ export class ElementOptions {
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'includeTime',
+                    label: $localize `Enable time`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.includeTime !== false
+                });
+                output.push({
+                    name: 'compactView',
+                    label: $localize `Compact view`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.compactView || false
+                });
+                output.push({
+                    name: 'rangeMode',
+                    label: $localize `Date range`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.rangeMode || false
                 });
                 output.push({
                     name: 'useDefault',
@@ -1113,6 +1181,13 @@ export class ElementOptions {
                         enabled: options?.useCropper
                     });
                 }
+                output.push({
+                    name: 'vkUseSendToFiles',
+                    label: $localize `VK: Use upload to My Files`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.vkUseSendToFiles || false
+                });
                 break;
             case 'input-chart-line':
                 output.push({
@@ -1138,6 +1213,44 @@ export class ElementOptions {
                     label: $localize `Date Format`,
                     type: 'input-text',
                     value: options?.format
+                });
+                output.push({
+                    name: 'label',
+                    label: $localize `Label`,
+                    type: 'input-text',
+                    value: options?.label
+                });
+                output.push({
+                    name: 'itemTitle',
+                    label: $localize `Item Title`,
+                    type: 'input-text',
+                    value: options?.itemTitle
+                });
+                output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Field name in the array`,
+                    type: 'input-text',
+                    value: options?.itemFieldName
+                });
+                output.push({
+                    name: 'hiddenByField',
+                    label: $localize `Hide by field`,
+                    type: 'input-text',
+                    value: options?.hiddenByField || ''
+                });
+                break;
+            case 'input-chart-pie':
+                output.push({
+                    name: 'fieldNameCategory',
+                    label: $localize `Field name for category`,
+                    type: 'input-text',
+                    value: options?.fieldNameCategory || ''
+                });
+                output.push({
+                    name: 'fieldNameValue',
+                    label: $localize `Field name for value`,
+                    type: 'input-text',
+                    value: options?.fieldNameValue || ''
                 });
                 output.push({
                     name: 'label',
@@ -1349,6 +1462,18 @@ export class ElementOptions {
                     type: 'input-tags',
                     value: options?.keys || [],
                     choices: []
+                });
+                output.push({
+                    name: 'loadValueInto',
+                    label: $localize `Load value into field`,
+                    type: 'input-text',
+                    value: options?.loadValueInto || ''
+                });
+                output.push({
+                    name: 'itemFieldName',
+                    label: $localize `Identifier field`,
+                    type: 'input-text',
+                    value: options?.itemFieldName || 'id'
                 });
                 output.push({
                     name: 'hiddenByField',
@@ -1660,12 +1785,14 @@ export class ElementOptions {
                     icon: '',
                     color: 'Green',
                     hiddenByField: '',
+                    confirmationText: '',
                     valueFrom: '',
                     linkedField: '',
                     hiddenByDefault: false,
                     isClearForm: false,
                     isDownloadMode: false,
-                    isStickyPosition: false
+                    isStickyPosition: false,
+                    allowAutoSubmit: false
                 });
                 break;
             case 'input-text':
@@ -1720,6 +1847,14 @@ export class ElementOptions {
                     min: 0,
                     max: 10,
                     value: 1
+                });
+                break;
+            case 'input-rating':
+                Object.assign(output, {
+                    name: 'rating',
+                    hiddenByField: '',
+                    required: true,
+                    value: 0
                 });
                 break;
             case 'input-slider':
@@ -1810,9 +1945,16 @@ export class ElementOptions {
                     format: 'YYYY-MM-DD HH:mm',
                     hiddenByField: '',
                     offset: 0,
+                    includeTime: true,
+                    busyDates: [],
+                    busyDatesFieldName: '',
+                    compactView: false,
+                    rangeMode: false,
                     useDefault: false,
                     required: true,
-                    value: ''
+                    value: '',
+                    note: $localize `Please select the date field.`,
+                    noteOutput: $localize `Please select a field with an array of booked dates.`
                 });
                 break;
             case 'input-color':
@@ -1910,6 +2052,18 @@ export class ElementOptions {
                     hiddenByDefault: false
                 });
                 break;
+            case 'input-chart-pie':
+                Object.assign(output, {
+                    name: 'chart',
+                    label: $localize `Pie Chart`,
+                    itemTitle: $localize `Item Title`,
+                    fieldNameCategory: 'category',
+                    fieldNameValue: 'value',
+                    hiddenByField: '',
+                    itemFieldName: 'id',
+                    hiddenByDefault: false
+                });
+                break;
             case 'input-pagination':
                 Object.assign(output, {
                     name: 'pages',
@@ -1963,6 +2117,8 @@ export class ElementOptions {
                     label: '',
                     headers: ['Column1', 'Column2', 'Column3'],
                     keys: ['key1', 'key2', 'key3'],
+                    loadValueInto: '',
+                    itemFieldName: 'id',
                     hiddenByField: '',
                     isHTML: false,
                     hiddenByDefault: false,
@@ -2037,3 +2193,10 @@ export class ElementOptions {
     constructor() {
     }
 }
+
+interface FieldInfo {
+    elementName: string;
+    fieldName: string|number;
+}
+
+export type MapFieldsByBlock = Map<number, FieldInfo[]>;

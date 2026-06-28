@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil } from 'rxjs';
+import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil, iif } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
@@ -30,6 +30,7 @@ import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
 import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
+import { MapFieldsByBlock } from '../models/element-options';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -412,7 +413,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
-              showMessages = true, isAutoStart = false): void {
+              showMessages = true, isAutoStart = false, confirmed: boolean = false): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -431,18 +432,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const elements = this.findElements(apiUuid, 'input', currentElement, true);
         const blocks = this.findBlocksByElements(elements);
+
+        /*
         const input_file = elements.find((elem) => {
             return ['input-file'].includes(elem.type) || (elem.type === 'image' && elem.useCropper);
         });
-
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
                 this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages, isAutoStart);
             });
             return;
-        }
+        }*/
 
-        if (!this.getIsValid(apiUuid, actionType, elements, showMessages)) {
+        if (!this.getIsValid(apiUuid, actionType, elements, showMessages, currentElement.blockIndex)) {
             if (currentElement?.type === 'messages') {
                 this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
             }
@@ -455,6 +457,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.detectChanges();
             return;
         }
+
+        if (currentElement?.type === 'button' && currentElement.confirmationText && !confirmed) {
+            const initialData = {
+                message: currentElement.confirmationText,
+                isActive: true
+            };
+            this.modalService.showDynamicComponent(this.viewRef, ConfirmComponent, initialData)
+                .pipe(take(1))
+                .subscribe({
+                    next: (reason) => {
+                        if (reason === 'confirmed') {
+                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, true);
+                        }
+                    }
+                });
+            return;
+        }
+
         const currentApi = this.apiItems[actionType].find((apiItem) => {
             return apiItem.uuid === apiUuid;
         });
@@ -466,7 +486,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement?.type !== 'input-pagination') {
             this.clearPagination(apiUuid);
         }
-        const apiItem = this.prepareApiItem(currentApi, 'input', elements);
+        const apiItem = this.prepareApiItem(currentApi, 'input', elements, currentElement.blockIndex);
 
         // Clear output blocks
         const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
@@ -556,17 +576,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (err?.error instanceof Blob) {
                         this.createErrorMessage(currentApi, err.error);
                     } else {
-                        let errorMessage = '';
-                        if (typeof err?.error === 'string') {
-                            try {
-                                const errObj = JSON.parse(err?.error);
-                                errorMessage = errObj?.detail || errObj?.message || '';
-                            } catch (error) {
-
-                            }
-                        } else {
-                            errorMessage = err?.detail || err?.message || '';
-                        }
+                        const errorData = err?.error !== undefined ? err.error : err;
+                        const errorMessage = this.getErrorMessageFromObject(errorData);
                         this.messageType = 'error';
                         this.message = this.localizeServerMessages(errorMessage || 'Error.');
                     }
@@ -898,11 +909,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    findCombinedField(block: AppBlock, elementName: string): AppBlockElement {
+    findCombinedFields(block: AppBlock, elementName: string): AppBlockElement[] {
         if (!elementName) {
             return null;
         }
-        return block.elements.find((element) => {
+        return block.elements.filter((element) => {
             return element.valueFrom === elementName;
         });
     }
@@ -921,6 +932,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
         }
         return resultElement;
+    }
+
+    private getValueSourceElement(element: AppBlockElement): AppBlockElement {
+        return element?.valueFrom
+            ? this.findBlockElementByName(element.valueFrom)
+            : element;
+    }
+
+    private getElementValueFromSource(element: AppBlockElement, storeValue: boolean = false): string|any[]|number|boolean|File|File[]|null {
+        const sourceElement = this.getValueSourceElement(element);
+        const value = ApplicationService.getElementValue(sourceElement);
+        if (storeValue && sourceElement) {
+            ApplicationService.localStoreValue(sourceElement);
+        }
+        return value;
+    }
+
+    private hasValueFromValue(element: AppBlockElement): boolean {
+        const sourceElement = this.getValueSourceElement(element);
+        return !!sourceElement?.value;
     }
 
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
@@ -955,38 +986,74 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true): boolean {
+    getIsValid(targetApiUuid: string, actionType: 'input'|'output', elements: AppBlockElement[], createErrorMessages = true, blockIndex: number = -1): boolean {
         this.clearValidationErrors();
-        const errors = {};
+        let errors = {};
         let hiddenCount = 0;
+        const mapFieldsByBlock: MapFieldsByBlock = new Map();
         elements.forEach((element) => {
+            if (!mapFieldsByBlock.get(element.blockIndex)) {
+                mapFieldsByBlock.set(element.blockIndex, []);
+            }
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
                 hiddenCount++;
+            } else {
+                mapFieldsByBlock.get(element.blockIndex).push({
+                    elementName: element.name,
+                    fieldName
+                });
             }
             if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
-                if (element.valueFrom) {
-                    const targetElement = this.findBlockElementByName(element.valueFrom);
-                    if (targetElement && targetElement.value) {
-                        return;
-                    }
+                if (element.valueFrom && this.hasValueFromValue(element)) {
+                    return;
                 }
                 errors[element.name] = element.label
                     ? element.label.replace(':', '') + ' - ' + ($localize `required`)
                     : $localize `This field is required.`;
             }
         });
+        errors = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', errors, elements.length, hiddenCount);
+        // console.log('getIsValid', this.errors[targetApiUuid], elements.length, hiddenCount);
         if (hiddenCount && hiddenCount === elements.length) {
             return false;
         }
         return Object.keys(errors).length === 0;
+    }
+
+    /**
+     * Removes duplicate validation errors coming from non-main blocks.
+     *
+     * When a form is submitted from a specific block (the "main" block, identified by `blockIndex`),
+     * elements from other blocks bound to the same API may also be validated and produce errors.
+     * If another block contains a field with the same `fieldName` as a field in the main block,
+     * the error from that other block is considered a duplicate of the main block's field and
+     * is removed, so the user only sees the error for the field in the main block.
+     */
+    filterFieldsErrors(errors: any, mapFieldsByBlock: MapFieldsByBlock, blockIndex: number): any {
+        const mainFields = mapFieldsByBlock.get(blockIndex) || [];
+        if (mainFields.length === 0) {
+            return errors;
+        }
+        const mainFieldNames = new Set(mainFields.map(field => field.fieldName));
+        const filtered = {...errors};
+        mapFieldsByBlock.forEach((fields, currentBlockIndex) => {
+            if (currentBlockIndex === blockIndex) {
+                return;
+            }
+            fields.forEach((field) => {
+                if (mainFieldNames.has(field.fieldName)) {
+                    delete filtered[field.elementName];
+                }
+            });
+        });
+        return filtered;
     }
 
     stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {
@@ -1081,7 +1148,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (['input-file'].includes(element.type)) {
             element.value = [];
         } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
-                'status', 'input-hidden'].includes(element.type)
+                'status', 'input-hidden', 'input-rating', 'input-date'].includes(element.type)
             && (!element['storeValue'] || clearStored)) {
             element.value = null;
             element.valueArr = null;
@@ -1095,16 +1162,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[]): ApiItem {
+    prepareApiItem(inputApiItem: ApiItem, actionType: 'input'|'output' = 'input', currentElements: AppBlockElement[], blockIndex: number = -1): ApiItem {
         const apiItem = Object.assign({}, inputApiItem);
 
         const findElement = (key: string, actType: 'input'|'output' = 'input') => {
-            return currentElements.find((elem) => {
+            const matchedElements = currentElements.filter((elem) => {
                 const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType);
                 return apiUuid === apiItem.uuid
                     && fieldName === key
                     && fieldType === actType;
             });
+            return matchedElements.find((elem) => elem.blockIndex === blockIndex && !elem.hidden) || matchedElements[0];
         };
 
         // Body data
@@ -1117,6 +1185,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
             let isVKFileUploadingMode = false;
             bodyFields.forEach((bodyField) => {
+                if (!bodyField.name) {
+                    return;
+                }
                 let element;
                 // JSON field value
                 if (ApiService.isJson(bodyField.value)) {
@@ -1131,7 +1202,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            const targetElement = this.findBlockElementByName(element.valueFrom);
+                            const targetElement = this.getValueSourceElement(element);
                             valueObj[key] = element.valueFrom && targetElement
                                 ? targetElement.value
                                 : element.value;
@@ -1149,15 +1220,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (!element) {
                     return;
                 }
-                ApplicationService.localStoreValue(element);
 
-                bodyField.value = element.valueFrom
-                    ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
-                    : ApplicationService.getElementValue(element);
+                bodyField.value = this.getElementValueFromSource(element, true);
 
-                if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
+                /*if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
-                }
+                }*/
                 if (element.type === 'input-switch') {
                     if (bodyField.value) {
                         bodyField.hidden = !element?.enabled;
@@ -1169,7 +1237,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
 
             // Inject VK file upload URL
-            if (isVKFileUploadingMode) {
+            /*if (isVKFileUploadingMode) {
                 let dataField = bodyFields.find((field) => {
                     return field.name === 'opt_vk_data';
                 });
@@ -1178,7 +1246,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     bodyFields.push(dataField);
                 }
                 dataField.value = JSON.stringify({upload_url: this.vkAppOptions?.userFileUploadUrl || ''});
-            }
+            }*/
 
             apiItem.bodyFields = bodyFields;
         }
@@ -1212,11 +1280,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (!element) {
                         return;
                     }
-                    ApplicationService.localStoreValue(element);
 
-                    const value = element.valueFrom
-                        ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom))
-                        : ApplicationService.getElementValue(element);
+                    const value = this.getElementValueFromSource(element, true);
 
                     const enabled = element.type !== 'input-switch' || element?.enabled;
                     if (value && !enabled) {
@@ -1237,11 +1302,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
                         return;
                     }
-                    ApplicationService.localStoreValue(elem);
 
-                    const value = elem.valueFrom
-                        ? ApplicationService.getElementValue(this.findBlockElementByName(elem.valueFrom))
-                        : ApplicationService.getElementValue(elem);
+                    const value = this.getElementValueFromSource(elem, true);
 
                     const enabled = elem.type !== 'input-switch' || elem?.enabled;
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
@@ -1274,10 +1336,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            ApplicationService.localStoreValue(element);
-            param.value = element.value
-                ? ApplicationService.getElementValue(element) as string
-                : null;
+            const value = this.getElementValueFromSource(element, true);
+            param.value = value ? value as string : null;
             if (element.type === 'input-switch') {
                 param.hidden = !element?.enabled;
             }
@@ -1301,9 +1361,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!element) {
                 return;
             }
-            header.value = element.valueFrom
-                ? ApplicationService.getElementValue(this.findBlockElementByName(element.valueFrom)) as string
-                : ApplicationService.getElementValue(element) as string;
+            header.value = this.getElementValueFromSource(element) as string;
         });
         apiItem.headers = headers;
 
@@ -1315,15 +1373,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         apiItem.urlPartIndex = '';
         apiItem.urlPartValue = '';
+        const urlPartIndexes = new Set<string>();
         elements.forEach((el) => {
-            const value = el.valueFrom
-                ? ApplicationService.getElementValue(this.findBlockElementByName(el.valueFrom))
-                : el.value;
-            if (value && el.options?.inputApiFieldName !== null) {
-                apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + String(el.options?.inputApiFieldName);
+            const value = el.valueFrom ? this.getElementValueFromSource(el, true) : el.value;
+            if (!el.valueFrom) {
+                ApplicationService.localStoreValue(el);
+            }
+
+            if (value && el.options?.inputApiFieldName != null) {
+                const urlPartIndex = String(el.options?.inputApiFieldName);
+                if (urlPartIndexes.has(urlPartIndex)) {
+                    return;
+                }
+                urlPartIndexes.add(urlPartIndex);
+
+                apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + urlPartIndex;
                 apiItem.urlPartValue += (apiItem.urlPartValue ? ',' : '') + String(value);
                 ApplicationService.localStoreValue(el);
-                this.apiRequestUrlUpdate(apiItem, Number(el.options?.inputApiFieldName), String(value));
+                this.apiRequestUrlUpdate(apiItem, Number(urlPartIndex), String(value));
             }
         });
 
@@ -1394,7 +1461,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
         elements.forEach((element, index) => {
-            if (element.type === 'input-chart-line') {
+            if (['input-chart-line', 'input-chart-pie'].includes(element.type)) {
                 this.chartElementValueApply(element, data);
             } else if (element.type === 'input-pagination') {
                 this.paginationValueApply(element, valuesObj, data);
@@ -1456,7 +1523,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createErrorMessage(apiItem: ApiItem, blob: Blob): void {
         this.apiService.getDataFromBlob(blob)
             .then((data) => {
-                let errorMessage = data.detail || data.message || $localize `Error.`;
+                let errorMessage = this.getErrorMessageFromObject(data) || $localize `Error.`;
                 this.errors[apiItem.uuid] = {};
                 if (typeof data === 'object' && !Array.isArray(data)) {
                     const errorsObj = {};
@@ -1464,9 +1531,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         errorsObj[key] = Array.isArray(data[key]) ? data[key].join(' ') : data[key];
                     }
                     this.errors[apiItem.uuid] = errorsObj;
-                    if (data.detail) {
-                        errorMessage = data.detail;
-                    }
                 }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
@@ -1486,6 +1550,50 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    private getErrorMessageFromObject(error: any): string {
+        if (!error) {
+            return '';
+        }
+
+        if (typeof error === 'string') {
+            try {
+                return this.getErrorMessageFromObject(JSON.parse(error)) || error;
+            } catch (e) {
+                return error;
+            }
+        }
+
+        if (Array.isArray(error)) {
+            for (const item of error) {
+                const message = this.getErrorMessageFromObject(item);
+                if (message) {
+                    return message;
+                }
+            }
+            return '';
+        }
+
+        if (typeof error !== 'object') {
+            return String(error);
+        }
+
+        for (const key of ['detail', 'message', 'msg', 'error']) {
+            const message = this.getErrorMessageFromObject(error[key]);
+            if (message) {
+                return message;
+            }
+        }
+
+        for (const key of Object.keys(error)) {
+            const message = this.getErrorMessageFromObject(error[key]);
+            if (message) {
+                return message;
+            }
+        }
+
+        return '';
     }
 
     localizeServerMessages(errorMessage: string): string {
@@ -1535,14 +1643,41 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     chartElementValueApply(element: AppBlockElement, data: any): void {
+        const dataKey = element.options?.outputApiFieldName;
+        if (!data) {
+            return;
+        }
+        const outData = Array.isArray(data?.[dataKey])
+            ? data[dataKey]
+            : Array.isArray(data?.results)
+                ? data.results
+                : Array.isArray(data)
+                    ? data
+                    : [];
+        if (!outData.length) {
+            return;
+        }
+
+        if (element.type === 'input-chart-pie') {
+            const fieldNameCategory = element.fieldNameCategory;
+            const fieldNameValue = element.fieldNameValue;
+            if (!fieldNameCategory || !fieldNameValue) {
+                return;
+            }
+            const yAxisData = outData.map((item) => {
+                return parseFloat(item[fieldNameValue]);
+            });
+            const xAxisData = outData.map((item) => item[fieldNameCategory] || '');
+            element.valueObj = {xAxisData, yAxisData, data: outData};
+            return;
+        }
+
         const fieldNameAxisX = element.fieldNameAxisX;
         const fieldNameAxisY = element.fieldNameAxisY;
-        const dataKey = element.options?.outputApiFieldName;
-        if (!fieldNameAxisX || !fieldNameAxisY || (!data[dataKey] && !data)) {
+        if (!fieldNameAxisX || !fieldNameAxisY) {
             return;
         }
         const dateFormat = element?.format;
-        const outData = data[dataKey] || data;
         const yAxisData = outData.map((item) => {
             return parseFloat(item[fieldNameAxisY]);
         });
@@ -1612,8 +1747,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
-            let valueArr = this.dataService.flattenObjInArray(value, true);
-            if (element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
+            const isStringArray = value.every((item) => typeof item === 'string');
+            let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
+            if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
                 // Filter array values
                 valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
             }
@@ -1626,8 +1762,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
                 element.value = ApplicationService.createStringValue(element, value, true);
             }
-        } else if (['input-switch', 'input-number', 'input-slider', 'status'].includes(element.type)) {
-            element.value = value;
+        } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
+            element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
         } else if (['table'].includes(element.type) && typeof value === 'object') {
             element.valueArr = [value];
         } else {
@@ -1655,10 +1791,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             case 'button':
                 let fieldValue = element.value;
                 if (element.valueFrom) {
-                    const sourceElement = this.findBlockElementByName(element.valueFrom);
+                    const sourceElement = this.getValueSourceElement(element);
                     fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
                 }
-
                 if (element.isClearForm) {
                     this.clearAllValues();
                 } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
@@ -1669,18 +1804,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
                     if (element.isDownloadMode) {
-                        const block = this.findBlock(element);
-                        if (block) {
-                            block.loading = true;
-                            this.cdr.detectChanges();
-                        }
-                        ApplicationService.downloadFile(String(fieldValue))
-                            .then(() => {
-                                if (block) {
-                                    block.loading = false;
-                                    this.cdr.detectChanges();
-                                }
-                            });
+                        this.downloadFile(element, String(fieldValue));
                     } else {
                         window.open(String(fieldValue), '_blank').focus();
                     }
@@ -1721,10 +1845,48 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
+    downloadFile(element: AppBlockElement, fileUrl: string, useNativeOnly: boolean = false): void {
+        const block = this.findBlock(element);
+        if (block) {
+            block.loading = true;
+            this.cdr.detectChanges();
+        }
+        if (this.isVkApp && !useNativeOnly && fileUrl.match(/https?:\/\//)) {
+            const filename = fileUrl.split('/').pop();
+            vkBridge.send('VKWebAppDownloadFile', {
+                    url: fileUrl,
+                    filename
+                })
+                .then((data) => {
+                    if (data.result) {
+                        if (block) {
+                            block.loading = false;
+                            this.cdr.detectChanges();
+                        }
+                    }
+                    else {
+                        this.downloadFile(element, fileUrl, true);
+                    }
+                })
+                .catch( (error) => {
+                    console.log("Error: " + error.error_type, error.error_data);
+                    this.downloadFile(element, fileUrl, true);
+                });
+        } else {
+            ApplicationService.downloadFile(fileUrl)
+                .then(() => {
+                    if (block) {
+                        block.loading = false;
+                        this.cdr.detectChanges();
+                    }
+                });
+        }
+    }
+
     onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
         if (!this.previewMode
             || this.data.maintenance
-            || (!element.value && !['input-switch'].includes(element.type))
+            // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
             || (Array.isArray(element.value) && element.value.length === 0)) {
                 return;
             }
@@ -1733,11 +1895,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (element.loadValueInto && element.value) {
             const allElements = this.getAllElements();
-            const targetElement = allElements.find((elem) => {
-                return elem.name === element.loadValueInto;
-            });
-            if (targetElement) {
+            const targetFieldNames = element.loadValueInto.split(',')
+                .map((fieldName) => fieldName.trim())
+                .filter((fieldName) => !!fieldName);
+            const targetElements = targetFieldNames
+                .map((fieldName) => {
+                    return allElements.find((elem) => {
+                        return elem.name === fieldName;
+                    });
+                })
+                .filter((elem) => !!elem);
+            targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
+            });
+            if (targetElements.length > 0) {
                 setTimeout(() => {
                     this.clearElementValue(element, true);
                     if (element.type === 'input-select') {
@@ -1751,10 +1922,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Update value for combined field
-        const combinedField = this.findCombinedField(block, element.name);
-        if (combinedField) {
-            combinedField.value = `fromField:${element.name}`;
-            this.elementHiddenStateUpdate(combinedField);
+        const combinedFields = this.findCombinedFields(block, element.name);
+        if (combinedFields.length > 0) {
+            combinedFields.forEach(combinedField => {
+                combinedField.value = `fromField:${element.name}`;
+                this.elementHiddenStateUpdate(combinedField);
+                if (['input-hidden'].includes(combinedField.type)) {
+                    this.onElementValueChanged(combinedField);
+                }
+            });
         }
 
         // Hidden by field switch
@@ -1775,8 +1951,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (inputApiUuid && this.errors[inputApiUuid]) {
                 delete this.errors[inputApiUuid][element.name];
             }
-            if ((buttonElement && buttonElement !== element) && !['input-pagination'].includes(element.type)) {
+            if ((buttonElement && !buttonElement.allowAutoSubmit && buttonElement !== element)
+                && !['input-pagination'].includes(element.type)) {
                 return;
+            }
+            if (buttonElement) {
+                buttonElement.allowAutoSubmit = false;
             }
             this.removeAutoStart(inputApiUuid);
             this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
@@ -1857,7 +2037,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         let htmlContent = '';
         if (element.valueFrom) {
-            const sourceElement = this.findBlockElementByName(element.valueFrom);
+            const sourceElement = this.getValueSourceElement(element);
             htmlContent = String(sourceElement.value);
 
             if (!htmlContent.includes('<body')) {
@@ -1929,6 +2109,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.vkBridgeService.showBannerAd();
                 }
                 this.subscriptionsElementsSync();
+                this.updateUserBalance();
             })
             .catch(() => {
                 this.vkAppOptions = {};

@@ -2,8 +2,9 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text'|'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
-    |'audio'|'video'|'input-chart-line'|'input-slider'|'input-color'|'input-pagination'|'status'|'progress'|'table'
-    |'input-select-image'|'user-subscription'|'user-payment'|'crop-image'|'image-comparison'|'iframe'|'messages';
+    |'audio'|'video'|'input-chart-line'|'input-chart-pie'|'input-slider'|'input-color'|'input-pagination'|'status'|'progress'|'table'
+    |'input-select-image'|'user-subscription'|'user-payment'|'crop-image'|'image-comparison'|'iframe'|'messages'
+    |'input-rating';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[] | SafeResourceUrl | File[];
@@ -39,6 +40,8 @@ export interface AppBlockElement {
     multiple?: boolean;
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
+    fieldNameCategory?: string;
+    fieldNameValue?: string;
     isXAxisDate?: boolean;
     selectDefaultFirst?: boolean;
     useDefault?: boolean;
@@ -65,6 +68,7 @@ export interface AppBlockElement {
     showOnlyInVK?: boolean;
     statusCompletedText?: string;
     statusCompletedTextForVK?: string;
+    confirmationText?: string,
     keys?: string[];
     headers?: string[];
     subscriptionId?: string;
@@ -82,6 +86,7 @@ export interface AppBlockElement {
     autoHeight?: boolean;
     isBooleanValue?: boolean;
     linkedField?: string;
+    allowAutoSubmit?: boolean;
 }
 
 export interface AppBlockOptions {

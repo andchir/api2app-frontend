@@ -1,8 +1,9 @@
-import { ApexAxisChartSeries, ApexChart, ApexFill, ApexMarkers, ApexXAxis } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexFill, ApexMarkers, ApexNonAxisChartSeries, ApexXAxis } from 'ng-apexcharts';
 
 export type ChartOptions = {
-    series: ApexAxisChartSeries;
+    series: ApexAxisChartSeries | ApexNonAxisChartSeries;
     xaxis: ApexXAxis;
+    labels?: string[];
     chart: ApexChart;
     colors: string[];
     markers: ApexMarkers;

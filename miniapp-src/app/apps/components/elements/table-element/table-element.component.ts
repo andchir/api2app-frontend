@@ -42,9 +42,12 @@ export class TableElementComponent implements ControlValueAccessor {
     @Input() vertical: boolean = false;
     @Input() keys: string[] = [];
     @Input() headers: string[] = [];
+    @Input() loadValueInto: string = '';
+    @Input() itemFieldName: string = 'id';
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     private _value: any[];
+    selectedRowIndex: number|null = null;
 
     get value(): any[] {
         return this._value;
@@ -52,6 +55,7 @@ export class TableElementComponent implements ControlValueAccessor {
 
     @Input()
     set value(val) {
+        this.selectedRowIndex = null;
         this._value = this.stringifyValues(val);
         this.onChange(this._value);
         this.cdr.detectChanges();
@@ -113,6 +117,29 @@ export class TableElementComponent implements ControlValueAccessor {
     removeRow(index: number): void {
         this.value.splice(index, 1);
         this.cdr.detectChanges();
+    }
+
+    get isSelectable(): boolean {
+        return !!this.loadValueInto?.trim();
+    }
+
+    selectRow(row: any, index: number): void {
+        if (!this.isSelectable) {
+            return;
+        }
+        if (this.selectedRowIndex === index) {
+            this.selectedRowIndex = null;
+            this.cdr.markForCheck();
+            return;
+        }
+        const fieldName = this.itemFieldName || 'id';
+        const value = row?.[fieldName];
+        if (value === null || typeof value === 'undefined' || value === '') {
+            return;
+        }
+        this.selectedRowIndex = index;
+        this.valueChange.emit(String(value));
+        this.cdr.markForCheck();
     }
 
     getExtension(value: string): string {

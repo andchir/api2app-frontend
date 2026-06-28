@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { SafeResourceUrl } from '@angular/platform-browser';
 
 import * as moment from 'moment';
+import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
@@ -44,6 +45,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild(MessagesElementComponent) messagesEl?: MessagesElementComponent;
+    @ViewChild('chartLine') chartLine?: ChartComponent;
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
@@ -65,9 +67,20 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         // console.log('ngOnChanges', this.options.type, changes);
-        if (this.options.type === 'input-chart-line' && changes['valueObj']) {
+        if (this.isChartElement() && changes['valueObj']) {
             if (this.chartOptions) {
                 this.chartOptionsUpdate();
+                this.renderChartLine();
+            }
+        }
+        if (this.isChartElement() && changes['tabIndexCurrent']) {
+            const previousTabIndex = changes['tabIndexCurrent'].previousValue;
+            const currentTabIndex = changes['tabIndexCurrent'].currentValue;
+            const wasHidden = this.tabIndex !== -1 && previousTabIndex !== this.tabIndex;
+            const isVisible = this.tabIndex === -1 || currentTabIndex === this.tabIndex;
+
+            if (wasHidden && isVisible) {
+                this.renderChartLine();
             }
         }
         if (this.options.type === 'input-pagination' && changes['type']) {
@@ -147,6 +160,15 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         if (!this.chartOptions || !this.valueObj || !this.valueObj?.xAxisData || !this.valueObj?.yAxisData) {
             return;
         }
+        if (this.options.type === 'input-chart-pie') {
+            this.chartOptions.series = this.valueObj.yAxisData.map((value) => {
+                const numberValue = Number(value || 0);
+                return Number(numberValue.toFixed(2));
+            });
+            this.chartOptions.labels = this.valueObj.xAxisData.map((value) => String(value || ''));
+            this.chartOptions.chart.type = 'donut';
+            return;
+        }
         this.chartOptions.series = [
             {
                 name: this.options?.itemTitle || 'Item',
@@ -156,20 +178,44 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             }
         ];
         this.chartOptions.xaxis = {
-            categories: this.options?.valueObj?.xAxisData
+            categories: this.valueObj?.xAxisData
         };
-        this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
+        if (['bar', 'area'].includes(this.chartOptions.chart.type)) {
+            this.chartOptions.chart.type = this.valueObj?.yAxisData.length > 400 || this.valueObj?.yAxisData.length < 10 ? 'bar' : 'area';
+        }
+    }
+
+    renderChartLine(): void {
+        if (!this.chartOptions || !this.chartLine) {
+            return;
+        }
+
+        setTimeout(() => {
+            this.chartLine?.updateOptions({
+                series: this.chartOptions.series,
+                xaxis: this.chartOptions.xaxis,
+                labels: this.chartOptions.labels,
+                chart: this.chartOptions.chart
+            }, false, true);
+        });
+    }
+
+    isChartElement(): boolean {
+        return ['input-chart-line', 'input-chart-pie'].includes(this.options?.type);
     }
 
     updateStateByOptions(): void {
         switch (this.options.type) {
+            case 'input-rating':
+                this.options.value = this.normalizeRatingValue(this.options.value);
+                break;
             case 'input-date':
                 if (!this.options.value && this.options.useDefault) {
                     const offsetDays = this.options?.offset || 0;
                     const now = moment();
                     // now.set({hour: 0, minutes: 0, seconds: 0});
                     now.add(offsetDays, 'days');
-                    this.options.value = now.format('YYYY-MM-DD HH:mm');
+                    this.options.value = this.options?.includeTime === false ? now.format('YYYY-MM-DD') : now.format('YYYY-MM-DD HH:mm');
                 }
                 break;
             case 'input-pagination':
@@ -183,6 +229,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     onFieldValueChanged(): void {
+        if (this.options.type === 'input-rating') {
+            this.options.value = this.normalizeRatingValue(this.options.value);
+        }
         const elementParent = this.elementRef.nativeElement.parentNode?.parentNode;
         // Auto pause audio/video
         if (elementParent) {
@@ -192,6 +241,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             });
         }
         this.elementValueChange.emit(this.options);
+    }
+
+    onTableValueSelected(value: string): void {
+        this.options.value = value;
+        this.onFieldValueChanged();
     }
 
     onChange(optionName: string, isChecked: boolean, emitChange = false) {
@@ -222,19 +276,23 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     createChartOptions(): void {
+        const isPieChart = this.options?.type === 'input-chart-pie';
         this.chartOptions = {
-            series: [
-                {
-                    name: this.options?.itemTitle || 'Item',
-                    data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
-                }
-            ],
+            series: isPieChart
+                ? (this.editorMode ? [430, 1000, 2300] : [])
+                : [
+                    {
+                        name: this.options?.itemTitle || 'Item',
+                        data: this.editorMode ? [10, 41, 35, 51, 49, 62, 69, 91, 148] : []
+                    }
+                ],
             xaxis: {
                 categories: this.editorMode ? ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug', 'Sep'] : []
             },
+            labels: isPieChart && this.editorMode ? ['Category 1', 'Category 2', 'Category 3'] : [],
             chart: {
-                height: 450,
-                type: 'area',
+                height: 350,
+                type: isPieChart ? 'donut' : 'area',
                 events: {
                     markerClick: (event, chartContext, config) => {
                         this.onItemSelected(config.dataPointIndex);
@@ -244,7 +302,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                     }
                 }
             },
-            colors: ['#00BAEC'],
+            colors: isPieChart ? ['#00BAEC', '#34D399', '#F59E0B', '#F472B6', '#8B5CF6', '#64748B'] : ['#00BAEC'],
             markers: {
                 size: 3,
                 colors: ['#fff'],
@@ -361,5 +419,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     isArray(obj: any ): boolean {
         return Array.isArray(obj);
+    }
+
+    private normalizeRatingValue(value: string | number | null): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Math.min(5, Math.max(0, Math.round(numericValue)));
     }
 }

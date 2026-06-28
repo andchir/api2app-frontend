@@ -342,6 +342,21 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
+    <ng-container *ngSwitchCase="'input-rating'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <div class="w-full max-w-[600px] mx-auto">
+                <app-rating-element
+                    [editorMode]="editorMode"
+                    [name]="options?.name"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [(ngModel)]="options.value"
+                    (ngModelChange)="onFieldValueChanged()"></app-rating-element>
+            </div>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
     <ng-container *ngSwitchCase="'input-slider'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="w-full max-w-[600px] mx-auto">
@@ -369,17 +384,21 @@
 
     <ng-container *ngSwitchCase="'input-date'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <div class="p-2 bg-gray-50 text-gray-700 rounded border border-slate-300 shadow-md">
-                    <input type="datetime-local"
-                           class="block border-0 w-full bg-transparent"
-                           id="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                           [(ngModel)]="options.value">
-                </div>
-            </div>
+            <app-input-date-element
+                [editorMode]="editorMode"
+                [name]="options?.name"
+                [label]="options?.label"
+                [parentIndex]="parentIndex"
+                [index]="index"
+                [includeTime]="options?.includeTime !== false"
+                [compactView]="options?.compactView || false"
+                [rangeMode]="options?.rangeMode || false"
+                [busyDates]="options?.busyDates || []"
+                [busyDatesFieldName]="options?.busyDatesFieldName || ''"
+                [dataJson]="options.valueObj"
+                [dataArrJson]="options.valueArr"
+                [(value)]="options.value"
+                (valueChange)="onFieldValueChanged()"></app-input-date-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
@@ -451,6 +470,7 @@
                             [roundedCorners]="options?.roundedCorners"
                             [useCropper]="options?.useCropper"
                             [useLightbox]="options?.useLightbox"
+                            [vkUseSendToFiles]="options?.vkUseSendToFiles"
                             [cropperAspectRatioString]="options?.cropperAspectRatioString"
                             [useLink]="options?.useLink"></app-image-elem>
                     </ng-container>
@@ -470,6 +490,7 @@
                     [roundedCorners]="options?.roundedCorners"
                     [useCropper]="options?.useCropper"
                     [useLightbox]="options?.useLightbox"
+                    [vkUseSendToFiles]="options?.vkUseSendToFiles"
                     [cropperAspectRatioString]="options?.cropperAspectRatioString"
                     [useLink]="options?.useLink"
                     [(ngModel)]="options.value"
@@ -497,6 +518,7 @@
     <ng-container *ngSwitchCase="'input-chart-line'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <apx-chart
+                #chartLine
                 [title]="{text: options?.label}"
                 [series]="chartOptions?.series"
                 [xaxis]="chartOptions?.xaxis"
@@ -506,6 +528,20 @@
                 [fill]="chartOptions?.fill"
                 [stroke]="{width: 2}"
                 [dataLabels]="{enabled: false}"></apx-chart>
+        </div>
+        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'input-chart-pie'">
+        <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
+            <apx-chart
+                #chartLine
+                [title]="{text: options?.label}"
+                [series]="chartOptions?.series"
+                [labels]="chartOptions?.labels"
+                [chart]="chartOptions?.chart"
+                [colors]="chartOptions?.colors"
+                [dataLabels]="{enabled: true}"></apx-chart>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
@@ -614,7 +650,10 @@
                 [isHTML]="options.isHTML"
                 [editable]="options.editable"
                 [vertical]="options.vertical"
+                [loadValueInto]="options.loadValueInto"
+                [itemFieldName]="options.itemFieldName"
                 [(ngModel)]="options.valueArr"
+                (valueChange)="onTableValueSelected($event)"
                 (ngModelChange)="onFieldValueChanged()"></app-table-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
