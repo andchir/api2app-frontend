@@ -87,7 +87,8 @@
 
     /* --- Cells --- */
     .tbl-outer:not(.tbl-vertical) .tbl-cell {
-        display: block;
+        display: flex;
+        flex-direction: column;
         flex: 1;
         min-width: 0;
         border-bottom: none;
@@ -106,6 +107,7 @@
 
     /* Value fills the full cell width */
     .tbl-outer:not(.tbl-vertical) .tbl-value {
+        flex: 1;
         width: 100%;
     }
 
