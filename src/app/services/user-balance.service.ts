@@ -75,10 +75,15 @@ export class UserBalanceService {
             );
     }
 
-    submitPromoCode(appUuid: string, promoCode: string): Observable<{success: boolean, message: string}> {
+    submitPromoCode(appUuid: string, promoCode: string, vkAppOptions?: VkAppOptions): Observable<{success: boolean, message: string}> {
         const url = `${BASE_URL}${this.locale}/user_balance_promo_code`;
         const httpOptions = this.httpOptions;
-        return this.httpClient.post<{success: boolean, message: string}>(url, {appUuid, promoCode}, httpOptions)
+        const body = {
+            appUuid,
+            promoCode,
+            vk_app_launch_params: vkAppOptions?.appLaunchParamsJson || ''
+        };
+        return this.httpClient.post<{success: boolean, message: string}>(url, body, httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
