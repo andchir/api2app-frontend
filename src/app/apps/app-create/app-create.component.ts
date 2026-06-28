@@ -357,10 +357,14 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         }
         const parentIndex = data[0];
         const elementIndex = data[1];
-        const element = this.data.blocks[parentIndex].elements[elementIndex];
-        const elementCloned = Object.assign({}, element, {options: {}});
+        const block = this.data.blocks[parentIndex];
+        const element = block.elements[elementIndex];
+        const insertIndex = elementIndex + 1;
+        const elementCloned = this.cloneElements([element]);
+        this.updateElementsNamesByIndex(elementCloned, parentIndex, insertIndex);
+        elementCloned[0].options = {};
 
-        this.data.blocks[parentIndex].elements.splice(elementIndex + 1, 0, elementCloned);
+        block.elements.splice(insertIndex, 0, elementCloned[0]);
         this.cdr.markForCheck();
     }
 
@@ -584,6 +588,19 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
             element.options = Object.assign({}, element.options);
         });
         return {tabIndex, elements, options};
+    }
+
+    cloneElements(elements: AppBlockElement[]): AppBlockElement[] {
+        return JSON.parse(JSON.stringify(elements));
+    }
+
+    updateElementsNamesByIndex(elements: AppBlockElement[], blockIndex: number, startElementIndex: number): void {
+        elements.forEach((element, elementIndex) => {
+            const nextElementIndex = startElementIndex + elementIndex;
+            const indexSuffix = `${blockIndex + 1}-${nextElementIndex + 1}`;
+            element.name = element.name?.replace(/-\d+-\d+$/, '') || element.type || 'element';
+            element.name += `-${indexSuffix}`;
+        });
     }
 
     appPreview(): void {
@@ -1046,10 +1063,13 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 if (!block || this.copiedElements.length === 0) {
                     return;
                 }
-                this.copiedElements.forEach(element => {
+                const pastedElements = this.cloneElements(this.copiedElements);
+                pastedElements.forEach(element => {
                     element.options = {};
                 });
-                block.elements.splice((action === 'paste_before' ? elementIndex : elementIndex + 1), 0, ...this.copiedElements);
+                const insertIndex = action === 'paste_before' ? elementIndex : elementIndex + 1;
+                this.updateElementsNamesByIndex(pastedElements, blockIndex, insertIndex);
+                block.elements.splice(insertIndex, 0, ...pastedElements);
                 break;
         }
         // Clear selection
