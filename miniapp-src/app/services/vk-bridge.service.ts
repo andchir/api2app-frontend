@@ -17,6 +17,13 @@ export class VkBridgeService {
         })
     };
 
+    httpOptionsFormData = {
+        headers: new HttpHeaders({
+            'enctype': 'multipart/form-data',
+            'Accept': 'application/json'
+        })
+    };
+
     adsShownAt = 0;
     adsShowIntervalSeconds = 3 * 60; // 3 minutes
 
@@ -79,6 +86,22 @@ export class VkBridgeService {
     getUserSubscriptions(appData: any): Observable<{subscriptions: string[]}> {
         const url = `${BASE_URL}api/v1/vk_user_subscriptions`;
         return this.httpClient.post<{subscriptions: string[]}>(url, appData, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    uploadUserFile(uploadUrl: string, file?: File, fileUrl?: string): Observable<any> {
+        const url = `${BASE_URL}api/v1/vk_file_upload`;
+        const formData = new FormData();
+        if (file) {
+            formData.append('file', file, file.name);
+        }
+        if (fileUrl) {
+            formData.append('file_url', fileUrl);
+        }
+        formData.append('url', uploadUrl);
+        return this.httpClient.post<any>(url, formData, this.httpOptionsFormData)
             .pipe(
                 catchError(this.handleError)
             );

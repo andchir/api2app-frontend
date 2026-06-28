@@ -2173,6 +2173,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     }
 
+    private normalizeRatingValue(value: string | number | null): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Math.min(5, Math.max(0, Math.round(numericValue)));
+    }
+
     ngOnDestroy(): void {
         this.cancelAppSubmitWebSocketSubscription();
         this.websocketService.disconnect();

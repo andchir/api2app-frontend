@@ -24,6 +24,8 @@ import { ImageComparisonComponent } from './apps/components/elements/image-compa
 import { ElementIframeComponent } from "./apps/components/elements/element-iframe.component";
 import { AudioPlayerComponent } from './apps/components/elements/audio-player.component';
 import { MessagesElementComponent } from './apps/components/elements/messages-element.component';
+import { InputDateElementComponent } from './apps/components/elements/input-date-element/input-date-element.component';
+import { RatingElementComponent } from './apps/components/elements/rating-element/rating-element.component';
 
 @NgModule({
     declarations: [
@@ -52,6 +54,8 @@ import { MessagesElementComponent } from './apps/components/elements/messages-el
         ElementIframeComponent,
         AudioPlayerComponent,
         MessagesElementComponent,
+        InputDateElementComponent,
+        RatingElementComponent,
         NgxTippyModule
     ],
     providers: [ApplicationService, ApiService, ModalService],
