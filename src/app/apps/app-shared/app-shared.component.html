@@ -29,10 +29,20 @@
             </div>
         </div>
         <div class="text-center pt-3 sm:pt-0" *ngIf="data.paymentEnabled">
-            <div class="inline-flex gap-3 items-center">
+            <div class="inline-flex gap-2 items-center">
                 <div class="text-sm">
                     <span>{{ userBalance }}</span>&nbsp;
                     <span>руб.</span>
+                </div>
+                <div>
+                    <button type="button"
+                            class="w-7 h-7 text-center bg-gray-50 hover:bg-gray-100 border border-default focus:ring-3 focus:ring-gray-200 shadow-xs font-medium rounded-full text-sm"
+                            [ngClass]="{'text-blue-600 opacity-70 cursor-not-allowed': userBalanceUpdating, 'text-gray-900': !userBalanceUpdating}"
+                            [disabled]="userBalanceUpdating"
+                            title="Refresh" i18n-title
+                            (click)="updateUserBalance()">
+                        <i class="bi bi-arrow-repeat inline-block" [ngClass]="{'animate-spin': userBalanceUpdating}"></i>
+                    </button>
                 </div>
                 <div>
                     <button type="button"

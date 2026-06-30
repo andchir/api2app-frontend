@@ -12,7 +12,7 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil, iif } from 'rxjs';
+import { firstValueFrom, Subject, Subscription, filter, finalize, map, race, take, takeUntil, iif } from 'rxjs';
 import * as moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
@@ -70,6 +70,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
+    userBalanceUpdating: boolean = false;
     fieldsHiddenByDefault: string[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
@@ -2214,10 +2215,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.isLoggedIn && !this.vkAppOptions?.appLaunchParamsJson) {
             return;
         }
+        if (this.userBalanceUpdating) {
+            return;
+        }
+        this.userBalanceUpdating = true;
+        this.cdr.markForCheck();
         iif (() => this.isVkApp,
             this.dataService.userBalanceVkApp(this.data.uuid, this.vkAppOptions),
             this.dataService.userBalance(this.data.uuid))
-            .pipe(takeUntil(this.destroyed$))
+            .pipe(
+                takeUntil(this.destroyed$),
+                finalize(() => {
+                    this.userBalanceUpdating = false;
+                    this.cdr.markForCheck();
+                })
+            )
             .subscribe({
                 next: (res) => {
                     this.userBalance = res?.balance || 0;
