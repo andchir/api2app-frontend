@@ -1,5 +1,5 @@
-<div class="relative block w-full text-center min-h-[50px]"
-     [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
+<div class="relative block w-full text-center"
+     [ngClass]="{'max-w-[600px] mx-auto': !fullWidth, 'min-h-[50px]': mediaUrl}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
         <div class="min-h-[50px] text-center"
              [ngClass]="{
