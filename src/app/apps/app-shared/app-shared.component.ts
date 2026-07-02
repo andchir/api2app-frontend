@@ -364,9 +364,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? targetElement.value
                     : '';
                 if (hiddenByField.length > 1) {
-                    element.hidden = isOpposite
-                        ? targetValue === hiddenByField[1]
-                        : targetValue !== hiddenByField[1];
+                    if (['input-switch'].includes(targetElement.type) && !targetValue) {
+                        element.hidden = isOpposite ? targetElement.enabled : !targetElement.enabled;
+                    } else {
+                        element.hidden = isOpposite
+                            ? targetValue === hiddenByField[1]
+                            : targetValue !== hiddenByField[1];
+                    }
                 } else if (['input-switch'].includes(targetElement.type)) {
                     element.hidden = !targetElement.enabled;
                 } else if (['image', 'video', 'audio'].includes(targetElement.type)) {
