@@ -1043,6 +1043,20 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.required || false
                 });
+                output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth || false
+                });
+                output.push({
+                    name: 'vkUseSendToFiles',
+                    label: $localize `VK: Use upload to My Files`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.vkUseSendToFiles || false
+                });
                 break;
             case 'image-comparison':
                 output.push({
@@ -2016,6 +2030,8 @@ export class ElementOptions {
                     prefixText: '',
                     value: '',
                     hiddenByDefault: false,
+                    fullWidth: false,
+                    vkUseSendToFiles: false,
                     required: false
                 });
                 break;

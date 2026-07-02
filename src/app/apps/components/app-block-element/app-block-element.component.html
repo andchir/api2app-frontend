@@ -440,9 +440,14 @@
 
     <ng-container *ngSwitchCase="'audio'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
+            <div class="block w-full"
+                 [ngClass]="{'max-w-[600px] mx-auto': !options?.fullWidth}">
                 <app-audio-player
                     [editorMode]="editorMode"
+                    [name]="options?.name"
+                    [label]="options?.label"
+                    [fullWidth]="options?.fullWidth"
+                    [vkUseSendToFiles]="options?.vkUseSendToFiles"
                     [(ngModel)]="options.value"
                     (ngModelChange)="onFieldValueChanged()"></app-audio-player>
             </div>

@@ -9,6 +9,7 @@ import {
     Input,
     NgZone,
     OnDestroy,
+    OnInit,
     Output,
     ViewChild
 } from '@angular/core';
@@ -16,6 +17,11 @@ import { NgClass, NgIf } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import WaveSurfer from 'wavesurfer.js';
+import { firstValueFrom } from 'rxjs';
+import { VkBridgeService } from '../../../services/vk-bridge.service';
+import { VkAppOptions } from '../../models/vk-app-options.interface';
+
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-audio-player',
@@ -29,10 +35,10 @@ import WaveSurfer from 'wavesurfer.js';
         provide: NG_VALUE_ACCESSOR,
         useExisting: forwardRef(() => AudioPlayerComponent),
         multi: true
-    }],
+    }, VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy {
+export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy, OnInit {
 
     @ViewChild('waveformContainer', { static: false }) waveformContainer!: ElementRef<HTMLDivElement>;
 
@@ -45,15 +51,31 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     @Input() progressColor: string = '#36d9d9';
     @Input() cursorColor: string = '#36d9d9';
     @Input() height: number = 80;
+    @Input() fullWidth: boolean = false;
+    @Input() vkUseSendToFiles: boolean = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     wavesurfer: WaveSurfer | null = null;
+    isVkApp: boolean = false;
     isLoading: boolean = false;
     isPlaying: boolean = false;
     currentTime: string = '0:00';
     duration: string = '0:00';
     hasError: boolean = false;
     errorMessage: string = '';
+    vkFileUploading: boolean = false;
+    vkFileUploaded: boolean = false;
+    vkFileUploadError: string = '';
+    vkAppOptions: VkAppOptions = {
+        appId: 0,
+        userId: 0,
+        userToken: '',
+        userFileUploadUrl: '',
+        userSubscriptions: [],
+        adEnabled: true,
+        adAvailableInterstitial: false,
+        appLaunchParamsJson: ''
+    };
 
     MIME_TO_EXTENSION: Record<string, string> = {
         'audio/wav': 'wav',
@@ -76,8 +98,15 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
 
     constructor(
         private cdr: ChangeDetectorRef,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private vkBridgeService: VkBridgeService
     ) {}
+
+    ngOnInit(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+            this.isVkApp = true;
+        }
+    }
 
     ngAfterViewInit(): void {
         this.syncWavesurferWithValue();
@@ -89,6 +118,8 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
             return;
         }
         this._value = normalized;
+        this.vkFileUploaded = false;
+        this.vkFileUploadError = '';
         this.syncWavesurferWithValue();
         this.runInZoneAndMarkForCheck();
     }
@@ -371,6 +402,69 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
                 this.isLoading = false;
                 this.runInZoneAndMarkForCheck();
             });
+    }
+
+    get showVkSendToFiles(): boolean {
+        return this.vkUseSendToFiles && this.isVkApp && !!this.value && !this.editorMode;
+    }
+
+    async vkSendToFiles(event?: MouseEvent): Promise<void> {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (!this.value || this.vkFileUploading) {
+            return;
+        }
+        this.vkFileUploading = true;
+        this.vkFileUploadError = '';
+        this.runInZoneAndMarkForCheck();
+
+        try {
+            await this.vkPrepareAppOptions();
+            const uploadUrl = this.vkAppOptions.userFileUploadUrl
+                || await this.vkBridgeService.getFileUploadUrl(this.vkAppOptions);
+            if (!uploadUrl) {
+                throw new Error('Unable to obtain VK file upload URL.');
+            }
+
+            const uploadData = this.value instanceof Blob
+                ? await firstValueFrom(this.vkBridgeService.uploadUserFile(
+                    uploadUrl,
+                    new File([this.value], this.generateFilename(this.value.type || 'audio/unknown', this.label || this.name || 'audio'), {type: this.value.type})
+                ))
+                : await firstValueFrom(this.vkBridgeService.uploadUserFile(uploadUrl, undefined, String(this.value)));
+            if (!uploadData?.file) {
+                throw new Error('VK did not return uploaded file data.');
+            }
+
+            await this.vkBridgeService.saveFile(
+                this.name || this.label || 'audio',
+                window.document.documentElement.lang,
+                this.vkAppOptions,
+                uploadData.file
+            );
+            this.vkFileUploaded = true;
+        } catch (error) {
+            console.log(error);
+            this.vkFileUploadError = 'Не удалось загрузить файл в ВК.';
+        } finally {
+            this.vkFileUploading = false;
+            this.runInZoneAndMarkForCheck();
+        }
+    }
+
+    private async vkPrepareAppOptions(): Promise<void> {
+        if (this.vkAppOptions.appId && this.vkAppOptions.userId) {
+            return;
+        }
+        const data = await vkBridge.send('VKWebAppGetLaunchParams');
+        this.vkAppOptions.appId = data?.vk_app_id || 0;
+        this.vkAppOptions.userId = data?.vk_user_id || 0;
+        this.vkAppOptions.appLaunchParamsJson = JSON.stringify(data || {});
+        if (!this.vkAppOptions.appId || !this.vkAppOptions.userId) {
+            throw new Error('VK launch params are missing.');
+        }
     }
 
     generateFilename(
