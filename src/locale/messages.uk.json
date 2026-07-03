@@ -552,6 +552,7 @@
         "UserDataHideAccessKey": "Сховати ключ доступу",
         "UserDataCreateApi": "Створити API",
         "UserDataApiCreated": "Конфігурації API успішно створено.",
-        "UserDataCreateApiConfirm": "Створити API конфігурації для цієї таблиці?"
+        "UserDataCreateApiConfirm": "Створити API конфігурації для цієї таблиці?",
+        "367444526338931297": "Загальна кількість переглядів"
     }
 }

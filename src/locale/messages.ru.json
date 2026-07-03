@@ -555,6 +555,7 @@
         "UserDataHideAccessKey": "Скрыть ключ доступа",
         "UserDataCreateApi": "Создать API",
         "UserDataApiCreated": "Конфигурации API успешно созданы.",
-        "UserDataCreateApiConfirm": "Создать API конфигурации для этой таблицы?"
+        "UserDataCreateApiConfirm": "Создать API конфигурации для этой таблицы?",
+        "367444526338931297": "Общее число просмотров"
     }
 }

@@ -35,7 +35,10 @@
                             <i class="bi bi-person-circle"></i>
                             {{ item.user?.username }}
                         </div>
-                        <div class="text-sm text-gray-700" *ngIf="item?.viewCount">
+                        <div class="text-sm text-gray-700"
+                             title="Total number of views"
+                             i18n-title
+                             *ngIf="item?.viewCount">
                             <i class="bi bi-eye"></i>
                             {{ item?.viewCount }}
                         </div>

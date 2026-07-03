@@ -552,6 +552,7 @@
         "UserDataHideAccessKey": "Ocultar clave de acceso",
         "UserDataCreateApi": "Crear API",
         "UserDataApiCreated": "Las configuraciones de API se han creado correctamente.",
-        "UserDataCreateApiConfirm": "¿Crear configuraciones de API para esta tabla?"
+        "UserDataCreateApiConfirm": "¿Crear configuraciones de API para esta tabla?",
+        "367444526338931297": "Número total de vistas"
     }
 }

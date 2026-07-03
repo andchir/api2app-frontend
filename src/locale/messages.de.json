@@ -552,6 +552,7 @@
         "UserDataHideAccessKey": "Zugriffsschlüssel ausblenden",
         "UserDataCreateApi": "API erstellen",
         "UserDataApiCreated": "API-Konfigurationen wurden erfolgreich erstellt.",
-        "UserDataCreateApiConfirm": "API-Konfigurationen für diese Tabelle erstellen?"
+        "UserDataCreateApiConfirm": "API-Konfigurationen für diese Tabelle erstellen?",
+        "367444526338931297": "Gesamtzahl der Aufrufe"
     }
 }
