@@ -11,7 +11,7 @@
 
                 <div class="relative bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow" >
                     <div class="flex gap-3 mb-3">
-                        <div *ngIf="item.image">
+                        <div class="flex items-center" *ngIf="item.image">
                             <div class="w-24 h-24 border rounded-full border-gray-400 overflow-hidden">
                                 <img class="w-24 h-24 rounded-full no-pointer-events" [src]="item.image" [alt]="item.name">
                             </div>
@@ -25,6 +25,10 @@
                             <div class="text-sm text-gray-700">
                                 <i class="bi bi-person-circle"></i>
                                 {{ item.user?.username }}
+                            </div>
+                            <div class="text-sm text-gray-700" *ngIf="item?.viewCount">
+                                <i class="bi bi-eye"></i>
+                                {{ item?.viewCount }}
                             </div>
                         </div>
                     </div>

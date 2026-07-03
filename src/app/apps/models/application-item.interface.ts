@@ -31,4 +31,5 @@ export interface ApplicationItem {
     adultsOnly?: boolean;
     pricePerUse?: number;
     user_id?: number;
+    viewCount?: number;
 }
