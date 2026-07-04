@@ -136,3 +136,8 @@ markdown table thead th { background-color: #eee; }
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
     filter: alpha(opacity=20); */
 }
+
+/* code */
+code { padding: 0 3px; border: 1px solid rgba(0,0,0,0.12); border-radius: 5px; background-color: rgba(0,0,0,0.06); }
+pre > code { border: 0; }
+
