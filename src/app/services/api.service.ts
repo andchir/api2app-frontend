@@ -312,7 +312,11 @@ export class ApiService extends DataService<ApiItem> {
                 }
             }
             apiItem.bodyFields.forEach((item) => {
-                if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value && !item.files)) {
+                if (!item.name
+                    || item.name === 'opt_vk_data'
+                    || item.hidden
+                    || (typeof item.value === 'string' && !item.value && !item.files && !item.forceSendEmpty)
+                ) {
                     return;
                 }
                 let value = typeof item.value === 'string'

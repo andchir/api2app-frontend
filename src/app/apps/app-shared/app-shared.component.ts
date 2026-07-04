@@ -969,6 +969,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return value;
     }
 
+    private getHiddenSubmitValue(apiItem: ApiItem): string|null {
+        return apiItem.sendAsFormData && apiItem.bodyDataSource === 'fields' ? '' : null;
+    }
+
     private hasValueFromValue(element: AppBlockElement): boolean {
         const sourceElement = this.getValueSourceElement(element);
         return !!sourceElement?.value;
@@ -1217,6 +1221,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         if (!element) {
                             return;
                         }
+                        if (element.hidden) {
+                            valueObj[key] = this.getHiddenSubmitValue(apiItem);
+                            return;
+                        }
                         if (element.type === 'input-switch') {
                             if (element.enabled) {
                                 valueObj[key] = element.value || true;
@@ -1238,6 +1246,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element = findElement(bodyField.name, 'input');
                 }
                 if (!element) {
+                    return;
+                }
+
+                if (element.hidden) {
+                    bodyField.value = this.getHiddenSubmitValue(apiItem);
+                    bodyField.hidden = false;
+                    bodyField.forceSendEmpty = apiItem.sendAsFormData;
                     return;
                 }
 
@@ -1301,6 +1316,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
 
+                    if (element.hidden) {
+                        outputData[key] = this.getHiddenSubmitValue(apiItem);
+                        return;
+                    }
+
                     const value = this.getElementValueFromSource(element, true);
 
                     const enabled = element.type !== 'input-switch' || element?.enabled;
@@ -1320,6 +1340,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 currentElements.forEach((elem) => {
                     const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType);
                     if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
+                        return;
+                    }
+
+                    if (elem.hidden) {
+                        outputData[fieldName] = this.getHiddenSubmitValue(apiItem);
                         return;
                     }
 

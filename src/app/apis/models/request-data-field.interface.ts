@@ -7,4 +7,5 @@ export interface RequestDataField {
     private?: boolean;
     isFile?: boolean;
     files?: File[];
+    forceSendEmpty?: boolean;
 }
