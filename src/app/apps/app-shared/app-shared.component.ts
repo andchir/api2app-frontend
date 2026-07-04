@@ -969,10 +969,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return value;
     }
 
-    private getHiddenSubmitValue(apiItem: ApiItem): string|null {
-        return apiItem.sendAsFormData && apiItem.bodyDataSource === 'fields' ? '' : null;
-    }
-
     private hasValueFromValue(element: AppBlockElement): boolean {
         const sourceElement = this.getValueSourceElement(element);
         return !!sourceElement?.value;
@@ -1222,7 +1218,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             return;
                         }
                         if (element.hidden) {
-                            valueObj[key] = this.getHiddenSubmitValue(apiItem);
+                            delete valueObj[key];
                             return;
                         }
                         if (element.type === 'input-switch') {
@@ -1250,9 +1246,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
 
                 if (element.hidden) {
-                    bodyField.value = this.getHiddenSubmitValue(apiItem);
-                    bodyField.hidden = false;
-                    bodyField.forceSendEmpty = apiItem.sendAsFormData;
+                    bodyField.value = '';
+                    bodyField.hidden = true;
                     return;
                 }
 
@@ -1317,7 +1312,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
 
                     if (element.hidden) {
-                        outputData[key] = this.getHiddenSubmitValue(apiItem);
+                        delete outputData[key];
                         return;
                     }
 
@@ -1344,7 +1339,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
 
                     if (elem.hidden) {
-                        outputData[fieldName] = this.getHiddenSubmitValue(apiItem);
                         return;
                     }
 
