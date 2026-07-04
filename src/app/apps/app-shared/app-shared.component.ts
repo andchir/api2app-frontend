@@ -1285,9 +1285,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
             apiItem.bodyFields = bodyFields;
         }
-        const rawFields = this.apiService.getRawDataFields(apiItem);
 
         // Raw value
+        const rawFields = this.apiService.getRawDataFields(apiItem);
         if (apiItem.bodyDataSource === 'raw' || rawFields.length > 0) {
             const element = findElement('value', actionType);
             if (element) {
@@ -1354,10 +1354,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    if (typeof value === 'string') {
+                    if (value && typeof value === 'string') {
                         outputData[fieldName] = ApplicationService.createStringValue(elem, value);
                     } else {
-                        outputData[fieldName] = value;
+                        outputData[fieldName] = ['input-switch'].includes(elem.type) ? (value || enabled) : value;
                     }
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
