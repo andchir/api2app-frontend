@@ -423,7 +423,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         try {
             await this.vkPrepareAppOptions();
             const uploadUrl = this.vkAppOptions.userFileUploadUrl
-                || await this.vkBridgeService.getFileUploadUrl(this.vkAppOptions);
+                || await this.vkBridgeService.getFileUploadUrl(this.vkAppOptions, 'audio_message');
             if (!uploadUrl) {
                 throw new Error('Unable to obtain VK file upload URL.');
             }

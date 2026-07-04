@@ -127,7 +127,7 @@ export class VkBridgeService {
             // });
     }
 
-    async getFileUploadUrl(options: VkAppOptions): Promise<string> {
+    async getFileUploadUrl(options: VkAppOptions, type: 'doc'|'audio_message' = 'doc'): Promise<string> {
         return this.getUserToken(options)
             .then((userToken) => {
                 return userToken;
@@ -138,7 +138,8 @@ export class VkBridgeService {
                     params: {
                         v: '5.131',
                         user_ids: options.userId,
-                        access_token: userToken
+                        access_token: userToken,
+                        type
                     }})
                     .then((data: any) => {
                         options.userFileUploadUrl = data.response?.upload_url;
