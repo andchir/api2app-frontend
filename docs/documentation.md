@@ -227,5 +227,3 @@ curl "$CUSTOM_TABLES_URL/api/v1/custom_tables/daily/sum/status/total?date_from=2
   ]
 }
 ```
-
-
