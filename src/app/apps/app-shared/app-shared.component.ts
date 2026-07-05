@@ -433,7 +433,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
-              showMessages = true, isAutoStart = false, confirmed: boolean = false): void {
+              showMessages = true, isAutoStart = false, confirmed: boolean = false,
+              updateUserBalanceAfterResponse: boolean = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
@@ -444,7 +445,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, confirmed,
+                    updateUserBalanceAfterResponse);
             });
             return;
         }
@@ -487,7 +489,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .subscribe({
                     next: (reason) => {
                         if (reason === 'confirmed') {
-                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, true);
+                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, true,
+                                updateUserBalanceAfterResponse);
                         }
                     }
                 });
@@ -518,12 +521,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
-            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages,
+                updateUserBalanceAfterResponse);
             return;
         }
 
         if (currentApi.useLocalStorage) {
-            this.handleLocalStorageSubmit(currentApi, apiItem, currentElement, blocks, showMessages, isAutoStart, appUuid, apiUuid);
+            this.handleLocalStorageSubmit(currentApi, apiItem, currentElement, blocks, showMessages, isAutoStart,
+                appUuid, apiUuid, updateUserBalanceAfterResponse);
             return;
         }
 
@@ -544,7 +549,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.value += element.suffixText;
                 }
             });
-            this.afterResponseCreated(blocks);
+            this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
         };
 
@@ -559,7 +564,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
                             this.message = this.localizeServerMessages(event.message);
                             this.messageType = 'error';
-                            this.afterResponseCreated(blocks);
+                            this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
                         } else {
                             const content = (res as MessageEvent).data;
                             if (content !== '[DONE]') {
@@ -582,7 +587,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.submitted = false;
 
                         this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                        this.createAppResponse(currentApi, res, currentElement);
+                        this.createAppResponse(currentApi, res, currentElement, updateUserBalanceAfterResponse);
 
                         this.progressUpdating = false;
                     }
@@ -627,7 +632,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         showMessages: boolean,
         isAutoStart: boolean,
         appUuid: string,
-        apiUuid: string
+        apiUuid: string,
+        updateUserBalanceAfterResponse: boolean = true
     ): void {
         const requestMethod = ApiService.getApiRequestMethod(apiItem);
         let responseData: any;
@@ -648,7 +654,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (responseData) {
             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-            this.applyParsedApiResponseToApp(currentApi, responseData, currentElement);
+            this.applyParsedApiResponseToApp(currentApi, responseData, currentElement, updateUserBalanceAfterResponse);
         } else {
             this.stateLoadingUpdate(blocks, false, false);
         }
@@ -743,7 +749,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         currentApi: ApiItem,
         currentElement: AppBlockElement,
         blocks: AppBlock[],
-        showMessages: boolean
+        showMessages: boolean,
+        updateUserBalanceAfterResponse: boolean = true
     ): void {
         this.loading = false;
         this.submitted = false;
@@ -801,7 +808,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.message = $localize `New message received.`;
                 this.cdr.detectChanges();
             }
-            this.applyParsedApiResponseToApp(currentApi, data as any, currentElement);
+            this.applyParsedApiResponseToApp(currentApi, data as any, currentElement, updateUserBalanceAfterResponse);
             this.cdr.detectChanges();
         };
 
@@ -1468,7 +1475,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             };
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement): void {
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement,
+                      updateUserBalanceAfterResponse: boolean = true): void {
         if (!response.body) {
             return;
         }
@@ -1478,14 +1486,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
-                this.applyParsedApiResponseToApp(apiItem, data, currentElement);
+                this.applyParsedApiResponseToApp(apiItem, data, currentElement, updateUserBalanceAfterResponse);
             })
             .catch((err) => {
                 console.log(err);
             });
     }
 
-    private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement): void {
+    private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
+                                        updateUserBalanceAfterResponse: boolean = true): void {
         const currentApiUuid = apiItem.uuid;
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
@@ -1520,13 +1529,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (currentElement.linkedField) {
             const linkedField = this.findBlockElementByName(currentElement.linkedField);
             if (linkedField && linkedField.options.inputApiUuid) {
-                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true);
+                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true,
+                    false, updateUserBalanceAfterResponse);
             } else if (linkedField && linkedField.options.outputApiUuid) {
-                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true);
+                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true,
+                    false, updateUserBalanceAfterResponse);
             }
         }
 
-        this.afterResponseCreated(blocks);
+        this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
     }
 
     createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
@@ -1551,8 +1562,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    afterResponseCreated(blocks: AppBlock[]): void {
-        if (this.data.paymentEnabled) {
+    afterResponseCreated(blocks: AppBlock[], updateUserBalanceAfterResponse: boolean = true): void {
+        if (updateUserBalanceAfterResponse && this.data.paymentEnabled) {
             this.updateUserBalance();
         }
         this.cdr.detectChanges();
@@ -2042,7 +2053,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement, true, false, false, false);
     }
 
     onProgressCompleted(currentElement: AppBlockElement): void {
