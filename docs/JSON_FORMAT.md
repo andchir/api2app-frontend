@@ -711,7 +711,7 @@ Elements connect to API endpoints via the `options` object.
 - `inputApiFieldName` — Path in request body (dot notation: `data.question`)
 - `inputApiFieldType` — `input` for body fields, `url` for URL parameters, `params` for query parameters, `headers` for headers
 
-If you need to use `inputApiFieldType`="url", the `inputApiFieldName` specifies the position of the parameter (number from 0) between the separators `/`.
+If you need to use `inputApiFieldType`="url", the `inputApiFieldName` specifies the zero-based index of the URL path parameter, counted from left to right between `/` separators, excluding the domain.
 
 ### Output Binding (receiving data)
 
