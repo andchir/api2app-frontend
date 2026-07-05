@@ -437,7 +437,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!apiUuid || !this.previewMode) {
             return;
         }
-        this.message = '';
         this.loading = true;
         this.submitted = true;
         this.cdr.detectChanges();
