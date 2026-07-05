@@ -657,6 +657,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                         if (!newAppData.blocks) {
                             return;
                         }
+                        this.fillAppDataDefaults(newAppData);
                         const appId = this.data.id;
                         const appUuid = this.data.uuid;
                         const uuid_embed = this.data.uuid_embed;
@@ -668,6 +669,77 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                     }
                 }
             });
+    }
+
+    private fillAppDataDefaults(appData: ApplicationItem): void {
+        if (!Array.isArray(appData.blocks)) {
+            return;
+        }
+        appData.blocks.forEach((block, blockIndex) => {
+            this.fillBlockDefaults(block, blockIndex);
+        });
+    }
+
+    private fillBlockDefaults(block: AppBlock, blockIndex: number): void {
+        const blockDefaults = ApplicationService.getBlockDefaults();
+        this.fillMissingProperties(block, blockDefaults);
+
+        if (!block.options) {
+            block.options = {};
+        }
+        this.fillMissingProperties(block.options, blockDefaults.options || {});
+
+        const optionFields = ApplicationService.createBlockOptionsFields(block.options, blockIndex, block.tabIndex || 0);
+        const optionDefaults = ApplicationService.fieldsToOptionsObject(optionFields);
+        delete optionDefaults.tabIndex;
+        this.fillMissingProperties(block.options, optionDefaults);
+
+        if (!Array.isArray(block.elements)) {
+            block.elements = [];
+        }
+        block.elements.forEach((element) => {
+            this.fillElementDefaults(element);
+        });
+    }
+
+    private fillElementDefaults(element: AppBlockElement): void {
+        if (!element?.type) {
+            return;
+        }
+
+        const elementDefaults = ElementOptions.getBlockElementDefault(element.type);
+        this.fillMissingProperties(element, elementDefaults);
+
+        const optionFields = ElementOptions.createElementOptionsFields(element.type, element);
+        const optionDefaults = ApplicationService.fieldsToOptionsObject(optionFields);
+        delete optionDefaults.blockIndex;
+        delete optionDefaults.orderIndex;
+        delete optionDefaults.enabled;
+        this.fillMissingProperties(element, optionDefaults);
+
+        if (!element.options) {
+            element.options = {};
+        }
+    }
+
+    private fillMissingProperties<T extends object>(target: T, defaults: Partial<T>): void {
+        Object.keys(defaults).forEach((key) => {
+            const typedKey = key as keyof T;
+            if (target[typedKey] !== undefined && target[typedKey] !== null) {
+                return;
+            }
+            target[typedKey] = this.cloneDefaultValue(defaults[typedKey]) as T[keyof T];
+        });
+    }
+
+    private cloneDefaultValue<T>(value: T): T {
+        if (Array.isArray(value)) {
+            return [...value] as T;
+        }
+        if (value && typeof value === 'object') {
+            return {...value};
+        }
+        return value;
     }
 
     cloneItem(): void {

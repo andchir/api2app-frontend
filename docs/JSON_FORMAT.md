@@ -37,6 +37,8 @@ JSON format used by API2App to define web applications. Designed for LLMs to gen
 | `tabs`        | string[]   | Tab names for navigation                              |
 | `blocks`      | AppBlock[] | Array of blocks containing elements                   |
 
+Fields whose values match the defaults documented below do not have to be included in generated JSON. After AI-generated application data is created, missing block and element fields are filled from the default values.
+
 ---
 
 ## Block Structure
@@ -783,146 +785,197 @@ The element is **shown** when the condition matches, **hidden** otherwise.
 
 ## Complete Example
 
-A text generation app with input, API call, and result display:
+Displaying a list of categories in a table, adding, editing, deleting:
 
 ```json
 {
-    "name": "Text Generator",
-    "language": "en",
-    "shared": true,
-    "hidden": false,
-    "maintenance": false,
-    "advertising": true,
-    "adultsOnly": false,
+    "name": "Categories",
+    "language": "ru",
     "gridColumns": 2,
     "tabs": [
-        "Generate"
+        "Categories"
     ],
     "blocks": [
         {
-            "options": {
-                "orderIndex": 0,
-                "gridColumnSpan": 1,
-                "autoClear": false,
-                "showLoading": true,
-                "messageSuccess": "Request sent successfully."
-            },
             "elements": [
                 {
-                    "name": "header",
+                    "icon": "bi-list",
+                    "name": "header-1-2",
                     "type": "text-header",
-                    "value": "Text Generator",
-                    "icon": "bi-magic",
-                    "blockIndex": 0,
-                    "orderIndex": 0
+                    "value": "Categories",
+                    "alignCenter": true
                 },
                 {
-                    "name": "topic",
-                    "type": "input-text",
-                    "label": "Topic",
-                    "placeholder": "Enter your topic",
-                    "required": true,
-                    "blockIndex": 0,
-                    "orderIndex": 1,
-                    "options": {
-                        "inputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
-                        "inputApiFieldName": "data.topic",
-                        "inputApiFieldType": "input"
-                    }
-                },
-                {
-                    "name": "style",
-                    "type": "input-select",
-                    "label": "Style",
-                    "placeholder": "Select style",
-                    "choices": [
-                        "Formal",
-                        "Casual",
-                        "Creative"
+                    "keys": [
+                        "id",
+                        "nazvanie",
+                        "created_at"
                     ],
-                    "selectDefaultFirst": true,
-                    "required": true,
-                    "blockIndex": 0,
-                    "orderIndex": 2,
+                    "name": "table-categories",
+                    "type": "table",
+                    "isHTML": true,
+                    "headers": [
+                        "id",
+                        "Name",
+                        "Time of creation"
+                    ],
                     "options": {
-                        "inputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
-                        "inputApiFieldName": "data.style",
-                        "inputApiFieldType": "input"
-                    }
-                },
-                {
-                    "name": "length",
-                    "type": "input-slider",
-                    "label": "Max Words",
-                    "min": 50,
-                    "max": 500,
-                    "step": 50,
-                    "value": 200,
-                    "blockIndex": 0,
-                    "orderIndex": 3,
-                    "options": {
-                        "inputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
-                        "inputApiFieldName": "data.max_words",
-                        "inputApiFieldType": "input"
-                    }
-                },
-                {
-                    "name": "submit",
-                    "type": "button",
-                    "text": "Generate",
-                    "icon": "bi-stars",
-                    "color": "Blue",
-                    "isStickyPosition": true,
-                    "blockIndex": 0,
-                    "orderIndex": 4,
-                    "options": {
-                        "inputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
-                        "inputApiFieldName": "submit",
-                        "inputApiFieldType": "input"
-                    }
+                        "outputApiUuid": "cf959f36-73cc-11f1-9c31-525400f8f94f",
+                        "outputApiFieldName": "results",
+                        "outputApiFieldType": "output"
+                    },
+                    "orderIndex": 1,
+                    "loadValueInto": "category-id-edit,category-id-delete"
                 }
             ],
             "tabIndex": 0
         },
         {
             "options": {
+                "autoClear": true,
                 "orderIndex": 1,
-                "gridColumnSpan": 1,
-                "showLoading": true,
-                "messageSuccess": ""
+                "messageSuccess": "Category added successfully!"
             },
             "elements": [
                 {
-                    "name": "result",
-                    "type": "text",
-                    "label": "Result",
-                    "color": "Black",
-                    "fontSize": "Medium",
-                    "markdown": true,
-                    "border": true,
-                    "borderShadow": true,
-                    "fullWidth": true,
-                    "whiteSpacePre": true,
+                    "icon": "bi-plus-circle",
+                    "name": "header-2-1",
+                    "type": "text-header",
+                    "value": "Add category",
                     "blockIndex": 1,
-                    "orderIndex": 0,
-                    "options": {
-                        "outputApiUuid": "aaaaaaaa-0000-0000-0000-000000000001",
-                        "outputApiFieldName": "result_data.text",
-                        "outputApiFieldType": "output"
-                    }
+                    "alignCenter": true
                 },
                 {
-                    "name": "info",
-                    "type": "text",
-                    "value": "Enter a topic and click **Generate** to create text.",
-                    "color": "Gray",
-                    "fontSize": "Small",
-                    "markdown": true,
-                    "border": true,
-                    "borderShadow": true,
-                    "fullWidth": true,
+                    "name": "name-2-2",
+                    "type": "input-text",
+                    "label": "Category name",
+                    "options": {
+                        "inputApiUuid": "cf9d4146-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": "nazvanie",
+                        "inputApiFieldType": "input"
+                    },
                     "blockIndex": 1,
+                    "orderIndex": 1,
+                    "placeholder": "Enter the name here"
+                },
+                {
+                    "icon": "bi-plus-lg",
+                    "name": "submit-2-3",
+                    "text": "Add category",
+                    "type": "button",
+                    "color": "Blue",
+                    "options": {
+                        "inputApiUuid": "cf9d4146-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": "submit",
+                        "inputApiFieldType": "input"
+                    },
+                    "blockIndex": 1,
+                    "orderIndex": 2,
+                    "linkedField": "table-categories"
+                }
+            ],
+            "tabIndex": 0
+        },
+        {
+            "options": {
+                "autoClear": true,
+                "orderIndex": 2,
+                "messageSuccess": "Category edited successfully"
+            },
+            "elements": [
+                {
+                    "icon": "bi-pencil",
+                    "name": "header-3-2",
+                    "type": "text-header",
+                    "value": "Edit category",
+                    "blockIndex": 2,
+                    "alignCenter": true
+                },
+                {
+                    "name": "category-id-edit",
+                    "type": "input-number",
+                    "label": "Category ID",
+                    "value": "",
+                    "options": {
+                        "inputApiUuid": "cfa58518-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": 5,
+                        "inputApiFieldType": "url"
+                    },
+                    "blockIndex": 2,
                     "orderIndex": 1
+                },
+                {
+                    "name": "name-3-3",
+                    "type": "input-text",
+                    "label": "Category name",
+                    "options": {
+                        "inputApiUuid": "cfa58518-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": "nazvanie",
+                        "inputApiFieldType": "input"
+                    },
+                    "blockIndex": 2,
+                    "orderIndex": 2,
+                    "placeholder": "Enter the name here"
+                },
+                {
+                    "icon": "bi-pencil",
+                    "name": "submit-3-4",
+                    "text": "Edit category",
+                    "type": "button",
+                    "options": {
+                        "inputApiUuid": "cfa58518-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": "submit",
+                        "inputApiFieldType": "input"
+                    },
+                    "blockIndex": 2,
+                    "orderIndex": 3,
+                    "linkedField": "table-categories"
+                }
+            ],
+            "tabIndex": 0
+        },
+        {
+            "options": {
+                "orderIndex": 3,
+                "messageSuccess": "The category has been removed."
+            },
+            "elements": [
+                {
+                    "icon": "bi-trash",
+                    "name": "header-4-2",
+                    "type": "text-header",
+                    "value": "Delete category",
+                    "blockIndex": 3,
+                    "alignCenter": true
+                },
+                {
+                    "name": "category-id-delete",
+                    "type": "input-number",
+                    "label": "Category ID",
+                    "value": "",
+                    "options": {
+                        "inputApiUuid": "cfabbb04-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": 5,
+                        "inputApiFieldType": "url"
+                    },
+                    "blockIndex": 3,
+                    "orderIndex": 1
+                },
+                {
+                    "icon": "bi-trash",
+                    "name": "submit-4-4",
+                    "text": "Delete category",
+                    "type": "button",
+                    "color": "Red",
+                    "options": {
+                        "inputApiUuid": "cfabbb04-73cc-11f1-9c31-525400f8f94f",
+                        "inputApiFieldName": "submit",
+                        "inputApiFieldType": "input"
+                    },
+                    "blockIndex": 3,
+                    "orderIndex": 2,
+                    "linkedField": "table-categories",
+                    "confirmationText": "Are you sure you want to delete this category?"
                 }
             ],
             "tabIndex": 0
