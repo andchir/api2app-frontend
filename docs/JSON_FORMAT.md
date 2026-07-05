@@ -486,8 +486,8 @@ Data table.
 | `headers`         | string[] | `["Column1", "Column2", "Column3"]` | Column headers                         |
 | `keys`            | string[] | `["key1", "key2", "key3"]`       | Object keys for each column            |
 | `valueArr`        | object[] | `undefined`                        | An array of objects with table entries |
-| `loadValueInto`   | string   | `""`                               | Load the clicked row field specified by `itemFieldName` into another field; use comma-separated names for multiple fields |
-| `itemFieldName`   | string   | `"id"`                             | Row field name used as the loaded value for `loadValueInto` |
+| `loadValueInto`   | string   | `""`                               | Target identifier field name(s) to receive the selected table row value; use comma-separated names for multiple fields. The same value is loaded into all listed fields |
+| `itemFieldName`   | string   | `"id"`                             | Source field name in the selected table row; this field's value is loaded into every field listed in `loadValueInto` |
 | `hiddenByField`   | string   | `""`                               | Conditional visibility                 |
 | `isHTML`          | boolean  | `false`                            | Render values as HTML                  |
 | `editable`        | boolean  | `false`                            | Enable inline editing                  |
