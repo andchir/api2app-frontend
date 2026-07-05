@@ -77,16 +77,16 @@ JSON format used by API2App to define web applications. Designed for LLMs to gen
 
 All elements share these common fields:
 
-| Field             | Type    | Description                                                                               |
-|-------------------|---------|-------------------------------------------------------------------------------------------|
-| `type`            | string  | **Required.** Element type identifier                                                     |
-| `name`            | string  | Unique element name within the app                                                        |
-| `blockIndex`      | number  | Index of the parent block                                                                 |
-| `orderIndex`      | number  | Display order within the block                                                            |
-| `value`           | any     | Element value (type depends on element)                                                   |
-| `hiddenByDefault` | boolean | Hidden until value is retrieved                                                           |
-| `hiddenByField`   | string  | Conditional visibility expression (see [Conditional Visibility](#conditional-visibility)) |
-| `options`         | object  | API binding options (see [API Integration](#api-integration))                             |
+| Field             | Type    | Default     | Description                                                                               |
+|-------------------|---------|-------------|-------------------------------------------------------------------------------------------|
+| `type`            | string  | Required    | **Required.** Element type identifier                                                     |
+| `name`            | string  | by type     | Unique element name within the app                                                        |
+| `blockIndex`      | number  | `0`         | Index of the parent block                                                                 |
+| `orderIndex`      | number  | `0`         | Display order within the block                                                            |
+| `value`           | any     | by type     | Element value (type depends on element)                                                   |
+| `hiddenByDefault` | boolean | `false`     | Hidden until value is retrieved                                                           |
+| `hiddenByField`   | string  | `""`        | Conditional visibility expression (see [Conditional Visibility](#conditional-visibility)) |
+| `options`         | object  | `{}`        | API binding options (see [API Integration](#api-integration))                             |
 
 If the field is hidden (hiddenByDefault=true), it becomes visible when the value is received.
 
@@ -106,37 +106,40 @@ Elements that support list output (by `valueArr` field): `text`, `image`, `video
 
 Section header text.
 
-| Field         | Type    | Description                                    |
-|---------------|---------|------------------------------------------------|
-| `icon`        | string  | Bootstrap icon class (e.g. `"bi-info-circle"`) |
-| `value`       | string  | Header text                                    |
-| `alignCenter` | boolean | Center alignment                               |
+| Field         | Type    | Default               | Description                                    |
+|---------------|---------|-----------------------|------------------------------------------------|
+| `icon`        | string  | `""`                  | Bootstrap icon class (e.g. `"bi-info-circle"`) |
+| `value`       | string  | `"Header Example Text"` | Header text                                  |
+| `alignCenter` | boolean | `false`               | Center alignment                               |
+| `hiddenByField` | string | `""`                | Conditional visibility                         |
 
 #### `text`
 
 Text display element with rich formatting options.
 
-| Field             | Type     | Description                                                             |
-|-------------------|----------|-------------------------------------------------------------------------|
-| `label`           | string   | Label above text                                                        |
-| `icon`            | string   | Bootstrap icon class                                                    |
-| `color`           | string   | `"Black"`, `"Gray"`, `"Green"`, `"Blue"`, `"Cyan"`, `"Violet"`, `"Red"` |
-| `fontSize`        | string   | `"Small"`, `"Medium"`, `"Large"`                                        |
-| `prefixText`      | string   | Text before value                                                       |
-| `suffixText`      | string   | Text after value                                                        |
-| `maxHeight`       | number   | Max container height in px (0 = unlimited)                              |
-| `keys`            | string[] | Value keys for extracting nested data                                   |
-| `valueArr`        | object[] | An array of objects with entries to be displayed in list mode           |
-| `itemFieldName`   | string   | Field name in data array                                                |
-| `markdown`        | boolean  | Render value as Markdown                                                |
-| `whiteSpacePre`   | boolean  | Preserve line breaks                                                    |
-| `alignCenter`     | boolean  | Center alignment                                                        |
-| `showHeader`      | boolean  | Show title                                                              |
-| `border`          | boolean  | Show border                                                             |
-| `borderShadow`    | boolean  | Show shadow                                                             |
-| `fullWidth`       | boolean  | Full container width                                                    |
-| `showOnlyInVK`    | boolean  | Show only in VK mini app                                                |
-| `hiddenByDefault` | boolean  | Hidden until API response                                               |
+| Field             | Type     | Default          | Description                                                             |
+|-------------------|----------|------------------|-------------------------------------------------------------------------|
+| `label`           | string   | `""`             | Label above text                                                        |
+| `value`           | string   | `"Example Text"` | Text value                                                              |
+| `icon`            | string   | `""`             | Bootstrap icon class                                                    |
+| `color`           | string   | `"Black"`        | `"Black"`, `"Gray"`, `"Green"`, `"Blue"`, `"Cyan"`, `"Violet"`, `"Red"` |
+| `fontSize`        | string   | `"Medium"`       | `"Small"`, `"Medium"`, `"Large"`                                        |
+| `prefixText`      | string   | `""`             | Text before value                                                       |
+| `suffixText`      | string   | `""`             | Text after value                                                        |
+| `maxHeight`       | number   | `0`              | Max container height in px (0 = unlimited)                              |
+| `keys`            | string[] | `[]`             | Value keys for extracting nested data                                   |
+| `valueArr`        | object[] | `undefined`      | An array of objects with entries to be displayed in list mode           |
+| `itemFieldName`   | string   | `""`             | Field name in data array                                                |
+| `hiddenByField`   | string   | `""`             | Conditional visibility                                                  |
+| `markdown`        | boolean  | `false`          | Render value as Markdown                                                |
+| `whiteSpacePre`   | boolean  | `false`          | Preserve line breaks                                                    |
+| `alignCenter`     | boolean  | `false`          | Center alignment                                                        |
+| `showHeader`      | boolean  | `false`          | Show title                                                              |
+| `border`          | boolean  | `false`          | Show border                                                             |
+| `borderShadow`    | boolean  | `false`          | Show shadow                                                             |
+| `fullWidth`       | boolean  | `true`           | Full container width                                                    |
+| `showOnlyInVK`    | boolean  | `false`          | Show only in VK mini app                                                |
+| `hiddenByDefault` | boolean  | `false`          | Hidden until API response                                               |
 
 ### Input Elements
 
@@ -144,56 +147,67 @@ Text display element with rich formatting options.
 
 Single-line text input.
 
-| Field                      | Type    | Description               |
-|----------------------------|---------|---------------------------|
-| `label`                    | string  | Field label               |
-| `placeholder`              | string  | Placeholder text          |
-| `icon`                     | string  | Bootstrap icon class      |
-| `prefixText`               | string  | Prefix text               |
-| `suffixText`               | string  | Suffix text               |
-| `value`                    | string  | Default value             |
-| `readOnly`                 | boolean | Read only mode            |
-| `required`                 | boolean | Required field            |
-| `hiddenByDefault`          | boolean | Hidden until API response |
-| `hiddenByField`            | string  | Conditional visibility    |
-| `speechRecognitionEnabled` | boolean | Voice typing              |
-| `speechSynthesisEnabled`   | boolean | Text-to-speech            |
-| `copyToClipboardEnabled`   | boolean | Copy button               |
-| `storeValue`               | boolean | Persist in localStorage   |
+| Field                      | Type    | Default             | Description               |
+|----------------------------|---------|---------------------|---------------------------|
+| `label`                    | string  | `"Name"`            | Field label               |
+| `placeholder`              | string  | `"Enter your name"` | Placeholder text          |
+| `icon`                     | string  | `""`                | Bootstrap icon class      |
+| `prefixText`               | string  | `""`                | Prefix text               |
+| `suffixText`               | string  | `""`                | Suffix text               |
+| `value`                    | string  | `""`                | Default value             |
+| `readOnly`                 | boolean | `false`             | Read only mode            |
+| `required`                 | boolean | `true`              | Required field            |
+| `hiddenByDefault`          | boolean | `false`             | Hidden until API response |
+| `hiddenByField`            | string  | `""`                | Conditional visibility    |
+| `speechRecognitionEnabled` | boolean | `false`             | Voice typing              |
+| `speechSynthesisEnabled`   | boolean | `false`             | Text-to-speech            |
+| `copyToClipboardEnabled`   | boolean | `false`             | Copy button               |
+| `storeValue`               | boolean | `false`             | Persist in localStorage   |
 
 #### `input-textarea`
 
 Multi-line text input.
 
-Same fields as `input-text`, plus:
-
-| Field        | Type    | Description                          |
-|--------------|---------|--------------------------------------|
-| `max`        | number  | Maximum text length (0 = unlimited)  |
-| `rows`       | number  | Number of visible lines (default: 6) |
-| `autoHeight` | boolean | Auto-adjust height                   |
+| Field                      | Type    | Default                     | Description                         |
+|----------------------------|---------|-----------------------------|-------------------------------------|
+| `label`                    | string  | `"Content"`                 | Field label                         |
+| `placeholder`              | string  | `"Enter your message here"` | Placeholder text                    |
+| `prefixText`               | string  | `""`                        | Prefix text                         |
+| `suffixText`               | string  | `""`                        | Suffix text                         |
+| `value`                    | string  | `null`                      | Default value                       |
+| `max`                      | number  | `0`                         | Maximum text length (0 = unlimited) |
+| `rows`                     | number  | `6`                         | Number of visible lines             |
+| `readOnly`                 | boolean | `false`                     | Read only mode                      |
+| `required`                 | boolean | `true`                      | Required field                      |
+| `autoHeight`               | boolean | `true`                      | Auto-adjust height                  |
+| `hiddenByDefault`          | boolean | `false`                     | Hidden until API response           |
+| `hiddenByField`            | string  | `""`                        | Conditional visibility              |
+| `speechRecognitionEnabled` | boolean | `false`                     | Voice typing                        |
+| `speechSynthesisEnabled`   | boolean | `false`                     | Text-to-speech                      |
+| `copyToClipboardEnabled`   | boolean | `false`                     | Copy button                         |
+| `storeValue`               | boolean | `false`                     | Persist in localStorage             |
 
 #### `input-number`
 
 Numeric input.
 
-| Field   | Type   | Description    |
-|---------|--------|----------------|
-| `label` | string | Field label    |
-| `min`   | number | Minimum value  |
-| `max`   | number | Maximum value  |
-| `value` | any    | Default value  |
-| `hiddenByField` | string | Conditional visibility |
+| Field           | Type   | Default    | Description            |
+|-----------------|--------|------------|------------------------|
+| `label`         | string | `"Number"` | Field label            |
+| `min`           | number | `0`        | Minimum value          |
+| `max`           | number | `10`       | Maximum value          |
+| `value`         | any    | `1`        | Default value          |
+| `hiddenByField` | string | `""`       | Conditional visibility |
 
 #### `input-rating`
 
 Star rating input. Displays five Bootstrap icon star buttons without text.
 
-| Field      | Type           | Description                                      |
-|------------|----------------|--------------------------------------------------|
-| `value`    | number\|string | Selected rating from 1 to 5. Use 0 or empty value for no rating. Strings are converted to number |
-| `hiddenByField` | string     | Conditional visibility                       |
-| `required` | boolean        | Required field                                   |
+| Field           | Type           | Default | Description                                      |
+|-----------------|----------------|---------|--------------------------------------------------|
+| `value`         | number\|string | `0`     | Selected rating from 1 to 5. Use 0 or empty value for no rating. Strings are converted to number |
+| `hiddenByField` | string         | `""`    | Conditional visibility                           |
+| `required`      | boolean        | `true`  | Required field                                   |
 
 Example:
 
@@ -215,129 +229,133 @@ Example:
 
 Range slider.
 
-| Field   | Type   | Description    |
-|---------|--------|----------------|
-| `label` | string | Field label    |
-| `min`   | number | Minimum value  |
-| `max`   | number | Maximum value  |
-| `step`  | number | Step increment |
-| `value` | number | Default value  |
-| `hiddenByField` | string | Conditional visibility |
+| Field           | Type   | Default   | Description            |
+|-----------------|--------|-----------|------------------------|
+| `label`         | string | `"Range"` | Field label            |
+| `min`           | number | `0`       | Minimum value          |
+| `max`           | number | `100`     | Maximum value          |
+| `step`          | number | `1`       | Step increment         |
+| `value`         | number | `0`       | Default value          |
+| `hiddenByField` | string | `""`      | Conditional visibility |
 
 #### `input-hidden`
 
 Hidden field for passing data between APIs.
 
-| Field        | Type    | Description                           |
-|--------------|---------|---------------------------------------|
-| `label`      | string  | Label (for editor only)               |
-| `prefixText` | string  | Prefix for value                      |
-| `suffixText` | string  | Suffix for value                      |
-| `value`      | string  | Default value                         |
-| `valueFrom`  | string  | Copy value from another field by name |
-| `hiddenByField` | string | Conditional visibility               |
-| `storeValue` | boolean | Persist in localStorage               |
-| `required`   | boolean | Required field                        |
+| Field           | Type    | Default    | Description                           |
+|-----------------|---------|------------|---------------------------------------|
+| `label`         | string  | `"Hidden"` | Label (for editor only)               |
+| `prefixText`    | string  | `""`       | Prefix for value                      |
+| `suffixText`    | string  | `""`       | Suffix for value                      |
+| `value`         | string  | `""`       | Default value                         |
+| `valueFrom`     | string  | `""`       | Copy value from another field by name |
+| `hiddenByField` | string  | `""`       | Conditional visibility                |
+| `storeValue`    | boolean | `true`     | Persist in localStorage               |
+| `required`      | boolean | `true`     | Required field                        |
 
 #### `input-switch`
 
 Toggle switch.
 
-| Field     | Type    | Description           |
-|-----------|---------|-----------------------|
-| `label`   | string  | Field label           |
-| `value`   | string  | Value submitted when enabled |
-| `hiddenByField` | string | Conditional visibility |
-| `enabled` | boolean | Default enabled state |
+| Field           | Type    | Default     | Description                  |
+|-----------------|---------|-------------|------------------------------|
+| `label`         | string  | `"Enabled"` | Field label                  |
+| `value`         | string  | `"1"`       | Value submitted when enabled |
+| `hiddenByField` | string  | `""`        | Conditional visibility       |
+| `enabled`       | boolean | `true`      | Default enabled state        |
 
 #### `input-select`
 
 Dropdown select.
 
-| Field                   | Type     | Description                                             |
-|-------------------------|----------|---------------------------------------------------------|
-| `label`                 | string   | Field label                                             |
-| `placeholder`           | string   | Placeholder text                                        |
-| `choices`               | string[] | Simple string options                                   |
-| `valueArr`              | object[] | Key-value options `[{"name": "Label", "value": "val"}]` |
-| `itemFieldNameForTitle` | string   | Title field in `valueArr` objects                       |
-| `itemFieldNameForValue` | string   | Value field in `valueArr` objects                       |
-| `loadValueInto`         | string   | Load selected value into another field; use comma-separated names for multiple fields |
-| `value`                 | any      | Default selected value                                  |
-| `hiddenByField`         | string   | Conditional visibility                                  |
-| `clearable`             | boolean  | Allow clearing selection                                |
-| `searchable`            | boolean  | Enable search                                           |
-| `addTag`                | boolean  | Allow adding custom values                              |
-| `selectDefaultFirst`    | boolean  | Auto-select first option                                |
-| `required`              | boolean  | Required field                                          |
-| `hiddenByDefault`       | boolean  | Hidden until API response                               |
+| Field                   | Type     | Default                            | Description                                             |
+|-------------------------|----------|------------------------------------|---------------------------------------------------------|
+| `label`                 | string   | `"Example Select"`                 | Field label                                             |
+| `placeholder`           | string   | `"Please Select"`                  | Placeholder text                                        |
+| `choices`               | string[] | `["Value1", "Value2", "Value3"]` | Simple string options                                   |
+| `valueArr`              | object[] | `null`                             | Key-value options `[{"name": "Label", "value": "val"}]` |
+| `itemFieldNameForTitle` | string   | `"name"`                           | Title field in `valueArr` objects                       |
+| `itemFieldNameForValue` | string   | `"value"`                          | Value field in `valueArr` objects                       |
+| `loadValueInto`         | string   | `""`                               | Load selected value into another field; use comma-separated names for multiple fields |
+| `value`                 | any      | `"Value1"`                         | Default selected value                                  |
+| `hiddenByField`         | string   | `""`                               | Conditional visibility                                  |
+| `clearable`             | boolean  | `true`                             | Allow clearing selection                                |
+| `searchable`            | boolean  | `true`                             | Enable search                                           |
+| `addTag`                | boolean  | `false`                            | Allow adding custom values                              |
+| `selectDefaultFirst`    | boolean  | `true`                             | Auto-select first option                                |
+| `required`              | boolean  | `true`                             | Required field                                          |
+| `hiddenByDefault`       | boolean  | `false`                            | Hidden until API response                               |
 
 #### `input-radio`
 
 Radio button group.
 
-| Field        | Type     | Description             |
-|--------------|----------|-------------------------|
-| `label`      | string   | Field label             |
-| `choices`    | string[] | Options list            |
-| `value`      | string   | Default selected value   |
-| `required`   | boolean  | Required field          |
-| `storeValue` | boolean  | Persist in localStorage |
+| Field           | Type     | Default                            | Description             |
+|-----------------|----------|------------------------------------|-------------------------|
+| `label`         | string   | `"Example Radio Buttons"`          | Field label             |
+| `choices`       | string[] | `["Value1", "Value2", "Value3"]` | Options list            |
+| `value`         | string   | `"Value1"`                         | Default selected value  |
+| `hiddenByField` | string   | `""`                               | Conditional visibility  |
+| `required`      | boolean  | `true`                             | Required field          |
+| `storeValue`    | boolean  | `false`                            | Persist in localStorage |
 
 #### `input-tags`
 
 Tag/chip input for multiple values.
 
-| Field         | Type    | Description      |
-|---------------|---------|------------------|
-| `label`       | string  | Field label      |
-| `placeholder` | string  | Placeholder text |
-| `value`       | string[] | Default tags     |
-| `hiddenByField` | string | Conditional visibility |
-| `required`    | boolean | Required field   |
+| Field             | Type     | Default                            | Description             |
+|-------------------|----------|------------------------------------|-------------------------|
+| `label`           | string   | `"Tags"`                           | Field label             |
+| `placeholder`     | string   | `"Please Add Tags"`                | Placeholder text        |
+| `choices`         | string[] | `[]`                               | Available choices       |
+| `value`           | string[] | `["Value1", "Value2", "Value3"]` | Default tags            |
+| `hiddenByField`   | string   | `""`                               | Conditional visibility  |
+| `hiddenByDefault` | boolean  | `false`                            | Hidden until API response |
+| `required`        | boolean  | `true`                             | Required field          |
 
 #### `input-date`
 
 Date/time picker.
 
-| Field                | Type     | Description                             |
-|----------------------|----------|-----------------------------------------|
-| `label`              | string   | Field label                             |
-| `format`             | string   | Date format (e.g. `"YYYY-MM-DD HH:mm"`) |
-| `value`              | string   | Default date value                      |
-| `offset`             | number   | Default days offset from today          |
-| `hiddenByField`      | string   | Conditional visibility                  |
-| `useDefault`         | boolean  | Use current date as default             |
-| `includeTime`        | boolean  | Enable time selection (default: true)   |
-| `compactView`        | boolean  | Compact calendar view                   |
-| `rangeMode`          | boolean  | Enable date range selection             |
-| `busyDates`          | string[] | List of unavailable dates               |
-| `busyDatesFieldName` | string   | Field name for busy dates from API      |
-| `required`           | boolean  | Required field                          |
+| Field                | Type     | Default             | Description                             |
+|----------------------|----------|---------------------|-----------------------------------------|
+| `label`              | string   | `"Date"`            | Field label                             |
+| `format`             | string   | `"YYYY-MM-DD HH:mm"` | Date format (e.g. `"YYYY-MM-DD HH:mm"`) |
+| `value`              | string   | `""`                | Default date value                      |
+| `offset`             | number   | `0`                 | Default days offset from today          |
+| `hiddenByField`      | string   | `""`                | Conditional visibility                  |
+| `useDefault`         | boolean  | `false`             | Use current date as default             |
+| `includeTime`        | boolean  | `true`              | Enable time selection                   |
+| `compactView`        | boolean  | `false`             | Compact calendar view                   |
+| `rangeMode`          | boolean  | `false`             | Enable date range selection             |
+| `busyDates`          | string[] | `[]`                | List of unavailable dates               |
+| `busyDatesFieldName` | string   | `""`                | Field name for busy dates from API      |
+| `required`           | boolean  | `true`              | Required field                          |
 
 #### `input-color`
 
 Color picker.
 
-| Field   | Type   | Description |
-|---------|--------|-------------|
-| `label` | string | Field label |
-| `value` | string | Default color value |
-| `hiddenByField` | string | Conditional visibility |
+| Field           | Type   | Default   | Description            |
+|-----------------|--------|-----------|------------------------|
+| `label`         | string | `"Color"` | Field label            |
+| `value`         | string | `""`      | Default color value    |
+| `hiddenByField` | string | `""`      | Conditional visibility |
 
 #### `input-file`
 
 File upload.
 
-| Field           | Type    | Description                                                                       |
-|-----------------|---------|-----------------------------------------------------------------------------------|
-| `label`         | string  | Field label                                                                       |
-| `placeholder`   | string  | Button text                                                                       |
-| `accept`        | string  | Accepted file types (e.g. `"image/*"`)                                            |
-| `multiple`      | boolean | Allow multiple files                                                              |
-| `loadValueInto` | string  | Load file value into another field; use comma-separated names for multiple fields |
-| `hiddenByField` | string  | Conditional visibility                                                            |
-| `required`      | boolean | Required field                                                                    |
+| Field           | Type    | Default         | Description                                                                       |
+|-----------------|---------|-----------------|-----------------------------------------------------------------------------------|
+| `label`         | string  | `"File"`        | Field label                                                                       |
+| `placeholder`   | string  | `"Upload File"` | Button text                                                                       |
+| `accept`        | string  | `"image/*"`     | Accepted file types (e.g. `"image/*"`)                                            |
+| `value`         | any[]   | `[]`            | Uploaded file value                                                               |
+| `multiple`      | boolean | `false`         | Allow multiple files                                                              |
+| `loadValueInto` | string  | `""`            | Load file value into another field; use comma-separated names for multiple fields |
+| `hiddenByField` | string  | `""`            | Conditional visibility                                                            |
+| `required`      | boolean | `true`          | Required field                                                                    |
 
 ### Media Elements
 
@@ -345,57 +363,75 @@ File upload.
 
 Image display.
 
-| Field                      | Type     | Description                                                   |
-|----------------------------|----------|---------------------------------------------------------------|
-| `label`                    | string   | Optional label                                                |
-| `itemFieldName`            | string   | Field name for array of images                                |
-| `valueArr`                 | object[] | An array of objects with entries to be displayed in list mode |
-| `itemThumbnailFieldName`   | string   | Thumbnail field name                                          |
-| `prefixText`               | string   | URL prefix                                                    |
-| `value`                    | string   | Image URL or base64 value                                     |
-| `hiddenByField`            | string   | Conditional visibility                                        |
-| `cropperAspectRatioString` | string   | Crop ratio: `"1:1"`, `"4:3"`, `"16:9"`, etc.                  |
-| `useLink`                  | boolean  | Image is URL (not base64)                                     |
-| `useCropper`               | boolean  | Enable crop tool                                              |
-| `useLightbox`              | boolean  | Click to zoom                                                 |
-| `fullWidth`                | boolean  | Full container width                                          |
-| `roundedCorners`           | boolean  | Rounded corners                                               |
-| `borderShadow`             | boolean  | Shadow effect                                                 |
-| `vkUseSendToFiles`         | boolean  | VK: upload/send image to My Files                             |
-| `required`                 | boolean  | Required field                                                |
+| Field                      | Type     | Default     | Description                                                   |
+|----------------------------|----------|-------------|---------------------------------------------------------------|
+| `label`                    | string   | `"Image"`   | Optional label                                                |
+| `itemFieldName`            | string   | `""`        | Field name for array of images                                |
+| `valueArr`                 | object[] | `undefined` | An array of objects with entries to be displayed in list mode |
+| `itemThumbnailFieldName`   | string   | `""`        | Thumbnail field name                                          |
+| `prefixText`               | string   | `""`        | URL prefix                                                    |
+| `value`                    | string   | `""`        | Image URL or base64 value                                     |
+| `hiddenByField`            | string   | `""`        | Conditional visibility                                        |
+| `cropperAspectRatioString` | string   | `""`        | Crop ratio: `"1:1"`, `"4:3"`, `"16:9"`, etc.                  |
+| `useLink`                  | boolean  | `true`      | Image is URL (not base64)                                     |
+| `useCropper`               | boolean  | `false`     | Enable crop tool                                              |
+| `useLightbox`              | boolean  | `false`     | Click to zoom                                                 |
+| `fullWidth`                | boolean  | `false`     | Full container width                                          |
+| `roundedCorners`           | boolean  | `false`     | Rounded corners                                               |
+| `borderShadow`             | boolean  | `false`     | Shadow effect                                                 |
+| `vkUseSendToFiles`         | boolean  | `false`     | VK: upload/send image to My Files                             |
+| `hiddenByDefault`          | boolean  | `false`     | Hidden until API response                                     |
+| `required`                 | boolean  | `false`     | Required field                                                |
 
 #### `video`
 
 Video player.
 
-Same as `image` except: no `cropperAspectRatioString`/`useCropper`, plus:
-
-| Field       | Type   | Description          |
-|-------------|--------|----------------------|
-| `posterUrl` | string | Poster/thumbnail URL |
+| Field                    | Type     | Default     | Description                                                   |
+|--------------------------|----------|-------------|---------------------------------------------------------------|
+| `label`                  | string   | `""`        | Optional label                                                |
+| `itemFieldName`          | string   | `""`        | Field name for array of videos                                |
+| `valueArr`               | object[] | `undefined` | An array of objects with entries to be displayed in list mode |
+| `itemThumbnailFieldName` | string   | `""`        | Thumbnail field name                                          |
+| `prefixText`             | string   | `""`        | URL prefix                                                    |
+| `value`                  | string   | `""`        | Video URL or base64 value                                     |
+| `posterUrl`              | string   | `""`        | Poster/thumbnail URL                                          |
+| `hiddenByField`          | string   | `""`        | Conditional visibility                                        |
+| `useLink`                | boolean  | `true`      | Video is URL (not base64)                                     |
+| `useLightbox`            | boolean  | `false`     | Click to zoom/open                                            |
+| `fullWidth`              | boolean  | `false`     | Full container width                                          |
+| `roundedCorners`         | boolean  | `false`     | Rounded corners                                               |
+| `borderShadow`           | boolean  | `false`     | Shadow effect                                                 |
+| `vkUseSendToFiles`       | boolean  | `false`     | VK: upload/send video to My Files                             |
+| `hiddenByDefault`        | boolean  | `false`     | Hidden until API response                                     |
+| `required`               | boolean  | `false`     | Required field                                                |
 
 #### `audio`
 
 Audio player.
 
-| Field        | Type    | Description    |
-|--------------|---------|----------------|
-| `label`      | string  | Optional label |
-| `prefixText` | string  | URL prefix     |
-| `value`      | string  | Audio URL      |
-| `hiddenByField` | string | Conditional visibility |
-| `required`   | boolean | Required field |
+| Field              | Type    | Default | Description                   |
+|--------------------|---------|---------|-------------------------------|
+| `label`            | string  | `""`    | Optional label                |
+| `prefixText`       | string  | `""`    | URL prefix                    |
+| `value`            | string  | `""`    | Audio URL                     |
+| `hiddenByField`    | string  | `""`    | Conditional visibility        |
+| `hiddenByDefault`  | boolean | `false` | Hidden until API response     |
+| `fullWidth`        | boolean | `false` | Full container width          |
+| `vkUseSendToFiles` | boolean | `false` | VK: upload/send audio to My Files |
+| `required`         | boolean | `false` | Required field                |
 
 #### `image-comparison`
 
 Before/after image comparison slider.
 
-| Field         | Type   | Description      |
-|---------------|--------|------------------|
-| `label`       | string | Label            |
-| `hiddenByField` | string | Conditional visibility |
-| `valueFirst`  | string | First image URL  |
-| `valueSecond` | string | Second image URL |
+| Field           | Type   | Default              | Description            |
+|-----------------|--------|----------------------|------------------------|
+| `label`         | string | `"Image comparison"` | Label                  |
+| `hiddenByField` | string | `""`                 | Conditional visibility |
+| `valueFirst`    | string | `""`                 | First image URL        |
+| `valueSecond`   | string | `""`                 | Second image URL       |
+| `value`         | string | `""`                 | Current value          |
 
 ### Interactive Elements
 
@@ -403,22 +439,22 @@ Before/after image comparison slider.
 
 Action button that triggers API calls.
 
-| Field              | Type    | Description                                                  |
-|--------------------|---------|--------------------------------------------------------------|
-| `text`             | string  | Button label                                                 |
-| `icon`             | string  | Bootstrap icon class                                         |
-| `color`            | string  | `"Green"`, `"Blue"`, `"Cyan"`, `"Violet"`, `"Red"`, `"Gray"` |
-| `prefixText`       | string  | Prefix for resulting value                                   |
-| `suffixText`       | string  | Suffix for resulting value                                   |
-| `confirmationText` | string  | Confirmation prompt text before click action                 |
-| `valueFrom`        | string  | Take value from another field                                |
-| `linkedField`      | string  | Name of another button whose API will be automatically triggered after this button's API call completes |
-| `hiddenByField`    | string  | Conditional visibility                                       |
-| `hiddenByDefault`  | boolean | Hidden until value is retrieved                              |
-| `isClearForm`      | boolean | Reset form on click                                          |
-| `isDownloadMode`   | boolean | Download file on click                                       |
-| `isStickyPosition` | boolean | Sticky on scroll                                             |
-| `allowAutoSubmit`  | boolean | Allow one automatic API call when a linked field value changes  |
+| Field              | Type    | Default    | Description                                                  |
+|--------------------|---------|------------|--------------------------------------------------------------|
+| `text`             | string  | `"Submit"` | Button label                                                 |
+| `icon`             | string  | `""`       | Bootstrap icon class                                         |
+| `color`            | string  | `"Green"`  | `"Green"`, `"Blue"`, `"Cyan"`, `"Violet"`, `"Red"`, `"Gray"` |
+| `prefixText`       | string  | `""`       | Prefix for resulting value                                   |
+| `suffixText`       | string  | `""`       | Suffix for resulting value                                   |
+| `confirmationText` | string  | `""`       | Confirmation prompt text before click action                 |
+| `valueFrom`        | string  | `""`       | Take value from another field                                |
+| `linkedField`      | string  | `""`       | Name of another button whose API will be automatically triggered after this button's API call completes |
+| `hiddenByField`    | string  | `""`       | Conditional visibility                                       |
+| `hiddenByDefault`  | boolean | `false`    | Hidden until value is retrieved                              |
+| `isClearForm`      | boolean | `false`    | Reset form on click                                          |
+| `isDownloadMode`   | boolean | `false`    | Download file on click                                       |
+| `isStickyPosition` | boolean | `false`    | Sticky on scroll                                             |
+| `allowAutoSubmit`  | boolean | `false`    | Allow one automatic API call when a linked field value changes  |
 
 The button can receive a value, but it doesn't display that value. It only uses it for download mode (if it's a URL or base64) or opening the link in a new browser tab. If the button is hidden, it becomes visible when it receives a value.
 
@@ -428,15 +464,15 @@ To make `isDownloadMode` work, you can send the same value to the button as to t
 
 Visual image picker (gallery).
 
-| Field       | Type     | Description                                              |
-|-------------|----------|----------------------------------------------------------|
-| `label`     | string   | Field label                                              |
-| `data`      | object[] | Options `[{"name": "Style", "imageUrl": "https://..."}]` |
-| `maxHeight` | number   | Max container height in px                               |
-| `value`     | string   | Default selected value                                    |
-| `hiddenByField` | string | Conditional visibility                                  |
-| `showTitle` | boolean  | Show image titles                                        |
-| `required`  | boolean  | Required field                                           |
+| Field           | Type     | Default          | Description                                              |
+|-----------------|----------|------------------|----------------------------------------------------------|
+| `label`         | string   | `"Select image"` | Field label                                              |
+| `data`          | object[] | `[]`             | Options `[{"name": "Style", "imageUrl": "https://..."}]` |
+| `maxHeight`     | number   | `0`              | Max container height in px                               |
+| `value`         | string   | `null`           | Default selected value                                   |
+| `hiddenByField` | string   | `""`             | Conditional visibility                                   |
+| `showTitle`     | boolean  | `true`           | Show image titles                                        |
+| `required`      | boolean  | `false`          | Required field                                           |
 
 ### Data Display Elements
 
@@ -444,58 +480,61 @@ Visual image picker (gallery).
 
 Data table.
 
-| Field             | Type     | Description                            |
-|-------------------|----------|----------------------------------------|
-| `label`           | string   | Table title                            |
-| `headers`         | string[] | Column headers                         |
-| `keys`            | string[] | Object keys for each column            |
-| `valueArr`        | object[] | An array of objects with table entries |
-| `loadValueInto`   | string   | Load the clicked row field specified by `itemFieldName` into another field; use comma-separated names for multiple fields |
-| `itemFieldName`   | string   | Row field name used as the loaded value for `loadValueInto` |
-| `hiddenByField`   | string   | Conditional visibility                 |
-| `isHTML`          | boolean  | Render values as HTML                  |
-| `editable`        | boolean  | Enable inline editing                  |
-| `vertical`        | boolean  | Vertical layout mode                   |
-| `hiddenByDefault` | boolean  | Hidden until API response              |
+| Field             | Type     | Default                            | Description                            |
+|-------------------|----------|------------------------------------|----------------------------------------|
+| `label`           | string   | `""`                               | Table title                            |
+| `headers`         | string[] | `["Column1", "Column2", "Column3"]` | Column headers                         |
+| `keys`            | string[] | `["key1", "key2", "key3"]`       | Object keys for each column            |
+| `valueArr`        | object[] | `undefined`                        | An array of objects with table entries |
+| `loadValueInto`   | string   | `""`                               | Load the clicked row field specified by `itemFieldName` into another field; use comma-separated names for multiple fields |
+| `itemFieldName`   | string   | `"id"`                             | Row field name used as the loaded value for `loadValueInto` |
+| `hiddenByField`   | string   | `""`                               | Conditional visibility                 |
+| `isHTML`          | boolean  | `false`                            | Render values as HTML                  |
+| `editable`        | boolean  | `false`                            | Enable inline editing                  |
+| `vertical`        | boolean  | `false`                            | Vertical layout mode                   |
+| `hiddenByDefault` | boolean  | `false`                            | Hidden until API response              |
 
 #### `input-chart-line`
 
 Line chart.
 
-| Field            | Type    | Description              |
-|------------------|---------|--------------------------|
-| `label`          | string  | Chart title              |
-| `itemTitle`      | string  | Series name              |
-| `fieldNameAxisX` | string  | X axis field             |
-| `fieldNameAxisY` | string  | Y axis field             |
-| `itemFieldName`  | string  | Field name in data array |
-| `isXAxisDate`    | boolean | X axis values are dates  |
-| `format`         | string  | Date format for X axis   |
-| `hiddenByField`  | string  | Conditional visibility   |
+| Field            | Type    | Default         | Description              |
+|------------------|---------|-----------------|--------------------------|
+| `label`          | string  | `"Line Chart"`  | Chart title              |
+| `itemTitle`      | string  | `"Item Title"`  | Series name              |
+| `fieldNameAxisX` | string  | `""`            | X axis field             |
+| `fieldNameAxisY` | string  | `""`            | Y axis field             |
+| `itemFieldName`  | string  | `"id"`          | Field name in data array |
+| `isXAxisDate`    | boolean | `false`         | X axis values are dates  |
+| `format`         | string  | `"MMM DD, HH:mm"` | Date format for X axis |
+| `hiddenByField`  | string  | `""`            | Conditional visibility   |
+| `hiddenByDefault` | boolean | `false`        | Hidden until API response |
 
 #### `input-chart-pie`
 
 Pie chart.
 
-| Field               | Type   | Description              |
-|---------------------|--------|--------------------------|
-| `label`             | string | Chart title              |
-| `itemTitle`         | string | Dataset name             |
-| `fieldNameCategory` | string | Category field           |
-| `fieldNameValue`    | string | Numeric value field      |
-| `itemFieldName`     | string | Field name in data array |
-| `hiddenByField`     | string | Conditional visibility   |
+| Field               | Type   | Default        | Description              |
+|---------------------|--------|----------------|--------------------------|
+| `label`             | string | `"Pie Chart"`  | Chart title              |
+| `itemTitle`         | string | `"Item Title"` | Dataset name             |
+| `fieldNameCategory` | string | `"category"`   | Category field           |
+| `fieldNameValue`    | string | `"value"`      | Numeric value field      |
+| `itemFieldName`     | string | `"id"`         | Field name in data array |
+| `hiddenByField`     | string | `""`           | Conditional visibility   |
+| `hiddenByDefault`   | boolean | `false`       | Hidden until API response |
 
 #### `input-pagination`
 
 Pagination control.
 
-| Field         | Type    | Description                          |
-|---------------|---------|--------------------------------------|
-| `perPage`     | number  | Items per page                       |
-| `maxSize`     | number  | Max visible page buttons             |
-| `autoHide`    | boolean | Hide when single page                |
-| `useAsOffset` | boolean | Return offset instead of page number |
+| Field         | Type    | Default | Description                          |
+|---------------|---------|---------|--------------------------------------|
+| `perPage`     | number  | `20`    | Items per page                       |
+| `maxSize`     | number  | `9`     | Max visible page buttons             |
+| `autoHide`    | boolean | `false` | Hide when single page                |
+| `useAsOffset` | boolean | `false` | Return offset instead of page number |
+| `value`       | number  | `1`     | Current page                         |
 
 ### Status Elements
 
@@ -503,36 +542,39 @@ Pagination control.
 
 Status indicator with text messages.
 
-| Field                      | Type    | Description               |
-|----------------------------|---------|---------------------------|
-| `statusPending`            | string  | Pending status value      |
-| `statusProcessing`         | string  | Processing status value   |
-| `statusCompleted`          | string  | Completed status value    |
-| `statusError`              | string  | Error status value        |
-| `statusCompletedText`      | string  | Completed display text    |
-| `statusCompletedTextForVK` | string  | Completed text for VK app |
-| `statusProcessingText`     | string  | Processing display text   |
-| `statusErrorText`          | string  | Error display text        |
-| `hiddenByField`            | string  | Conditional visibility    |
-| `isBooleanValue`           | boolean | Status is true/false      |
-| `hiddenByDefault`          | boolean | Hidden until API response |
+| Field                      | Type    | Default                       | Description               |
+|----------------------------|---------|-------------------------------|---------------------------|
+| `statusPending`            | string  | `"pending"`                   | Pending status value      |
+| `statusProcessing`         | string  | `"processing"`                | Processing status value   |
+| `statusCompleted`          | string  | `"completed"`                 | Completed status value    |
+| `statusError`              | string  | `"error"`                     | Error status value        |
+| `statusCompletedText`      | string  | `"Completed"`                 | Completed display text    |
+| `statusCompletedTextForVK` | string  | `"Completed"`                 | Completed text for VK app |
+| `statusProcessingText`     | string  | `"Performing an operation..."` | Processing display text  |
+| `statusErrorText`          | string  | `"Error"`                     | Error display text        |
+| `hiddenByField`            | string  | `""`                          | Conditional visibility    |
+| `isBooleanValue`           | boolean | `false`                       | Status is true/false      |
+| `hiddenByDefault`          | boolean | `false`                       | Hidden until API response |
+| `value`                    | any     | `null`                        | Current status value      |
 
 #### `progress`
 
 Progress bar with queue tracking.
 
-| Field                      | Type    | Description              |
-|----------------------------|---------|--------------------------|
-| `statusPending`            | string  | Pending status value     |
-| `statusProcessing`         | string  | Processing status value  |
-| `statusCompleted`          | string  | Completed status value   |
-| `statusError`              | string  | Error status value       |
-| `statusFieldName`          | string  | Status field in response |
-| `queueNumberFieldName`     | string  | Queue position field     |
-| `taskIdFieldName`          | string  | Task ID field            |
-| `operationDurationSeconds` | number  | Estimated duration       |
-| `hiddenByField`            | string  | Conditional visibility   |
-| `isBooleanValue`           | boolean | Status is true/false     |
+| Field                      | Type    | Default        | Description              |
+|----------------------------|---------|----------------|--------------------------|
+| `statusPending`            | string  | `"pending"`    | Pending status value     |
+| `statusProcessing`         | string  | `"processing"` | Processing status value  |
+| `statusCompleted`          | string  | `"completed"`  | Completed status value   |
+| `statusError`              | string  | `"error"`      | Error status value       |
+| `statusFieldName`          | string  | `"status"`     | Status field in response |
+| `queueNumberFieldName`     | string  | `"number"`     | Queue position field     |
+| `taskIdFieldName`          | string  | `"uuid"`       | Task ID field            |
+| `operationDurationSeconds` | number  | `20`           | Estimated duration       |
+| `hiddenByField`            | string  | `""`           | Conditional visibility   |
+| `isBooleanValue`           | boolean | `false`        | Status is true/false     |
+| `value`                    | any     | `null`         | Current progress value   |
+| `valueObj`                 | object  | `null`         | Current queue/status object |
 
 ### Chat Elements
 
@@ -540,13 +582,14 @@ Progress bar with queue tracking.
 
 Chat-style messaging interface for conversational interactions with an API.
 
-| Field             | Type    | Description                                        |
-|-------------------|---------|----------------------------------------------------|
-| `label`           | string  | Label displayed above the chat window              |
-| `placeholder`     | string  | Placeholder text in the message input field        |
-| `maxHeight`       | number  | Max height of the messages area in px (default: 400) |
-| `hiddenByField`   | string  | Conditional visibility                            |
-| `hiddenByDefault` | boolean | Hidden until API response                          |
+| Field             | Type    | Default | Description                           |
+|-------------------|---------|---------|---------------------------------------|
+| `label`           | string  | `""`    | Label displayed above the chat window |
+| `placeholder`     | string  | `""`    | Placeholder text in the message input field |
+| `maxHeight`       | number  | `400`   | Max height of the messages area in px |
+| `hiddenByField`   | string  | `""`    | Conditional visibility                |
+| `hiddenByDefault` | boolean | `false` | Hidden until API response             |
+| `value`           | string  | `""`    | Current outgoing/incoming message value |
 
 **Behavior:**
 
@@ -591,19 +634,19 @@ Chat-style messaging interface for conversational interactions with an API.
 
 Embedded web content.
 
-| Field                 | Type    | Description                       |
-|-----------------------|---------|-----------------------------------|
-| `label`               | string  | Frame label                       |
-| `height`              | number  | Frame height in px                |
-| `value`               | string  | Page URL                          |
-| `valueFrom`           | string  | Take URL from another field       |
-| `htmlContent`         | string  | HTML content (alternative to URL) |
-| `useResizer`          | boolean | Allow resizing                    |
-| `useRefreshButton`    | boolean | Show refresh button               |
-| `useFullscreenButton` | boolean | Show fullscreen button            |
-| `border`              | boolean | Show border                       |
-| `hiddenByField`       | string  | Conditional visibility            |
-| `hiddenByDefault`     | boolean | Hidden until API response         |
+| Field                 | Type    | Default    | Description                       |
+|-----------------------|---------|------------|-----------------------------------|
+| `label`               | string  | `"Iframe"` | Frame label                       |
+| `height`              | number  | `500`      | Frame height in px                |
+| `value`               | string  | `""`       | Page URL                          |
+| `valueFrom`           | string  | `""`       | Take URL from another field       |
+| `htmlContent`         | string  | `""`       | HTML content (alternative to URL) |
+| `useResizer`          | boolean | `false`    | Allow resizing                    |
+| `useRefreshButton`    | boolean | `false`    | Show refresh button               |
+| `useFullscreenButton` | boolean | `false`    | Show fullscreen button            |
+| `border`              | boolean | `true`     | Show border                       |
+| `hiddenByField`       | string  | `""`       | Conditional visibility            |
+| `hiddenByDefault`     | boolean | `false`    | Hidden until API response         |
 
 This element supports inserting content (htmlContent) from another element. In this case, content from the element named "content_code" will be inserted:
 
@@ -637,13 +680,14 @@ This element supports inserting content (htmlContent) from another element. In t
 
 Subscription widget (VK apps).
 
-| Field            | Type    | Description              |
-|------------------|---------|--------------------------|
-| `label`          | string  | Label text               |
-| `subscriptionId` | string  | Subscription ID          |
-| `icon`           | string  | Bootstrap icon class     |
-| `hiddenByField`  | string  | Conditional visibility   |
-| `showOnlyInVK`   | boolean | Show only in VK mini app |
+| Field            | Type    | Default             | Description              |
+|------------------|---------|---------------------|--------------------------|
+| `label`          | string  | `"My subscription"` | Label text               |
+| `subscriptionId` | string  | `""`                | Subscription ID          |
+| `icon`           | string  | `""`                | Bootstrap icon class     |
+| `hiddenByField`  | string  | `""`                | Conditional visibility   |
+| `showOnlyInVK`   | boolean | `true`              | Show only in VK mini app |
+| `value`          | any     | `null`              | Current value            |
 
 ---
 
@@ -893,11 +937,11 @@ A text generation app with input, API call, and result display:
 
 1. **Unique names** — each element must have a unique `name` within the app
 2. **Block/order index** — use `blockIndex` and `orderIndex` to control layout
-3. **API UUIDs** — must match configured API endpoints
+3. **API UUIDs** — must match the UUIDs from the API data provided by the user
 4. **Conditional logic** — use `hiddenByField` for dynamic elements
 5. **Output elements** — set `hiddenByDefault: true` for elements showing API results
 6. **Required fields** — mark important inputs with `required: true`
-7. **Store values** — use `storeValue: true` for values persisting across sessions
+7. **Store values** — use `storeValue: true` only for values that need to persist across sessions, for example a task identifier received from an API
 8. **Grid layout** — use `gridColumnSpan` to control block widths
 9. **Sticky buttons** — use `isStickyPosition: true` for primary action buttons
 10. **Bootstrap Icons** — reference: https://icons.getbootstrap.com/
