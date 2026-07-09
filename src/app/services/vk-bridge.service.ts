@@ -139,8 +139,7 @@ export class VkBridgeService {
                     params: {
                         v: '5.131',
                         user_ids: options.userId,
-                        access_token: userToken,
-                        type
+                        access_token: userToken
                     }})
                     .then((data: any) => {
                         options.userFileUploadUrl = data.response?.upload_url;
