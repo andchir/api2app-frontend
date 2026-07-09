@@ -151,18 +151,17 @@ export class ModalTopUpBalanceComponent implements OnInit {
             .then((data: any) => {
                 const email = String(data?.email || '').trim();
                 const emailSign = String(data?.sign || '').trim();
-                if (!email || !emailSign) {
-                    throw new Error('VK did not return a signed email');
-                }
-                this.createVkPayPayment(email, emailSign);
+                this.createVkPayPayment(
+                    email && emailSign ? email : undefined,
+                    email && emailSign ? emailSign : undefined
+                );
             })
-            .catch((error: any) => {
-                console.log(error);
-                this.handleVkPayError($localize `Email is required to send the receipt.`);
+            .catch(() => {
+                this.createVkPayPayment();
             });
     }
 
-    private createVkPayPayment(email: string, emailSign: string): void {
+    private createVkPayPayment(email?: string, emailSign?: string): void {
         this.userBalanceService.vkPayTopUp(
             this.appUuid,
             this.value,
