@@ -63,10 +63,18 @@ export class UserBalanceService {
             );
     }
 
-    vkPayTopUp(appUuid: string, value: number, vkAppOptions: VkAppOptions): Observable<VkPayTopUpResponse> {
+    vkPayTopUp(
+        appUuid: string,
+        value: number,
+        vkAppOptions: VkAppOptions,
+        email: string,
+        emailSign: string
+    ): Observable<VkPayTopUpResponse> {
         const url = `${BASE_URL}vk_pay_top_up/${appUuid}`;
         const body = {
             value,
+            email,
+            email_sign: emailSign,
             vk_app_launch_params: vkAppOptions?.appLaunchParamsJson || ''
         };
         return this.httpClient.post<VkPayTopUpResponse>(url, body, this.httpOptions)

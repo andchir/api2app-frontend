@@ -142,15 +142,39 @@ export class ModalTopUpBalanceComponent implements OnInit {
     }
 
     private submitVkPay(): void {
-        this.userBalanceService.vkPayTopUp(this.appUuid, this.value, this.vkAppOptions)
+        if (typeof vkBridge === 'undefined') {
+            this.handleVkPayError($localize `Unable to start payment.`);
+            return;
+        }
+
+        vkBridge.send('VKWebAppGetEmail')
+            .then((data: any) => {
+                const email = String(data?.email || '').trim();
+                const emailSign = String(data?.sign || '').trim();
+                if (!email || !emailSign) {
+                    throw new Error('VK did not return a signed email');
+                }
+                this.createVkPayPayment(email, emailSign);
+            })
+            .catch((error: any) => {
+                console.log(error);
+                this.handleVkPayError($localize `Email is required to send the receipt.`);
+            });
+    }
+
+    private createVkPayPayment(email: string, emailSign: string): void {
+        this.userBalanceService.vkPayTopUp(
+            this.appUuid,
+            this.value,
+            this.vkAppOptions,
+            email,
+            emailSign
+        )
             .pipe(takeUntil(this.destroyed$))
             .subscribe({
                 next: (res) => {
-                    if (!res?.success || !res.params || typeof vkBridge === 'undefined') {
-                        this.submitted = false;
-                        this.messageType = 'error';
-                        this.message = $localize `Unable to start payment.`;
-                        this.cdr.markForCheck();
+                    if (!res?.success || !res.params) {
+                        this.handleVkPayError($localize `Unable to start payment.`);
                         return;
                     }
                     vkBridge.send('VKWebAppOpenPayForm', {
@@ -172,18 +196,19 @@ export class ModalTopUpBalanceComponent implements OnInit {
                         })
                         .catch((error: any) => {
                             console.log(error);
-                            this.submitted = false;
-                            this.messageType = 'error';
-                            this.message = $localize `Payment was not completed.`;
-                            this.cdr.markForCheck();
+                            this.handleVkPayError($localize `Payment was not completed.`);
                         });
                 },
                 error: (err) => {
-                    this.submitted = false;
-                    this.messageType = 'error';
-                    this.message = err?.message || $localize `Unable to start payment.`;
-                    this.cdr.markForCheck();
+                    this.handleVkPayError(err?.message || $localize `Unable to start payment.`);
                 }
             });
+    }
+
+    private handleVkPayError(message: string): void {
+        this.submitted = false;
+        this.messageType = 'error';
+        this.message = message;
+        this.cdr.markForCheck();
     }
 }
