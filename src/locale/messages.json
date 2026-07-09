@@ -553,6 +553,7 @@
         "UserDataCreateApi": "Create API",
         "UserDataApiCreated": "API configurations created successfully.",
         "UserDataCreateApiConfirm": "Create API configurations for this table?",
-        "367444526338931297": "Total number of views"
+        "367444526338931297": "Total number of views",
+        "254541547143992540": "Sorry, payment is not possible on this platform."
     }
 }

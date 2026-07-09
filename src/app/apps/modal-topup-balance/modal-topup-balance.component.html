@@ -41,7 +41,7 @@
                     <ng-container *ngSwitchCase="'balance'">
 
                         <div class="mb-5"
-                             [ngClass]="{'opacity-70 pointer-events-none': submitted}">
+                             [ngClass]="{'opacity-70 pointer-events-none': submitted || !isPaymentAllowed}">
                             <label for="formFieldTopUpValue" class="block mb-2 text-sm font-medium text-gray-900">
                                 <span i18n>Top-up amount</span>, руб.
                             </label>
@@ -50,13 +50,21 @@
                                    min="0" step="1"
                                    [(ngModel)]="value">
                         </div>
+                        <div class="mb-5" *ngIf="!isPaymentAllowed">
+                            <div class="flex items-center gap-2 py-2 px-3 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50 dark:bg-gray-800 dark:text-blue-400 dark:border-blue-800" role="alert">
+                                <div>
+                                    <i class="bi bi-info-circle"></i>
+                                </div>
+                                <div i18n>Sorry, payment is not possible on this platform.</div>
+                            </div>
+                        </div>
                         <div class="mb-5" *ngIf="message">
                             <app-alert [(message)]="message" [type]="messageType" [closable]="false" position="static"></app-alert>
                         </div>
-                        <div class="text-center"
-                             [ngClass]="{'opacity-70 pointer-events-none': submitted}">
+                        <div class="text-center">
                             <button type="button"
                                     class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
+                                    [ngClass]="{'opacity-70 pointer-events-none': submitted || !isPaymentAllowed}"
                                     [disabled]="submitted"
                                     (click)="submit()">
                                 <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -68,6 +76,7 @@
                             </button>
                             <button type="button"
                                     class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10"
+                                    [ngClass]="{'opacity-70 pointer-events-none': submitted}"
                                     (click)="closeModal()">
                                 <span i18n>Close</span>
                             </button>

@@ -63,6 +63,7 @@ export class VkBridgeService {
                 if (data.vk_app_id) {
                     options.appId = data.vk_app_id;
                     options.userId = data.vk_user_id;
+                    options.platform = data.vk_platform;
                     options.appLaunchParamsJson = JSON.stringify(data);
                 }
                 return data;

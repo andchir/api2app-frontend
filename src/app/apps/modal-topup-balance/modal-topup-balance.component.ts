@@ -38,11 +38,16 @@ export class ModalTopUpBalanceComponent implements OnInit {
     promoCode: string = '';
     tabCurrent: 'balance'|'promo_code' = 'balance';
     destroyed$: Subject<void> = new Subject();
+    isPaymentAllowed: boolean = true;
 
     constructor(
         private cdr: ChangeDetectorRef,
         private userBalanceService: UserBalanceService
     ) {
+        if (this.isVkApp && this.vkAppOptions.platform
+            && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+            this.isPaymentAllowed = false;
+        }
     }
 
     ngOnInit(): void {
@@ -99,6 +104,9 @@ export class ModalTopUpBalanceComponent implements OnInit {
     }
 
     submit(): void {
+        if (!this.isPaymentAllowed) {
+            return;
+        }
         if (this.value < 1) {
             this.messageType = 'error';
             this.message = $localize `Please enter a valid amount.`;
