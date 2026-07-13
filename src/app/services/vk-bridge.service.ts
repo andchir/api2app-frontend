@@ -296,6 +296,40 @@ export class VkBridgeService {
         return age;
     }
 
+    detectIsMobile(): boolean {
+        const nav = navigator as any;
+        if (nav.userAgentData && typeof nav.userAgentData.platform === 'string') {
+            const platform = nav.userAgentData.platform;
+            // Android или iOS (iPhone/iPod) — mobile
+            if (platform === 'Android' || platform === 'iOS') {
+                return true;
+            }
+            // macOS might be iPadOS – testing multitouch
+            if (platform === 'macOS' && navigator.maxTouchPoints > 1) {
+                return true; // iPadOS
+            }
+            // For other platforms (Windows, Linux, macOS without a touchscreen) - false
+            return false;
+        }
+        const ua = navigator.userAgent.toLowerCase();
+
+        // Android
+        if (/android/.test(ua)) {
+            return true;
+        }
+
+        // iPhone, iPod
+        if (/iphone|ipod/.test(ua)) {
+            return true;
+        }
+
+        // iPad (explicit) or macOS with multitouch
+        if (/ipad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+            return true;
+        }
+        return false;
+    }
+
     handleError<T>(error: HttpErrorResponse): Observable<any> {
         if (error.error) {
             return throwError(error.error);

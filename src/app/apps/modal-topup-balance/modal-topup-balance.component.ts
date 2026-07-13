@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserBalanceService } from '../../services/user-balance.service';
 import { SharedModule } from '../../shared.module';
 import { VkAppOptions } from '../models/vk-app-options.interface';
+import {VkBridgeService} from "../../services/vk-bridge.service";
 
 declare const vkBridge: any;
 
@@ -22,7 +23,7 @@ declare const vkBridge: any;
         SharedModule
     ],
     styleUrls: [],
-    providers: [UserBalanceService]
+    providers: [UserBalanceService, VkBridgeService]
 })
 export class ModalTopUpBalanceComponent implements OnInit {
 
@@ -42,13 +43,14 @@ export class ModalTopUpBalanceComponent implements OnInit {
 
     constructor(
         private cdr: ChangeDetectorRef,
-        private userBalanceService: UserBalanceService
+        private userBalanceService: UserBalanceService,
+        private vkBridgeService: VkBridgeService
     ) {
-        if (this.isVkApp) {
-            console.log(this.vkAppOptions.platform);
-        }
-        if (this.isVkApp && this.vkAppOptions.platform // 'mobile_web',
-            && !['desktop_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+        const isMobile = this.vkBridgeService.detectIsMobile();
+        console.log('is mobile?', isMobile);
+        if (this.isVkApp && this.vkAppOptions.platform
+            // && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+            && isMobile) {
             this.isPaymentAllowed = false;
         }
     }
