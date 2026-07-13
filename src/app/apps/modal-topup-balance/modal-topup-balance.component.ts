@@ -44,8 +44,9 @@ export class ModalTopUpBalanceComponent implements OnInit {
         private cdr: ChangeDetectorRef,
         private userBalanceService: UserBalanceService
     ) {
-        if (this.isVkApp && this.vkAppOptions.platform
-            && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+        console.log(this.vkAppOptions.platform);
+        if (this.isVkApp && this.vkAppOptions.platform // 'mobile_web',
+            && !['desktop_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
             this.isPaymentAllowed = false;
         }
     }
