@@ -1879,18 +1879,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 }
                 break;
-            case 'user-payment':
-                if (this.isVkApp) {
-                    this.vkBridgeService.showOrderBox(parseInt(String(element.value)))
-                        .then((data: any) => {
-                            if (data?.success) {
-                                this.message = $localize `The purchase was successful.`;
-                                this.messageType = 'success';
-                                this.cdr.detectChanges();
-                            }
-                        });
-                }
-                break;
         }
     }
 

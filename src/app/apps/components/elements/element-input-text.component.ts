@@ -94,7 +94,6 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         }
         this._value = val;
         this.onChange(this._value);
-        this.scrollTextareaBottom();
         this.cdr.detectChanges();
     }
 
@@ -319,6 +318,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             this.inputControl.nativeElement.value = value;
             this.onInput();
         }
+        this.scrollTextareaBottom();
     }
 
     registerOnChange(fn: (_: any) => void) {
