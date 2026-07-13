@@ -47,10 +47,10 @@ export class ModalTopUpBalanceComponent implements OnInit {
         private vkBridgeService: VkBridgeService
     ) {
         const isMobile = this.vkBridgeService.detectIsMobile();
-        console.log('is mobile?', isMobile);
-        if (this.isVkApp && this.vkAppOptions.platform
-            // && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
-            && isMobile) {
+        console.log('is_mobile?', isMobile);
+        if (this.isVkApp && isMobile) {
+            // this.vkAppOptions.platform && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+            console.log('vk_platform', this.vkAppOptions.platform);
             this.isPaymentAllowed = false;
         }
     }
