@@ -47,6 +47,13 @@ export class ModalTopUpBalanceComponent implements OnInit {
         private vkBridgeService: VkBridgeService
     ) {
         const isMobile = this.vkBridgeService.detectIsMobile();
+        console.log('is_vk_app?', this.isVkApp);
+        console.log('is_mobile?', isMobile);
+    }
+
+    ngOnInit(): void {
+        const isMobile = this.vkBridgeService.detectIsMobile();
+        console.log('is_vk_app?', this.isVkApp);
         console.log('is_mobile?', isMobile);
         if (this.isVkApp && isMobile) {
             // this.vkAppOptions.platform && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
@@ -54,10 +61,6 @@ export class ModalTopUpBalanceComponent implements OnInit {
             this.isPaymentAllowed = false;
             this.cdr.markForCheck();
         }
-    }
-
-    ngOnInit(): void {
-
     }
 
     switchTab(tab_name: 'balance'|'promo_code', event?: MouseEvent): void {
