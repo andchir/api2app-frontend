@@ -209,22 +209,63 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return element.value ? String(element.value) : null;
     }
 
-    static localStoreValueClear(element: AppBlockElement): void {
+    private static parseLocalStorageData(value: string | null): Record<string, any> | null {
+        if (value === null) {
+            return null;
+        }
+        try {
+            const data = JSON.parse(value);
+            return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    private static getLocalStorageData(dataKey: string): Promise<Record<string, any>> {
+        const cachedData = ApplicationService.parseLocalStorageData(window.localStorage.getItem(dataKey));
+        if (cachedData !== null) {
+            return Promise.resolve(cachedData);
+        }
+        if (typeof vkBridge === 'undefined' || !window['isVKApp']) {
+            return Promise.resolve({});
+        }
+        return vkBridge.send('VKWebAppStorageGet', {keys: [dataKey]})
+            .then((data) => {
+                const dataStr = data.keys?.[0]?.value;
+                const dataObj = ApplicationService.parseLocalStorageData(dataStr || null) || {};
+                window.localStorage.setItem(dataKey, JSON.stringify(dataObj));
+                return dataObj;
+            })
+            .catch((error) => {
+                console.log(error);
+                return {};
+            });
+    }
+
+    static localStoreValueClear(appUuid: string, element: AppBlockElement): void {
         const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
         if (!apiUuid) {
             return;
         }
+        const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        delete obj[key];
-        if (Object.keys(obj).length === 0) {
-            window.localStorage.removeItem(apiUuid);
-        } else {
-            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
-        }
+        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            delete dataObj[key];
+            const dataStr = JSON.stringify(dataObj);
+            if (Object.keys(dataObj).length === 0) {
+                window.localStorage.removeItem(dataKey);
+            } else {
+                window.localStorage.setItem(dataKey, dataStr);
+            }
+            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
+                    .catch((error) => console.log(error));
+            }
+        });
     }
 
-    static localStoreValue(element: AppBlockElement): void {
+    static localStoreValue(appUuid: string, element: AppBlockElement): void {
         if (!element['storeValue']) {
             return;
         }
@@ -233,23 +274,35 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!apiUuid) {
             return;
         }
+        const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     vkBridge.send('VKWebAppStorageSet', {key: `${apiUuid}-${key}`, value: value || ''})
-        //         .then((data) => {
-        //             // console.log('VKWebAppStorageSet', data);
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //         });
-        // } else {
-            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-            obj[key] = value;
-            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
-        // }
+        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            dataObj[key] = value;
+            const dataStr = JSON.stringify(dataObj);
+            window.localStorage.setItem(dataKey, dataStr);
+            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
+                    .catch((error) => console.log(error));
+            }
+        });
     }
 
-    static applyLocalStoredValue(element: AppBlockElement): Promise<void> {
+    static getLocalStorageValue(appUuid: string, element: AppBlockElement): Promise<any> {
+        if (!element['storeValue']) {
+            return Promise.resolve(null);
+        }
+        const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
+        if (!apiUuid) {
+            return Promise.resolve(null);
+        }
+        const dataKey = `${appUuid}-${apiUuid}`;
+        const key = `${element.type}-${element.name}`;
+        return ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            return Object.prototype.hasOwnProperty.call(dataObj, key) ? dataObj[key] : undefined;
+        });
+    }
+
+    static applyLocalStoredValue(appUuid: string, element: AppBlockElement): Promise<void> {
         if (!element['storeValue']) {
             return Promise.resolve();
         }
@@ -257,24 +310,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!apiUuid) {
             return Promise.resolve();
         }
-        const key = `${element.type}-${element.name}`;
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     return vkBridge.send('VKWebAppStorageGet', {keys: [key]})
-        //         .then((data) => {
-        //             if (data.keys && data.keys.length > 0) {
-        //                 element.value = data.keys[0].value;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //         });
-        // } else {
-            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-            if (obj[key]) {
-                element.value = obj[key];
-            }
-            return Promise.resolve();
-        // }
+        return ApplicationService.getLocalStorageValue(appUuid, element)
+            .then((value) => {
+                if (typeof value !== 'undefined') {
+                    element.value = value;
+                }
+            });
     }
 
     static dataURItoFile(dataURI: string): File {

@@ -241,7 +241,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.value = element.value || null;
                 }
                 this.elementHiddenStateUpdate(element, block);
-                promises.push(ApplicationService.applyLocalStoredValue(element));
+                promises.push(ApplicationService.applyLocalStoredValue(this.data.uuid, element));
             });
         });
 
@@ -970,7 +970,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const sourceElement = this.getValueSourceElement(element);
         const value = ApplicationService.getElementValue(sourceElement);
         if (storeValue && sourceElement) {
-            ApplicationService.localStoreValue(sourceElement);
+            ApplicationService.localStoreValue(this.data.uuid, sourceElement);
         }
         return value;
     }
@@ -1184,7 +1184,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.elementHiddenStateUpdate(element);
         }
         if (clearStored) {
-            ApplicationService.localStoreValueClear(element);
+            ApplicationService.localStoreValueClear(this.data.uuid, element);
         }
     }
 
@@ -1422,7 +1422,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         elements.forEach((el) => {
             const value = el.valueFrom ? this.getElementValueFromSource(el, true) : el.value;
             if (!el.valueFrom) {
-                ApplicationService.localStoreValue(el);
+                ApplicationService.localStoreValue(this.data.uuid, el);
             }
 
             if (value && el.options?.inputApiFieldName != null) {
@@ -1434,7 +1434,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + urlPartIndex;
                 apiItem.urlPartValue += (apiItem.urlPartValue ? ',' : '') + String(value);
-                ApplicationService.localStoreValue(el);
+                ApplicationService.localStoreValue(this.data.uuid, el);
                 this.apiRequestUrlUpdate(apiItem, Number(urlPartIndex), String(value));
             }
         });
@@ -1826,7 +1826,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
         }
         element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
-        ApplicationService.localStoreValue(element);
+        ApplicationService.localStoreValue(this.data.uuid, element);
         if ((element.value || element.valueArr || element.valueObj) && !['button'].includes(element.type)) {
             this.onElementValueChanged(element);
         }
@@ -2059,7 +2059,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 elem.value = null;
                 elem.valueObj = null;
                 elem.valueArr = null;
-                ApplicationService.localStoreValue(elem);
+                ApplicationService.localStoreValue(this.data.uuid, elem);
             }
         });
         this.cdr.markForCheck();
