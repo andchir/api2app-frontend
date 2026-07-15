@@ -350,35 +350,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }, 100);
     }
 
-    download(url: any, filename = '', preventClick: boolean = false, event?: MouseEvent): void {
-        if (event && preventClick) {
-            event.preventDefault();
-            return;
-        }
-        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
-            url = url.changingThisBreaksApplicationSecurity;
-        }
-        if (typeof url === 'string' && (url.match(/^https?:\/\//) || url.includes('blob:') )) {
-            return;
-        }
-        if (event) {
-            event.preventDefault();
-        }
-        if (!filename) {
-            const matches = url.match(/data:image\/([^;]+)/);
-            filename = (new Date().valueOf()) + '.' + matches[1];
-        }
-        fetch(url)
-            .then(response => response.blob())
-            .then(blob => {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
-            })
-            .catch(console.error);
-    }
-
     onProgressUpdate(options: any): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';

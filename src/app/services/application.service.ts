@@ -387,41 +387,49 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static async downloadFile(url: string): Promise<boolean> {
-        const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
-        const fileExtension = ApplicationService.getFileExtension(url);
-        const isFileUrl = filesExtensions.includes(fileExtension);
-
-        if (url.startsWith('data:')) {
-            ApplicationService.downloadDataURI(url);
-            return true;
-        }
-
-        if (!isFileUrl) {
-            console.log('Not an image.', url, fileExtension);
-            window.open(url, '_blank').focus();
-            return false;
+    static async downloadFile(source: string | Blob, filename: string = ''): Promise<boolean> {
+        if (typeof source === 'string'
+            && /^https?:\/\//.test(source)
+            && typeof vkBridge !== 'undefined'
+            && window['isVKApp']
+        ) {
+            try {
+                const vkFilename = filename || ApplicationService.getDownloadFilename(source, new Blob());
+                const result = await vkBridge.send('VKWebAppDownloadFile', {
+                    url: source,
+                    filename: vkFilename
+                });
+                if (result?.result) {
+                    return true;
+                }
+            } catch (error) {
+                console.warn('VK file download failed, falling back to browser download:', error);
+            }
         }
 
         try {
-            const response = await fetch(url, {
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-
-            if (!response.ok) {
-                throw new Error(`Loading error: ${response.status}`);
+            let blob: Blob;
+            if (source instanceof Blob) {
+                blob = source;
+            } else if (source.startsWith('data:')) {
+                blob = ApplicationService.dataUriToBlob(source);
+            } else {
+                const response = await fetch(source, {
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                if (!response.ok) {
+                    throw new Error(`Loading error: ${response.status}`);
+                }
+                blob = await response.blob();
+                filename = filename || ApplicationService.getResponseFilename(response);
             }
 
-            const blob = await response.blob();
+            filename = filename || ApplicationService.getDownloadFilename(source, blob);
             const blobUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = blobUrl;
-
-            let filename = url.split('/').pop();
-            filename = decodeURIComponent(filename.split('?')[0]);
-
-            link.download = String(filename);
+            link.download = filename;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
@@ -429,41 +437,47 @@ export class ApplicationService extends DataService<ApplicationItem> {
             setTimeout(() => {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(blobUrl);
-            }, 100);
+            }, 60_000);
 
             return true;
         } catch (error) {
             console.log(error);
-            window.open(url, '_blank').focus();
+            if (typeof source === 'string' && !source.startsWith('data:')) {
+                window.open(source, '_blank')?.focus();
+            }
             return false;
         }
     }
 
-    static downloadDataURI(dataURI: string, filename: string = 'file'): void {
-        const byteString = atob(dataURI.split(',')[1]); // Декодируем base64
-        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]; // Получаем MIME-тип
-
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+    private static getResponseFilename(response: Response): string {
+        const disposition = response.headers.get('content-disposition') || '';
+        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+        const regularMatch = disposition.match(/filename="?([^";]+)"?/i);
+        const value = utf8Match?.[1] || regularMatch?.[1] || '';
+        try {
+            return decodeURIComponent(value);
+        } catch {
+            return value;
         }
+    }
 
-        const blob = new Blob([ab], { type: mimeString });
+    private static getDownloadFilename(source: string | Blob, blob: Blob): string {
+        if (typeof source === 'string' && !source.startsWith('data:')) {
+            const value = source.split('/').pop()?.split('?')[0].split('#')[0] || '';
+            if (value) {
+                try {
+                    return decodeURIComponent(value);
+                } catch {
+                    return value;
+                }
+            }
+        }
+        const extension = blob.type.split(';')[0].split('/')[1] || 'bin';
+        return `file.${extension}`;
+    }
 
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-
-        document.body.appendChild(link);
-        link.click();
-
-        setTimeout(() => {
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        }, 100);
+    static downloadDataURI(dataURI: string, filename: string = 'file'): void {
+        void ApplicationService.downloadFile(dataURI, filename);
     }
 
     static getFileExtension(url: string): string {

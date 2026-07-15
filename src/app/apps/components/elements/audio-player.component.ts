@@ -19,6 +19,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import WaveSurfer from 'wavesurfer.js';
 import { firstValueFrom } from 'rxjs';
 import { VkBridgeService } from '../../../services/vk-bridge.service';
+import { ApplicationService } from '../../../services/application.service';
 import { VkAppOptions } from '../../models/vk-app-options.interface';
 
 declare const vkBridge: any;
@@ -354,54 +355,21 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.wavesurfer.playPause();
     }
 
-    downloadAudio(): void {
-        if (!this.wavesurfer || this.isLoading || this.hasError) {
+    async downloadAudio(): Promise<void> {
+        if (this.isLoading || this.hasError) {
             return;
         }
-        if (this.value instanceof Blob) {
-            this.downloadBlob(this.value);
-        } else {
-            this.downloadFromUrl(String(this.value));
-        }
-    }
-
-    downloadBlob(blob: Blob, filename: string = ''): void {
-        if (!filename) {
-            const mimeType = blob.type || null;
-            filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
-        }
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    downloadFromUrl(downloadUrl: string): void {
         this.isLoading = true;
         this.runInZoneAndMarkForCheck();
-        fetch(downloadUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const mimeType = blob.type || null;
-                const filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
-                this.downloadBlob(blob, filename);
-            })
-            .catch(err => {
-                console.error('Download failed:', err);
-            })
-            .finally(() => {
-                this.isLoading = false;
-                this.runInZoneAndMarkForCheck();
-            });
+        try {
+            const filename = this.value instanceof Blob
+                ? this.generateFilename(this.value.type || 'audio/unknown', this.label || 'audio')
+                : '';
+            await ApplicationService.downloadFile(this.value, filename);
+        } finally {
+            this.isLoading = false;
+            this.runInZoneAndMarkForCheck();
+        }
     }
 
     get showVkSendToFiles(): boolean {

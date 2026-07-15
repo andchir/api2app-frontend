@@ -19,6 +19,7 @@ import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video
 import { firstValueFrom } from 'rxjs';
 import { VkBridgeService } from '../../../services/vk-bridge.service';
 import { VkAppOptions } from '../../models/vk-app-options.interface';
+import { ApplicationService } from '../../../services/application.service';
 
 declare const vkBridge: any;
 
@@ -276,23 +277,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         const matches = downloadUrl.match(/data:image\/([^;]+)/);
         const filename = (new Date().valueOf()) + '.' + matches[1];
 
-        fetch(downloadUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const blobUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = filename;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(blobUrl);
-                }, 100);
-            })
-            .catch(console.error);
+        void ApplicationService.downloadFile(downloadUrl, filename);
     }
 
     get showVkSendToFiles(): boolean {

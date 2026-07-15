@@ -1882,42 +1882,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    downloadFile(element: AppBlockElement, fileUrl: string, useNativeOnly: boolean = false): void {
+    downloadFile(element: AppBlockElement, fileUrl: string): void {
         const block = this.findBlock(element);
         if (block) {
             block.loading = true;
             this.cdr.detectChanges();
         }
-        if (this.isVkApp && !useNativeOnly && fileUrl.match(/https?:\/\//)) {
-            const filename = fileUrl.split('/').pop();
-            vkBridge.send('VKWebAppDownloadFile', {
-                    url: fileUrl,
-                    filename
-                })
-                .then((data) => {
-                    if (data.result) {
-                        if (block) {
-                            block.loading = false;
-                            this.cdr.detectChanges();
-                        }
-                    }
-                    else {
-                        this.downloadFile(element, fileUrl, true);
-                    }
-                })
-                .catch( (error) => {
-                    console.log("Error: " + error.error_type, error.error_data);
-                    this.downloadFile(element, fileUrl, true);
-                });
-        } else {
-            ApplicationService.downloadFile(fileUrl)
-                .then(() => {
-                    if (block) {
-                        block.loading = false;
-                        this.cdr.detectChanges();
-                    }
-                });
-        }
+        ApplicationService.downloadFile(fileUrl)
+            .finally(() => {
+                if (block) {
+                    block.loading = false;
+                    this.cdr.detectChanges();
+                }
+            });
     }
 
     onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
