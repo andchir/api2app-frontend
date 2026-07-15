@@ -298,6 +298,12 @@ export class ElementOptions {
                     value: options?.linkedField || ''
                 });
                 output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -326,12 +332,6 @@ export class ElementOptions {
                     label: $localize `Allow auto-submit`,
                     type: 'input-switch',
                     enabled: options?.allowAutoSubmit || false
-                });
-                output.push({
-                    name: 'value',
-                    label: $localize `Default Value`,
-                    type: 'input-text',
-                    value: options?.value
                 });
                 break;
             case 'input-text':
