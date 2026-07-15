@@ -327,6 +327,12 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.allowAutoSubmit || false
                 });
+                output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
                 break;
             case 'input-text':
                 // output.push({
@@ -1770,7 +1776,8 @@ export class ElementOptions {
                     isClearForm: false,
                     isDownloadMode: false,
                     isStickyPosition: false,
-                    allowAutoSubmit: false
+                    allowAutoSubmit: false,
+                    value: ''
                 });
                 break;
             case 'input-text':
