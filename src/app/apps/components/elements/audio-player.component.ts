@@ -41,6 +41,8 @@ declare const vkBridge: any;
 })
 export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy, OnInit {
 
+    private static activePlayer: AudioPlayerComponent | null = null;
+
     @ViewChild('waveformContainer', { static: false }) waveformContainer!: ElementRef<HTMLDivElement>;
 
     @Input() editorMode = false;
@@ -283,16 +285,22 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         });
 
         this.wavesurfer.on('play', () => {
+            if (AudioPlayerComponent.activePlayer !== this) {
+                AudioPlayerComponent.activePlayer?.pause();
+                AudioPlayerComponent.activePlayer = this;
+            }
             this.isPlaying = true;
             this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('pause', () => {
+            this.clearActivePlayer();
             this.isPlaying = false;
             this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('finish', () => {
+            this.clearActivePlayer();
             this.isPlaying = false;
             this.runInZoneAndMarkForCheck();
         });
@@ -353,6 +361,16 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
             return;
         }
         this.wavesurfer.playPause();
+    }
+
+    pause(): void {
+        this.wavesurfer?.pause();
+    }
+
+    private clearActivePlayer(): void {
+        if (AudioPlayerComponent.activePlayer === this) {
+            AudioPlayerComponent.activePlayer = null;
+        }
     }
 
     async downloadAudio(): Promise<void> {
@@ -479,6 +497,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     }
 
     ngOnDestroy(): void {
+        this.clearActivePlayer();
         this.destroyWavesurfer();
     }
 }
