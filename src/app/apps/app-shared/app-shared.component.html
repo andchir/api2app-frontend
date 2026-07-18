@@ -98,7 +98,7 @@
                          [ngClass]="{'sm:bg-white p-3 sm:rounded-[1rem] sm:border sm:border-gray-200 sm:shadow': !noBorder, 'overflow-y-auto': block.options?.maxHeight}"
                          *ngIf="block.elements.length > 0">
                         <div class="min-h-6 flex flex-col gap-3" [ngClass]="{'opacity-20 pointer-events-none': block.loading && block.options?.showLoading}">
-                            <ng-container *ngFor="let element of block.elements; index as ind">
+                            <ng-container *ngFor="let element of block.elements; index as ind; trackBy: trackBlockElementByIndex">
                                 <div [ngClass]="{
                                 'hidden': element?.hidden || !element.type,
                                 'element-hidden': ['input-hidden'].includes(element.type),
@@ -116,7 +116,8 @@
                                                        [valueArr]="element.valueArr"
                                                        [editorMode]="false"
                                                        (elementClick)="onElementClick(element)"
-                                                       (elementValueChange)="onElementValueChanged(element)"
+                                                       (optionsChange)="onBlockElementOptionsChanged(block, ind, $event)"
+                                                       (elementValueChange)="onElementValueChanged($event)"
                                                        (itemSelected)="onItemSelected(element, $event)"
                                                        (progressUpdate)="onProgressUpdate(element)"
                                                        (progressCompleted)="onProgressCompleted(element)"

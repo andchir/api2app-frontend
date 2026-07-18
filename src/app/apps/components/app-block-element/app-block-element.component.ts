@@ -1,11 +1,18 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { SafeResourceUrl } from '@angular/platform-browser';
-
 import * as moment from 'moment';
 import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
-import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
+import {
+    AppBlockElement,
+    AppBlockElementArrayValue,
+    AppBlockElementObjectValue,
+    AppBlockElementRecord,
+    AppBlockElementType,
+    AppBlockElementValue,
+    ChartValue,
+    PaginationValue
+} from '../../models/app-block.interface';
 import { MessagesElementComponent } from '../elements/messages-element.component';
 import { ChartOptions } from '../../models/chart-options.interface';
 
@@ -24,15 +31,16 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Input() editorMode = false;
     @Input() type: AppBlockElementType;
     @Input() locale: string;
-    @Input() options: any;
-    @Input() value: string | number | boolean | string[] | File | File[] | SafeResourceUrl | null;
-    @Input() valueObj: any;
-    @Input() valueArr: any[];
+    @Input() options: AppBlockElement;
+    @Input() value: AppBlockElementValue;
+    @Input() valueObj: AppBlockElementObjectValue | null;
+    @Input() valueArr: AppBlockElementArrayValue | null;
     @Output() typeChange: EventEmitter<AppBlockElementType> = new EventEmitter<AppBlockElementType>();
     @Output() showOptions: EventEmitter<void> = new EventEmitter<void>();
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
-    @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() optionsChange: EventEmitter<AppBlockElement> = new EventEmitter<AppBlockElement>();
+    @Output() elementValueChange: EventEmitter<AppBlockElement> = new EventEmitter<AppBlockElement>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
@@ -49,7 +57,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     chartOptions: ChartOptions;
     pagesOptions: PaginationInstance;
-    timerSelectItem: any;
+    timerSelectItem?: ReturnType<typeof setTimeout>;
 
     constructor(
         private elementRef: ElementRef
@@ -68,7 +76,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
     }
 
-    ngOnChanges(changes: SimpleChanges) {
+    ngOnChanges(changes: SimpleChanges): void {
         // console.log('ngOnChanges', this.options.type, changes);
         const typeChange = changes['type'];
         if (typeChange && !typeChange.firstChange) {
@@ -90,7 +98,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 this.renderChartLine();
             }
         }
-        if (changes['editorMode'] && !changes['editorMode'].currentValue) {
+        if (changes['editorMode'] && !changes['editorMode'].firstChange && !changes['editorMode'].currentValue) {
             this.updateStateByOptions();
         }
         if (changes['value'] && ['text'].includes(this.options.type) && this.options.maxHeight) {
@@ -143,23 +151,23 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     numberIncrease(keyName = 'value', max?: number): void {
-        this.options[keyName] = Number(this.options[keyName] || 0);
-        if (typeof max === 'number' && this.options[keyName] >= max) {
+        const currentValue = Number(this.options[keyName as keyof AppBlockElement] || 0);
+        if (typeof max === 'number' && currentValue >= max) {
             return;
         }
-        this.options[keyName]++;
+        this.updateOptions({[keyName]: currentValue + 1}, true);
     }
 
     numberDecrease(keyName = 'value', min?: number): void {
-        this.options[keyName] = Number(this.options[keyName] || 0);
-        if (typeof min === 'number' && this.options[keyName] <= min) {
+        const currentValue = Number(this.options[keyName as keyof AppBlockElement] || 0);
+        if (typeof min === 'number' && currentValue <= min) {
             return;
         }
-        this.options[keyName]--;
+        this.updateOptions({[keyName]: currentValue - 1}, true);
     }
 
     chartOptionsUpdate(): void {
-        if (!this.chartOptions || !this.valueObj || !this.valueObj?.xAxisData || !this.valueObj?.yAxisData) {
+        if (!this.chartOptions || !this.isChartValue(this.valueObj)) {
             return;
         }
         if (this.options.type === 'input-chart-pie') {
@@ -204,7 +212,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     updateStateByOptions(): void {
         switch (this.options.type) {
             case 'input-rating':
-                this.options.value = this.normalizeRatingValue(this.options.value);
+                this.updateOptions({value: this.normalizeRatingValue(this.options.value as string | number | null)});
                 break;
             case 'input-date':
                 if (!this.options.value && this.options.useDefault) {
@@ -212,7 +220,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                     const now = moment();
                     // now.set({hour: 0, minutes: 0, seconds: 0});
                     now.add(offsetDays, 'days');
-                    this.options.value = this.options?.includeTime === false ? now.format('YYYY-MM-DD') : now.format('YYYY-MM-DD HH:mm');
+                    this.updateOptions({
+                        value: this.options?.includeTime === false ? now.format('YYYY-MM-DD') : now.format('YYYY-MM-DD HH:mm')
+                    });
                 }
                 break;
             case 'input-pagination':
@@ -245,10 +255,18 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.elementClick.emit();
     }
 
-    onFieldValueChanged(): void {
-        if (this.options.type === 'input-rating') {
-            this.options.value = this.normalizeRatingValue(this.options.value);
+    onFieldValueInput(value: AppBlockElementValue): void {
+        const nextValue = this.options.type === 'input-rating'
+            ? this.normalizeRatingValue(value as string | number | null)
+            : value;
+        if (!Object.is(this.options.value, nextValue)) {
+            this.updateOptions({value: nextValue});
         }
+    }
+
+    onFieldValueChanged(value: AppBlockElementValue): void {
+        this.onFieldValueInput(value);
+        this.elementValueChange.emit(this.options);
         const elementParent = this.elementRef.nativeElement.parentNode?.parentNode;
         // Auto pause audio/video
         if (elementParent) {
@@ -257,19 +275,18 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
                 (audio as HTMLAudioElement).pause();
             });
         }
-        this.elementValueChange.emit(this.options);
     }
 
     onTableValueSelected(value: string): void {
-        this.options.value = value;
-        this.onFieldValueChanged();
+        this.onFieldValueChanged(value);
     }
 
-    onChange(optionName: string, isChecked: boolean, emitChange = false) {
-        this.options[optionName] = !isChecked;
-        if (emitChange) {
-            this.onFieldValueChanged();
-        }
+    onValueArrChanged(valueArr: AppBlockElementArrayValue): void {
+        this.updateOptions({valueArr}, true);
+    }
+
+    onChange(optionName: keyof AppBlockElement, isChecked: boolean, emitChange = false): void {
+        this.updateOptions({[optionName]: !isChecked}, emitChange);
     }
 
     onImageError(imageContainer: HTMLElement, element: AppBlockElement, index?: number): void {
@@ -281,15 +298,19 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
         const imageBrokenUrl = 'assets/img/image-broken.png';
         if (typeof index !== 'undefined' && element.valueArr) {
+            const valueArr = [...element.valueArr];
             if (element.itemThumbnailFieldName) {
-                element.valueArr[index][element.itemThumbnailFieldName] = imageBrokenUrl;
+                const item = valueArr[index];
+                if (item && typeof item === 'object' && !(item instanceof File)) {
+                    valueArr[index] = {...item, [element.itemThumbnailFieldName]: imageBrokenUrl};
+                }
             } else {
-                element.valueArr[index] = imageBrokenUrl;
+                valueArr[index] = imageBrokenUrl;
             }
+            this.updateOptions({valueArr}, true);
         } else {
-            element.value = imageBrokenUrl;
+            this.updateOptions({value: imageBrokenUrl}, true);
         }
-        this.onFieldValueChanged();
     }
 
     createChartOptions(): void {
@@ -337,46 +358,53 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     }
 
     updatePagesOptions(): void {
-        this.options.valueObj = {
+        const valueObj: PaginationValue = {
             id: this.options.name,
-            totalItems: this.editorMode ? (this.options.perPage * 5) : 0,
-            itemsPerPage: this.options.perPage,
+            totalItems: this.editorMode ? ((this.options.perPage || 0) * 5) : 0,
+            itemsPerPage: this.options.perPage || 0,
             currentPage: 1
-        }
-        this.options.value = this.options.useAsOffset ? 0 : 1;
+        };
+        this.updateOptions({
+            valueObj,
+            value: this.options.useAsOffset ? 0 : 1
+        });
     }
 
     onPageChanged(pageNumber: number): void {
-        if (!this.options.valueObj) {
+        if (!this.isPaginationValue(this.options.valueObj)) {
             this.updatePagesOptions();
         }
-        this.options.valueObj.currentPage = pageNumber;
-        this.options.value = this.options.useAsOffset
-            ? this.options.perPage * (pageNumber - 1)
+        const valueObj = {...this.paginationValue, currentPage: pageNumber} as PaginationValue;
+        const value = this.options.useAsOffset
+            ? (this.options.perPage || 0) * (pageNumber - 1)
             : pageNumber;
-        this.onFieldValueChanged();
+        this.updateOptions({valueObj, value}, true);
     }
 
     onItemSelected(index: number): void {
         clearTimeout(this.timerSelectItem);
         this.timerSelectItem = setTimeout(() => {
-            if (this.options.valueObj?.data && this.options.valueObj.data[index] && this.options.itemFieldName) {
-                this.options.value = this.options.valueObj.data[index][this.options.itemFieldName] || '';
+            const valueObj = this.options.valueObj;
+            if (this.isChartValue(valueObj) && valueObj.data?.[index] && this.options.itemFieldName) {
+                const selectedValue = valueObj.data[index][this.options.itemFieldName];
+                if (this.isElementValue(selectedValue)) {
+                    this.updateOptions({value: selectedValue});
+                }
             }
             this.itemSelected.emit(index);
         }, 100);
     }
 
-    onProgressUpdate(options: any): void {
+    onProgressUpdate(options: AppBlockElement): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
-        const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
-        this.progressUpdate.emit(taskId);
+        const taskId = this.isRecordValue(options.valueObj) ? options.valueObj[taskIdField] : '';
+        this.progressUpdate.emit(typeof taskId === 'string' ? taskId : '');
     }
 
-    onProgressCompleted(options: any): void {
+    onProgressCompleted(options: AppBlockElement): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
-        const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
-        this.progressCompleted.emit(taskId);
+        const taskId = this.isRecordValue(options.valueObj) ? options.valueObj[taskIdField] : '';
+        this.progressCompleted.emit(typeof taskId === 'string' ? taskId : '');
     }
 
     scrollBottom(): void {
@@ -393,7 +421,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.messagesEl?.undoLastOutgoing();
     }
 
-    onMessage(msg: string[]) {
+    onMessage(msg: string[]): void {
         this.message.emit(msg);
     }
 
@@ -405,8 +433,59 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
     }
 
-    isArray(obj: any ): boolean {
+    isArray(obj: unknown): boolean {
         return Array.isArray(obj);
+    }
+
+    get paginationValue(): PaginationValue | null {
+        return this.isPaginationValue(this.options.valueObj) ? this.options.valueObj : null;
+    }
+
+    stringValue(value: AppBlockElementValue | undefined): string {
+        return typeof value === 'string' ? value : '';
+    }
+
+    stringObjectValue(value: AppBlockElementObjectValue | null | undefined): string {
+        return typeof value === 'string' ? value : '';
+    }
+
+    numericValue(value: AppBlockElementValue | undefined): number {
+        const numericValue = Number(value);
+        return Number.isFinite(numericValue) ? numericValue : 0;
+    }
+
+    recordName(value: string | File | AppBlockElementRecord): string {
+        if (value instanceof File) {
+            return value.name;
+        }
+        return typeof value === 'object' && typeof value['name'] === 'string' ? value['name'] : '';
+    }
+
+    private updateOptions(patch: Partial<AppBlockElement>, emitValueChange = false): void {
+        this.options = {...this.options, ...patch};
+        this.optionsChange.emit(this.options);
+        if (emitValueChange) {
+            this.elementValueChange.emit(this.options);
+        }
+    }
+
+    private isChartValue(value: AppBlockElementObjectValue | null): value is ChartValue {
+        return this.isRecordValue(value) && Array.isArray(value.xAxisData) && Array.isArray(value.yAxisData);
+    }
+
+    private isPaginationValue(value: AppBlockElementObjectValue | null | undefined): value is PaginationValue {
+        return this.isRecordValue(value) && typeof value.currentPage === 'number';
+    }
+
+    private isRecordValue(value: AppBlockElementObjectValue | null | undefined): value is AppBlockElementRecord {
+        return !!value && typeof value === 'object' && !(value instanceof File);
+    }
+
+    private isElementValue(value: unknown): value is AppBlockElementValue {
+        return value === null
+            || ['string', 'number', 'boolean'].includes(typeof value)
+            || value instanceof File
+            || Array.isArray(value);
     }
 
     private normalizeRatingValue(value: string | number | null): number {

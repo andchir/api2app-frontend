@@ -237,7 +237,7 @@
                                  [ngClass]="{'opacity-20 pointer-events-none': block.loading}"
                                  dragula="BLOCK_ELEMENTS"
                                  [attr.data-block-index]="index">
-                                <ng-container *ngFor="let element of block.elements; index as ind">
+                                            <ng-container *ngFor="let element of block.elements; index as ind; trackBy: trackBlockElementByIndex">
                                     <div class="relative group/element rounded"
                                          [ngClass]="{'hidden': element?.hidden && previewMode, 'py-1 sticky bottom-0 bg-white': element?.isStickyPosition && previewMode}"
                                          *ngIf="element.type; else templateEmpty">
@@ -256,7 +256,8 @@
                                                            (showOptions)="showElementOptions(element, index, ind)"
                                                            (selectAction)="elementActionSelect(element, index, $event)"
                                                            (elementClick)="onElementClick(element)"
-                                                           (elementValueChange)="onElementValueChanged(element)"
+                                                           (optionsChange)="onBlockElementOptionsChanged(block, ind, $event)"
+                                                           (elementValueChange)="onElementValueChanged($event)"
                                                            (itemSelected)="onItemSelected(element, $event)"
                                                            (cloneElement)="onItemClone($event)"
                                                            (addAfter)="addElementAfter($event)"
@@ -344,8 +345,12 @@
 <app-drawer [(isActive)]="isOptionsActive"
             [title]="optionsTitle"
             (confirmed)="updateItemOptions()">
-    <ng-container *ngFor="let field of selectedItemOptionsFields; index as index">
-        <app-block-element [type]="field.type" [options]="field" [index]="index" [parentIndex]="-1"></app-block-element>
+    <ng-container *ngFor="let field of selectedItemOptionsFields; index as index; trackBy: trackBlockElementByIndex">
+        <app-block-element [type]="field.type"
+                           [options]="field"
+                           [index]="index"
+                           [parentIndex]="-1"
+                           (optionsChange)="onElementOptionFieldChanged(index, $event)"></app-block-element>
     </ng-container>
 </app-drawer>
 

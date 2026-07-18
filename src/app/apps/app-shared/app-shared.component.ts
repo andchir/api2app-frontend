@@ -511,13 +511,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const apiItem = this.prepareApiItem(currentApi, 'input', elements, currentElement.blockIndex);
 
         // Clear output blocks
-        const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
-        const blocksOutput = this.findBlocksByElements(elementsOutput);
-        blocksOutput.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
+        if (!isAutoStart) {
+            const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
+            const blocksOutput = this.findBlocksByElements(elementsOutput);
+            blocksOutput.forEach((block) => {
+                if (block.options?.autoClear) {
+                    this.clearElementsValues(block);
+                }
+            });
+        }
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
@@ -587,7 +589,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.submitted = false;
 
                         this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                        this.createAppResponse(currentApi, res, currentElement, updateUserBalanceAfterResponse);
+                        this.createAppResponse(currentApi, res, currentElement, updateUserBalanceAfterResponse, isAutoStart);
 
                         this.progressUpdating = false;
                     }
@@ -908,7 +910,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         );
     }
 
-    findBlock(element: AppBlockElement): AppBlock {
+    findBlock(element: AppBlockElement): AppBlock | undefined {
         return this.data.blocks.find((block) => {
             const elem = block.elements.find((el) => {
                 return el === element;
@@ -935,9 +937,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    findCombinedFields(block: AppBlock, elementName: string): AppBlockElement[] {
-        if (!elementName) {
-            return null;
+    findCombinedFields(block: AppBlock | undefined, elementName: string): AppBlockElement[] {
+        if (!block || !elementName) {
+            return [];
         }
         return block.elements.filter((element) => {
             return element.valueFrom === elementName;
@@ -1476,7 +1478,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement,
-                      updateUserBalanceAfterResponse: boolean = true): void {
+                      updateUserBalanceAfterResponse: boolean = true, isAutoStart: boolean = false): void {
         if (!response.body) {
             return;
         }
@@ -1486,7 +1488,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
-                this.applyParsedApiResponseToApp(apiItem, data, currentElement, updateUserBalanceAfterResponse);
+                this.applyParsedApiResponseToApp(apiItem, data, currentElement, updateUserBalanceAfterResponse, isAutoStart);
             })
             .catch((err) => {
                 console.log(err);
@@ -1494,15 +1496,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
-                                        updateUserBalanceAfterResponse: boolean = true): void {
+                                        updateUserBalanceAfterResponse: boolean = true, isAutoStart: boolean = false): void {
         const currentApiUuid = apiItem.uuid;
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
-        blocks.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
+        if (!isAutoStart) {
+            blocks.forEach((block) => {
+                if (block.options?.autoClear) {
+                    this.clearElementsValues(block);
+                }
+            });
+        }
 
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
@@ -1764,7 +1768,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         elements.forEach((elements) => {
             elements.value = elements.useAsOffset ? 0 : 1;
-            if (elements.valueObj) {
+            if (elements.valueObj && typeof elements.valueObj === 'object' && 'currentPage' in elements.valueObj) {
                 elements.valueObj.currentPage = 1;
             }
         });
@@ -1975,6 +1979,32 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.removeAutoStart(inputApiUuid);
             this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
         }
+    }
+
+    onBlockElementOptionsChanged(block: AppBlock, index: number, options: AppBlockElement): void {
+        const previousOptions = block.elements[index];
+        block.elements[index] = options;
+        this.replaceAppElementReference(previousOptions, options);
+    }
+
+    trackBlockElementByIndex(index: number): number {
+        return index;
+    }
+
+    private replaceAppElementReference(previousOptions: AppBlockElement, options: AppBlockElement): void {
+        if (!previousOptions || previousOptions === options) {
+            return;
+        }
+        const groups: Array<'input' | 'output' | 'buttons'> = ['input', 'output', 'buttons'];
+        groups.forEach((group) => {
+            Object.values(this.appElements[group]).forEach((elements) => {
+                elements.forEach((element, index) => {
+                    if (element === previousOptions) {
+                        elements[index] = options;
+                    }
+                });
+            });
+        });
     }
 
     loadValueToElement(targetElement: AppBlockElement, newValue: any): void {

@@ -458,6 +458,10 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         this.cdr.detectChanges();
     }
 
+    onElementOptionFieldChanged(index: number, options: AppBlockElement): void {
+        this.selectedItemOptionsFields[index] = options;
+    }
+
     showBlockOptions(block: AppBlock, index: number, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
