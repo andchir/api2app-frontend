@@ -161,10 +161,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             return;
         }
         if (this.options.type === 'input-chart-pie') {
-            this.chartOptions.series = this.valueObj.yAxisData.map((value) => {
-                const numberValue = Number(value || 0);
-                return Number(numberValue.toFixed(2));
-            });
+            this.chartOptions.series = this.valueObj.yAxisData.map((value) => this.normalizeChartValue(value));
             this.chartOptions.labels = this.valueObj.xAxisData.map((value) => String(value || ''));
             this.chartOptions.chart.type = 'donut';
             return;
@@ -172,9 +169,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.chartOptions.series = [
             {
                 name: this.options?.itemTitle || 'Item',
-                data: this.valueObj?.yAxisData.map((value) => {
-                    return Number((value || 0).toFixed(2));
-                })
+                data: this.valueObj?.yAxisData.map((value) => this.normalizeChartValue(value))
             }
         ];
         this.chartOptions.xaxis = {
@@ -398,5 +393,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             return 0;
         }
         return Math.min(5, Math.max(0, Math.round(numericValue)));
+    }
+
+    private normalizeChartValue(value: unknown): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Number(numericValue.toFixed(2));
     }
 }
