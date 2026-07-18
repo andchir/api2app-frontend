@@ -57,6 +57,9 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnInit(): void {
         this.createChartOptions();
+        if (this.isChartElement()) {
+            this.chartOptionsUpdate();
+        }
         if (!this.editorMode) {
             this.updateStateByOptions();
         }
@@ -67,7 +70,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         // console.log('ngOnChanges', this.options.type, changes);
-        if (this.isChartElement() && changes['valueObj']) {
+        const typeChange = changes['type'];
+        if (typeChange && !typeChange.firstChange) {
+            this.updateStateByTypeChange();
+        }
+        if (this.isChartElement() && changes['valueObj'] && (!typeChange || typeChange.firstChange)) {
             if (this.chartOptions) {
                 this.chartOptionsUpdate();
                 this.renderChartLine();
@@ -81,11 +88,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
             if (wasHidden && isVisible) {
                 this.renderChartLine();
-            }
-        }
-        if (this.options.type === 'input-pagination' && changes['type']) {
-            if (this.options.type === 'input-pagination' && !this.options.valueObj) {
-                this.updatePagesOptions();
             }
         }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
@@ -216,6 +218,26 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             case 'input-pagination':
                 this.updatePagesOptions();
                 break;
+        }
+    }
+
+    private updateStateByTypeChange(): void {
+        if (this.isChartElement()) {
+            this.createChartOptions();
+            this.chartOptionsUpdate();
+            this.renderChartLine();
+            return;
+        }
+
+        if (this.options.type === 'input-pagination') {
+            if (!this.options.valueObj) {
+                this.updatePagesOptions();
+            }
+            return;
+        }
+
+        if (!this.editorMode) {
+            this.updateStateByOptions();
         }
     }
 
