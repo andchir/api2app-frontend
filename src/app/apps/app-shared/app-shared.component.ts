@@ -511,7 +511,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.stateLoadingUpdate(blocks, true, false);
         }
         let chunkIndex = 0;
-        const outputElements = this.findElements(apiUuid, 'output', currentElement);
 
         let isSseStream = false;
         let sseFinalized = false;
@@ -519,10 +518,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const finalizeSseResponse = () => {
             if (sseFinalized) return;
             sseFinalized = true;
-            outputElements.forEach((element) => {
-                if (element.suffixText) {
-                    element.value += element.suffixText;
-                }
+            const outputElements = this.findElements(apiUuid, 'output', currentElement);
+            this.updateAppElements(outputElements, (element) => {
+                return element.suffixText
+                    ? {...element, value: `${element.value ?? ''}${element.suffixText}`}
+                    : element;
             });
             this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
@@ -547,6 +547,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                     this.stateLoadingUpdate(blocks, false, false);
                                 }
                                 const dataObj = JSON.parse(content);
+                                const outputElements = this.findElements(apiUuid, 'output', currentElement);
                                 this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
                                 chunkIndex++;
                             } else {
@@ -1577,21 +1578,52 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
-        elements.forEach((element, index) => {
+        this.updateAppElements(elements, (element) => {
             const fieldName = element.options?.outputApiFieldName;
             if (!fieldName) {
-                return;
+                return element;
             }
             let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
             if (typeof value === 'object') {
                 value = JSON.stringify(value, null, 4);
             }
-            if (chunkIndex === 0) {
-                element.value = element.prefixText || '';
+            const currentValue = chunkIndex === 0 ? element.prefixText || '' : element.value ?? '';
+            const updatedValue = `${currentValue}${value}`;
+            return {
+                ...element,
+                value: updatedValue,
+                hidden: !updatedValue && element.hiddenByDefault
+            };
+        });
+        this.cdr.detectChanges();
+    }
+
+    /**
+     * Immutably updates the specified elements in a single pass while preserving block references
+     * to prevent Angular from recreating block components.
+     */
+    private updateAppElements(elements: AppBlockElement[],
+                              update: (element: AppBlockElement) => AppBlockElement): void {
+        const updatedElements = new Map<AppBlockElement, AppBlockElement>();
+        const affectedBlockIndexes = new Set<number>();
+
+        elements.forEach((element) => {
+            const updatedElement = update(element);
+            if (updatedElement === element) {
+                return;
             }
-            element.value += value;
-            element.hidden = !element.value && element.hiddenByDefault;
-            this.cdr.detectChanges();
+            updatedElements.set(element, updatedElement);
+            affectedBlockIndexes.add(element.blockIndex);
+        });
+
+        affectedBlockIndexes.forEach((blockIndex) => {
+            const block = this.data.blocks[blockIndex];
+            if (!block) {
+                return;
+            }
+            block.elements = block.elements.map((element) => {
+                return updatedElements.get(element) || element;
+            });
         });
     }
 
