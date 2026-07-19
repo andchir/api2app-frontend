@@ -75,11 +75,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
-    appElements: {
-        input: {[uuid: string]: AppBlockElement[]},
-        output: {[uuid: string]: AppBlockElement[]},
-        buttons: {[uuid: string]:AppBlockElement[]}
-    } = {input: {}, output: {}, buttons: {}};
 
     data: ApplicationItem = ApplicationService.getDefault();
     tabIndex: number = 0;
@@ -209,28 +204,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'status' && window['isVKApp'] && element.statusCompletedTextForVK) {
                     element.statusCompletedText = element.statusCompletedTextForVK;
                 }
-                if (element.options?.inputApiUuid) {
-                    const isButton = element.type === 'button';
-                    const isMessages = element.type === 'messages';
-                    if (isButton || isMessages) {
-                        if (!this.appElements.buttons[element.options.inputApiUuid]) {
-                            this.appElements.buttons[element.options.inputApiUuid] = [];
-                        }
-                        this.appElements.buttons[element.options.inputApiUuid].push(element);
-                    }
-                    if (!isButton) {
-                        if (!this.appElements.input[element.options.inputApiUuid]) {
-                            this.appElements.input[element.options.inputApiUuid] = [];
-                        }
-                        this.appElements.input[element.options.inputApiUuid].push(element);
-                    }
-                }
-                if (element.options?.outputApiUuid) {
-                    if (!this.appElements.output[element.options.outputApiUuid]) {
-                        this.appElements.output[element.options.outputApiUuid] = [];
-                    }
-                    this.appElements.output[element.options.outputApiUuid].push(element);
-                }
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
                     this.apiUuidsList.input.push(element.options.inputApiUuid);
                 }
@@ -250,22 +223,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             Promise.all(promises).then(() => {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
-                    Object.keys(this.appElements.output).forEach((uuid) => {
-                        if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
+                    const buttonsByApiUuid = this.groupElementsByApiUuid('buttons');
+                    this.groupElementsByApiUuid('output').forEach((elements, uuid) => {
+                        if (elements.length > 0 && elements[0].hidden) {
                             return;
                         }
-                        if (!this.appElements.buttons[uuid]
-                            || this.appElements.buttons[uuid].length === 0
-                            || this.appElements.buttons[uuid][0].hidden) {
-                            this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
+                        const buttons = buttonsByApiUuid.get(uuid) || [];
+                        if (buttons.length === 0 || buttons[0].hidden) {
+                            this.appAutoStart(uuid, 'output', elements[0]);
                         }
                     });
                     this.cdr.detectChanges();
                 });
 
                 // Get values from query string
-                Object.keys(this.appElements.input).forEach((uuid) => {
-                    this.appElements.input[uuid].forEach(element => {
+                this.groupElementsByApiUuid('input').forEach((elements) => {
+                    elements.forEach(element => {
                         this.fillDataFromQueryString(element);
                     });
                 });
@@ -983,29 +956,85 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
-        const buttons = this.appElements.buttons[targetApiUuid] || [];
-        if (typeof blockIndex !== 'undefined') {
-            return buttons.find((element: AppBlockElement) => {
-                return element.blockIndex === blockIndex;
+        for (let currentBlockIndex = 0; currentBlockIndex < this.data.blocks.length; currentBlockIndex++) {
+            if (typeof blockIndex !== 'undefined' && currentBlockIndex !== blockIndex) {
+                continue;
+            }
+            const button = this.data.blocks[currentBlockIndex].elements.find((element) => {
+                return this.isElementRelatedToApi(element, targetApiUuid, 'buttons');
             });
+            if (button) {
+                return button;
+            }
         }
-        return buttons.length > 0 ? buttons[0] : null;
+        return null;
     }
 
     findElements(targetApiUuid: string, actionType: 'input'|'output', currentElement: AppBlockElement, includeCurrent: boolean = false): AppBlockElement[] {
         const blockIndex = currentElement.blockIndex;
-        const elements = this.appElements[actionType][targetApiUuid]
-            ? this.appElements[actionType][targetApiUuid].filter((element: AppBlockElement) => {
-                if (element.blockIndex === blockIndex) {
-                    return true;
+        const elements: AppBlockElement[] = [];
+
+        this.data.blocks.forEach((block, currentBlockIndex) => {
+            const hasButton = block.elements.some((element) => {
+                return this.isElementRelatedToApi(element, targetApiUuid, 'buttons');
+            });
+            if (currentBlockIndex !== blockIndex && hasButton) {
+                return;
+            }
+            block.elements.forEach((element) => {
+                if (this.isElementRelatedToApi(element, targetApiUuid, actionType)) {
+                    elements.push(element);
                 }
-                const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
-                return !currentButton;
-            }) : [];
+            });
+        });
+
         if (includeCurrent) {
             elements.push(currentElement);
         }
         return elements;
+    }
+
+    private findApiElements(targetApiUuid: string, relation: 'input'|'output'|'buttons'): AppBlockElement[] {
+        const elements: AppBlockElement[] = [];
+        this.data.blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                if (this.isElementRelatedToApi(element, targetApiUuid, relation)) {
+                    elements.push(element);
+                }
+            });
+        });
+        return elements;
+    }
+
+    private groupElementsByApiUuid(relation: 'input'|'output'|'buttons'): Map<string, AppBlockElement[]> {
+        const groupedElements = new Map<string, AppBlockElement[]>();
+        this.data.blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                const apiUuid = relation === 'output'
+                    ? element.options?.outputApiUuid
+                    : element.options?.inputApiUuid;
+                if (!apiUuid || !this.isElementRelatedToApi(element, apiUuid, relation)) {
+                    return;
+                }
+                const elements = groupedElements.get(apiUuid) || [];
+                elements.push(element);
+                groupedElements.set(apiUuid, elements);
+            });
+        });
+        return groupedElements;
+    }
+
+    private isElementRelatedToApi(element: AppBlockElement, apiUuid: string,
+                                  relation: 'input'|'output'|'buttons'): boolean {
+        if (relation === 'output') {
+            return element.options?.outputApiUuid === apiUuid;
+        }
+        if (element.options?.inputApiUuid !== apiUuid) {
+            return false;
+        }
+        return relation === 'buttons'
+            ? element.type === 'button' || element.type === 'messages'
+            : element.type !== 'button';
     }
 
     clearValidationErrors(): void {
@@ -1498,7 +1527,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
                                         updateUserBalanceAfterResponse: boolean = true, isAutoStart: boolean = false): void {
         const currentApiUuid = apiItem.uuid;
-        const elements = this.appElements.output[currentApiUuid] || [];
+        const elements = this.findApiElements(currentApiUuid, 'output');
         const blocks = this.findBlocksByElements(elements);
         if (!isAutoStart) {
             blocks.forEach((block) => {
@@ -1981,30 +2010,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    onBlockElementOptionsChanged(block: AppBlock, index: number, options: AppBlockElement): void {
-        const previousOptions = block.elements[index];
-        block.elements[index] = options;
-        this.replaceAppElementReference(previousOptions, options);
+    onBlockElementOptionsChanged(block: AppBlock, elementIndex: number, options: AppBlockElement): void {
+        if (!block?.elements) {
+            return;
+        }
+        block.elements = block.elements.map((element, currentElementIndex) => {
+            return currentElementIndex === elementIndex
+                ? options
+                : element;
+        });
     }
 
     trackBlockElementByIndex(index: number): number {
         return index;
-    }
-
-    private replaceAppElementReference(previousOptions: AppBlockElement, options: AppBlockElement): void {
-        if (!previousOptions || previousOptions === options) {
-            return;
-        }
-        const groups: Array<'input' | 'output' | 'buttons'> = ['input', 'output', 'buttons'];
-        groups.forEach((group) => {
-            Object.values(this.appElements[group]).forEach((elements) => {
-                elements.forEach((element, index) => {
-                    if (element === previousOptions) {
-                        elements[index] = options;
-                    }
-                });
-            });
-        });
     }
 
     loadValueToElement(targetElement: AppBlockElement, newValue: any): void {
