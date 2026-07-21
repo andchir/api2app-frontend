@@ -66,6 +66,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
     windowScrolled: boolean = false;
+    scrollButtonsHidden: boolean = false;
+    private scrolledUpAfterButtonsHidden: boolean = false;
+    private lastScrollPosition: number = 0;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
@@ -142,10 +145,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onWindowScroll() {
         const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
         this.windowScrolled = currentScroll > 100;
+
+        if (this.scrollButtonsHidden) {
+            if (currentScroll < this.lastScrollPosition) {
+                this.scrolledUpAfterButtonsHidden = true;
+            } else if (currentScroll > this.lastScrollPosition && this.scrolledUpAfterButtonsHidden) {
+                this.scrollButtonsHidden = false;
+                this.scrolledUpAfterButtonsHidden = false;
+            }
+        }
+
+        this.lastScrollPosition = currentScroll;
     }
 
     scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    hideScrollButtons(): void {
+        this.scrollButtonsHidden = true;
+        this.scrolledUpAfterButtonsHidden = false;
+        this.lastScrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
     }
 
     getData(): void {

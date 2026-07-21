@@ -555,6 +555,8 @@
         "UserDataApiCreated": "API-Konfigurationen wurden erfolgreich erstellt.",
         "UserDataCreateApiConfirm": "API-Konfigurationen für diese Tabelle erstellen?",
         "367444526338931297": "Gesamtzahl der Aufrufe",
-        "254541547143992540": "Sorry, payment is not possible on this platform."
+        "254541547143992540": "Sorry, payment is not possible on this platform.",
+        "8017931473828712219": "Nach oben scrollen",
+        "808780735242482310": "Schaltflächen vorübergehend ausblenden"
     }
 }

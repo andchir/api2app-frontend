@@ -555,6 +555,8 @@
         "UserDataApiCreated": "Конфігурації API успішно створено.",
         "UserDataCreateApiConfirm": "Створити API конфігурації для цієї таблиці?",
         "367444526338931297": "Загальна кількість переглядів",
-        "254541547143992540": "Sorry, payment is not possible on this platform."
+        "254541547143992540": "Sorry, payment is not possible on this platform.",
+        "8017931473828712219": "Прокрутити вгору",
+        "808780735242482310": "Тимчасово приховати кнопки"
     }
 }
