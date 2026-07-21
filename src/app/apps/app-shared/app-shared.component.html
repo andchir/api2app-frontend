@@ -189,17 +189,17 @@
 </div>
 <div class="bg-gray-900/50 fixed inset-0 z-40" *ngIf="maintenanceModalActive"></div>
 
-<div class="fixed right-5 bottom-20 inline-flex opacity-100 transition-all z-30"
+<div class="fixed right-5 bottom-20 inline-flex opacity-100 transition-opacity z-30"
      [ngClass]="{'pointer-events-none !opacity-0': !windowScrolled || scrollButtonsHidden}">
     <button type="button"
-            class="p-1 rounded-l-md border border-blue-500 text-blue-500 hover:border-blue-700 hover:text-blue-700 text-4xl cursor-pointer"
+            class="p-1 rounded-l-md border border-blue-500 bg-white/30 text-blue-500 hover:border-blue-700 hover:bg-white/60 hover:text-blue-700 text-4xl cursor-pointer transition-colors"
             title="Scroll to top"
             i18n-title
             (click)="scrollToTop()">
         <i class="bi bi-arrow-up-short"></i>
     </button>
     <button type="button"
-            class="p-1 -ml-px rounded-r-md border border-blue-500 text-blue-500 hover:border-blue-700 hover:text-blue-700 text-4xl cursor-pointer"
+            class="p-1 -ml-px rounded-r-md border border-blue-500 bg-white/30 text-blue-500 hover:border-blue-700 hover:bg-white/60 hover:text-blue-700 text-4xl cursor-pointer transition-colors"
             title="Temporarily hide buttons"
             i18n-title
             (click)="hideScrollButtons()">
