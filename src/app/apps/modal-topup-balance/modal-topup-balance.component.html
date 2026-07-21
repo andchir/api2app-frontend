@@ -64,8 +64,8 @@
                         <div class="text-center">
                             <button type="button"
                                     class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
-                                    [ngClass]="{'opacity-70 pointer-events-none': submitted || !isPaymentAllowed}"
-                                    [disabled]="submitted"
+                                    [ngClass]="{'opacity-70 pointer-events-none': !value || submitted || !isPaymentAllowed}"
+                                    [disabled]="!value || submitted || !isPaymentAllowed"
                                     (click)="submit()">
                                 <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"
                                      *ngIf="submitted">
@@ -101,7 +101,8 @@
                              [ngClass]="{'opacity-70 pointer-events-none': submitted}">
                             <button type="button"
                                     class="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2"
-                                    [disabled]="submitted"
+                                    [ngClass]="{'opacity-70 pointer-events-none': !promoCode || submitted}"
+                                    [disabled]="!promoCode || submitted "
                                     (click)="submitPromoCode()">
                                 <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"
                                      *ngIf="submitted">

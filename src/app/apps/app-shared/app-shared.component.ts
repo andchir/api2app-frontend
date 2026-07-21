@@ -88,6 +88,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
     private wsAppSubmitSubscription?: Subscription;
+    private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
 
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
@@ -2209,8 +2210,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             isVkApp: this.isVkApp,
             vkAppOptions: this.vkAppOptions
         };
-        this.modalService.showDynamicComponent(this.viewRef, ModalTopUpBalanceComponent, initialData)
-            .pipe(take(1))
+        const modalClosed$ = this.modalService.showDynamicComponent(
+            this.viewRef,
+            ModalTopUpBalanceComponent,
+            initialData
+        );
+        this.disablePageScroll();
+        modalClosed$
+            .pipe(
+                take(1),
+                takeUntil(this.destroyed$),
+                finalize(() => this.restorePageScroll())
+            )
             .subscribe({
                 next: (reason) => {
                     // console.log(reason);
@@ -2227,6 +2238,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 }
             });
+    }
+
+    private disablePageScroll(): void {
+        if (this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        this.pageOverflowBeforeScrollLock = {
+            body: document.body.style.overflow,
+            documentElement: document.documentElement.style.overflow
+        };
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+    }
+
+    private restorePageScroll(): void {
+        if (!this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
+        document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
+        this.pageOverflowBeforeScrollLock = undefined;
     }
 
     updateUserBalance(): void {
