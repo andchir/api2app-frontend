@@ -316,7 +316,9 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         this.value = value;
         if (this.inputControl?.nativeElement) {
             this.inputControl.nativeElement.value = value;
-            this.onInput();
+            if (this.type === 'input-textarea') {
+                this.onInputTextarea();
+            }
         }
         this.scrollTextareaBottom();
     }
@@ -329,7 +331,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         this.onTouched = fn;
     }
 
-    onInput(event?: Event|InputEvent): void {
+    onInputTextarea(event?: Event|InputEvent): void {
         if (!this.autoHeight || this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
             return;
         }
@@ -359,7 +361,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             if (!textAreaEl) {
                 return;
             }
-            this.onInput();
+            this.onInputTextarea();
             textAreaEl.scrollTop = textAreaEl.scrollHeight;
         }, 1);
     }

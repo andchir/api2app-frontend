@@ -335,13 +335,13 @@ export class ElementOptions {
                 });
                 break;
             case 'input-text':
-                // output.push({
-                //     name: 'max',
-                //     label: $localize `Maximum text length`,
-                //     type: 'input-number',
-                //     rows: 6,
-                //     value: options?.max || 0
-                // });
+                output.push({
+                    name: 'max',
+                    label: $localize `Maximum text length`,
+                    type: 'input-number',
+                    rows: 6,
+                    value: options?.max || 0
+                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
