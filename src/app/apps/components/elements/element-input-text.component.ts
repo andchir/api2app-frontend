@@ -161,9 +161,6 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             }
             return;
         }
-        inputEl.select();
-        inputEl.setSelectionRange(0, 99999);
-
         const textContent: string = String(inputEl.value);
 
         if (this.isVkApp) {
