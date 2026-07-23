@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     HostListener,
     Input,
     OnDestroy,
@@ -48,6 +49,7 @@ declare const vkBridge: any;
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     @ViewChild('dynamic', { read: ViewContainerRef }) protected viewRef: ViewContainerRef;
+    @ViewChild('tabContent') private tabContent?: ElementRef<HTMLElement>;
     @ViewChildren(AppBlockElementComponent) protected blockElements: QueryList<AppBlockElementComponent>;
 
     @Input('itemUuid') itemUuid: string;
@@ -417,7 +419,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const queryParams: Params = {
             tab: tabIndex + 1
         };
-        this.router.navigate(
+        void this.router.navigate(
             [],
             {
                 relativeTo: this.route,
@@ -425,7 +427,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 queryParamsHandling: 'merge',
                 preserveFragment: true
             }
-        );
+        ).then((navigated) => {
+            if (navigated && window.matchMedia('(max-width: 767px)').matches) {
+                requestAnimationFrame(() => {
+                    this.tabContent?.nativeElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
+        });
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
