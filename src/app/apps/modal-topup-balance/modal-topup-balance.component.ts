@@ -132,6 +132,7 @@ export class ModalTopUpBalanceComponent implements OnInit {
                     } else {
                         this.submitted = false;
                     }
+                    this.cdr.markForCheck();
                 },
                 error: (err) => {
                     this.submitted = false;
@@ -179,6 +180,12 @@ export class ModalTopUpBalanceComponent implements OnInit {
                         this.handleVkPayError($localize `Unable to start payment.`);
                         return;
                     }
+
+                    setTimeout(() => {
+                        this.submitted = false;
+                        this.cdr.markForCheck();
+                    }, 4000);
+
                     vkBridge.send('VKWebAppOpenPayForm', {
                         app_id: res.app_id,
                         action: 'pay-to-service',
