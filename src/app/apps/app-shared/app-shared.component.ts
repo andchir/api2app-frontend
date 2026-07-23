@@ -1954,16 +1954,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
             });
-            if (targetElements.length > 0) {
-                setTimeout(() => {
-                    this.clearElementValue(element, true);
-                    if (element.type === 'input-select') {
-                        element.value = null;
-                    }
-                    this.cdr.detectChanges();
-                }, 100);
-                this.cdr.markForCheck();
-            }
+            // if (targetElements.length > 0) {
+            //     setTimeout(() => {
+            //         this.clearElementValue(element, true);
+            //         if (element.type === 'input-select') {
+            //             element.value = null;
+            //         }
+            //         this.cdr.detectChanges();
+            //     }, 100);
+            //     this.cdr.markForCheck();
+            // }
             return;
         }
 
