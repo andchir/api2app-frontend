@@ -92,9 +92,9 @@ select_mode==Второе значение
 ~~~
 ...и так далее. Таким образом можно управлять видимостью элемента в зивисимости от значения другого элемента.
 
-Пример импользования: https://api2app.org/ru/apps/shared/a2965b72-0a9c-11f1-91ca-525400f8f94f
+Пример использования: https://api2app.org/ru/apps/shared/a2965b72-0a9c-11f1-91ca-525400f8f94f  
 Видеоурок: https://api2app.s3.cloud.ru/api2app/video/tutorials/element-visibility.mp4  
-Все видеоуроки здсь: https://api2app.org/ru/docs?tab=3
+Все видеоуроки здесь: https://api2app.org/ru/docs?tab=3  
 
 # Встраивание приложений на сайт
 
