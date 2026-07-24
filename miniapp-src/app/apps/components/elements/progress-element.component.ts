@@ -21,16 +21,15 @@ import { PercentComponent } from '../../../shared/percent/percent.component';
 @Component({
     selector: 'app-progress',
     templateUrl: 'progress-element.component.html',
-    standalone: true,
     imports: [
         NgIf,
         PercentComponent
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => ProgressElementComponent),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ProgressElementComponent),
+            multi: true
+        }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgressElementComponent implements ControlValueAccessor, OnDestroy, OnChanges {

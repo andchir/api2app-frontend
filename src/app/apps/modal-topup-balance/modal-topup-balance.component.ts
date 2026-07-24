@@ -14,7 +14,6 @@ declare const vkBridge: any;
 @Component({
     selector: 'app-top-up-balance',
     templateUrl: './modal-topup-balance.component.html',
-    standalone: true,
     imports: [
         ReactiveFormsModule,
         FormsModule,

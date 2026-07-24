@@ -12,7 +12,8 @@ import { User } from '../apis/models/user.interface';
 @Component({
     selector: 'app-auth-login',
     templateUrl: './templates/auth-login.component.html',
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthLoginComponent implements OnInit, OnDestroy {
 

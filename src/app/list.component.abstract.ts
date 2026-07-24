@@ -9,7 +9,8 @@ import { DataService } from './services/data.service.abstract';
 import { PaginatorState } from './apps/models/paginator-state.interface';
 
 @Component({
-    template: ''
+    template: '',
+    standalone: false
 })
 export abstract class ListAbstractComponent<T extends {id: number}> implements OnInit, OnDestroy {
 

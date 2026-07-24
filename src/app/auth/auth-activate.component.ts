@@ -12,7 +12,8 @@ import { User } from '../apis/models/user.interface';
 @Component({
     selector: 'app-user-activate',
     templateUrl: './templates/auth-activate.component.html',
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthUserActivateComponent implements OnInit, OnDestroy {
 

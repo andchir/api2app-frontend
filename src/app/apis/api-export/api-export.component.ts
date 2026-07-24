@@ -2,7 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
     selector: 'app-api-export',
-    templateUrl: './api-export.component.html'
+    templateUrl: './api-export.component.html',
+    standalone: false
 })
 export class ApiExportComponent {
 

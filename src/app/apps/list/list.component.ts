@@ -5,9 +5,10 @@ import { ListApisComponent } from '../../apis/list/list.component';
 import { RouterEventsService } from '../../services/router-events.service';
 
 @Component({
-  selector: 'app-apps-list',
-  templateUrl: './list.component.html',
-  styleUrls: ['./list.component.css']
+    selector: 'app-apps-list',
+    templateUrl: './list.component.html',
+    styleUrls: ['./list.component.css'],
+    standalone: false
 })
 export class ListAppsComponent extends ListApisComponent {
 

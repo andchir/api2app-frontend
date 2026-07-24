@@ -13,7 +13,8 @@ import {matchValidator} from "../helpers/match-validator";
 @Component({
     selector: 'app-password-reset-confirm',
     templateUrl: './templates/auth-password-reset-confirm.component.html',
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthPasswordResetConfirmComponent implements OnDestroy {
 

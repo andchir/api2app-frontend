@@ -3,6 +3,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 @Component({
     selector: 'app-share-item',
     templateUrl: './share-item.component.html',
+    standalone: false
 })
 export class ShareItemComponent implements OnInit {
 

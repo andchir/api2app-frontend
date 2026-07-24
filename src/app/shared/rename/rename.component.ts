@@ -3,7 +3,8 @@ import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild }
 @Component({
     selector: 'app-rename',
     templateUrl: './rename.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class RenameComponent implements OnInit {
 

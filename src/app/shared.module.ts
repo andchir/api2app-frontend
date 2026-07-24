@@ -8,6 +8,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { MarkdownModule, MarkedOptions, MARKED_OPTIONS, MarkedRenderer } from 'ngx-markdown';
+import { Tokens } from 'marked';
 
 import { NotAuthorizedComponent } from './shared/not-authorized/not-authorized.component';
 import { AlertComponent } from './shared/alert/alert.component';
@@ -24,20 +25,21 @@ import { CarouselComponent } from './shared/carousel/carousel.component';
 
 export function markedOptionsFactory(): MarkedOptions {
     const renderer = new MarkedRenderer();
+    const blockquoteRenderer = renderer.blockquote;
+    const linkRenderer = renderer.link;
 
-    renderer.blockquote = (text: string) => {
-        return '<blockquote class="blockquote"><p>' + text + '</p></blockquote>';
+    renderer.blockquote = function (this: MarkedRenderer, token: Tokens.Blockquote): string {
+        return blockquoteRenderer.call(this, token).replace(/^<blockquote>/, '<blockquote class="blockquote">');
     };
 
-    const linkRenderer = renderer.link;
-    renderer.link = (href, title, text) => {
-        const html = linkRenderer.call(renderer, href, title, text);
-        const target = href.includes('#') ? '_self' : '_blank';
+    renderer.link = function (this: MarkedRenderer, token: Tokens.Link): string {
+        const html = linkRenderer.call(this, token);
+        const target = token.href.includes('#') ? '_self' : '_blank';
         return html.replace(/^<a /, `<a class="whitespace-nowrap text-blue-500 underline hover:text-blue-700" target="${target}" rel="nofollow" `);
     };
 
     return {
-        renderer: renderer,
+        renderer,
         gfm: true,
         breaks: false,
         pedantic: false

@@ -5,7 +5,8 @@ import { ApplicationService } from '../../services/application.service';
 
 @Component({
     selector: 'app-import-application',
-    templateUrl: './app-import.component.html'
+    templateUrl: './app-import.component.html',
+    standalone: false
 })
 export class ApplicationImportComponent implements OnInit, OnDestroy {
 

@@ -3,7 +3,8 @@ import {AuthService} from "../../services/auth.service";
 
 @Component({
     selector: 'app-not-authorized',
-    templateUrl: './not-authorized.component.html'
+    templateUrl: './not-authorized.component.html',
+    standalone: false
 })
 export class NotAuthorizedComponent implements OnInit {
 

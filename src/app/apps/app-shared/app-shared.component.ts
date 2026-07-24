@@ -14,7 +14,7 @@ import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { firstValueFrom, Subject, Subscription, filter, finalize, map, race, take, takeUntil, iif } from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
 
@@ -44,7 +44,8 @@ declare const vkBridge: any;
     selector: 'app-item-shared',
     templateUrl: './app-shared.component.html',
     providers: [VkBridgeService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 

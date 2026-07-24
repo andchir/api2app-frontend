@@ -14,7 +14,8 @@ import { ModalService } from '../../services/modal.service';
     selector: 'app-api-create',
     templateUrl: './api-create.component.html',
     styleUrls: ['./api-create.component.css'],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ApiCreateComponent implements OnInit, OnDestroy {
 

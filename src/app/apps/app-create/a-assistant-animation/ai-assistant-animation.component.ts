@@ -5,7 +5,6 @@ import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-ai-assistant-animation',
-    standalone: true,
     imports: [NgIf, NgClass],
     templateUrl: './ai-assistant-animation.component.html',
     styles: [`

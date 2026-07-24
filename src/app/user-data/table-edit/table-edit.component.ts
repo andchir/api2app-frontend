@@ -10,7 +10,8 @@ import { UserDataService } from '../services/user-data.service';
 @Component({
     selector: 'app-user-data-table-edit',
     templateUrl: './table-edit.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class UserDataTableEditComponent implements OnInit, OnDestroy {
 

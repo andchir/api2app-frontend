@@ -3,7 +3,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 @Component({
     selector: 'app-confirm',
     templateUrl: './confirm.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class ConfirmComponent implements OnInit {
 

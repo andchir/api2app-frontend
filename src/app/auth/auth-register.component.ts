@@ -12,7 +12,8 @@ import { matchValidator } from '../helpers/match-validator';
 @Component({
     selector: 'app-auth-register',
     templateUrl: './templates/auth-register.component.html',
-    providers: [ UserService ]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthRegisterComponent implements OnInit, OnDestroy {
 

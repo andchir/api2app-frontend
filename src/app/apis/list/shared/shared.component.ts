@@ -12,7 +12,8 @@ import { ListAbstractComponent } from '../../../list.component.abstract';
     selector: 'app-apis-list-shared',
     templateUrl: './shared.component.html',
     styleUrls: [],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ListSharedComponent extends ListAbstractComponent<ApiItem> implements OnInit, OnDestroy {
 

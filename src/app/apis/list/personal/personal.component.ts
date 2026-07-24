@@ -15,7 +15,8 @@ import { ApiImportComponent } from '../../api-import/api-import.component';
     selector: 'app-apis-list-personal',
     templateUrl: './personal.component.html',
     styleUrls: [],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ListPersonalComponent extends ListSharedComponent implements OnInit, OnDestroy {
 

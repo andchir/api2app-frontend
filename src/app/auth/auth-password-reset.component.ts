@@ -12,7 +12,8 @@ import { User } from '../apis/models/user.interface';
 @Component({
     selector: 'app-password-reset',
     templateUrl: './templates/auth-password-reset.html',
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthPasswordResetComponent implements OnInit, OnDestroy {
 

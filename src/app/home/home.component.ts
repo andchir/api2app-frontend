@@ -3,9 +3,10 @@ import { Component, Inject, LOCALE_ID, OnInit, TemplateRef, ViewChild } from '@a
 import { AuthService } from '../services/auth.service';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: []
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: [],
+    standalone: false
 })
 export class HomeComponent implements OnInit {
 

@@ -11,7 +11,8 @@ import { noop } from 'rxjs';
             useExisting: forwardRef(() => FileUploadComponent),
             multi: true,
         }
-    ]
+    ],
+    standalone: false
 })
 export class FileUploadComponent implements ControlValueAccessor {
 

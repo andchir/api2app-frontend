@@ -43,11 +43,12 @@
             },
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/api2app-frontend",
+                        "outputPath": {
+                          "base": "dist/api2app-frontend"
+                        },
                         "index": "src/index.html",
-                        "main": "src/main.ts",
                         "polyfills": [
                             "zone.js",
                             "src/polyfills.ts"
@@ -82,7 +83,8 @@
                             "dragula"
                         ],
                         "localize": true,
-                        "i18nMissingTranslation": "error"
+                        "i18nMissingTranslation": "error",
+                        "browser": "src/main.ts"
                     },
                     "configurations": {
                         "ru": {
@@ -126,9 +128,7 @@
                             ]
                         },
                         "development": {
-                            "buildOptimizer": false,
-                            "optimization": false,
-                            "vendorChunk": true,
+                          "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true,
@@ -227,11 +227,12 @@
             },
             "architect": {
                 "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
+                    "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/miniapp",
+                        "outputPath": {
+                          "base": "dist/miniapp"
+                        },
                         "index": "miniapp-src/index.html",
-                        "main": "miniapp-src/main.ts",
                         "polyfills": [
                             "zone.js"
                         ],
@@ -263,7 +264,8 @@
                             "moment"
                         ],
                         "localize": true,
-                        "i18nMissingTranslation": "error"
+                        "i18nMissingTranslation": "error",
+                        "browser": "miniapp-src/main.ts"
                     },
                     "configurations": {
                         "ru": {
@@ -300,9 +302,7 @@
                             ]
                         },
                         "development": {
-                            "buildOptimizer": false,
-                            "optimization": false,
-                            "vendorChunk": true,
+                          "optimization": false,
                             "extractLicenses": false,
                             "sourceMap": true,
                             "namedChunks": true,

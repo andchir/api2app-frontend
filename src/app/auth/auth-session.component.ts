@@ -11,7 +11,8 @@ import { User } from '../apis/models/user.interface';
 @Component({
     selector: 'app-user-session',
     templateUrl: './templates/auth-session.component.html',
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthSessionComponent implements OnInit, OnDestroy {
 

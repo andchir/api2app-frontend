@@ -10,7 +10,8 @@ import { ApplicationService } from '../../../services/application.service';
 @Component({
     selector: 'app-apps-list-shared',
     templateUrl: './shared.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class ApplicationsListSharedComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 

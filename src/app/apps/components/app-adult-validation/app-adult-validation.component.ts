@@ -8,7 +8,6 @@ import { VkBridgeService } from '../../../services/vk-bridge.service';
     selector: 'app-adult-validation',
     templateUrl: './app-adult-validation.component.html',
     styleUrls: [],
-    standalone: true,
     imports: [
         NgForOf,
         NgIf

@@ -20,16 +20,15 @@ import WaveSurfer from 'wavesurfer.js';
 @Component({
     selector: 'app-audio-player',
     templateUrl: 'audio-player.component.html',
-    standalone: true,
     imports: [
         NgIf,
         NgClass
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => AudioPlayerComponent),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => AudioPlayerComponent),
+            multi: true
+        }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy {

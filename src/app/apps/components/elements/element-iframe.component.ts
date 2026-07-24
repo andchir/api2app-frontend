@@ -15,7 +15,6 @@ import { ApplicationService } from '../../../services/application.service';
 @Component({
     selector: 'app-element-iframe',
     templateUrl: 'element-iframe.component.html',
-    standalone: true,
     imports: [
         NgIf,
         NgStyle,

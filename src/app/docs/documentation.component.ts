@@ -3,18 +3,13 @@ import { Subject, takeUntil } from 'rxjs';
 
 import { ApplicationService } from '../services/application.service';
 import { ApplicationItem } from '../apps/models/application-item.interface';
-import { NgClass, NgForOf, NgIf } from "@angular/common";
 import { AppsModule } from "../apps/apps.module";
 
 @Component({
     selector: 'app-docs',
     templateUrl: './documentation.component.html',
-    standalone: true,
     styleUrls: [],
     imports: [
-        NgForOf,
-        NgIf,
-        NgClass,
         AppsModule
     ],
     providers: [ApplicationService]

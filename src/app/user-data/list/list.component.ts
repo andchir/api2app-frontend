@@ -11,7 +11,8 @@ import { CustomTable } from '../models/custom-table.interface';
 @Component({
     selector: 'app-user-data-list',
     templateUrl: './list.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class UserDataListComponent extends ListAbstractComponent<CustomTable> implements OnInit, OnDestroy {
 

@@ -39,7 +39,8 @@ declare const vkBridge: any;
     selector: 'app-item-shared',
     templateUrl: './app-shared.component.html',
     providers: [VkBridgeService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 

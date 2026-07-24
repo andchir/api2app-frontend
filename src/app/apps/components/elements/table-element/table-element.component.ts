@@ -17,11 +17,10 @@ import {SharedModule} from "../../../../shared.module";
     templateUrl: 'table-element.component.html',
     styleUrls: ['table-element.component.css'],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => TableElementComponent),
-        multi: true
-    }],
-    standalone: true,
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => TableElementComponent),
+            multi: true
+        }],
     imports: [
         NgForOf,
         NgIf,

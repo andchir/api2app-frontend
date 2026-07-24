@@ -13,17 +13,16 @@ import { NgClass, NgForOf, NgIf } from '@angular/common';
 @Component({
     selector: 'app-select-image',
     templateUrl: 'select-image.component.html',
-    standalone: true,
     imports: [
         NgForOf,
         NgIf,
         NgClass
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => SelectImageComponent),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => SelectImageComponent),
+            multi: true
+        }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SelectImageComponent implements ControlValueAccessor, OnInit, OnChanges {

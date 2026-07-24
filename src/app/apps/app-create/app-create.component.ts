@@ -37,7 +37,8 @@ const APP_NAME = environment.appName;
     templateUrl: './app-create.component.html',
     styleUrls: ['./app-create.component.css'],
     providers: [VkBridgeService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ApplicationCreateComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
 

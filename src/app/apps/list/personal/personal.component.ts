@@ -14,7 +14,8 @@ import { ApplicationImportComponent } from '../../app-import/app-import.componen
 @Component({
     selector: 'app-apps-list-personal',
     templateUrl: './personal.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class ApplicationsListPersonalComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 

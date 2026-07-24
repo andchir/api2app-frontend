@@ -11,16 +11,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 @Component({
     selector: 'app-rating-element',
     templateUrl: 'rating-element.component.html',
-    standalone: true,
     imports: [
         NgClass,
         NgForOf
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => RatingElementComponent),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => RatingElementComponent),
+            multi: true
+        }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RatingElementComponent implements ControlValueAccessor {

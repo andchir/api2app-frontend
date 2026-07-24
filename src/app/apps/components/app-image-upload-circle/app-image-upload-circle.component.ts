@@ -5,11 +5,12 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     selector: 'app-upload-image-circle',
     templateUrl: 'app-image-upload-circle.component.html',
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => ImageUploadCircleComponent),
-        multi: true
-    }],
-    changeDetection: ChangeDetectionStrategy.OnPush
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ImageUploadCircleComponent),
+            multi: true
+        }],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ImageUploadCircleComponent implements ControlValueAccessor {
 

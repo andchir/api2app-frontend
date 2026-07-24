@@ -30,7 +30,8 @@ import { AppBlockElementType } from '../../models/app-block.interface';
 @Component({
     selector: 'app-element-action',
     templateUrl: './app-action.component.html',
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class AppActionComponent implements OnInit, OnDestroy {
 

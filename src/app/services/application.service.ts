@@ -4,7 +4,7 @@ import { BASE_URL } from '../../environments/environment';
 import { environment } from '../../environments/environment';
 
 import {catchError, Observable} from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { ApplicationItem } from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
@@ -193,7 +193,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 if (Array.isArray(element.value) && (element.value as File[]).length === 0) {
                     return null;
                 }
-                return element.multiple || !Array.isArray(element.value) ? element.value : element.value[0];
+                return element.multiple || !Array.isArray(element.value) ? String(element.value) : element.value[0];
             case 'input-number':
             case 'input-slider':
                 return typeof element.value === 'string'

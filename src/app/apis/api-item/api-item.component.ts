@@ -32,7 +32,8 @@ export interface ApiItemMessageEvent {
     selector: 'app-api-item',
     templateUrl: './api-item.component.html',
     styleUrls: ['./api-item.component.css'],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 

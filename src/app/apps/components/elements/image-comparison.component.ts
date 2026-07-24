@@ -12,7 +12,6 @@ import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-image-comparison',
-    standalone: true,
     imports: [CommonModule],
     templateUrl: 'image-comparison.component.html'
 })

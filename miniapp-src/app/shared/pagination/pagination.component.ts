@@ -4,7 +4,8 @@ import { PaginatorState } from '../../apps/models/paginator-state.interface';
 
 @Component({
     selector: 'app-pagination',
-    templateUrl: './pagination.component.html'
+    templateUrl: './pagination.component.html',
+    standalone: false
 })
 export class PaginationComponent implements OnInit {
 

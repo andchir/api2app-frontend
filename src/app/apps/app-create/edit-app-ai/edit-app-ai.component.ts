@@ -24,7 +24,6 @@ import {AiAssistantAnimationComponent} from "../a-assistant-animation/ai-assista
 
 @Component({
     selector: 'app-import-application',
-    standalone: true,
     imports: [
         NgIf,
         SharedModule,

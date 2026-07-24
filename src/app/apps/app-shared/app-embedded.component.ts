@@ -31,7 +31,8 @@ declare const vkBridge: any;
     selector: 'app-item-embedded',
     templateUrl: './app-shared.component.html',
     providers: [VkBridgeService],
-    changeDetection: ChangeDetectionStrategy.OnPush
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ApplicationEmbeddedComponent extends ApplicationSharedComponent implements OnInit, OnDestroy {
 

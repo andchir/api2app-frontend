@@ -18,7 +18,8 @@ const ROBOKASSA_URL = environment.robokassaUrl;
     selector: 'app-dashboard',
     templateUrl: './my-profile.component.html',
     styleUrls: [],
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class MyProfileComponent implements OnInit, OnDestroy {
 

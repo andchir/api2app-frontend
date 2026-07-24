@@ -28,7 +28,6 @@ interface CalendarDay {
 @Component({
     selector: 'app-input-date-element',
     templateUrl: 'input-date-element.component.html',
-    standalone: true,
     imports: [
         FormsModule,
         NgClass,

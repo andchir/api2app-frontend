@@ -5,7 +5,8 @@ import { ApiService, ImportApiItem } from '../../services/api.service';
 
 @Component({
     selector: 'app-import-api',
-    templateUrl: './api-import.component.html'
+    templateUrl: './api-import.component.html',
+    standalone: false
 })
 export class ApiImportComponent implements OnInit, OnDestroy {
 

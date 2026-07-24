@@ -11,7 +11,8 @@ import { AuthService } from '../services/auth.service';
     selector: 'app-auth-logout',
     template: '',
     styleUrls: [],
-    providers: [UserService]
+    providers: [UserService],
+    standalone: false
 })
 export class AuthLogoutComponent implements OnInit, OnDestroy {
 

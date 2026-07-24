@@ -21,17 +21,16 @@ import { SharedModule } from '../../../shared.module';
 @Component({
     selector: 'app-messages-element',
     templateUrl: 'messages-element.component.html',
-    standalone: true,
     imports: [
         CommonModule,
         FormsModule,
         SharedModule
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => MessagesElementComponent),
-        multi: true
-    }],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => MessagesElementComponent),
+            multi: true
+        }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChecked, ControlValueAccessor {

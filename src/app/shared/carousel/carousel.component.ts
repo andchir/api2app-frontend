@@ -10,7 +10,8 @@ export interface CarouselItem {
 
 @Component({
     selector: 'app-carousel',
-    templateUrl: './carousel.component.html'
+    templateUrl: './carousel.component.html',
+    standalone: false
 })
 export class CarouselComponent implements AfterViewInit, OnDestroy {
     @Input() items: ApplicationItem[] = [];

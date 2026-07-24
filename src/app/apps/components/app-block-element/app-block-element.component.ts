@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
@@ -13,7 +13,8 @@ import { ChartOptions } from '../../models/chart-options.interface';
     selector: 'app-block-element',
     templateUrl: './app-block-element.component.html',
     styleUrls: [],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class AppBlockElementComponent implements OnInit, OnChanges {
 

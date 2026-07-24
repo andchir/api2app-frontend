@@ -3,7 +3,8 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 @Component({
     selector: 'app-alert',
     templateUrl: './alert.component.html',
-    styleUrls: []
+    styleUrls: [],
+    standalone: false
 })
 export class AlertComponent implements OnInit, OnChanges {
 

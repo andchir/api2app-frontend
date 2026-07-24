@@ -11,7 +11,8 @@ import { ApplicationService } from '../../services/application.service';
     selector: 'app-apis-list',
     templateUrl: './list.component.html',
     styleUrls: [],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ListApisComponent implements OnInit {
 

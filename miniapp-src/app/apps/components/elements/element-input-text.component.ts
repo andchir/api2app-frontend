@@ -21,11 +21,12 @@ declare const vkBridge: any;
     selector: 'app-element-input-text',
     templateUrl: 'element-input-text.component.html',
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => ElementInputTextComponent),
-        multi: true
-    }],
-    changeDetection: ChangeDetectionStrategy.OnPush
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ElementInputTextComponent),
+            multi: true
+        }],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
 

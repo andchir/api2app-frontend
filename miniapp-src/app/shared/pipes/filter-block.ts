@@ -1,7 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'filterBlock'
+    name: 'filterBlock',
+    standalone: false
 })
 export class FilterBlockPipe implements PipeTransform {
     transform(items: any[], field : string, tabIndex : number): any[] {

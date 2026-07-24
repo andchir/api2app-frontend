@@ -13,7 +13,8 @@ import { ChartOptions } from '../../models/chart-options.interface';
     selector: 'app-block-element',
     templateUrl: './app-block-element.component.html',
     styleUrls: [],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class AppBlockElementComponent implements OnInit, OnChanges {
 

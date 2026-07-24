@@ -26,7 +26,6 @@ declare const vkBridge: any;
 @Component({
     selector: 'app-image-elem',
     templateUrl: 'element-image.component.html',
-    standalone: true,
     imports: [
         NgIf,
         NgClass,
@@ -34,10 +33,10 @@ declare const vkBridge: any;
         NgTemplateOutlet
     ],
     providers: [{
-        provide: NG_VALUE_ACCESSOR,
-        useExisting: forwardRef(() => ElementImageComponent),
-        multi: true
-    }, VkBridgeService],
+            provide: NG_VALUE_ACCESSOR,
+            useExisting: forwardRef(() => ElementImageComponent),
+            multi: true
+        }, VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ElementImageComponent implements OnInit, ControlValueAccessor, OnChanges {

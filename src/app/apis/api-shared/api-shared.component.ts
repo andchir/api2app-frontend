@@ -15,7 +15,8 @@ import { TokenStorageService } from '../../services/token-storage.service';
     selector: 'app-api-shared',
     templateUrl: './api-shared.component.html',
     styleUrls: ['./api-shared.component.css'],
-    providers: []
+    providers: [],
+    standalone: false
 })
 export class ApiSharedComponent implements OnInit, OnDestroy {
 
