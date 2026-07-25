@@ -20,17 +20,17 @@ import { AppActionComponent } from './components/app-action/app-action.component
 import { ApplicationService } from '../services/application.service';
 import { ApiService } from '../services/api.service';
 import { ModalService } from '../services/modal.service';
-import { ElementInputTextComponent } from './components/elements/element-input-text.component';
+import { ElementInputTextComponent } from './components/elements/element-input-text/element-input-text.component';
 import { ApplicationImportComponent } from './app-import/app-import.component';
 import { RenameComponent } from '../shared/rename/rename.component';
 import { TableElementComponent } from './components/elements/table-element/table-element.component';
-import { SelectImageComponent } from './components/elements/select-image.component';
-import { ProgressElementComponent } from './components/elements/progress-element.component';
-import { ElementImageComponent } from './components/elements/element-image.component';
-import { ImageComparisonComponent } from './components/elements/image-comparison.component';
-import { ElementIframeComponent } from './components/elements/element-iframe.component';
-import { AudioPlayerComponent } from './components/elements/audio-player.component';
-import { MessagesElementComponent } from './components/elements/messages-element.component';
+import { SelectImageComponent } from './components/elements/select-image/select-image.component';
+import { ProgressElementComponent } from './components/elements/progress-element/progress-element.component';
+import { ElementImageComponent } from './components/elements/element-image/element-image.component';
+import { ImageComparisonComponent } from './components/elements/image-comparison/image-comparison.component';
+import { ElementIframeComponent } from './components/elements/element-iframe/element-iframe.component';
+import { AudioPlayerComponent } from './components/elements/audio-player/audio-player.component';
+import { MessagesElementComponent } from './components/elements/messages-element/messages-element.component';
 import { InputDateElementComponent } from './components/elements/input-date-element/input-date-element.component';
 import { RatingElementComponent } from './components/elements/rating-element/rating-element.component';
 

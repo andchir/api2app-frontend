@@ -6,7 +6,7 @@ import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
-import { MessagesElementComponent } from '../elements/messages-element.component';
+import { MessagesElementComponent } from '../elements/messages-element/messages-element.component';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
