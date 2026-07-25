@@ -379,9 +379,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.isLoading = true;
         this.runInZoneAndMarkForCheck();
         try {
-            const filename = this.value instanceof Blob
-                ? this.generateFilename(this.value.type || 'audio/unknown', this.label || 'audio')
-                : '';
+            const filename = this.getDownloadFilename();
             await ApplicationService.downloadFile(this.value, filename);
         } finally {
             this.isLoading = false;
@@ -463,6 +461,44 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
 
         return `${safeFilename}_${timestamp}.${extension}`;
+    }
+
+    private getDownloadFilename(): string {
+        const safeLabel = this.label
+            .trim()
+            .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+            .replace(/[. ]+$/g, '');
+
+        if (!safeLabel) {
+            return '';
+        }
+
+        let extension = '';
+        if (this.value instanceof Blob) {
+            extension = this.value.type ? this.getExtensionFromMimeType(this.value.type) : '';
+        } else {
+            const dataMimeType = this.value.match(/^data:([^;,]+)/i)?.[1];
+            if (dataMimeType) {
+                extension = this.getExtensionFromMimeType(dataMimeType);
+            } else {
+                try {
+                    const urlExtension = new URL(this.value, window.location.href)
+                        .pathname
+                        .match(/\.([a-z0-9]+)$/i)?.[1]
+                        ?.toLocaleLowerCase();
+
+                    if (urlExtension && Object.values(this.MIME_TO_EXTENSION).includes(urlExtension)) {
+                        extension = urlExtension;
+                    }
+                } catch {
+                    // Use the label as-is if the audio format cannot be determined.
+                }
+            }
+        }
+
+        return extension && !safeLabel.toLocaleLowerCase().endsWith(`.${extension}`)
+            ? `${safeLabel}.${extension}`
+            : safeLabel;
     }
 
     getExtensionFromMimeType(mimeType: string): string {
