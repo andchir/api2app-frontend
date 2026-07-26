@@ -21,6 +21,10 @@ import { firstValueFrom } from 'rxjs';
 import { VkBridgeService } from '../../../../services/vk-bridge.service';
 import { ApplicationService } from '../../../../services/application.service';
 import { VkAppOptions } from '../../../models/vk-app-options.interface';
+import {
+    activateAudioPlayer,
+    clearActiveAudioPlayer
+} from './active-audio-player';
 
 declare const vkBridge: any;
 
@@ -39,8 +43,6 @@ declare const vkBridge: any;
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy, OnInit {
-
-    private static activePlayer: AudioPlayerComponent | null = null;
 
     @ViewChild('waveformContainer', { static: false }) waveformContainer!: ElementRef<HTMLDivElement>;
 
@@ -284,10 +286,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         });
 
         this.wavesurfer.on('play', () => {
-            if (AudioPlayerComponent.activePlayer !== this) {
-                AudioPlayerComponent.activePlayer?.pause();
-                AudioPlayerComponent.activePlayer = this;
-            }
+            activateAudioPlayer(this);
             this.isPlaying = true;
             this.runInZoneAndMarkForCheck();
         });
@@ -367,9 +366,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     }
 
     private clearActivePlayer(): void {
-        if (AudioPlayerComponent.activePlayer === this) {
-            AudioPlayerComponent.activePlayer = null;
-        }
+        clearActiveAudioPlayer(this);
     }
 
     async downloadAudio(): Promise<void> {

@@ -36,6 +36,7 @@ import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-b
 import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 import { MapFieldsByBlock } from '../models/element-options';
+import { pauseActiveAudioPlayer } from '../components/elements/audio-player/active-audio-player';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -92,6 +93,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     destroyed$: Subject<void> = new Subject();
     private wsAppSubmitSubscription?: Subscription;
     private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
+    private visibilityChangeHandler?: () => void;
 
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
@@ -299,6 +301,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         // Get user balance
         if (this.data.paymentEnabled) {
             this.updateUserBalance();
+        }
+
+        if (!this.visibilityChangeHandler) {
+            this.visibilityChangeHandler = () => {
+                if (document.hidden) {
+                    pauseActiveAudioPlayer();
+                }
+            };
+            document.addEventListener('visibilitychange', this.visibilityChangeHandler);
         }
     }
 
@@ -2161,6 +2172,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch(() => {
                 this.vkAppOptions = {};
             });
+
+        this.vkBridgeService.onHideEventInit();
     }
 
     adultAppRestrict(): void {
@@ -2321,6 +2334,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        if (this.visibilityChangeHandler) {
+            document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+        }
         this.cancelAppSubmitWebSocketSubscription();
         this.websocketService.disconnect();
         this.destroyed$.next();
