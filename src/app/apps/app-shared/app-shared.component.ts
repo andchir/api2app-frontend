@@ -2096,7 +2096,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let htmlContent = '';
         if (element.valueFrom) {
             const sourceElement = this.getValueSourceElement(element);
-            htmlContent = String(sourceElement.value);
+            htmlContent = ApplicationService.createStringValue(
+                sourceElement,
+                String(ApplicationService.getElementValue(sourceElement) ?? '')
+            );
+
+            if (/^https?:\/\/\S+$/i.test(htmlContent)) {
+                iframeEl.removeAttribute('srcdoc');
+                iframeEl.src = htmlContent;
+                setTimeout(() => {
+                    block.loading = false;
+                    this.cdr.detectChanges();
+                }, 1000);
+                return;
+            }
 
             if (!htmlContent.includes('<body')) {
                 this.message = $localize `Incorrect HTML code.`;
