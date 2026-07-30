@@ -9,9 +9,18 @@ export class ToHtmlPipe implements PipeTransform {
 
     constructor(private sanitizer: DomSanitizer) {}
 
-    transform(text: string): SafeHtml {
+    transform(text: string | number | boolean | object | null): SafeHtml {
         if (text === null) {
             text = '';
+        }
+        if (typeof text === 'boolean') {
+            const iconClass = text
+                ? 'bi bi-check-circle text-green-500'
+                : 'bi bi-x-circle text-gray-400';
+
+            return this.sanitizer.bypassSecurityTrustHtml(
+                `<div class="flex justify-center"><i class="${iconClass}"></i></div>`
+            );
         }
         if (typeof text === 'object') {
             text = JSON.stringify(text, null, 2);
