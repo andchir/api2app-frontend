@@ -360,7 +360,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true): string {
+    static createInputStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
+        // Use the prefix and suffix only when the value is finally used
+        const usePrefixSuffix = !['input-text', 'input-textarea', 'input-switch', 'input-select'].includes(element.type);
+        return ApplicationService.createStringValue(element, value, skipTags, true, usePrefixSuffix);
+    }
+
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true, usePrefixSuffix: boolean = true): string {
+        const prefixText = usePrefixSuffix ? (element.prefixText || '') : '';
+        const suffixText = usePrefixSuffix ? (element.suffixText || '') : '';
         if (typeof value === 'object' && Array.isArray(value)) {
             value = value.map(item => {
                 if (typeof item === 'object' && item !== null) {
@@ -373,13 +381,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
         } else if (typeof value === 'number') {
             value = String(value);
         }
-        if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
-            value = (element.prefixText || '') + encodeURIComponent(value);
-        } else if (element.prefixText && (!/[{}]/.test(element.prefixText) || !skipTags)) {
-            value = (element.prefixText || '') + value;
+        if (prefixText && prefixText.match(/https?:\/\//) && prefixText.endsWith('=')) {
+            value = prefixText + encodeURIComponent(value);
+        } else if (prefixText && (!/[{}]/.test(prefixText) || !skipTags)) {
+            value = prefixText + value;
         }
-        if (element.suffixText && (!/[{}]/.test(element.suffixText) || !skipTags)) {
-            value += (element.suffixText || '');
+        if (suffixText && (!/[{}]/.test(suffixText) || !skipTags)) {
+            value += suffixText;
         }
         if (trim) {
             return value.trim();

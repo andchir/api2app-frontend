@@ -1831,7 +1831,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = ApplicationService.createStringValue(element, value);
+            element.value = ApplicationService.createInputStringValue(element, value);
             this.onElementValueChanged(element);
             this.cdr.detectChanges();
             return;
@@ -1853,7 +1853,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     : element.valueArr[0];
             }
             if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createStringValue(element, value, true);
+                element.value = ApplicationService.createInputStringValue(element, value, true);
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
             element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
@@ -1864,7 +1864,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element.prefixText + (element.suffixText || '');
             } else if (typeof value === 'string' || element.prefixText || element.suffixText
                 || ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createStringValue(element, value, true);
+                element.value = ApplicationService.createInputStringValue(element, value, true);
             } else {
                 element.value = value;
             }
