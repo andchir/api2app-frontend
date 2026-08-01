@@ -1456,6 +1456,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'linkedField',
+                    label: $localize `Linked element`,
+                    type: 'input-text',
+                    value: options?.linkedField || ''
+                });
+                output.push({
                     name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
@@ -2093,6 +2099,7 @@ export class ElementOptions {
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 20,
                     hiddenByField: '',
+                    linkedField: '',
                     isBooleanValue: false,
                     valueObj: null,
                     value: null

@@ -1574,14 +1574,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         // Autostart a linked element
         if (currentElement.linkedField) {
-            const linkedField = this.findBlockElementByName(currentElement.linkedField);
-            if (linkedField && linkedField.options.inputApiUuid) {
-                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true,
-                    false, updateUserBalanceAfterResponse);
-            } else if (linkedField && linkedField.options.outputApiUuid) {
-                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true,
-                    false, updateUserBalanceAfterResponse);
-            }
+            this.processLinkedElement(currentElement, true);
         }
 
         this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
@@ -1646,6 +1639,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    private processLinkedElement(currentElement: AppBlockElement, updateUserBalanceAfterResponse: boolean = true): void {
+        if (!currentElement.linkedField) {
+            return;
+        }
+        const linkedField = this.findBlockElementByName(currentElement.linkedField);
+        if (linkedField && linkedField.options.inputApiUuid) {
+            this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true,
+                false, updateUserBalanceAfterResponse);
+        } else if (linkedField && linkedField.options.outputApiUuid) {
+            this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true,
+                false, updateUserBalanceAfterResponse);
+        }
     }
 
     private getErrorMessageFromObject(error: any): string {
@@ -2086,6 +2093,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 ApplicationService.localStoreValue(this.data.uuid, elem);
             }
         });
+        if (currentElement.linkedField) {
+            this.processLinkedElement(currentElement, true);
+        }
         this.cdr.markForCheck();
     }
 
