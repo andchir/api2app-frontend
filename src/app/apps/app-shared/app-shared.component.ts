@@ -1525,6 +1525,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement,
                       updateUserBalanceAfterResponse: boolean = true): void {
         if (!response.body) {
+            this.applyParsedApiResponseToApp(apiItem, {}, currentElement, updateUserBalanceAfterResponse);
             return;
         }
         const responseContentType = response.headers.has('Content-type')
@@ -1573,7 +1574,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Autostart a linked element
-        if (currentElement.linkedField) {
+        if (currentElement.linkedField && !['progress'].includes(currentElement.type)) {
             this.processLinkedElement(currentElement, true);
         }
 
