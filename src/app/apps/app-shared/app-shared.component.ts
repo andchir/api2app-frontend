@@ -1898,10 +1898,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         switch (element.type) {
             case 'button':
-                let fieldValue = element.value;
+                let fieldValue = ApplicationService.createStringValue(element, element.value);
                 if (element.valueFrom) {
                     const sourceElement = this.getValueSourceElement(element);
-                    fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
+                    if (sourceElement) {
+                        fieldValue = ApplicationService.createStringValue(sourceElement, sourceElement.value);
+                    }
                 }
                 if (element.isClearForm) {
                     this.clearAllValues();
