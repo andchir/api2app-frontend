@@ -280,7 +280,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
                             return;
                         }
-                        const ignoreButton = this.dataService.isButtonIgnore(this.appElements.output[uuid], 'output');
+                        const inputElements = this.appElements.input[uuid] || [];
+                        const ignoreButton = this.dataService.isButtonAutoStartIgnore(this.appElements.output[uuid], inputElements);
                         const hasButton = this.appElements.buttons[uuid]
                             && this.appElements.buttons[uuid].length > 0
                             && !this.appElements.buttons[uuid][0].hidden;

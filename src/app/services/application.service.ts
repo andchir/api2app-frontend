@@ -781,8 +781,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return result;
     }
 
-    isButtonIgnore(elements: AppBlockElement[], action: 'input'|'output'): boolean {
-        if (elements.length === 1 && ['table'].includes(elements[0].type) && action === 'output') {
+    isButtonAutoStartIgnore(outputElements: AppBlockElement[], inputElements: AppBlockElement[] = []): boolean {
+        if (outputElements.length === 1 && ['table'].includes(outputElements[0].type)) {
+            return true;
+        }
+        const requiredInputElements = inputElements.filter(element => {
+            return element.required && !element.hidden;
+        });
+        if (requiredInputElements.length === 0) {
             return true;
         }
         return false;
