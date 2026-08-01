@@ -192,7 +192,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
                     } else {
-                        this.createAppOptions();
+                        this.appInit();
                     }
                     this.subscriptionsElementsSync();
                     this.cdr.detectChanges();
@@ -205,11 +205,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    createAppOptions(): void {
+    appInit(): void {
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
-            this.vkAppInit();
+            this.vkAppInit().then(() => this.createAppOptions());
+        } else {
+            this.createAppOptions();
         }
+    }
+
+    createAppOptions(): void {
         this.checkExistenceTab();
         const currentUser = this.tokenStorageService.getUser();
         const currentUserId = currentUser ? parseInt(currentUser.url.split('/').pop()) : 0;
@@ -2185,8 +2190,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
     }
 
-    vkAppInit(): void {
-        this.vkBridgeService.getOptions()
+    vkAppInit(): Promise<void> {
+        this.vkBridgeService.onHideEventInit();
+        return this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
                 if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions
@@ -2199,8 +2205,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch(() => {
                 this.vkAppOptions = {};
             });
-
-        this.vkBridgeService.onHideEventInit();
     }
 
     adultAppRestrict(): void {
