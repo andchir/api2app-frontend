@@ -206,7 +206,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appInit(): void {
-        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+        console.log('appInit', window['isVKApp']);
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
             this.isVkApp = true;
             // this.vkAppInit().then(() => this.createAppOptions());
             this.vkAppInit();
