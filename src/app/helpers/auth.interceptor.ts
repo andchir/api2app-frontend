@@ -25,6 +25,10 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
+        const inferenceUrls = [
+            `${BASE_URL}${this.locale}/api/v1/inference`,
+            `${BASE_URL}api/v1/inference`
+        ];
         const urlsWhitelist = [
             `${BASE_URL}api/v1/proxy`,
             `${BASE_URL}${this.locale}/api/v1/auth/users/`,
@@ -53,6 +57,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (error instanceof HttpErrorResponse
                     && [401, 403].includes(error.status)
                     && !urlsWhitelist.includes(authReq.url)
+                    && !inferenceUrls.includes(authReq.url)
                     && authReq.url.includes(BASE_URL)) {
                         return this.handle401Error(authReq, next);
                 }
@@ -79,16 +84,9 @@ export class AuthInterceptor implements HttpInterceptor {
                     this.isRefreshing = false;
                     this.tokenStorageService.signOut();
 
-                    const requestUrl = request.url;
-                    const inferenceUrls = [
-                        `${BASE_URL}${this.locale}/api/v1/inference`,
-                        `${BASE_URL}api/v1/inference`
-                    ];
-                    if (!inferenceUrls.includes(requestUrl)) {
-                        setTimeout(() => {
-                            this.authService.navigateAuthPage('login');
-                        }, 1);
-                    }
+                    setTimeout(() => {
+                        this.authService.navigateAuthPage('login');
+                    }, 1);
                     return throwError(err);
                 })
             );
