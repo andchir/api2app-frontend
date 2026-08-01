@@ -68,8 +68,9 @@ export class ApplicationEmbeddedComponent extends ApplicationSharedComponent imp
                     this.loading = false;
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
+                    } else {
+                        this.appInit();
                     }
-                    this.createAppOptions();
                     this.cdr.detectChanges();
                 },
                 error: (err) => {

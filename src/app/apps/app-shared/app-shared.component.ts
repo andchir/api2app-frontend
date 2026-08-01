@@ -206,13 +206,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appInit(): void {
-        console.log('appInit', window['isVKApp']);
         if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
             this.isVkApp = true;
-            // this.vkAppInit().then(() => this.createAppOptions());
-            this.vkAppInit();
+            this.vkAppInit().then(() => this.createAppOptions());
+        } else {
+            this.createAppOptions();
         }
-        this.createAppOptions();
     }
 
     createAppOptions(): void {
@@ -2191,8 +2190,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
     }
 
-    vkAppInit(): void {
-        this.vkBridgeService.getOptions()
+    vkAppInit(): Promise<void> {
+        this.vkBridgeService.onHideEventInit();
+        return this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
                 if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions
@@ -2205,8 +2205,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch(() => {
                 this.vkAppOptions = {};
             });
-
-        this.vkBridgeService.onHideEventInit();
     }
 
     adultAppRestrict(): void {
