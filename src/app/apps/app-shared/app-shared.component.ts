@@ -280,9 +280,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
                             return;
                         }
-                        if (!this.appElements.buttons[uuid]
-                            || this.appElements.buttons[uuid].length === 0
-                            || this.appElements.buttons[uuid][0].hidden) {
+                        const ignoreButton = this.dataService.isButtonIgnore(this.appElements.output[uuid], 'output');
+                        const hasButton = this.appElements.buttons[uuid]
+                            && this.appElements.buttons[uuid].length > 0
+                            && !this.appElements.buttons[uuid][0].hidden;
+                        if (!hasButton || ignoreButton) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });

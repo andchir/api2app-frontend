@@ -780,4 +780,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         return result;
     }
+
+    isButtonIgnore(elements: AppBlockElement[], action: 'input'|'output'): boolean {
+        if (elements.length === 1 && ['table'].includes(elements[0].type) && action === 'output') {
+            return true;
+        }
+        return false;
+    }
 }
