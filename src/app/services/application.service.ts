@@ -389,7 +389,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (suffixText && (!/[{}]/.test(suffixText) || !skipTags)) {
             value += suffixText;
         }
-        if (trim) {
+        if (trim && value) {
             return value.trim();
         }
         return value;
