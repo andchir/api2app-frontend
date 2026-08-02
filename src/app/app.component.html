@@ -205,11 +205,11 @@
                    [routerLinkActiveOptions]="{exact: true}"
                    routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>Home Page</a>
                 <a class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                   routerLink="/apps"
+                   [routerLink]="isPersonalPageUrl ? '/apps/personal' : '/apps/shared'"
                    routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>Applications</a>
                 <a href="#"
                    class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
-                   routerLink="/apis"
+                   [routerLink]="isPersonalPageUrl ? '/apis/personal' : '/apis/shared'"
                    routerLinkActive="active bg-gray-900 hover:bg-gray-900 text-white" i18n>APIs</a>
                 <a href="#"
                    class="text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium"
