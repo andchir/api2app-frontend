@@ -33,6 +33,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     @Input() useFullscreenButton: boolean = false;
     @Input() border: boolean = false;
     @Input() hiddenByDefault: boolean = false;
+    private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
     @Output() refreshContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild('iframeEl', { static: false }) iframeEl!: ElementRef;
@@ -199,6 +200,11 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             return;
         }
         this.isFullScreenMode = !this.isFullScreenMode;
+        if (this.isFullScreenMode) {
+            this.disablePageScroll();
+        } else {
+            this.restorePageScroll();
+        }
         this.onResize();
     }
 
@@ -210,6 +216,27 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             this.heightCurrent = this.height;
         }
         this.cdr.detectChanges();
+    }
+
+    private disablePageScroll(): void {
+        if (this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        this.pageOverflowBeforeScrollLock = {
+            body: document.body.style.overflow,
+            documentElement: document.documentElement.style.overflow
+        };
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+    }
+
+    private restorePageScroll(): void {
+        if (!this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
+        document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
+        this.pageOverflowBeforeScrollLock = undefined;
     }
 
     ngOnDestroy(): void {
@@ -225,5 +252,6 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         if (this.touchEndListener) {
             document.removeEventListener('touchend', this.touchEndListener);
         }
+        this.restorePageScroll();
     }
 }
