@@ -17,13 +17,13 @@ import { ApplicationService } from '../../services/application.service';
 import { ApiService } from '../../services/api.service';
 import { ModalService } from '../../services/modal.service';
 import { TokenStorageService } from '../../services/token-storage.service';
-import { environment } from '../../../environments/environment';
 import { RouterEventsService } from '../../services/router-events.service';
 import { ApplicationSharedComponent } from './app-shared.component';
 import { VkBridgeService } from '../../services/vk-bridge.service';
 import { AuthService } from '../../services/auth.service';
 import { WebsocketService } from '../../services/websocket.service';
 
+import { environment } from '../../../environments/environment';
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
 

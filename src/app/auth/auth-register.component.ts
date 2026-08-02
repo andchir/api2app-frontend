@@ -9,6 +9,10 @@ import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
 import { matchValidator } from '../helpers/match-validator';
 
+import { environment } from '../../environments/environment';
+const APP_IMAGE_URL = environment.appLogoUrlDark;
+const APP_NAME = environment.appName;
+
 @Component({
     selector: 'app-auth-register',
     templateUrl: './templates/auth-register.component.html',
@@ -21,6 +25,8 @@ export class AuthRegisterComponent implements OnInit, OnDestroy {
     submitted = false;
     message = '';
     messageType = 'error';
+    appLogoUrl: string = APP_IMAGE_URL;
+    appName: string = APP_NAME;
     destroyed$: Subject<void> = new Subject();
 
     form = this.formBuilder.group({

@@ -9,6 +9,10 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
 import { User } from '../apis/models/user.interface';
 
+import { environment } from '../../environments/environment';
+const APP_IMAGE_URL = environment.appLogoUrlDark;
+const APP_NAME = environment.appName;
+
 @Component({
     selector: 'app-password-reset',
     templateUrl: './templates/auth-password-reset.html',
@@ -24,6 +28,8 @@ export class AuthPasswordResetComponent implements OnInit, OnDestroy {
     messageType = 'error';
     user: User;
     groups: string[] = [];
+    appLogoUrl: string = APP_IMAGE_URL;
+    appName: string = APP_NAME;
     destroyed$: Subject<void> = new Subject();
 
     form = this.formBuilder.group({

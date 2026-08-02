@@ -1,7 +1,8 @@
 export const environment = {
     production: true,
     appName: 'Api2App',
-    appLogoUrl: '/assets/img/api2app-logo-light.svg',
+    appLogoUrl: 'assets/img/api2app-logo-light.svg',
+    appLogoUrlDark: 'assets/img/api2app-logo-dark.svg',
     languages: ['en', 'ru', 'fr', 'de', 'es'],
     apiUrl: '',
     robokassaUrl: ''

@@ -8,6 +8,9 @@ import { AuthService } from './services/auth.service';
 import { User } from './apis/models/user.interface';
 import { ApplicationService } from './services/application.service';
 
+import { environment } from '../environments/environment';
+const APP_IMAGE_URL = environment.appLogoUrl;
+const APP_NAME = environment.appName;
 
 @Component({
     selector: 'app-root',
@@ -24,6 +27,8 @@ export class AppComponent implements OnInit {
     isPersonalPageUrl = false;
     navigationLoading = false;
     languagesList: {name: string, title: string}[];
+    appLogoUrl: string = APP_IMAGE_URL;
+    appName: string = APP_NAME;
 
     constructor(
         @Inject(LOCALE_ID) public locale: string,

@@ -9,6 +9,10 @@ import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
 import { User } from '../apis/models/user.interface';
 
+import { environment } from '../../environments/environment';
+const APP_IMAGE_URL = environment.appLogoUrlDark;
+const APP_NAME = environment.appName;
+
 @Component({
     selector: 'app-auth-login',
     templateUrl: './templates/auth-login.component.html',
@@ -26,6 +30,8 @@ export class AuthLoginComponent implements OnInit, OnDestroy {
     groups: string[] = [];
     destroyed$: Subject<void> = new Subject();
     passwordShow: boolean = false;
+    appLogoUrl: string = APP_IMAGE_URL;
+    appName: string = APP_NAME;
 
     social_auth_items: {name: string, icon: string, url: string}[] = [];
 
