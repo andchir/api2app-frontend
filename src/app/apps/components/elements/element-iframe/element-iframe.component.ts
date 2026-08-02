@@ -1,14 +1,15 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
-    ElementRef, EventEmitter,
-    Input, OnChanges,
+    computed,
+    ElementRef,
+    input,
     OnDestroy,
-    OnInit, Output, SimpleChanges,
-    ViewChild
+    output,
+    signal,
+    viewChild
 } from '@angular/core';
-import { NgClass, NgIf, NgStyle } from '@angular/common';
+import { NgClass, NgStyle } from '@angular/common';
 import { DomSanitizer, SafeHtml, SafeResourceUrl } from '@angular/platform-browser';
 import { ApplicationService } from '../../../../services/application.service';
 
@@ -16,36 +17,53 @@ import { ApplicationService } from '../../../../services/application.service';
     selector: 'app-element-iframe',
     templateUrl: 'element-iframe.component.html',
     imports: [
-        NgIf,
         NgStyle,
         NgClass
     ],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
+export class ElementIframeComponent implements OnDestroy {
 
-    @Input() editorMode = false;
-    @Input() pageUrl: string = '';
-    @Input() htmlContent: string = '';
-    @Input() height: number = 600;
-    @Input() useResizer: boolean = false;
-    @Input() useRefreshButton: boolean = false;
-    @Input() useFullscreenButton: boolean = false;
-    @Input() border: boolean = false;
-    @Input() hiddenByDefault: boolean = false;
+    readonly editorMode = input(false);
+    readonly pageUrl = input('');
+    readonly htmlContent = input('');
+    readonly height = input(600);
+    readonly useResizer = input(false);
+    readonly useRefreshButton = input(false);
+    readonly useFullscreenButton = input(false);
+    readonly border = input(false);
+    readonly hiddenByDefault = input(false);
+    readonly refreshContent = output<HTMLIFrameElement>();
+
+    readonly iframeEl = viewChild<ElementRef<HTMLIFrameElement>>('iframeEl');
+    readonly iframeContainer = viewChild<ElementRef<HTMLElement>>('iframeContainer');
+
+    readonly safeHtmlContent = computed<SafeHtml | null>(() => {
+        if (!this.htmlContent()) {
+            return null;
+        }
+
+        let htmlContent = this.htmlContent();
+        const tags = ApplicationService.findStringTags(htmlContent, true);
+        tags.forEach((tagName) => {
+            htmlContent = htmlContent.replace(`{${tagName}}`, '');
+        });
+
+        return this.sanitizer.bypassSecurityTrustHtml(htmlContent);
+    });
+    readonly safeUrl = computed<SafeResourceUrl>(() =>
+        this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl() || 'about:blank')
+    );
+    readonly iframeWidth = signal(100);
+    readonly isResizing = signal(false);
+    readonly isFullScreenMode = signal(false);
+    readonly areFullScreenControlsOnLeft = signal(false);
+    private readonly windowHeight = signal(typeof window === 'undefined' ? 600 : window.innerHeight);
+    readonly heightCurrent = computed(() =>
+        this.isFullScreenMode() ? this.windowHeight() : this.height()
+    );
+
     private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
-    @Output() refreshContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
-
-    @ViewChild('iframeEl', { static: false }) iframeEl!: ElementRef;
-    @ViewChild('iframeContainer', { static: false }) iframeContainer!: ElementRef;
-    @ViewChild('resizerHandle', { static: false }) resizerHandle!: ElementRef;
-
-    safeHtmlContent: SafeHtml | null = null;
-    safeUrl: SafeResourceUrl | null = 'about:blank';
-    iframeWidth: number = 100;
-    heightCurrent: number = 600;
-    isResizing: boolean = false;
-    isFullScreenMode: boolean = false;
     private startX: number = 0;
     private startWidth: number = 0;
     private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
@@ -53,49 +71,15 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     private touchMoveListener: ((e: TouchEvent) => void) | null = null;
     private touchEndListener: ((e: TouchEvent) => void) | null = null;
 
-    constructor(
-        private sanitizer: DomSanitizer,
-        private cdr: ChangeDetectorRef
-    ) {}
-
-    ngOnInit(): void {
-        this.heightCurrent = this.height;
-        this.createSafeUrl();
-        this.createIframeContent();
-    }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['pageUrl']) {
-            this.createSafeUrl();
-        }
-    }
-
-    createSafeUrl(): void {
-        this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl || 'about:blank');
-        this.cdr.detectChanges();
-    }
-
-    createIframeContent(): void {
-        if (!this.htmlContent) {
-            return;
-        }
-        let htmlContent = this.htmlContent;
-        const tags = ApplicationService.findStringTags(htmlContent, true);
-        tags.forEach((tagName) => {
-            htmlContent = htmlContent.replace(`{${tagName}}`, '');
-        });
-
-        this.safeHtmlContent = this.sanitizer.bypassSecurityTrustHtml(htmlContent);
-        this.cdr.detectChanges();
-    }
+    constructor(private sanitizer: DomSanitizer) {}
 
     onMouseDown(event: MouseEvent): void {
-        if (!this.useResizer || this.editorMode) {
+        if (!this.useResizer() || this.editorMode()) {
             return;
         }
-        this.isResizing = true;
+        this.isResizing.set(true);
         this.startX = event.clientX;
-        this.startWidth = this.iframeWidth;
+        this.startWidth = this.iframeWidth();
 
         this.mouseMoveListener = (e: MouseEvent) => this.onMouseMove(e);
         this.mouseUpListener = (e: MouseEvent) => this.onMouseUp(e);
@@ -117,11 +101,11 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private onMove(event: MouseEvent | TouchEvent): void {
-        if (!this.isResizing) {
+        if (!this.isResizing()) {
             return;
         }
 
-        const container = this.iframeContainer?.nativeElement;
+        const container = this.iframeContainer()?.nativeElement;
         if (!container) {
             return;
         }
@@ -132,8 +116,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         const newWidthPercent = this.startWidth + (deltaX * 2 / containerWidth * 100);
 
         // Limit width between 20% and 100%
-        this.iframeWidth = Math.max(20, Math.min(100, newWidthPercent));
-        this.cdr.detectChanges();
+        this.iframeWidth.set(Math.max(20, Math.min(100, newWidthPercent)));
     }
 
     private onMouseUp(event: MouseEvent): void {
@@ -141,7 +124,7 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     private onEnd(): void {
-        this.isResizing = false;
+        this.isResizing.set(false);
 
         if (this.mouseMoveListener) {
             document.removeEventListener('mousemove', this.mouseMoveListener);
@@ -159,16 +142,15 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
             document.removeEventListener('touchend', this.touchEndListener);
             this.touchEndListener = null;
         }
-        this.cdr.detectChanges();
     }
 
     onTouchStart(event: TouchEvent): void {
-        if (!this.useResizer || this.editorMode) {
+        if (!this.useResizer() || this.editorMode()) {
             return;
         }
-        this.isResizing = true;
+        this.isResizing.set(true);
         this.startX = this.getPositionX(event);
-        this.startWidth = this.iframeWidth;
+        this.startWidth = this.iframeWidth();
 
         this.touchMoveListener = (e: TouchEvent) => this.onTouchMove(e);
         this.touchEndListener = (e: TouchEvent) => this.onTouchEnd(e);
@@ -189,18 +171,19 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     refreshContentAction(): void {
-        if (this.editorMode || !this.iframeEl?.nativeElement) {
+        const iframe = this.iframeEl()?.nativeElement;
+        if (this.editorMode() || !iframe) {
             return;
         }
-        this.refreshContent.emit(this.iframeEl?.nativeElement);
+        this.refreshContent.emit(iframe);
     }
 
     fullScreenToggle(): void {
-        if (this.editorMode) {
+        if (this.editorMode()) {
             return;
         }
-        this.isFullScreenMode = !this.isFullScreenMode;
-        if (this.isFullScreenMode) {
+        this.isFullScreenMode.update((isFullScreenMode) => !isFullScreenMode);
+        if (this.isFullScreenMode()) {
             this.disablePageScroll();
         } else {
             this.restorePageScroll();
@@ -208,14 +191,17 @@ export class ElementIframeComponent implements OnInit, OnDestroy, OnChanges {
         this.onResize();
     }
 
-    onResize(): void {
-        const windowHeight = window.innerHeight;
-        if (this.isFullScreenMode) {
-            this.heightCurrent = windowHeight;
-        } else {
-            this.heightCurrent = this.height;
+    toggleFullScreenControlsPosition(): void {
+        if (this.editorMode() || !this.isFullScreenMode()) {
+            return;
         }
-        this.cdr.detectChanges();
+        this.areFullScreenControlsOnLeft.update((controlsOnLeft) => !controlsOnLeft);
+    }
+
+    onResize(): void {
+        if (typeof window !== 'undefined') {
+            this.windowHeight.set(window.innerHeight);
+        }
     }
 
     private disablePageScroll(): void {
