@@ -25,10 +25,6 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<Object>> {
         let authReq = req;
         const token = this.tokenStorageService.getToken();
-        const inferenceUrls = [
-            `${BASE_URL}${this.locale}/api/v1/inference`,
-            `${BASE_URL}api/v1/inference`
-        ];
         const urlsWhitelist = [
             `${BASE_URL}api/v1/proxy`,
             `${BASE_URL}${this.locale}/api/v1/auth/users/`,
@@ -57,7 +53,6 @@ export class AuthInterceptor implements HttpInterceptor {
                 if (error instanceof HttpErrorResponse
                     && [401, 403].includes(error.status)
                     && !urlsWhitelist.includes(authReq.url)
-                    && !inferenceUrls.includes(authReq.url)
                     && authReq.url.includes(BASE_URL)) {
                         return this.handle401Error(authReq, next);
                 }
@@ -67,6 +62,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
     private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
         const token = this.tokenStorageService.getRefreshToken();
+
+        const inferenceUrls = [
+            `${BASE_URL}${this.locale}/api/v1/inference`,
+            `${BASE_URL}api/v1/inference`
+        ];
 
         if (!this.isRefreshing && token) {
             this.isRefreshing = true;
@@ -82,11 +82,13 @@ export class AuthInterceptor implements HttpInterceptor {
                 }),
                 catchError((err) => {
                     this.isRefreshing = false;
-                    this.tokenStorageService.signOut();
 
-                    setTimeout(() => {
-                        this.authService.navigateAuthPage('login');
-                    }, 1);
+                    if (!inferenceUrls.includes(request.url)) {
+                        this.tokenStorageService.signOut();
+                        setTimeout(() => {
+                            this.authService.navigateAuthPage('login');
+                        }, 1);
+                    }
                     return throwError(err);
                 })
             );
