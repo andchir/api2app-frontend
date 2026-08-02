@@ -40,7 +40,7 @@
              }">
             @if (useRefreshButton()) {
                 <button type="button"
-                        class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                        class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                         (click)="refreshContentAction()">
                     <i class="bi bi-arrow-repeat mr-2"></i>
                     <span i18n>Refresh</span>
@@ -49,7 +49,7 @@
 
             @if (useFullscreenButton()) {
                 <button type="button"
-                        class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                        class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                         (click)="fullScreenToggle()">
                     <i class="bi bi-arrows-fullscreen mr-2"></i>
                     <span i18n>Full Screen</span>
@@ -58,7 +58,7 @@
 
             @if (isFullScreenMode()) {
                 <button type="button"
-                        class="p-2 me-2 mb-2 text-3xl leading-3 text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
+                        class="p-2 text-3xl leading-3 text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                         (click)="toggleFullScreenControlsPosition()"
                         [attr.aria-label]="areFullScreenControlsOnLeft() ? 'Move controls to the right' : 'Move controls to the left'"
                         [attr.title]="areFullScreenControlsOnLeft() ? 'Move controls to the right' : 'Move controls to the left'">
