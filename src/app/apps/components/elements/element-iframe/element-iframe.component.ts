@@ -3,6 +3,7 @@ import {
     Component,
     computed,
     ElementRef,
+    HostListener,
     input,
     OnDestroy,
     output,
@@ -37,6 +38,7 @@ export class ElementIframeComponent implements OnDestroy {
 
     readonly iframeEl = viewChild<ElementRef<HTMLIFrameElement>>('iframeEl');
     readonly iframeContainer = viewChild<ElementRef<HTMLElement>>('iframeContainer');
+    readonly controlsPanel = viewChild<ElementRef<HTMLElement>>('controlsPanel');
 
     readonly safeHtmlContent = computed<SafeHtml | null>(() => {
         if (!this.htmlContent()) {
@@ -59,17 +61,23 @@ export class ElementIframeComponent implements OnDestroy {
     readonly isFullScreenMode = signal(false);
     readonly areFullScreenControlsOnLeft = signal(false);
     private readonly windowHeight = signal(typeof window === 'undefined' ? 600 : window.innerHeight);
+    private readonly controlsPanelHeight = signal(0);
     readonly heightCurrent = computed(() =>
-        this.isFullScreenMode() ? this.windowHeight() : this.height()
+        this.isFullScreenMode()
+            ? Math.max(0, this.windowHeight() - this.controlsPanelHeight())
+            : this.height()
     );
 
     private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
+    private pageScrollBeforeScrollLock?: {x: number, y: number};
     private startX: number = 0;
     private startWidth: number = 0;
     private mouseMoveListener: ((e: MouseEvent) => void) | null = null;
     private mouseUpListener: ((e: MouseEvent) => void) | null = null;
     private touchMoveListener: ((e: TouchEvent) => void) | null = null;
     private touchEndListener: ((e: TouchEvent) => void) | null = null;
+    private resizeAnimationFrame: number | null = null;
+    private scrollRestoreAnimationFrame: number | null = null;
 
     constructor(private sanitizer: DomSanitizer) {}
 
@@ -188,7 +196,7 @@ export class ElementIframeComponent implements OnDestroy {
         } else {
             this.restorePageScroll();
         }
-        this.onResize();
+        this.scheduleSizeUpdate();
     }
 
     toggleFullScreenControlsPosition(): void {
@@ -198,9 +206,26 @@ export class ElementIframeComponent implements OnDestroy {
         this.areFullScreenControlsOnLeft.update((controlsOnLeft) => !controlsOnLeft);
     }
 
+    @HostListener('window:resize')
     onResize(): void {
+        this.scheduleSizeUpdate();
+    }
+
+    private scheduleSizeUpdate(): void {
         if (typeof window !== 'undefined') {
             this.windowHeight.set(window.innerHeight);
+
+            if (this.resizeAnimationFrame !== null) {
+                window.cancelAnimationFrame(this.resizeAnimationFrame);
+            }
+            this.resizeAnimationFrame = window.requestAnimationFrame(() => {
+                this.controlsPanelHeight.set(
+                    this.isFullScreenMode()
+                        ? (this.controlsPanel()?.nativeElement.offsetHeight ?? 0)
+                        : 0
+                );
+                this.resizeAnimationFrame = null;
+            });
         }
     }
 
@@ -208,6 +233,14 @@ export class ElementIframeComponent implements OnDestroy {
         if (this.pageOverflowBeforeScrollLock) {
             return;
         }
+        if (this.scrollRestoreAnimationFrame !== null) {
+            window.cancelAnimationFrame(this.scrollRestoreAnimationFrame);
+            this.scrollRestoreAnimationFrame = null;
+        }
+        this.pageScrollBeforeScrollLock = {
+            x: window.scrollX,
+            y: window.scrollY
+        };
         this.pageOverflowBeforeScrollLock = {
             body: document.body.style.overflow,
             documentElement: document.documentElement.style.overflow
@@ -223,9 +256,21 @@ export class ElementIframeComponent implements OnDestroy {
         document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
         document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
         this.pageOverflowBeforeScrollLock = undefined;
+
+        const scrollPosition = this.pageScrollBeforeScrollLock;
+        this.pageScrollBeforeScrollLock = undefined;
+        if (scrollPosition) {
+            this.scrollRestoreAnimationFrame = window.requestAnimationFrame(() => {
+                window.scrollTo(scrollPosition.x, scrollPosition.y);
+                this.scrollRestoreAnimationFrame = null;
+            });
+        }
     }
 
     ngOnDestroy(): void {
+        if (this.resizeAnimationFrame !== null && typeof window !== 'undefined') {
+            window.cancelAnimationFrame(this.resizeAnimationFrame);
+        }
         if (this.mouseMoveListener) {
             document.removeEventListener('mousemove', this.mouseMoveListener);
         }

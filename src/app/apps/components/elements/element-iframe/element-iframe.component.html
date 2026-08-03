@@ -10,7 +10,7 @@
                                 [attr.src]="!htmlContent() ? safeUrl() : null"
                                 [ngStyle]="{'height': heightCurrent() + 'px'}"
                                 [ngClass]="{'pointer-events-none': isResizing() || editorMode()}"
-                                class="w-full"
+                                class="block w-full"
                                 frameborder="0"
                                 sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-modals allow-forms"
                                 allow="accelerometer; autoplay; microphone; camera; clipboard-read; clipboard-write; display-capture; midi;"
@@ -32,12 +32,7 @@
     }
 
     @if (useRefreshButton() || useFullscreenButton()) {
-        <div class="flex gap-3 justify-center pt-3"
-             [ngClass]="{
-                 'fixed bottom-3 z-50': isFullScreenMode(),
-                 'left-3': isFullScreenMode() && areFullScreenControlsOnLeft(),
-                 'right-3': isFullScreenMode() && !areFullScreenControlsOnLeft()
-             }">
+        <div class="flex shrink-0 gap-3 justify-center py-3 bg-white" #controlsPanel>
             @if (useRefreshButton()) {
                 <button type="button"
                         class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
@@ -53,18 +48,6 @@
                         (click)="fullScreenToggle()">
                     <i class="bi bi-arrows-fullscreen mr-2"></i>
                     <span i18n>Full Screen</span>
-                </button>
-            }
-
-            @if (isFullScreenMode()) {
-                <button type="button"
-                        class="p-2 text-3xl leading-3 text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
-                        (click)="toggleFullScreenControlsPosition()"
-                        [attr.aria-label]="areFullScreenControlsOnLeft() ? 'Move controls to the right' : 'Move controls to the left'"
-                        [attr.title]="areFullScreenControlsOnLeft() ? 'Move controls to the right' : 'Move controls to the left'">
-                    <i class="bi"
-                       [ngClass]="areFullScreenControlsOnLeft() ? 'bi-arrow-right-short' : 'bi-arrow-left-short'"
-                       aria-hidden="true"></i>
                 </button>
             }
         </div>
