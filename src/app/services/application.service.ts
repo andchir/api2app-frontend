@@ -190,10 +190,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return String(element.value);
             case 'input-file':
             case 'image':
-                if (Array.isArray(element.value) && (element.value as File[]).length === 0) {
-                    return null;
+                if (Array.isArray(element.value)) {
+                    return !element.multiple && (element.value as File[]).length > 0
+                        ? element.value[0]
+                        : element.value || null;
                 }
-                return element.multiple || !Array.isArray(element.value) ? String(element.value) : element.value[0];
+                return element.value instanceof File ? element.value : null;
             case 'input-number':
             case 'input-slider':
                 return typeof element.value === 'string'

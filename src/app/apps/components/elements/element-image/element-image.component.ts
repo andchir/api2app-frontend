@@ -369,7 +369,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.imageOutputWidth = event.width;
         this.imageOutputHeight = event.height;
         this.isCropped = this.imageWidth !== this.imageOutputWidth || this.imageHeight !== this.imageOutputHeight;
-        this.writeValue(event.objectUrl);
+        if (event.blob) {
+            this.writeValue(new File([event.blob], 'image.png', {type: event.blob.type}));
+        } else if (event.objectUrl) {
+            this.writeValue(event.objectUrl);
+        }
     }
 
     cropperReady(): void {
