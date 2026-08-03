@@ -42,7 +42,7 @@
                     </div>
 
                     <!-- Right column / cell value -->
-                    <div class="tbl-value min-w-0 break-words"
+                    <div class="tbl-value min-w-0 break-words max-h-60 overflow-auto"
                          [ngClass]="{'py-2 px-3': !editable}">
                         <ng-container *ngIf="!editable; else inputField">
                             <div class="whitespace-pre-line" *ngIf="isHTML" [innerHTML]="item[key] | toHtml"></div>
