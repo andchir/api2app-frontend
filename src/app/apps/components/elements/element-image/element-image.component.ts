@@ -184,6 +184,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     ngOnInit(): void {
+        if (this.editorMode) {
+            this.useCropper = false;
+        }
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
         }

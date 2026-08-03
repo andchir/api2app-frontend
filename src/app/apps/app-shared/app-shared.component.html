@@ -103,7 +103,7 @@
                                 <div [ngClass]="{
                                 'hidden': element?.hidden || !element.type,
                                 'element-hidden': ['input-hidden'].includes(element.type),
-                                'py-1 sticky bottom-0 bg-white': element?.isStickyPosition
+                                'py-1 sticky bottom-0 z-10 bg-white': element?.isStickyPosition
                                 }">
                                     <app-block-element [locale]="data?.language"
                                                        [type]="element.type"
