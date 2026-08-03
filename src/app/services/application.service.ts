@@ -208,7 +208,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'table':
                 return element.valueArr;
         }
-        return ApplicationService.createStringValue(element, element.value);
+        return element.value ? String(element.value) : null;
     }
 
     private static parseLocalStorageData(value: string | null): Record<string, any> | null {
