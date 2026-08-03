@@ -48,6 +48,10 @@ export class ShareItemComponent implements OnInit {
         this.confirmed.emit(!this.isShared);
     }
 
+    openUrl(input: HTMLInputElement): void {
+        window.open(String(input.value), '_blank').focus();
+    }
+
     copyUrl(input: HTMLInputElement): void {
         input.select();
         input.setSelectionRange(0, 99999);

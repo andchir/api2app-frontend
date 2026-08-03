@@ -23,13 +23,20 @@
                     <div class="p-3 border border-gray-300 bg-gray-100 rounded-md" *ngIf="isShared">
                         <label class="text-gray-500 text-sm" for="sharedUrlField" i18n>Public URL</label>
                         <div class="flex" [ngClass]="{'opacity-50': loading}">
-                            <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+                            <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm px-2.5 py-1.5"
                                    id="sharedUrlField"
                                    placeholder="Share URL"
                                    i18n-placeholder
                                    value="{{ baseUrl }}/{{ language }}{{ shareUrl }}{{ itemUuid }}"
                                    readonly #sharedUrlField>
-                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
+                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0"
+                                    ngxTippy="Open"
+                                    [tippyProps]="{placement: 'bottom'}"
+                                    i18n-ngxTippy
+                                    (click)="openUrl(sharedUrlField)">
+                                <i class="bi bi-box-arrow-up-right text-lg"></i>
+                            </button>
+                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0 rounded-e-lg"
                                     ngxTippy="Copy To Clipboard"
                                     [tippyProps]="{placement: 'bottom'}"
                                     i18n-ngxTippy
@@ -43,13 +50,20 @@
                         <div class="border p-3 border-gray-300 bg-gray-100 rounded-md mb-3">
                             <label class="text-gray-500 text-sm" for="embedUrlField" i18n>URL for embedding</label>
                             <div class="flex" [ngClass]="{'opacity-50': loading}">
-                                <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm p-2.5"
+                                <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm px-2.5 py-1.5"
                                        id="embedUrlField"
                                        placeholder="Share URL"
                                        i18n-placeholder
                                        value="{{ baseUrl }}/{{ language }}{{ embedUrl }}{{ itemEmbedUuid }}"
                                        readonly #embedUrlField>
-                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-5 py-2.5 border-s-0 rounded-e-lg"
+                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0"
+                                        ngxTippy="Open"
+                                        [tippyProps]="{placement: 'bottom'}"
+                                        i18n-ngxTippy
+                                        (click)="openUrl(embedUrlField)">
+                                    <i class="bi bi-box-arrow-up-right text-lg"></i>
+                                </button>
+                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0 rounded-e-lg"
                                         ngxTippy="Copy To Clipboard"
                                         [tippyProps]="{placement: 'bottom'}"
                                         i18n-ngxTippy
