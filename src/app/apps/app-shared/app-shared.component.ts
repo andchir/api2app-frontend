@@ -2008,8 +2008,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const combinedFields = this.findCombinedFields(block, element.name);
         if (combinedFields.length > 0) {
             combinedFields.forEach(combinedField => {
-                combinedField.value = `fromField:${element.name}`;
-                this.elementHiddenStateUpdate(combinedField);
+                if (combinedField.hidden) {
+                    combinedField.value = `fromField-${element.name}`;
+                    this.elementHiddenStateUpdate(combinedField);
+                }
                 if (['input-hidden'].includes(combinedField.type)) {
                     this.onElementValueChanged(combinedField);
                 }
