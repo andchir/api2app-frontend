@@ -59,7 +59,6 @@ export class ElementIframeComponent implements OnDestroy {
     readonly iframeWidth = signal(100);
     readonly isResizing = signal(false);
     readonly isFullScreenMode = signal(false);
-    readonly areFullScreenControlsOnLeft = signal(false);
     private readonly windowHeight = signal(typeof window === 'undefined' ? 600 : window.innerHeight);
     private readonly controlsPanelHeight = signal(0);
     readonly heightCurrent = computed(() =>
@@ -197,13 +196,6 @@ export class ElementIframeComponent implements OnDestroy {
             this.restorePageScroll();
         }
         this.scheduleSizeUpdate();
-    }
-
-    toggleFullScreenControlsPosition(): void {
-        if (this.editorMode() || !this.isFullScreenMode()) {
-            return;
-        }
-        this.areFullScreenControlsOnLeft.update((controlsOnLeft) => !controlsOnLeft);
     }
 
     @HostListener('window:resize')
