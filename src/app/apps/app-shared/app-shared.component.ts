@@ -392,7 +392,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             element.hidden = true;
             return;
         }
-        element.hidden = false;
+        if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
+            && (!element.value && (!['status'].includes(element.type) || element.value === null))
+            && !element.hiddenByField
+            && !element.valueObj
+            && !element.valueArr
+            && this.previewMode) {
+                element.hidden = true;
+                return;
+        }
+        let isHidden = false;
         if (element.hiddenByField && this.previewMode) {
             if (!block) {
                 block = this.findBlock(element);
@@ -408,27 +417,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     : '';
                 if (hiddenByField.length > 1) {
                     if (['input-switch'].includes(targetElement.type) && !targetValue) {
-                        element.hidden = isOpposite ? targetElement.enabled : !targetElement.enabled;
+                        isHidden = isOpposite ? targetElement.enabled : !targetElement.enabled;
                     } else {
-                        element.hidden = isOpposite
+                        isHidden = isOpposite
                             ? targetValue === hiddenByField[1]
                             : targetValue !== hiddenByField[1];
                     }
                 } else if (['input-switch'].includes(targetElement.type)) {
-                    element.hidden = !targetElement.enabled;
+                    isHidden = !targetElement.enabled;
                 } else if (['image', 'video', 'audio'].includes(targetElement.type)) {
-                    element.hidden = !targetValue;
+                    isHidden = !targetValue;
                 }
             }
         }
-        if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
-            && (!element.value && (!['status'].includes(element.type) || element.value === null))
-            && !element.valueObj
-            && !element.valueArr
-            && !element.hidden
-            && this.previewMode) {
-                element.hidden = true;
-            }
+        element.hidden = isHidden;
         // console.log('elementHiddenStateUpdate', element.type, element.value, element.hidden);
     }
 
@@ -1074,7 +1076,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 mapFieldsByBlock.set(element.blockIndex, []);
             }
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
+            const isRequired = this.dataService.isElementRequired(element);
+            if (element.hidden && !isRequired) {
                 hiddenCount++;
             } else {
                 mapFieldsByBlock.get(element.blockIndex).push({
@@ -1082,7 +1085,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     fieldName
                 });
             }
-            if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
+            if (apiUuid !== targetApiUuid || !isRequired) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -1098,7 +1101,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', this.errors[targetApiUuid], elements.length, hiddenCount);
+        // console.log('getIsValid', errors, 'total:', elements.length, 'hidden:', hiddenCount);
         if (hiddenCount && hiddenCount === elements.length) {
             return false;
         }

@@ -795,4 +795,11 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         return false;
     }
+
+    isElementRequired(element: AppBlockElement): boolean {
+        if (!element.required) {
+            return false;
+        }
+        return !element.hidden && element.required;
+    }
 }

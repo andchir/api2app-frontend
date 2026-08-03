@@ -58,12 +58,12 @@
             <div class="pt-2 text-sm text-red-600" *ngIf="vkFileUploadError">{{ vkFileUploadError }}</div>
         </div>
     </ng-container>
-    <div class="px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-         *ngIf="!mediaOriginalUrl && editorMode && type == 'image'">
-        <i class="bi bi-image mr-2"></i>
+    <div class="flex gap-2 justify-center items-center px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md"
+         *ngIf="!mediaOriginalUrl && type == 'image'">
+        <i class="bi mr-2" [class.bi-crop]="useCropper" [class.bi-image]="!useCropper"></i>
         <span i18n>Image</span>
     </div>
-    <div class="px-4 py-10 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
+    <div class="flex gap-2 justify-center items-center px-4 py-10 bg-gray-100 rounded border border-slate-300 shadow-md"
          *ngIf="!mediaOriginalUrl && editorMode && type == 'video'">
         <i class="bi bi-play-btn mr-2"></i>
         <span i18n>Video</span>
