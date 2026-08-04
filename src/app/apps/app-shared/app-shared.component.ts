@@ -1865,10 +1865,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (Array.isArray(value)) {
             const isStringArray = value.every((item) => typeof item === 'string');
             let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
-            if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
-                // Filter array values
-                valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
-            }
+            // if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
+            //     // Filter array values
+            //     valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
+            // }
             element.valueArr = valueArr;
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
