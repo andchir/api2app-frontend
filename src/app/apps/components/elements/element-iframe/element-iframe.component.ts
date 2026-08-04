@@ -25,6 +25,8 @@ import { ApplicationService } from '../../../../services/application.service';
 })
 export class ElementIframeComponent implements OnDestroy {
 
+    private static readonly MOBILE_BREAKPOINT = 768;
+
     readonly editorMode = input(false);
     readonly pageUrl = input('');
     readonly htmlContent = input('');
@@ -59,6 +61,10 @@ export class ElementIframeComponent implements OnDestroy {
     readonly iframeWidth = signal(100);
     readonly isResizing = signal(false);
     readonly isFullScreenMode = signal(false);
+    private readonly isMobileScreen = signal(
+        typeof window !== 'undefined' && window.innerWidth < ElementIframeComponent.MOBILE_BREAKPOINT
+    );
+    readonly isResizerEnabled = computed(() => this.useResizer() && !this.isMobileScreen());
     private readonly windowHeight = signal(typeof window === 'undefined' ? 600 : window.innerHeight);
     private readonly controlsPanelHeight = signal(0);
     readonly heightCurrent = computed(() =>
@@ -81,7 +87,7 @@ export class ElementIframeComponent implements OnDestroy {
     constructor(private sanitizer: DomSanitizer) {}
 
     onMouseDown(event: MouseEvent): void {
-        if (!this.useResizer() || this.editorMode()) {
+        if (!this.isResizerEnabled() || this.editorMode()) {
             return;
         }
         this.isResizing.set(true);
@@ -130,6 +136,13 @@ export class ElementIframeComponent implements OnDestroy {
         this.onEnd();
     }
 
+    @HostListener('document:mouseleave')
+    onDocumentMouseLeave(): void {
+        if (this.isResizing()) {
+            this.onEnd();
+        }
+    }
+
     private onEnd(): void {
         this.isResizing.set(false);
 
@@ -152,7 +165,7 @@ export class ElementIframeComponent implements OnDestroy {
     }
 
     onTouchStart(event: TouchEvent): void {
-        if (!this.useResizer() || this.editorMode()) {
+        if (!this.isResizerEnabled() || this.editorMode()) {
             return;
         }
         this.isResizing.set(true);
@@ -200,6 +213,12 @@ export class ElementIframeComponent implements OnDestroy {
 
     @HostListener('window:resize')
     onResize(): void {
+        const isMobileScreen = window.innerWidth < ElementIframeComponent.MOBILE_BREAKPOINT;
+        this.isMobileScreen.set(isMobileScreen);
+        if (isMobileScreen) {
+            this.iframeWidth.set(100);
+            this.onEnd();
+        }
         this.scheduleSizeUpdate();
     }
 

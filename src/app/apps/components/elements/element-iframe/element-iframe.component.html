@@ -17,7 +17,7 @@
                                 allowfullscreen #iframeEl></iframe>
                     </div>
 
-                    @if (useResizer()) {
+                    @if (isResizerEnabled()) {
                         <div class="bg-gray-100 resizer-handle flex items-center justify-center cursor-col-resize select-none w-[15px] border-l border-l-gray-300"
                              [ngClass]="{'border-r border-r-gray-300': iframeWidth() < 100}"
                              [class.active]="isResizing()"
