@@ -3,6 +3,10 @@
    ================================================================ */
 
 /* Header row is hidden: labels are shown inline as .tbl-label */
+.tbl-outer {
+    border-radius: 8px;
+}
+
 .tbl-head-row {
     display: none;
 }
