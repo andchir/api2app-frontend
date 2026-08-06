@@ -168,11 +168,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
         const fieldValue = element.valueOutput || element.value || null;
+        const fieldValueArr = element.valueArr || null;
         switch (element.type) {
             case 'input-tags':
-                return Array.isArray(element?.value) ? element?.value : [];
+                return Array.isArray(fieldValue) ? fieldValue : [];
             case 'input-date':
-                const value = String(element?.value);
+                const value = String(fieldValue);
                 const dateRangeValues = value.split(/\s+-\s+/);
                 if (dateRangeValues.length === 2 && dateRangeValues.every((dateValue) => dateValue.trim())) {
                     return value;
@@ -181,14 +182,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 const date = moment(value);
                 return date.format(dateFormat);
             case 'audio':
-                if (element.value && element.value['changingThisBreaksApplicationSecurity']) {
-                    const value = element.value['changingThisBreaksApplicationSecurity'];
+                if (fieldValue && fieldValue['changingThisBreaksApplicationSecurity']) {
+                    const value = fieldValue['changingThisBreaksApplicationSecurity'];
                     if (value.includes('data:audio')) {
                         return ApplicationService.dataURItoFile(value);
                     }
                     return String(value);
                 }
-                return String(element.value);
+                return String(fieldValue);
             case 'input-file':
             case 'image':
                 if (Array.isArray(fieldValue)) {
@@ -204,10 +205,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     : fieldValue as number;
             case 'messages':
                 const OUTGOING_PREFIX = '\u200B__out__';
-                const raw = String(element.value);
+                const raw = String(fieldValue);
                 return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
             case 'table':
-                return element.valueArr;
+                return fieldValueArr;
         }
         return fieldValue ? String(fieldValue) : null;
     }
