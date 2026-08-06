@@ -520,7 +520,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }*/
 
         if (!this.getIsValid(apiUuid, actionType, elements, showMessages, currentElement.blockIndex)) {
-            console.log('VALID - false', apiUuid, actionType, currentElement, elements, 'isAutoStart:', isAutoStart, 'showMessages:', showMessages);
+            // console.log('VALID - false', apiUuid, actionType, currentElement, elements, 'isAutoStart:', isAutoStart, 'showMessages:', showMessages);
             if (currentElement?.type === 'messages') {
                 this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
             }
