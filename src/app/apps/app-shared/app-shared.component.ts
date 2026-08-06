@@ -2333,7 +2333,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.isLoggedIn && !this.vkAppOptions?.appLaunchParamsJson) {
             return;
         }
-        if (this.userBalanceUpdating) {
+        if (!this.data.paymentEnabled || this.userBalanceUpdating) {
             return;
         }
         this.userBalanceUpdating = true;
