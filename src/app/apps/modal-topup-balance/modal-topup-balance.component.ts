@@ -49,8 +49,11 @@ export class ModalTopUpBalanceComponent implements OnInit {
 
     ngOnInit(): void {
         // const isMobile = this.vkBridgeService.detectIsMobile();
-        if (this.isVkApp && this.vkAppOptions.platform
-            && !['desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external', 'web_external'].includes(this.vkAppOptions.platform)) {
+        const platformsAllowed = [
+            'desktop_web', 'mobile_web', 'desktop_app_messenger', 'desktop_web_messenger', 'mvk_external',
+            'web_external', 'desktop_web_ok', 'mobile_web_ok'
+        ];
+        if (this.isVkApp && this.vkAppOptions.platform && !platformsAllowed.includes(this.vkAppOptions.platform)) {
             this.isPaymentAllowed = false;
             this.cdr.markForCheck();
         }
