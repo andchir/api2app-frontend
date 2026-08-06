@@ -59,7 +59,7 @@
         </div>
     </ng-container>
     <div class="flex gap-2 justify-center items-center px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md"
-         *ngIf="!mediaOriginalUrl && !mediaUrl && type == 'image'">
+         *ngIf="!mediaOriginalUrl && editorMode && !mediaUrl && type == 'image'">
         <i class="bi mr-2" [class.bi-crop]="useCropper" [class.bi-image]="!useCropper"></i>
         <span i18n>Image</span>
     </div>

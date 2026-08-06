@@ -167,6 +167,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!element.value && !element.valueArr && !element.valueObj) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
+        const fieldValue = element.valueOutput || element.value || null;
         switch (element.type) {
             case 'input-tags':
                 return Array.isArray(element?.value) ? element?.value : [];
@@ -190,17 +191,17 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 return String(element.value);
             case 'input-file':
             case 'image':
-                if (Array.isArray(element.value)) {
-                    return !element.multiple && (element.value as File[]).length > 0
-                        ? element.value[0]
-                        : element.value || null;
+                if (Array.isArray(fieldValue)) {
+                    return !element.multiple && (fieldValue as File[]).length > 0
+                        ? fieldValue[0]
+                        : fieldValue;
                 }
-                return element.value instanceof File ? element.value : null;
+                return fieldValue instanceof File ? fieldValue : null;
             case 'input-number':
             case 'input-slider':
-                return typeof element.value === 'string'
-                    ? parseFloat(String(element.value).replace(',', '.'))
-                    : element.value as number;
+                return typeof fieldValue === 'string'
+                    ? parseFloat(String(fieldValue).replace(',', '.'))
+                    : fieldValue as number;
             case 'messages':
                 const OUTGOING_PREFIX = '\u200B__out__';
                 const raw = String(element.value);
@@ -208,7 +209,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             case 'table':
                 return element.valueArr;
         }
-        return element.value ? String(element.value) : null;
+        return fieldValue ? String(fieldValue) : null;
     }
 
     private static parseLocalStorageData(value: string | null): Record<string, any> | null {

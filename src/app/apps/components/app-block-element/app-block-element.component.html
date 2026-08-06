@@ -489,7 +489,7 @@
                     [index]="index"
                     [name]="options?.name"
                     [poster]="options?.posterUrl"
-                    [mediaOriginalUrl]="options?.valueObj"
+                    [mediaOriginalUrl]="options.value"
                     [fullWidth]="options?.fullWidth"
                     [borderShadow]="options?.borderShadow"
                     [roundedCorners]="options?.roundedCorners"
@@ -498,7 +498,7 @@
                     [vkUseSendToFiles]="options?.vkUseSendToFiles"
                     [cropperAspectRatioString]="options?.cropperAspectRatioString"
                     [useLink]="options?.useLink"
-                    [(ngModel)]="options.value"
+                    [(ngModel)]="options.valueOutput"
                     (ngModelChange)="onFieldValueChanged()"></app-image-elem>
             </ng-template>
         </div>

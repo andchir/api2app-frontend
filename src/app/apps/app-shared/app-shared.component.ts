@@ -1258,7 +1258,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return matchedElements.find((elem) => elem.blockIndex === blockIndex && !elem.hidden) || matchedElements[0];
         };
 
-        // Body data
+        // Body data from form fields
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
             if (!apiItem.bodyFields) {
                 apiItem.bodyFields = [];

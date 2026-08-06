@@ -50,7 +50,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
-    @Input() mediaOriginalUrl: string | null;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -92,9 +91,21 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     };
 
     private _cropperAspectRatioString: string = '';
+    private _value: SafeUrl | File | string = '';
+    private _mediaOriginalUrl: string = '';
 
     get cropperAspectRatioString(): string {
         return this._cropperAspectRatioString;
+    }
+
+    @Input()
+    set mediaOriginalUrl(val: string | File) {
+        this._mediaOriginalUrl = this.createStringValue(val);
+        this.cdr.detectChanges();
+    };
+
+    get mediaOriginalUrl(): string {
+        return this._mediaOriginalUrl;
     }
 
     @Input()
@@ -109,24 +120,20 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         }
     }
 
-    private _value: SafeUrl | File | string = '';
-
     get value(): SafeUrl | File | string {
         return this._value;
     }
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.mediaOriginalUrl && val) || !this.useCropper) {
-            const newUrl = val instanceof File
-                ? URL.createObjectURL(val)
-                : (typeof val === 'string' ? val : '');
-            if (newUrl !== this.mediaOriginalUrl) {
-                this.resetImageState();
-            }
+        const newUrl = this.createStringValue(val);
+        if (newUrl !== this._value) {
+            this.resetImageState();
+        }
+        if (!this.mediaOriginalUrl) {
             this.mediaOriginalUrl = newUrl;
         }
-        this._value = val || '';
+        this._value = val instanceof File ? val : newUrl;
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
@@ -220,6 +227,12 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.isImageLoading = true;
         this.vkFileUploaded = false;
         this.vkFileUploadError = '';
+    }
+
+    createStringValue(val: SafeUrl | File | string): string {
+        return val instanceof File
+            ? URL.createObjectURL(val)
+            : (typeof val === 'string' ? val : '');
     }
 
     createOriginalFileUrl(): string | null {

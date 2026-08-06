@@ -53,6 +53,7 @@ export interface AppBlockElement {
     value?: string | number | boolean | string[] | File | File[] | SafeResourceUrl | null;
     valueArr?: string[] | {label: string, value: string}[] | File[] | null;
     valueObj?: any | null;
+    valueOutput?: string;
     markdown?: boolean;
     editable?: boolean,
     icon?: string;
