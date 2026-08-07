@@ -1969,7 +1969,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    onElementValueChanged(element: AppBlockElement, isAutoStart = false): void {
+    onElementValueChanged(element: AppBlockElement, isAutoStart = false, updateUserBalanceAfterResponse: boolean = false): void {
         if (!this.previewMode
             || this.data.maintenance
             // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
@@ -1993,17 +1993,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .filter((elem) => !!elem);
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
+                if (['input-hidden'].includes(targetElement.type)) {
+                    this.onElementValueChanged(targetElement, isAutoStart);
+                }
             });
-            // if (targetElements.length > 0) {
-            //     setTimeout(() => {
-            //         this.clearElementValue(element, true);
-            //         if (element.type === 'input-select') {
-            //             element.value = null;
-            //         }
-            //         this.cdr.detectChanges();
-            //     }, 100);
-            //     this.cdr.markForCheck();
-            // }
             return;
         }
 
@@ -2047,7 +2040,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 buttonElement.allowAutoSubmit = false;
             }
             this.removeAutoStart(inputApiUuid);
-            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, isAutoStart);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, isAutoStart, true, updateUserBalanceAfterResponse);
         }
     }
 
