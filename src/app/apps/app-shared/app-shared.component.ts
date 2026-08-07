@@ -1994,7 +1994,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
                 if (['input-hidden'].includes(targetElement.type)) {
-                    this.onElementValueChanged(targetElement, isAutoStart);
+                    this.onElementValueChanged(targetElement, isAutoStart, updateUserBalanceAfterResponse);
                 }
             });
             return;
@@ -2009,7 +2009,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.elementHiddenStateUpdate(combinedField);
                 }
                 if (['input-hidden'].includes(combinedField.type)) {
-                    this.onElementValueChanged(combinedField, isAutoStart);
+                    this.onElementValueChanged(combinedField, isAutoStart, updateUserBalanceAfterResponse);
                 }
             });
         }
