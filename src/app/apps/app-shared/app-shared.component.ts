@@ -292,7 +292,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             : null;
                         const ignoreButton = buttonElement && buttonElement.allowAutoSubmit;
                         if (!buttonElement || ignoreButton) {
-                            console.log(this.appElements.output[uuid][0]);
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });
