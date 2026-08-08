@@ -18,7 +18,7 @@
                 <h3 class="mb-5 text-lg font-normal text-gray-500">
                     {{ modalTitle() }}
                 </h3>
-                @if (itemEmbedUuid()) {
+                @if (isShared() && itemEmbedUuid()) {
                 <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-4">
                     <ul class="flex -mb-px" role="tablist">
                         <li class="flex-1" role="presentation">
