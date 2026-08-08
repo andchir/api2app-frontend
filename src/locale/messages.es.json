@@ -557,6 +557,11 @@
         "367444526338931297": "Número total de vistas",
         "254541547143992540": "Sorry, payment is not possible on this platform.",
         "8017931473828712219": "Desplazarse hacia arriba",
-        "808780735242482310": "Ocultar botones temporalmente"
+        "808780735242482310": "Ocultar botones temporalmente",
+        "ShareItemLinkTab": "Compartir mediante enlace",
+        "ShareItemIframeTab": "Obtener código iframe",
+        "ShareItemIframeCode": "Código iframe",
+        "ShareItemCopyIframeCode": "Copiar código iframe",
+        "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles."
     }
 }

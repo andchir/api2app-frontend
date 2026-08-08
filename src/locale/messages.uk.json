@@ -557,6 +557,11 @@
         "367444526338931297": "Загальна кількість переглядів",
         "254541547143992540": "Sorry, payment is not possible on this platform.",
         "8017931473828712219": "Прокрутити вгору",
-        "808780735242482310": "Тимчасово приховати кнопки"
+        "808780735242482310": "Тимчасово приховати кнопки",
+        "ShareItemLinkTab": "Поділитися посиланням",
+        "ShareItemIframeTab": "Отримати код iframe",
+        "ShareItemIframeCode": "Код iframe",
+        "ShareItemCopyIframeCode": "Скопіювати код iframe",
+        "ShareItemIframeCodeCopied": "Код iframe успішно скопійовано до буфера обміну."
     }
 }
