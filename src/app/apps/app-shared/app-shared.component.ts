@@ -1858,7 +1858,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createInputStringValue(element, value);
-            this.onElementValueChanged(element, isAutoStart);
+            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
             this.cdr.detectChanges();
             return;
         }
@@ -1898,7 +1898,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
         ApplicationService.localStoreValue(this.data.uuid, element);
         if ((element.value || element.valueArr || element.valueObj) && !['button'].includes(element.type)) {
-            this.onElementValueChanged(element, isAutoStart);
+            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
         }
     }
 
@@ -1969,7 +1969,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    onElementValueChanged(element: AppBlockElement, isAutoStart = false, updateUserBalanceAfterResponse: boolean = false): void {
+    onElementValueChanged(element: AppBlockElement, isAutoStart = false, updateUserBalanceAfterResponse: boolean = false,
+                          source: 'loadValueInto'|'valueFrom'|'afterRequest'|'default' = 'default'): void {
         if (!this.previewMode
             || this.data.maintenance
             // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
@@ -1977,9 +1978,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
 
+        const useLoadValueInto = element.loadValueInto && source === 'default';
         const block = this.findBlock(element);
 
-        if (element.loadValueInto && element.value) {
+        if (useLoadValueInto && element.value) {
             const allElements = this.getAllElements();
             const targetFieldNames = element.loadValueInto.split(',')
                 .map((fieldName) => fieldName.trim())
@@ -1994,7 +1996,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
                 if (['input-hidden'].includes(targetElement.type)) {
-                    this.onElementValueChanged(targetElement, isAutoStart, updateUserBalanceAfterResponse);
+                    this.onElementValueChanged(targetElement, isAutoStart, updateUserBalanceAfterResponse, 'loadValueInto');
                 }
             });
             return;
@@ -2009,7 +2011,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     this.elementHiddenStateUpdate(combinedField);
                 }
                 if (['input-hidden'].includes(combinedField.type)) {
-                    this.onElementValueChanged(combinedField, isAutoStart, updateUserBalanceAfterResponse);
+                    this.onElementValueChanged(combinedField, isAutoStart, updateUserBalanceAfterResponse, 'valueFrom');
                 }
             });
         }
