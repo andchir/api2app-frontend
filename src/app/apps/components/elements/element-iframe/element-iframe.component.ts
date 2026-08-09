@@ -207,6 +207,7 @@ export class ElementIframeComponent implements OnDestroy {
             this.disablePageScroll();
         } else {
             this.restorePageScroll();
+            this.iframeWidth.set(100);
         }
         this.scheduleSizeUpdate();
     }
