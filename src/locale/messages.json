@@ -1,6 +1,18 @@
 {
     "locale": "en",
     "translations": {
+        "4195395623329708230": "VK Pay settings have been successfully created.",
+        "8858652066129215363": "VK Pay settings have been successfully changed.",
+        "9088281960708663283": "Failed to save VK Pay settings.",
+        "4772710473231483830": "Failed to load VK Pay settings.",
+        "9115039518114130918": "Enter the merchant credentials from your VK Pay account.",
+        "3969597316263476463": "Merchant ID",
+        "2367075750265470378": "Merchant private key",
+        "7459521564199368799": "Notification public key",
+        "637802695215260473": "Merchant ID is required.",
+        "6652506550182056637": "Merchant ID must be a positive integer.",
+        "4890294816654789395": "Merchant private key is required.",
+        "7068582465090550687": "Notification public key is required.",
         "3706222784708785028": "Rating",
         "928577509089436604": "APIs",
         "7941428823403788384": " Create ",

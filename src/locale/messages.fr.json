@@ -1,6 +1,18 @@
 {
     "locale": "fr",
     "translations": {
+        "4195395623329708230": "Les paramètres VK Pay ont été créés avec succès.",
+        "8858652066129215363": "Les paramètres VK Pay ont été modifiés avec succès.",
+        "9088281960708663283": "Échec de l’enregistrement des paramètres VK Pay.",
+        "4772710473231483830": "Échec du chargement des paramètres VK Pay.",
+        "9115039518114130918": "Saisissez les identifiants marchands de votre compte VK Pay.",
+        "3969597316263476463": "Identifiant marchand",
+        "2367075750265470378": "Clé privée du marchand",
+        "7459521564199368799": "Clé publique de notification",
+        "637802695215260473": "L’identifiant marchand est requis.",
+        "6652506550182056637": "L’identifiant marchand doit être un entier positif.",
+        "4890294816654789395": "La clé privée du marchand est requise.",
+        "7068582465090550687": "La clé publique de notification est requise.",
         "3706222784708785028": "Note",
         "928577509089436604": "API",
         "7941428823403788384": " Créer ",

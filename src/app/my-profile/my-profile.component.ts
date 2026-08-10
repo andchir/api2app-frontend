@@ -8,6 +8,10 @@ import { finalize } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
 import { UserService } from '../services/user.service';
+import {
+    PaymentSystemCredentials,
+    PaymentSystemService
+} from '../services/payment-system.service';
 import { User } from '../apis/models/user.interface';
 import { matchValidator } from '../helpers/match-validator';
 
@@ -36,10 +40,15 @@ export class MyProfileComponent implements OnInit {
     readonly action = signal<ProfileAction>('update_profile');
     readonly imageFile = signal<File | undefined>(undefined);
     readonly paymentStatus = signal('allowed');
+    readonly paymentSystem = signal<'robokassa'|'vk_pay'>('robokassa');
+    readonly vkPayPaymentSystemId = signal<number | null>(null);
+    readonly vkPayLoading = signal(false);
     readonly passwordShow1 = signal(false);
     readonly passwordShow2 = signal(false);
+    readonly vkPayMerchantKeyShow = signal(false);
     readonly showRobokassaInfo = signal(false);
     readonly robokassaUrl = ROBOKASSA_URL;
+    readonly vkPayUrl = 'https://dev.vk.ru/ru/pay/getting-started';
 
     private readonly robokassaUserPath = computed(() => this.user()?.username.toLowerCase() ?? '');
     readonly robokassaResultURL = computed(() => `${BASE_URL}rk_result/${this.robokassaUserPath()}`);
@@ -75,12 +84,19 @@ export class MyProfileComponent implements OnInit {
         vatCode: [1, []]
     });
 
+    formVkPay = this.formBuilder.nonNullable.group({
+        merchantId: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
+        merchantKey: ['', [Validators.required]],
+        notificationPublicKey: ['', [Validators.required]]
+    });
+
     constructor(
         private router: Router,
         private formBuilder: FormBuilder,
         private authService: AuthService,
         private tokenStorageService: TokenStorageService,
-        private userService: UserService
+        private userService: UserService,
+        private paymentSystemService: PaymentSystemService
     ) {
     }
 
@@ -98,6 +114,7 @@ export class MyProfileComponent implements OnInit {
                 this.form.controls.lastName.setValue(user.last_name);
             }
             this.getCurrentUser();
+            this.loadVkPayPaymentSystem();
         } else {
             this.router.navigate(['/auth', 'login']);
         }
@@ -193,6 +210,77 @@ export class MyProfileComponent implements OnInit {
             });
     }
 
+    onSubmitVkPay(): void {
+        this.message.set('');
+        if (this.formVkPay.invalid || this.submitted()) {
+            this.formVkPay.markAllAsTouched();
+            this.setMessage('error', $localize `Please correct errors in filling out the form.`);
+            return;
+        }
+
+        this.startSubmission();
+        const credentials: PaymentSystemCredentials = {
+            system_name: 'vk_pay',
+            merchant_id: this.formVkPay.controls.merchantId.value.trim(),
+            merchant_key: this.formVkPay.controls.merchantKey.value.trim(),
+            notification_public_key: this.formVkPay.controls.notificationPublicKey.value.trim()
+        };
+        const paymentSystemId = this.vkPayPaymentSystemId();
+        const request = paymentSystemId === null
+            ? this.paymentSystemService.create(credentials)
+            : this.paymentSystemService.update(paymentSystemId, credentials);
+
+        request.pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.submitted.set(false))
+        ).subscribe({
+            next: (paymentSystem) => {
+                this.vkPayPaymentSystemId.set(paymentSystem.id);
+                this.patchVkPayForm(paymentSystem);
+                this.setMessage(
+                    'success',
+                    paymentSystemId === null
+                        ? $localize `VK Pay settings have been successfully created.`
+                        : $localize `VK Pay settings have been successfully changed.`
+                );
+            },
+            error: (err) => {
+                this.setMessage('error', err?.error?.detail || $localize `Failed to save VK Pay settings.`);
+                this.setApiErrors(err, [
+                    'merchant_id',
+                    'merchant_key',
+                    'notification_public_key',
+                    'system_name'
+                ]);
+            }
+        });
+    }
+
+    loadVkPayPaymentSystem(): void {
+        if (this.vkPayLoading()) {
+            return;
+        }
+
+        this.vkPayLoading.set(true);
+        this.paymentSystemService.getByName('vk_pay').pipe(
+            takeUntilDestroyed(this.destroyRef),
+            finalize(() => this.vkPayLoading.set(false))
+        ).subscribe({
+            next: (paymentSystem) => {
+                this.vkPayPaymentSystemId.set(paymentSystem.id);
+                this.patchVkPayForm(paymentSystem);
+            },
+            error: (err) => {
+                if (err?.status === 404) {
+                    this.vkPayPaymentSystemId.set(null);
+                    this.formVkPay.reset();
+                    return;
+                }
+                this.setMessage('error', err?.error?.detail || $localize `Failed to load VK Pay settings.`);
+            }
+        });
+    }
+
     getCurrentUser(): void {
         this.userService.getCurrentUser()
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -248,11 +336,26 @@ export class MyProfileComponent implements OnInit {
         const errors = fields.reduce<Record<string, string>>((result, field) => {
             const messages = error?.error?.[field];
             if (messages) {
-                result[field] = messages.join(' ');
+                result[field] = Array.isArray(messages) ? messages.join(' ') : String(messages);
             }
             return result;
         }, {});
 
         this.errors.set(errors);
+    }
+
+    private patchVkPayForm(paymentSystem: PaymentSystemCredentials): void {
+        this.formVkPay.patchValue({
+            merchantId: paymentSystem.merchant_id,
+            merchantKey: paymentSystem.merchant_key,
+            notificationPublicKey: paymentSystem.notification_public_key
+        });
+    }
+
+    switchPaymentSystemTab(paymentSystem: 'robokassa'|'vk_pay', event?: MouseEvent): void {
+        if (event) {
+            event.preventDefault();
+        }
+        this.paymentSystem.set(paymentSystem);
     }
 }

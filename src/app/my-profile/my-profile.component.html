@@ -211,128 +211,252 @@
 
                             }
                             @case ('payments') {
-                        <form [formGroup]="formPayments" (ngSubmit)="onSubmitPayments()">
 
-                            <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Payments</h4>
+                                <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Payments</h4>
 
-                            <div class="relative">
-                                <div [ngClass]="{'opacity-30 pointer-events-none': paymentStatus() !== 'allowed'}">
-                                    <div class="mb-2">
-                                        <a class="text-lg text-blue-700 underline transition hover:text-blue-800/75"
-                                           [href]="robokassaUrl"
-                                           target="_blank">Robokassa</a>
-                                    </div>
-                                    <div class="flex gap-3 justify-between mb-5">
-                                        <div class="text-sm text-blue-700">
-                                            Выгодные условия по нашей партнерской ссылке:
-                                            <br>
-                                            Тариф <b>3,3%</b> на <b>3</b> месяца (далее зависит от оборота).
-                                        </div>
-                                        <div>
-                                            <button type="button"
-                                                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-lg px-3 py-1.5 shadow-sm"
-                                                    title="Options"
-                                                    i18n-title
-                                                    (click)="showRobokassaInfoModalToggle()">
-                                                <i class="bi bi-info-lg"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="mb-4">
-                                        <div>
-                                            <label for="settings-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
-                                                <span i18n>Store ID</span>
-                                            </label>
-                                            <input type="text" id="settings-shop-id"
-                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                   formControlName="rkLogin" required>
-                                        </div>
-                                    </div>
+                                <ul class="flex flex-wrap text-sm font-medium text-center text-gray-500 border-b border-gray-200 mb-3">
+                                    <li class="me-2">
+                                        <a href="#"
+                                            class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50"
+                                            [ngClass]="{'!text-blue-600 !bg-gray-100 active': paymentSystem() === 'robokassa'}"
+                                            (click)="switchPaymentSystemTab('robokassa', $event)">
+                                            Robokassa
+                                        </a>
+                                    </li>
+                                    <li class="me-2">
+                                        <a href="#"
+                                            class="inline-block p-4 rounded-t-lg hover:text-gray-600 hover:bg-gray-50"
+                                            [ngClass]="{'!text-blue-600 !bg-gray-100 active': paymentSystem() === 'vk_pay'}"
+                                            (click)="switchPaymentSystemTab('vk_pay', $event)">
+                                            VK Pay
+                                        </a>
+                                    </li>
+                                </ul>
 
-                                    <div class="mb-4">
-                                        <label for="formFieldPassword1" class="block mb-2 text-sm font-medium text-gray-900">
-                                            <span i18n>Password</span> 1
-                                        </label>
-                                        <div class="relative rounded-md shadow-sm">
-                                            <input [type]="passwordShow1() ? 'text' : 'password'" id="formFieldPassword1"
-                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                   placeholder="Enter your password"
-                                                   formControlName="rkPassword1"
-                                                   required i18n-placeholder>
-                                            <button type="button"
-                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
-                                                    (click)="passwordShow1.set(!passwordShow1())">
-                                                @if (passwordShow1()) {
-                                                    <i class="bi bi-eye-slash text-xl"></i>
-                                                } @else {
-                                                    <i class="bi bi-eye text-xl"></i>
+                                @switch (paymentSystem()) {
+                                    @case ('robokassa') {
+
+                                        <form [formGroup]="formPayments" (ngSubmit)="onSubmitPayments()">
+
+                                            <div class="relative">
+                                                <div [ngClass]="{'opacity-30 pointer-events-none': paymentStatus() !== 'allowed'}">
+                                                    <div class="mb-2">
+                                                        <a class="text-lg text-blue-700 underline transition hover:text-blue-800/75"
+                                                           [href]="robokassaUrl"
+                                                           target="_blank">Robokassa</a>
+                                                    </div>
+                                                    <div class="flex gap-3 justify-between mb-5">
+                                                        <div class="text-sm text-blue-700">
+                                                            Выгодные условия по нашей партнерской ссылке:
+                                                            <br>
+                                                            Тариф <b>3,3%</b> на <b>3</b> месяца (далее зависит от оборота).
+                                                        </div>
+                                                        <div>
+                                                            <button type="button"
+                                                                    class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-lg px-3 py-1.5 shadow-sm"
+                                                                    title="Options"
+                                                                    i18n-title
+                                                                    (click)="showRobokassaInfoModalToggle()">
+                                                                <i class="bi bi-info-lg"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <div>
+                                                            <label for="settings-shop-id" class="block mb-2 text-sm font-medium text-gray-900">
+                                                                <span i18n>Store ID</span>
+                                                            </label>
+                                                            <input type="text" id="settings-shop-id"
+                                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                   formControlName="rkLogin" required>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label for="formFieldPassword1" class="block mb-2 text-sm font-medium text-gray-900">
+                                                            <span i18n>Password</span> 1
+                                                        </label>
+                                                        <div class="relative rounded-md shadow-sm">
+                                                            <input [type]="passwordShow1() ? 'text' : 'password'" id="formFieldPassword1"
+                                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                   placeholder="Enter your password"
+                                                                   formControlName="rkPassword1"
+                                                                   required i18n-placeholder>
+                                                            <button type="button"
+                                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                                    (click)="passwordShow1.set(!passwordShow1())">
+                                                                @if (passwordShow1()) {
+                                                                    <i class="bi bi-eye-slash text-xl"></i>
+                                                                } @else {
+                                                                    <i class="bi bi-eye text-xl"></i>
+                                                                }
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label for="formFieldPassword2" class="block mb-2 text-sm font-medium text-gray-900">
+                                                            <span i18n>Password</span> 2
+                                                        </label>
+                                                        <div class="relative rounded-md shadow-sm">
+                                                            <input [type]="passwordShow2() ? 'text' : 'password'" id="formFieldPassword2"
+                                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                   placeholder="Enter your password"
+                                                                   formControlName="rkPassword2"
+                                                                   required i18n-placeholder>
+                                                            <button type="button"
+                                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                                    (click)="passwordShow2.set(!passwordShow2())">
+                                                                @if (passwordShow2()) {
+                                                                    <i class="bi bi-eye-slash text-xl"></i>
+                                                                } @else {
+                                                                    <i class="bi bi-eye text-xl"></i>
+                                                                }
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <div>
+                                                            <label for="settings-yookassa-vat" class="block mb-2 text-sm font-medium text-gray-900 ">Ставка НДС</label>
+                                                            <select id="settings-yookassa-vat"
+                                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                                    formControlName="vatCode">
+                                                                <option value="1" selected>Без НДС</option>
+                                                                <option value="2">НДС по ставке 0%</option>
+                                                                <option value="3">НДС по ставке 10%</option>
+                                                                <option value="4">НДС по ставке 20%</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit"
+                                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                                                                [disabled]="submitted()">
+                                                            @if (submitted()) {
+                                                                <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                                                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                                                                </svg>
+                                                            }
+                                                            <span i18n>Submit</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                @if (paymentStatus() !== 'allowed') {
+                                                    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9/12">
+                                                        <div class="w-full flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 shadow-lg">
+                                                            <div class="flex gap-3 items-center">
+                                                                <div class="text-xl"><i class="bi bi-exclamation-diamond"></i></div>
+                                                                <div i18n>You do not have permission to accept payments. For more information, you can contact support.</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 }
-                                            </button>
-                                        </div>
-                                    </div>
+                                            </div>
+                                        </form>
 
-                                    <div class="mb-4">
-                                        <label for="formFieldPassword2" class="block mb-2 text-sm font-medium text-gray-900">
-                                            <span i18n>Password</span> 2
-                                        </label>
-                                        <div class="relative rounded-md shadow-sm">
-                                            <input [type]="passwordShow2() ? 'text' : 'password'" id="formFieldPassword2"
-                                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                   placeholder="Enter your password"
-                                                   formControlName="rkPassword2"
-                                                   required i18n-placeholder>
-                                            <button type="button"
-                                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
-                                                    (click)="passwordShow2.set(!passwordShow2())">
-                                                @if (passwordShow2()) {
-                                                    <i class="bi bi-eye-slash text-xl"></i>
-                                                } @else {
-                                                    <i class="bi bi-eye text-xl"></i>
-                                                }
-                                            </button>
-                                        </div>
-                                    </div>
+                                    }
+                                    @case ('vk_pay') {
 
-                                    <div class="mb-4">
-                                        <div>
-                                            <label for="settings-yookassa-vat" class="block mb-2 text-sm font-medium text-gray-900 ">Ставка НДС</label>
-                                            <select id="settings-yookassa-vat"
-                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                    formControlName="vatCode">
-                                                <option value="1" selected>Без НДС</option>
-                                                <option value="2">НДС по ставке 0%</option>
-                                                <option value="3">НДС по ставке 10%</option>
-                                                <option value="4">НДС по ставке 20%</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <button type="submit"
-                                                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                                                [disabled]="submitted()">
-                                            @if (submitted()) {
-                                            <svg aria-hidden="true" class="inline w-4 h-4 mr-2 text-gray-200 animate-spin fill-gray-600 " viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                                            </svg>
+                                        <form [formGroup]="formVkPay" (ngSubmit)="onSubmitVkPay()">
+                                            <div class="mb-2">
+                                                <a class="text-lg text-blue-700 underline transition hover:text-blue-800/75"
+                                                   [href]="vkPayUrl"
+                                                   target="_blank">VK Pay</a>
+                                            </div>
+
+                                            <div class="mb-5 text-sm text-gray-600" i18n>
+                                                Enter the merchant credentials from your VK Pay account.
+                                            </div>
+
+                                            @if (vkPayLoading()) {
+                                                <div class="flex justify-center py-8 text-blue-600">
+                                                    <i class="bi bi-arrow-repeat text-2xl animate-spin"></i>
+                                                </div>
+                                            } @else {
+                                                <div class="mb-4">
+                                                    <label for="vk-pay-merchant-id" class="block mb-2 text-sm font-medium text-gray-900" i18n>
+                                                        Merchant ID
+                                                    </label>
+                                                    <input type="text" id="vk-pay-merchant-id"
+                                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                                           formControlName="merchantId" inputmode="numeric" required>
+                                                    @if (formVkPay.controls.merchantId.touched && formVkPay.controls.merchantId.invalid) {
+                                                        <div class="pt-2 text-red-700 text-sm">
+                                                            @if (formVkPay.controls.merchantId.hasError('required')) {
+                                                                <div i18n>Merchant ID is required.</div>
+                                                            }
+                                                            @if (formVkPay.controls.merchantId.hasError('pattern')) {
+                                                                <div i18n>Merchant ID must be a positive integer.</div>
+                                                            }
+                                                        </div>
+                                                    }
+                                                    @if (errors()['merchant_id']; as merchantIdError) {
+                                                        <div class="pt-2 text-red-700 text-sm">{{ merchantIdError }}</div>
+                                                    }
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label for="vk-pay-merchant-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>
+                                                        Merchant private key
+                                                    </label>
+                                                    <div class="relative rounded-md shadow-sm">
+                                                        <input [type]="vkPayMerchantKeyShow() ? 'text' : 'password'"
+                                                               id="vk-pay-merchant-key"
+                                                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-11"
+                                                               formControlName="merchantKey" autocomplete="off" required>
+                                                        <button type="button"
+                                                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
+                                                                (click)="vkPayMerchantKeyShow.set(!vkPayMerchantKeyShow())">
+                                                            @if (vkPayMerchantKeyShow()) {
+                                                                <i class="bi bi-eye-slash text-xl"></i>
+                                                            } @else {
+                                                                <i class="bi bi-eye text-xl"></i>
+                                                            }
+                                                        </button>
+                                                    </div>
+                                                    @if (formVkPay.controls.merchantKey.touched && formVkPay.controls.merchantKey.hasError('required')) {
+                                                        <div class="pt-2 text-red-700 text-sm" i18n>Merchant private key is required.</div>
+                                                    }
+                                                    @if (errors()['merchant_key']; as merchantKeyError) {
+                                                        <div class="pt-2 text-red-700 text-sm">{{ merchantKeyError }}</div>
+                                                    }
+                                                </div>
+
+                                                <div class="mb-4">
+                                                    <label for="vk-pay-notification-public-key" class="block mb-2 text-sm font-medium text-gray-900" i18n>
+                                                        Notification public key
+                                                    </label>
+                                                    <textarea id="vk-pay-notification-public-key" rows="6"
+                                                              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 font-mono"
+                                                              formControlName="notificationPublicKey" required></textarea>
+                                                    @if (formVkPay.controls.notificationPublicKey.touched && formVkPay.controls.notificationPublicKey.hasError('required')) {
+                                                        <div class="pt-2 text-red-700 text-sm" i18n>Notification public key is required.</div>
+                                                    }
+                                                    @if (errors()['notification_public_key']; as publicKeyError) {
+                                                        <div class="pt-2 text-red-700 text-sm">{{ publicKeyError }}</div>
+                                                    }
+                                                </div>
+
+                                                <button type="submit"
+                                                        class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center disabled:opacity-60"
+                                                        [disabled]="submitted()">
+                                                    @if (submitted()) {
+                                                        <i class="bi bi-arrow-repeat inline-block mr-2 animate-spin"></i>
+                                                    }
+                                                    @if (vkPayPaymentSystemId() === null) {
+                                                        <span i18n>Create</span>
+                                                    } @else {
+                                                        <span i18n>Save</span>
+                                                    }
+                                                </button>
                                             }
-                                            <span i18n>Submit</span>
-                                        </button>
-                                    </div>
-                                </div>
+                                        </form>
 
-                                @if (paymentStatus() !== 'allowed') {
-                                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-9/12">
-                                    <div class="w-full flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 shadow-lg">
-                                        <div class="flex gap-3 items-center">
-                                            <div class="text-xl"><i class="bi bi-exclamation-diamond"></i></div>
-                                            <div i18n>You do not have permission to accept payments. For more information, you can contact support.</div>
-                                        </div>
-                                    </div>
-                                </div>
+                                    }
                                 }
-                            </div>
-                        </form>
                             }
                         }
 

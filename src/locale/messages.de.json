@@ -1,6 +1,18 @@
 {
     "locale": "de",
     "translations": {
+        "4195395623329708230": "Die VK Pay-Einstellungen wurden erfolgreich erstellt.",
+        "8858652066129215363": "Die VK Pay-Einstellungen wurden erfolgreich geändert.",
+        "9088281960708663283": "Die VK Pay-Einstellungen konnten nicht gespeichert werden.",
+        "4772710473231483830": "Die VK Pay-Einstellungen konnten nicht geladen werden.",
+        "9115039518114130918": "Geben Sie die Händlerdaten aus Ihrem VK Pay-Konto ein.",
+        "3969597316263476463": "Händler-ID",
+        "2367075750265470378": "Privater Händlerschlüssel",
+        "7459521564199368799": "Öffentlicher Benachrichtigungsschlüssel",
+        "637802695215260473": "Die Händler-ID ist erforderlich.",
+        "6652506550182056637": "Die Händler-ID muss eine positive ganze Zahl sein.",
+        "4890294816654789395": "Der private Händlerschlüssel ist erforderlich.",
+        "7068582465090550687": "Der öffentliche Benachrichtigungsschlüssel ist erforderlich.",
         "3706222784708785028": "Bewertung",
         "928577509089436604": "APIs",
         "7941428823403788384": " Erstellen ",
