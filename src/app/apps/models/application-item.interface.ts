@@ -38,7 +38,7 @@ export interface ApplicationShareRequestParams {
     appUuid: string;
     queryParamName: string;
     queryParamValue: string;
-    isVkApp: boolean
+    isVkApp: boolean;
 }
 
 export interface ApplicationShareData {

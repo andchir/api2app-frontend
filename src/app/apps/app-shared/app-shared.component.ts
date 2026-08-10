@@ -19,7 +19,7 @@ moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
-import { AppErrors, ApplicationItem } from '../models/application-item.interface';
+import { AppErrors, ApplicationItem, ApplicationShareData } from '../models/application-item.interface';
 import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
@@ -66,6 +66,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     isOwner: boolean = false;
     progressUpdating: boolean = false;
     loading: boolean = false;
+    loadingShareLink: boolean = false;
+    shareLinkModalActive: boolean = false;
+    shareLinkData: ApplicationShareData|null = null;
+    shareLinkError: string = '';
+    shareLinkCopied: boolean = false;
     submitted: boolean = false;
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
@@ -2048,18 +2053,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onShareAppLink(element: AppBlockElement): void {
-        if (this.loading) {
+        if (this.loadingShareLink) {
             return;
         }
         const queryParamName = element.options.queryParameterName;
-        const queryParamValue = String(element.value || '');
+        const queryParamValue = String(element.value ?? '');
         if (!queryParamName || !queryParamValue) {
             return;
         }
         const appUuid = this.data.uuid;
         const isVkApp = this.isVkApp;
 
-        this.loading = true;
+        this.shareLinkModalActive = true;
+        this.shareLinkData = null;
+        this.shareLinkError = '';
+        this.shareLinkCopied = false;
+        this.loadingShareLink = true;
+        this.disablePageScroll();
+        this.cdr.markForCheck();
 
         this.dataService.createShareAppData({appUuid, queryParamName, queryParamValue, isVkApp})
             .pipe(
@@ -2067,17 +2078,46 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             )
             .subscribe({
                 next: (res) => {
-
-                    console.log(res);
-
-                    this.loading = false;
+                    this.shareLinkData = res;
+                    this.loadingShareLink = false;
                     this.cdr.markForCheck();
                 },
                 error: (err) => {
-                    // console.log(err);
-                    this.loading = false;
+                    this.shareLinkError = err?.detail || err?.message || $localize `Failed to create the share link.`;
+                    this.loadingShareLink = false;
                     this.cdr.markForCheck();
                 }
+            });
+    }
+
+    closeShareLinkModal(): void {
+        this.shareLinkModalActive = false;
+        this.restorePageScroll();
+        this.cdr.markForCheck();
+    }
+
+    copyShareLink(): void {
+        const link = this.shareLinkData?.link;
+        if (!link) {
+            return;
+        }
+
+        const copyPromise = this.isVkApp && typeof vkBridge !== 'undefined'
+            ? vkBridge.send('VKWebAppCopyText', {text: link}).then((data): void => {
+                if (!data?.result) {
+                    throw new Error('VK clipboard request failed.');
+                }
+            })
+            : navigator.clipboard?.writeText(link) || Promise.reject();
+
+        copyPromise
+            .then(() => {
+                this.shareLinkCopied = true;
+                this.cdr.markForCheck();
+            })
+            .catch(() => {
+                this.shareLinkError = $localize `Sorry, copying to clipboard is not allowed.`;
+                this.cdr.markForCheck();
             });
     }
 
@@ -2414,6 +2454,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         this.cancelAppSubmitWebSocketSubscription();
         this.websocketService.disconnect();
+        this.restorePageScroll();
         this.destroyed$.next();
         this.destroyed$.complete();
     }
