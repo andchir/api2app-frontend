@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 import { TokenStorageService } from '../services/token-storage.service';
@@ -12,6 +13,8 @@ import { matchValidator } from '../helpers/match-validator';
 
 import { environment } from '../../environments/environment';
 import { BASE_URL } from '../../environments/environment';
+type ProfileAction = 'update_profile' | 'change_password' | 'payments';
+
 const ROBOKASSA_URL = environment.robokassaUrl;
 
 @Component({
@@ -21,26 +24,27 @@ const ROBOKASSA_URL = environment.robokassaUrl;
     providers: [UserService],
     standalone: false
 })
-export class MyProfileComponent implements OnInit, OnDestroy {
+export class MyProfileComponent implements OnInit {
 
-    loading = false;
-    submitted = false;
-    message = '';
-    messageType = 'error';
-    errors: {[key: string]: string} = {};
-    user: User;
-    action: 'update_profile'|'change_password'|'payments' = 'update_profile';
-    destroyed$: Subject<void> = new Subject();
-    imageFile: File;
-    paymentStatus: string = 'allowed';
-    passwordShow1: boolean = false;
-    passwordShow2: boolean = false;
-    robokassaUrl: string = ROBOKASSA_URL;
+    private readonly destroyRef = inject(DestroyRef);
 
-    showRobokassaInfo: boolean = false;
-    robokassaResultURL: string = `${BASE_URL}rk_result/`;
-    robokassaSuccessURL: string = `${BASE_URL}rk_success/`;
-    robokassaFailURL: string = `${BASE_URL}rk_fail/`;
+    readonly submitted = signal(false);
+    readonly message = signal('');
+    readonly messageType = signal<'error' | 'success'>('error');
+    readonly errors = signal<Record<string, string>>({});
+    readonly user = signal<User | null>(null);
+    readonly action = signal<ProfileAction>('update_profile');
+    readonly imageFile = signal<File | undefined>(undefined);
+    readonly paymentStatus = signal('allowed');
+    readonly passwordShow1 = signal(false);
+    readonly passwordShow2 = signal(false);
+    readonly showRobokassaInfo = signal(false);
+    readonly robokassaUrl = ROBOKASSA_URL;
+
+    private readonly robokassaUserPath = computed(() => this.user()?.username.toLowerCase() ?? '');
+    readonly robokassaResultURL = computed(() => `${BASE_URL}rk_result/${this.robokassaUserPath()}`);
+    readonly robokassaSuccessURL = computed(() => `${BASE_URL}rk_success/${this.robokassaUserPath()}`);
+    readonly robokassaFailURL = computed(() => `${BASE_URL}rk_fail/${this.robokassaUserPath()}`);
 
     form = this.formBuilder.group({
         email: ['', [Validators.required, Validators.email]],
@@ -82,15 +86,16 @@ export class MyProfileComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         if (this.tokenStorageService.getToken()) {
-            this.user = this.tokenStorageService.getUser();
-            if (this.user.email) {
-                this.form.controls['email'].setValue(this.user.email);
+            const user = this.tokenStorageService.getUser();
+            this.user.set(user);
+            if (user.email) {
+                this.form.controls.email.setValue(user.email);
             }
-            if (this.user.first_name) {
-                this.form.controls['firstName'].setValue(this.user.first_name);
+            if (user.first_name) {
+                this.form.controls.firstName.setValue(user.first_name);
             }
-            if (this.user.last_name) {
-                this.form.controls['lastName'].setValue(this.user.last_name);
+            if (user.last_name) {
+                this.form.controls.lastName.setValue(user.last_name);
             }
             this.getCurrentUser();
         } else {
@@ -99,108 +104,98 @@ export class MyProfileComponent implements OnInit, OnDestroy {
     }
 
     onSubmit(): void {
-        this.message = '';
-        if (!this.form.valid || this.submitted) {
-            this.messageType = 'error';
-            this.message = $localize `Please correct errors in filling out the form.`;
+        this.message.set('');
+        if (this.form.invalid || this.submitted()) {
+            this.setMessage('error', $localize `Please correct errors in filling out the form.`);
             return;
         }
-        this.submitted = true;
-        this.errors = {};
+        this.startSubmission();
 
         const {email, firstName, lastName} = this.form.value;
+        const user = this.user();
+        if (!user) {
+            this.submitted.set(false);
+            return;
+        }
 
-        this.authService.updateProfile(email, this.user.username, firstName, lastName, this.imageFile)
-            .pipe(takeUntil(this.destroyed$))
+        this.authService.updateProfile(email, user.username, firstName, lastName, this.imageFile())
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => this.submitted.set(false))
+            )
             .subscribe({
                 next: (res) => {
-                    this.messageType = 'success';
-                    this.message = $localize `Your profile has been successfully changed.`;
-                    this.tokenStorageService.saveUser(Object.assign({}, this.user, res));
+                    this.setMessage('success', $localize `Your profile has been successfully changed.`);
+                    this.tokenStorageService.saveUser({...user, ...res});
                     this.authService.userSubject.next(res);
-                    this.submitted = false;
                 },
                 error: (err) => {
-                    this.messageType = 'error';
-                    this.message = err?.error?.detail;
-                    if (err?.error?.email) {
-                        this.errors['email'] = err?.error.email.join(' ');
-                    }
-                    if (err?.error?.userprofile) {
-                        this.errors['userprofile'] = err?.error.userprofile.join(' ');
-                    }
-                    this.submitted = false;
+                    this.setMessage('error', err?.error?.detail);
+                    this.setApiErrors(err, ['email', 'userprofile']);
                 }
             });
     }
 
     onSubmitPassword(): void {
-        this.message = '';
-        if (!this.formChangePassword.valid || this.submitted) {
-            this.messageType = 'error';
-            this.message = $localize `Please correct errors in filling out the form.`;
+        this.message.set('');
+        if (this.formChangePassword.invalid || this.submitted()) {
+            this.setMessage('error', $localize `Please correct errors in filling out the form.`);
             return;
         }
-        this.submitted = true;
-        this.errors = {};
+        this.startSubmission();
 
         const {currentPassword, password} = this.formChangePassword.value;
 
         this.authService.passwordSet(currentPassword, password)
-            .pipe(takeUntil(this.destroyed$))
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => this.submitted.set(false))
+            )
             .subscribe({
-                next: (res) => {
-                    this.messageType = 'success';
-                    this.message = $localize `The password has been successfully changed.`;
+                next: () => {
+                    this.setMessage('success', $localize `The password has been successfully changed.`);
                     this.formChangePassword.reset();
-                    this.submitted = false;
                 },
                 error: (err) => {
-                    this.messageType = 'error';
-                    this.message = err?.error?.detail;
-                    if (err?.error?.current_password) {
-                        this.errors['current_password'] = err?.error?.current_password.join(' ');
-                    }
-                    this.submitted = false;
+                    this.setMessage('error', err?.error?.detail);
+                    this.setApiErrors(err, ['current_password']);
                 }
             });
     }
 
     onSubmitPayments(): void {
-        this.message = '';
-        if (this.submitted) {
+        this.message.set('');
+        if (this.submitted()) {
             return;
         }
-        this.submitted = true;
-        this.errors = {};
+        this.startSubmission();
 
         const {rkLogin, rkPassword1, rkPassword2, vatCode} = this.formPayments.value;
+        const user = this.user();
+        if (!user) {
+            this.submitted.set(false);
+            return;
+        }
 
-        this.authService.updatePaymentsSettings(this.user.username, rkLogin, rkPassword1, rkPassword2, vatCode)
-            .pipe(takeUntil(this.destroyed$))
+        this.authService.updatePaymentsSettings(user.username, rkLogin, rkPassword1, rkPassword2, vatCode)
+            .pipe(
+                takeUntilDestroyed(this.destroyRef),
+                finalize(() => this.submitted.set(false))
+            )
             .subscribe({
-                next: (res) => {
-                    this.messageType = 'success';
-                    this.message = $localize `Your profile has been successfully changed.`;
-                    this.submitted = false;
+                next: () => {
+                    this.setMessage('success', $localize `Your profile has been successfully changed.`);
                 },
                 error: (err) => {
-                    this.messageType = 'error';
-                    this.message = err?.error?.detail;
-                    if (err?.error?.email) {
-                        this.errors['email'] = err?.error.email.join(' ');
-                    }
-                    if (err?.error?.userprofile) {
-                        this.errors['userprofile'] = err?.error.userprofile.join(' ');
-                    }
-                    this.submitted = false;
+                    this.setMessage('error', err?.error?.detail);
+                    this.setApiErrors(err, ['email', 'userprofile']);
                 }
             });
     }
 
     getCurrentUser(): void {
         this.userService.getCurrentUser()
-            .pipe(takeUntil(this.destroyed$))
+            .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (res) => {
                     if (res.userprofile?.rkLogin) {
@@ -213,38 +208,51 @@ export class MyProfileComponent implements OnInit, OnDestroy {
                         this.formPayments.controls['rkPassword2'].setValue(res.userprofile.rkPassword2);
                     }
                     if (res.userprofile?.paymentStatus) {
-                        this.paymentStatus = res.userprofile.paymentStatus;
+                        this.paymentStatus.set(res.userprofile.paymentStatus);
                     }
                     if (res.userprofile?.vatCode) {
                         this.formPayments.controls['vatCode'].setValue(res.userprofile.vatCode);
                     }
-                    this.robokassaResultURL += this.user.username.toLowerCase();
-                    this.robokassaSuccessURL += this.user.username.toLowerCase();
-                    this.robokassaFailURL += this.user.username.toLowerCase();
                 },
                 error: (err) => {
-                    this.messageType = 'error';
-                    this.message = err?.error?.detail;
+                    this.setMessage('error', err?.error?.detail);
                 }
             });
     }
 
-    updateAction(action: 'update_profile'|'change_password'|'payments', event?: MouseEvent): void {
+    updateAction(action: ProfileAction, event?: MouseEvent): void {
         if (event) {
             event.preventDefault();
         }
-        if (this.action === action) {
+        if (this.action() === action) {
             return;
         }
-        this.action = action;
+        this.action.set(action);
     }
 
     showRobokassaInfoModalToggle(): void {
-        this.showRobokassaInfo = !this.showRobokassaInfo;
+        this.showRobokassaInfo.update(value => !value);
     }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
+    private startSubmission(): void {
+        this.submitted.set(true);
+        this.errors.set({});
+    }
+
+    private setMessage(type: 'error' | 'success', message = ''): void {
+        this.messageType.set(type);
+        this.message.set(message);
+    }
+
+    private setApiErrors(error: any, fields: string[]): void {
+        const errors = fields.reduce<Record<string, string>>((result, field) => {
+            const messages = error?.error?.[field];
+            if (messages) {
+                result[field] = messages.join(' ');
+            }
+            return result;
+        }, {});
+
+        this.errors.set(errors);
     }
 }
