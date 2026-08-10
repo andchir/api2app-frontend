@@ -1995,9 +1995,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .filter((elem) => !!elem);
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
-                if (['input-hidden'].includes(targetElement.type)) {
+                // if (['input-hidden'].includes(targetElement.type)) {
                     this.onElementValueChanged(targetElement, isAutoStart, updateUserBalanceAfterResponse, 'loadValueInto');
-                }
+                // }
             });
             return;
         }
@@ -2028,6 +2028,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
             }
         }
+
         const inputApiUuid = element.options?.inputApiUuid;
         if (inputApiUuid) {
             const buttonElement = this.findButtonElement(inputApiUuid);
