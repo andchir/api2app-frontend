@@ -1,14 +1,16 @@
 import {
-    AfterViewInit,
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
+    computed,
     ElementRef,
-    EventEmitter,
+    effect,
     forwardRef,
-    Input, OnChanges, OnInit,
-    Output, SimpleChanges,
-    ViewChild
+    input,
+    OnInit,
+    output,
+    signal,
+    untracked,
+    viewChild
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -28,106 +30,94 @@ declare const vkBridge: any;
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
-export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChanges, ControlValueAccessor {
+export class ElementInputTextComponent implements OnInit, ControlValueAccessor {
 
-    @ViewChild('inputControl') inputControl: ElementRef<HTMLInputElement>;
-    @Input() editorMode = false;
-    @Input() type: 'input-text'|'input-textarea';
-    @Input() locale: string;
-    @Input() name: string;
-    @Input() label: string;
-    @Input() icon: string;
-    @Input() placeholder: string;
-    @Input() parentIndex: number;
-    @Input() index: number;
-    @Input() rows: number = 6;
-    @Input() maxLength: number = 0;
-    @Input() readOnly: boolean;
-    @Input() storeValue: boolean;
-    @Input() speechRecognitionEnabled: boolean = false;
-    @Input() speechSynthesisEnabled: boolean = false;
-    @Input() copyToClipboardEnabled: boolean = false;
-    @Input() autoHeight: boolean = true;
-    @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
-    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
+    readonly inputControl = viewChild<ElementRef<HTMLInputElement | HTMLTextAreaElement>>('inputControl');
+
+    readonly editorMode = input(false);
+    readonly type = input<'input-text' | 'input-textarea'>();
+    readonly locale = input<string>();
+    readonly name = input<string>();
+    readonly label = input<string>();
+    readonly icon = input<string>();
+    readonly placeholder = input<string>();
+    readonly parentIndex = input<number>();
+    readonly index = input<number>();
+    readonly rows = input(6);
+    readonly maxLength = input(0);
+    readonly readOnly = input(false);
+    readonly storeValue = input(false);
+    readonly speechRecognitionEnabled = input(false);
+    readonly speechSynthesisEnabled = input(false);
+    readonly copyToClipboardEnabled = input(false);
+    readonly autoHeight = input(true);
+    readonly valueInput = input<string | null>(undefined, { alias: 'value' });
+
+    readonly valueChange = output<string>();
+    readonly message = output<string[]>();
+
+    readonly value = signal('');
+    readonly isChanged = signal(false);
+    readonly isTouched = signal(false);
+    readonly microphoneActive = signal(false);
+    readonly speechSynthesisActive = signal(false);
+    readonly paddingRight = computed(() => {
+        const enabledButtons = [
+            this.speechRecognitionEnabled(),
+            this.speechSynthesisEnabled(),
+            this.copyToClipboardEnabled()
+        ].filter(Boolean).length;
+
+        return `${0.625 + enabledButtons * 2}rem`;
+    });
+    readonly hasBottomControls = computed(() =>
+        this.speechRecognitionEnabled()
+        || this.speechSynthesisEnabled()
+        || this.copyToClipboardEnabled()
+    );
+    readonly paddingBottom = computed(() => this.hasBottomControls() ? '2.3rem' : '0');
+    readonly hasControls = computed(() => this.hasBottomControls() || Boolean(this.maxLength()));
 
     isVkApp: boolean = false;
-    private timer: any;
-    private _value = '';
-    isChanged = false;
-    isTouched = false;
-    microphoneActive = false;
-    speechSynthesisActive = false;
-    paddingRight = '0.625rem';
-    paddingBottom = '0';
+    private timer: ReturnType<typeof setTimeout> | undefined;
     // @ts-ignore
     recognition: SpeechRecognition;
 
-    constructor(
-        private cdr: ChangeDetectorRef
-    ) {}
+    constructor() {
+        effect(() => {
+            const inputValue = this.valueInput();
+            const maxLength = this.maxLength();
+
+            untracked(() => {
+                if (inputValue !== undefined) {
+                    this.setValue(inputValue);
+                } else if (maxLength && this.value().length > maxLength) {
+                    this.setValue(this.value());
+                }
+            });
+        });
+    }
 
     ngOnInit(): void {
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
         }
-        this.calculatePadding();
-    }
-
-    ngAfterViewInit(): void {
-        if (this.maxLength && this.inputControl?.nativeElement) {
-            this.inputControl?.nativeElement.setAttribute('maxlength', String(this.maxLength));
-        }
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.calculatePadding();
-    }
-
-    get value() {
-        return this._value || '';
-    }
-
-    @Input()
-    set value(val) {
-        if (this.maxLength && val.length > this.maxLength) {
-            val = val.substring(0, this.maxLength);
-        }
-        this._value = val;
-        this.onChange(this._value);
-        this.cdr.detectChanges();
-    }
-
-    calculatePadding(): void {
-        const buttonWidth = 2;
-        let paddingRightRem = 0.625;
-        if (this.speechRecognitionEnabled) {
-            paddingRightRem += buttonWidth;
-        }
-        if (this.speechSynthesisEnabled) {
-            paddingRightRem += buttonWidth;
-        }
-        if (this.copyToClipboardEnabled) {
-            paddingRightRem += buttonWidth;
-        }
-        this.paddingRight = `${paddingRightRem}rem`;
-        this.paddingBottom = this.speechRecognitionEnabled || this.speechSynthesisEnabled || this.copyToClipboardEnabled ? '2.3rem' : '0';
     }
 
     microphoneEnableToggle(): void {
-        if (this.editorMode) {
-            this.microphoneActive = false;
+        if (this.editorMode()) {
+            this.microphoneActive.set(false);
             return;
         }
         if (!SpeechRecognition) {
             alert($localize `Speech recognition is not supported in your browser. Try using a different browser.`);
             return;
         }
-        this.microphoneActive = !this.microphoneActive;
-        if (this.microphoneActive) {
-            const currentValue = (this.value || '').trim();
+        this.microphoneActive.update((active) => !active);
+        if (this.microphoneActive()) {
+            const currentValue = this.value().trim();
             this.recognition = new SpeechRecognition();
-            this.recognition.lang = this.locale || window.document.documentElement.lang;
+            this.recognition.lang = this.locale() || window.document.documentElement.lang;
             this.recognition.interimResults = true;
             this.recognition.continuous = true;
             this.recognition.addEventListener('result', (event) => {
@@ -142,7 +132,7 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             });
             this.recognition.addEventListener('end', (event) => {
                 // console.log('end', event);
-                if (this.recognition && this.microphoneActive) {
+                if (this.recognition && this.microphoneActive()) {
                     this.recognition.start();
                 }
             });
@@ -152,14 +142,17 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             this.recognition.abort();
             this.recognition = null;
         }
-        this.cdr.detectChanges();
     }
 
-    copyToClipboard(inputEl: HTMLInputElement): void {
-        if (this.editorMode || !this.value || !navigator.clipboard) {
+    copyToClipboard(): void {
+        if (this.editorMode() || !this.value() || !navigator.clipboard) {
             if (!navigator.clipboard) {
                 console.log('Clipboard API is not supported by the browser.');
             }
+            return;
+        }
+        const inputEl = this.inputControl()?.nativeElement;
+        if (!inputEl) {
             return;
         }
         const textContent: string = String(inputEl.value);
@@ -205,23 +198,22 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     }
 
     speechSynthesisPlayToggle(): void {
-        if (this.editorMode || !this.value || !window.speechSynthesis) {
+        if (this.editorMode() || !this.value() || !window.speechSynthesis) {
             return;
         }
-        this.speechSynthesisActive = !this.speechSynthesisActive;
-        if (this.speechSynthesisActive) {
-            const sentences = this.getSentences(this.value);// Browser Chrome bug fix https://issues.chromium.org/issues/41346274
+        this.speechSynthesisActive.update((active) => !active);
+        if (this.speechSynthesisActive()) {
+            const sentences = this.getSentences(this.value());// Browser Chrome bug fix https://issues.chromium.org/issues/41346274
             const speechSynthesisUtterance = new SpeechSynthesisUtterance(sentences[0]);
             speechSynthesisUtterance.addEventListener('end', () => {
                 // console.log('END', speechSynthesisUtterance.text);
                 sentences.shift();
-                if (this.speechSynthesisActive && sentences.length > 0) {
+                if (this.speechSynthesisActive() && sentences.length > 0) {
                     speechSynthesisUtterance.text = sentences[0];
                     window.speechSynthesis.speak(speechSynthesisUtterance);
                 } else {
                     window.speechSynthesis.cancel();
-                    this.speechSynthesisActive = false;
-                    this.cdr.detectChanges();
+                    this.speechSynthesisActive.set(false);
                 }
             });
             speechSynthesisUtterance.addEventListener('start', () => {
@@ -229,11 +221,10 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             });
             speechSynthesisUtterance.addEventListener('error', (e) => {
                 console.log('ERROR', e);
-                if (this.speechSynthesisActive) {
+                if (this.speechSynthesisActive()) {
                     console.log('error', e.error);
                     window.speechSynthesis.cancel();
-                    this.speechSynthesisActive = false;
-                    this.cdr.detectChanges();
+                    this.speechSynthesisActive.set(false);
                 }
             });
             window.speechSynthesis.speak(speechSynthesisUtterance);
@@ -241,7 +232,6 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
             window.speechSynthesis.pause();
             window.speechSynthesis.cancel();
         }
-        this.cdr.detectChanges();
     }
 
     getSentences(text: string, maxlength = 180): string[] {
@@ -299,41 +289,39 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
 
-    onChange(_: any) {}
+    onChange(_: string) {}
 
     onTouched(_: any) {}
 
-    writeValue(value: any) {
-        value = value || '';
-        if (this.maxLength && value.length > this.maxLength) {
-            value = value.substring(0, this.maxLength);
+    writeValue(value: unknown): void {
+        const normalizedValue = String(value || '');
+        if (this.value() && normalizedValue && this.value() !== normalizedValue) {
+            this.isChanged.set(true);
         }
-        if (this.value && value && this.value !== value) {
-            this.isChanged = true;
-        }
-        this.value = value;
-        if (this.inputControl?.nativeElement) {
-            this.inputControl.nativeElement.value = value;
-            if (this.type === 'input-textarea') {
+        this.setValue(normalizedValue);
+        const inputControl = this.inputControl()?.nativeElement;
+        if (inputControl) {
+            inputControl.value = this.value();
+            if (this.type() === 'input-textarea') {
                 this.onInputTextarea();
             }
         }
         this.scrollTextareaBottom();
     }
 
-    registerOnChange(fn: (_: any) => void) {
+    registerOnChange(fn: (_: string) => void): void {
         this.onChange = fn;
     }
 
-    registerOnTouched(fn: (_: any) => void) {
+    registerOnTouched(fn: (_: FocusEvent) => void): void {
         this.onTouched = fn;
     }
 
-    onInputTextarea(event?: Event|InputEvent): void {
-        if (!this.autoHeight || this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
+    onInputTextarea(): void {
+        if (!this.autoHeight() || this.type() !== 'input-textarea' || !this.inputControl()?.nativeElement) {
             return;
         }
-        const textAreaEl = this.inputControl.nativeElement;
+        const textAreaEl = this.inputControl()?.nativeElement;
         if (!textAreaEl) {
             return;
         }
@@ -351,11 +339,11 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
     }
 
     private scrollTextareaBottom(): void {
-        if (this.type !== 'input-textarea' || !this.inputControl?.nativeElement) {
+        if (this.type() !== 'input-textarea' || !this.inputControl()?.nativeElement) {
             return;
         }
         setTimeout(() => {
-            const textAreaEl = this.inputControl?.nativeElement;
+            const textAreaEl = this.inputControl()?.nativeElement;
             if (!textAreaEl) {
                 return;
             }
@@ -364,24 +352,26 @@ export class ElementInputTextComponent implements OnInit, AfterViewInit, OnChang
         }, 1);
     }
 
-    onKeyUp(event: KeyboardEvent|ClipboardEvent) {
-        // if (this.maxLength && (event.target as HTMLInputElement).value.length > this.maxLength) {
-        //     (event.target as HTMLInputElement).value = (event.target as HTMLInputElement).value.substring(0, this.maxLength);
-        // }
-        // if ((event as ClipboardEvent).clipboardData) {
-        //     this.value = (event as ClipboardEvent).clipboardData.getData('text');
-        // } else {
-        //     this.value = (event.target as HTMLInputElement).value;
-        // }
-        this.isChanged = true;
+    onKeyUp(): void {
+        this.isChanged.set(true);
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            this.valueChange.emit(this.value);
+            this.valueChange.emit(this.value());
         }, 700);
     }
 
-    onFocus(event: FocusEvent) {
+    onFocus(event: FocusEvent): void {
         this.onTouched(event);
-        this.isTouched = true;
+        this.isTouched.set(true);
+    }
+
+    setValue(value: string | null): void {
+        const maxLength = this.maxLength();
+        let normalizedValue = value || '';
+        if (maxLength && normalizedValue.length > maxLength) {
+            normalizedValue = normalizedValue.substring(0, maxLength);
+        }
+        this.value.set(normalizedValue);
+        this.onChange(normalizedValue);
     }
 }
