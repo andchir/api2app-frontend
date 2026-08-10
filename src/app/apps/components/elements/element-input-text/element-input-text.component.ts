@@ -50,10 +50,12 @@ export class ElementInputTextComponent implements OnInit, ControlValueAccessor {
     readonly speechRecognitionEnabled = input(false);
     readonly speechSynthesisEnabled = input(false);
     readonly copyToClipboardEnabled = input(false);
+    readonly shareAppLinkEnabled = input(false);
     readonly autoHeight = input(true);
     readonly valueInput = input<string | null>(undefined, { alias: 'value' });
 
     readonly valueChange = output<string>();
+    readonly shareAppLinkUpdate = output();
     readonly message = output<string[]>();
 
     readonly value = signal('');
@@ -74,6 +76,7 @@ export class ElementInputTextComponent implements OnInit, ControlValueAccessor {
         this.speechRecognitionEnabled()
         || this.speechSynthesisEnabled()
         || this.copyToClipboardEnabled()
+        || this.shareAppLinkEnabled()
     );
     readonly paddingBottom = computed(() => this.hasBottomControls() ? '2.3rem' : '0');
     readonly hasControls = computed(() => this.hasBottomControls() || Boolean(this.maxLength()));
@@ -142,6 +145,10 @@ export class ElementInputTextComponent implements OnInit, ControlValueAccessor {
             this.recognition.abort();
             this.recognition = null;
         }
+    }
+
+    shareAppLink(): void {
+        this.shareAppLinkUpdate.emit();
     }
 
     copyToClipboard(): void {

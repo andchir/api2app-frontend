@@ -430,6 +430,12 @@ export class ElementOptions {
                     enabled: options?.copyToClipboardEnabled || false
                 });
                 output.push({
+                    name: 'shareAppLinkEnabled',
+                    label: $localize `Share link`,
+                    type: 'input-switch',
+                    enabled: options?.shareAppLinkEnabled || false
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
@@ -1803,6 +1809,7 @@ export class ElementOptions {
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
                     copyToClipboardEnabled: false,
+                    shareAppLinkEnabled: false,
                     storeValue: false,
                     value: ''
                 });

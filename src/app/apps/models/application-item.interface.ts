@@ -33,3 +33,15 @@ export interface ApplicationItem {
     user_id?: number;
     viewCount?: number;
 }
+
+export interface ApplicationShareRequestParams {
+    appUuid: string;
+    queryParamName: string;
+    queryParamValue: string;
+    isVkApp: boolean
+}
+
+export interface ApplicationShareData {
+    link: string;
+    qrCode: string;
+}

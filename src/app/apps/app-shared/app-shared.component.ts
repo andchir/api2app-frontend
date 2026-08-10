@@ -2047,6 +2047,40 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
+    onShareAppLink(element: AppBlockElement): void {
+        if (this.loading) {
+            return;
+        }
+        const queryParamName = element.options.queryParameterName;
+        const queryParamValue = String(element.value || '');
+        if (!queryParamName || !queryParamValue) {
+            return;
+        }
+        const appUuid = this.data.uuid;
+        const isVkApp = this.isVkApp;
+
+        this.loading = true;
+
+        this.dataService.createShareAppData({appUuid, queryParamName, queryParamValue, isVkApp})
+            .pipe(
+                takeUntil(this.destroyed$)
+            )
+            .subscribe({
+                next: (res) => {
+
+                    console.log(res);
+
+                    this.loading = false;
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    // console.log(err);
+                    this.loading = false;
+                    this.cdr.markForCheck();
+                }
+            });
+    }
+
     loadValueToElement(targetElement: AppBlockElement, newValue: any): void {
         if (['image'].includes(targetElement.type) && typeof newValue !== 'string') {
             if (Array.isArray(newValue) && newValue[0] instanceof File) {

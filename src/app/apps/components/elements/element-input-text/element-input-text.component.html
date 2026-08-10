@@ -12,14 +12,24 @@
             </div>
         }
         @if (hasControls()) {
-            <div class="absolute flex gap-3 justify-between px-2"
+            <div class="absolute flex gap-1 justify-between px-2"
                  [ngClass]="{
                      'top-0 right-0 h-full pr-3 items-center': type() === 'input-text',
                      'bottom-2 right-2': type() === 'input-textarea'
                  }">
+                @if (shareAppLinkEnabled()) {
+                    <div>
+                        <button type="button" class="px-2 cursor-pointer text-xl"
+                                (click)="shareAppLink()"
+                                title="Share"
+                                i18n-title>
+                            <i class="bi bi-share-fill"></i>
+                        </button>
+                    </div>
+                }
                 @if (copyToClipboardEnabled()) {
                     <div>
-                        <button type="button" class="cursor-pointer text-xl"
+                        <button type="button" class="px-2 cursor-pointer text-xl"
                                 (click)="copyToClipboard()"
                                 title="Copy to clipboard"
                                 i18n-title>
@@ -29,7 +39,7 @@
                 }
                 @if (speechSynthesisEnabled()) {
                     <div>
-                        <button type="button" class="cursor-pointer text-xl"
+                        <button type="button" class="px-2 cursor-pointer text-xl"
                                 (click)="speechSynthesisPlayToggle()"
                                 title="Voice the text"
                                 i18n-title>
@@ -43,7 +53,7 @@
                 }
                 @if (speechRecognitionEnabled()) {
                     <div>
-                        <button type="button" class="cursor-pointer text-xl"
+                        <button type="button" class="px-2 cursor-pointer text-xl"
                                 (click)="microphoneEnableToggle()"
                                 title="Voice typing"
                                 i18n-title>

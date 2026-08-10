@@ -6,7 +6,11 @@ import { environment } from '../../environments/environment';
 import {catchError, Observable} from 'rxjs';
 import moment from 'moment';
 
-import { ApplicationItem } from '../apps/models/application-item.interface';
+import {
+    ApplicationItem,
+    ApplicationShareData,
+    ApplicationShareRequestParams
+} from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
 import {
     AppBlock,
@@ -59,6 +63,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             'vk_app_launch_params': vkAppOptions?.appLaunchParamsJson
         };
         return this.httpClient.post<{success: boolean, balance?: number}>(url, data, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    createShareAppData(params: ApplicationShareRequestParams): Observable<ApplicationShareData> {
+        const url = `${this.requestUrl}/${params.appUuid}/create_share_link`
+        return this.httpClient.post<ApplicationShareData>(url, params, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );

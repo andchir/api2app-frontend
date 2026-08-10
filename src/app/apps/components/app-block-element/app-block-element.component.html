@@ -140,10 +140,12 @@
                 [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
                 [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
                 [copyToClipboardEnabled]="options?.copyToClipboardEnabled"
+                [shareAppLinkEnabled]="options?.shareAppLinkEnabled"
                 [parentIndex]="parentIndex"
                 [index]="index"
                 (message)="onMessage($event)"
                 (valueChange)="onFieldValueChanged()"
+                (shareAppLinkUpdate)="onShareAppLink()"
                 [(ngModel)]="options.value"></app-element-input-text>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>

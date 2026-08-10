@@ -34,6 +34,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() shareAppLinkUpdate: EventEmitter<void> = new EventEmitter<void>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
@@ -244,6 +245,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     onClick(): void {
         this.elementClick.emit();
+    }
+
+    onShareAppLink(): void {
+        this.shareAppLinkUpdate.emit();
     }
 
     onFieldValueChanged(): void {
