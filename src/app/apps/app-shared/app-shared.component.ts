@@ -816,7 +816,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     ): void {
         this.loading = false;
         this.submitted = false;
-        const url = (apiItem.requestUrl || '').trim();
+        const url = ApiService.getApiRequestUrl(apiItem, false, true);
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
         if (!this.wsAppSubmitSubscription) {
