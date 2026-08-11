@@ -206,7 +206,7 @@ export class ApiService extends DataService<ApiItem> {
         if (!url) {
             return false;
         }
-        return /https?:\/\//.test(url);
+        return /https?:\/\//.test(url) || /wss?:\/\//.test(url);
     }
 
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
