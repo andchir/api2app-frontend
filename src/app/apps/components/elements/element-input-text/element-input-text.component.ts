@@ -67,10 +67,10 @@ export class ElementInputTextComponent implements OnInit, ControlValueAccessor {
         const enabledButtons = [
             this.speechRecognitionEnabled(),
             this.speechSynthesisEnabled(),
-            this.copyToClipboardEnabled()
+            this.copyToClipboardEnabled(),
+            this.shareAppLinkEnabled()
         ].filter(Boolean).length;
-
-        return `${0.625 + enabledButtons * 2}rem`;
+        return `${2.8 * enabledButtons}rem`;
     });
     readonly hasBottomControls = computed(() =>
         this.speechRecognitionEnabled()
