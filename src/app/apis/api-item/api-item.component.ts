@@ -171,9 +171,9 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         if (!this.apiItem.requestUrl) {
             return;
         }
-        const url = this.apiItem.requestUrl.trim();
-        if (this.isWebSocketUrl(url)) {
-            this.apiWebSocketTestRequest(url);
+        const requestUrl = ApiService.getApiRequestUrl(this.apiItem, true, true);
+        if (this.isWebSocketUrl(requestUrl)) {
+            this.apiWebSocketTestRequest(requestUrl);
             return;
         }
         this.apiSendRequest();
