@@ -7,6 +7,7 @@ import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
 import { MessagesElementComponent } from '../elements/messages-element/messages-element.component';
+import { ElementIframeComponent } from '../elements/element-iframe/element-iframe.component';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
@@ -47,6 +48,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild(MessagesElementComponent) messagesEl?: MessagesElementComponent;
+    @ViewChild(ElementIframeComponent) iframeComponent?: ElementIframeComponent;
     @ViewChild('chartLine') chartLine?: ChartComponent;
 
     chartOptions: ChartOptions;
@@ -56,6 +58,10 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     constructor(
         private elementRef: ElementRef
     ) {}
+
+    triggerIframeRefresh(): void {
+        this.iframeComponent?.refreshContentAction();
+    }
 
     ngOnInit(): void {
         this.createChartOptions();

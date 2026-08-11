@@ -362,7 +362,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         element.value = value;
-        this.onElementValueChanged(element, true);
+        this.onElementValueChanged(element, true, false, 'browserQueryString');
     }
 
     private getQueryParamFromLocationHash(paramName: string): string | null {
@@ -1975,7 +1975,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     onElementValueChanged(element: AppBlockElement, isAutoStart = false, updateUserBalanceAfterResponse: boolean = false,
-                          source: 'loadValueInto'|'valueFrom'|'afterRequest'|'default' = 'default'): void {
+                          source: 'loadValueInto'|'valueFrom'|'afterRequest'|'browserQueryString'|'default' = 'default'): void {
         if (!this.previewMode
             || this.data.maintenance
             // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
@@ -2017,6 +2017,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 if (['input-hidden'].includes(combinedField.type)) {
                     this.onElementValueChanged(combinedField, isAutoStart, updateUserBalanceAfterResponse, 'valueFrom');
+                } else if (['iframe'].includes(combinedField.type) && source === 'browserQueryString') {
+                    this.blockElements
+                        ?.find(blockElement => blockElement.options === combinedField)
+                        ?.triggerIframeRefresh();
                 }
             });
         }
