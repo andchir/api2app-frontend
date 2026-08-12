@@ -261,18 +261,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.appElements.input[element.options.inputApiUuid].push(element);
                     }
                 }
-                if (element.options?.outputApiUuid) {
-                    if (!this.appElements.output[element.options.outputApiUuid]) {
-                        this.appElements.output[element.options.outputApiUuid] = [];
+                this.getOutputMappings(element).forEach(({apiUuid}) => {
+                    if (!this.appElements.output[apiUuid]) {
+                        this.appElements.output[apiUuid] = [];
                     }
-                    this.appElements.output[element.options.outputApiUuid].push(element);
-                }
+                    this.appElements.output[apiUuid].push(element);
+                });
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
                     this.apiUuidsList.input.push(element.options.inputApiUuid);
                 }
-                if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
-                    this.apiUuidsList.output.push(element.options.outputApiUuid);
-                }
+                this.getOutputMappings(element).forEach(({apiUuid}) => {
+                    if (!this.apiUuidsList.output.includes(apiUuid)) {
+                        this.apiUuidsList.output.push(apiUuid);
+                    }
+                });
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
@@ -633,7 +635,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                     this.stateLoadingUpdate(blocks, false, false);
                                 }
                                 const dataObj = JSON.parse(content);
-                                this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
+                                this.createAppChunkResponse(dataObj, outputElements, apiUuid, chunkIndex);
                                 chunkIndex++;
                             } else {
                                 finalizeSseResponse();
@@ -1176,7 +1178,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentApiUuid = apiUuid;
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
-                return el?.options?.outputApiUuid == apiUuid;
+                return this.hasOutputApi(el, apiUuid);
             });
             return elements.length > 0;
         });
@@ -1184,7 +1186,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.elements.filter((el) => {
                 return el.type === 'status';
             }).forEach((element) => {
-                if (element?.options?.outputApiUuid !== currentApiUuid) {
+                if (!this.hasOutputApi(element, currentApiUuid)) {
                     element.value = null;
                     if (updateHiddenValue) {
                         this.elementHiddenStateUpdate(element);
@@ -1256,7 +1258,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const findElement = (key: string, actType: 'input'|'output' = 'input') => {
             const matchedElements = currentElements.filter((elem) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === key
                     && fieldType === actType;
@@ -1406,7 +1408,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else {
                 const outputData = {};
                 currentElements.forEach((elem) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType);
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType, apiItem.uuid);
                     if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
                         return;
                     }
@@ -1440,7 +1442,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         queryParams.forEach((param) => {
             const element = currentElements.find((element) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === param.name
                     && fieldType === 'params';
@@ -1465,7 +1467,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         headers.forEach((header) => {
             const element = currentElements.find((element) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === header.name
                     && fieldType === 'headers';
@@ -1528,18 +1530,37 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         apiItem.requestUrl = urlParts.join('/');
     }
 
-    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output'): {apiUuid: string, fieldName: string|number, fieldType: string} {
+    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output', targetApiUuid?: string): {apiUuid: string, fieldName: string|number, fieldType: string} {
         return actionType === 'input'
             ? {
                 apiUuid: element.options?.inputApiUuid,
                 fieldName: element.options?.inputApiFieldName,
                 fieldType: element.options?.inputApiFieldType
             }
-            : {
-                apiUuid: element.options?.outputApiUuid,
-                fieldName: element.options?.outputApiFieldName,
-                fieldType: element.options?.outputApiFieldType
-            };
+            : (this.getOutputMappings(element).find(mapping => mapping.apiUuid === targetApiUuid)
+                || this.getOutputMappings(element)[0]
+                || {apiUuid: null, fieldName: null, fieldType: null});
+    }
+
+    protected getOutputMappings(element: AppBlockElement): {apiUuid: string, fieldName: string|number, fieldType: string}[] {
+        const apiUuids = this.splitOptionValue(element.options?.outputApiUuid);
+        const fieldNames = this.splitOptionValue(element.options?.outputApiFieldName);
+        const fieldTypes = this.splitOptionValue(element.options?.outputApiFieldType);
+        return apiUuids.map((apiUuid, index) => ({
+            apiUuid,
+            fieldName: fieldTypes[index] === 'url' && /^\d+$/.test(fieldNames[index] || '')
+                ? Number(fieldNames[index])
+                : fieldNames[index],
+            fieldType: fieldTypes[index]
+        })).filter(mapping => !!mapping.apiUuid && mapping.fieldName !== undefined && !!mapping.fieldType);
+    }
+
+    private splitOptionValue(value: string | number): string[] {
+        return value === null || value === undefined || value === '' ? [] : String(value).split(',');
+    }
+
+    private hasOutputApi(element: AppBlockElement, apiUuid: string): boolean {
+        return this.getOutputMappings(element).some(mapping => mapping.apiUuid === apiUuid);
     }
 
     createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement,
@@ -1577,11 +1598,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         elements.forEach((element, index) => {
             if (['input-chart-line', 'input-chart-pie'].includes(element.type)) {
-                this.chartElementValueApply(element, data);
+                this.chartElementValueApply(element, data, currentApiUuid);
             } else if (element.type === 'input-pagination') {
-                this.paginationValueApply(element, valuesObj, data);
+                this.paginationValueApply(element, valuesObj, data, currentApiUuid);
             } else {
-                this.blockElementValueApply(element, valuesObj, data, isAutoStart);
+                this.blockElementValueApply(element, valuesObj, data, isAutoStart, currentApiUuid);
             }
             this.elementHiddenStateUpdate(element);
         });
@@ -1601,12 +1622,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
     }
 
-    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
+    createAppChunkResponse(data: any, elements: AppBlockElement[], apiUuid: string, chunkIndex: number = 0): void {
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
         elements.forEach((element, index) => {
-            const fieldName = element.options?.outputApiFieldName;
+            const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
             if (!fieldName) {
                 return;
             }
@@ -1644,13 +1665,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
-                    return element.options?.outputApiUuid === apiItem.uuid && element.options?.outputApiFieldType === 'output';
+                    const options = this.getElementOptions(element, 'output', apiItem.uuid);
+                    return options.apiUuid === apiItem.uuid && options.fieldType === 'output';
                 });
                 const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                 const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                 elements.forEach((element) => {
                     if (['input-textarea', 'text'].includes(element.type)) {
-                        this.blockElementValueApply(element, valuesObj, data);
+                        this.blockElementValueApply(element, valuesObj, data, false, apiItem.uuid);
                     }
                 });
                 this.message = this.localizeServerMessages(errorMessage);
@@ -1670,8 +1692,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (linkedField && linkedField.options.inputApiUuid) {
             this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, true,
                 false, updateUserBalanceAfterResponse);
-        } else if (linkedField && linkedField.options.outputApiUuid) {
-            this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, true,
+        } else if (linkedField && this.getOutputMappings(linkedField).length > 0) {
+            this.appSubmit(this.data.uuid, this.getOutputMappings(linkedField)[0].apiUuid, 'output', linkedField, true,
                 false, updateUserBalanceAfterResponse);
         }
     }
@@ -1766,8 +1788,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return errorMessage;
     }
 
-    chartElementValueApply(element: AppBlockElement, data: any): void {
-        const dataKey = element.options?.outputApiFieldName;
+    chartElementValueApply(element: AppBlockElement, data: any, apiUuid?: string): void {
+        const dataKey = this.getElementOptions(element, 'output', apiUuid).fieldName;
         if (!data) {
             return;
         }
@@ -1816,8 +1838,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = {xAxisData, yAxisData, data: outData};
     }
 
-    paginationValueApply(element: AppBlockElement, data: any, rawData: any): void {
-        const dataKey = String(element.options?.outputApiFieldName || '');
+    paginationValueApply(element: AppBlockElement, data: any, rawData: any, apiUuid?: string): void {
+        const dataKey = String(this.getElementOptions(element, 'output', apiUuid).fieldName || '');
         const endlessMode = dataKey.toLowerCase().includes('current') || dataKey.toLowerCase().includes('page');
         const value = parseInt(element.value as string);
         const currentPage = element.useAsOffset
@@ -1845,11 +1867,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any, isAutoStart: boolean = false): void {
-        if (!element.options?.outputApiFieldName) {
+    blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any, isAutoStart: boolean = false, apiUuid?: string): void {
+        const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
+        if (!fieldName) {
             return;
         }
-        const fieldName = element.options?.outputApiFieldName;
         let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
         if (!value) {
             element.value = element.isBooleanValue ? false : '';
@@ -2162,7 +2184,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     onProgressUpdate(currentElement: AppBlockElement): void {
         this.progressUpdating = true;
-        const apiUuid = currentElement.options?.outputApiUuid;
+        const apiUuid = this.getOutputMappings(currentElement)[0]?.apiUuid;
         if (!apiUuid) {
             return;
         }
@@ -2171,7 +2193,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     onProgressCompleted(currentElement: AppBlockElement): void {
         this.progressUpdating = false;
-        const apiUuid = currentElement.options?.outputApiUuid;
+        const apiUuid = this.getOutputMappings(currentElement)[0]?.apiUuid;
         if (!apiUuid) {
             return;
         }

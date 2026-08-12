@@ -29,6 +29,11 @@ import { AppBlockElementType } from '../../models/app-block.interface';
 
 type ActionType = 'input' | 'output';
 type FieldType = 'input' | 'output' | 'params' | 'headers' | 'url' | number | null;
+interface ActionSource {
+    uuid: string | null;
+    fieldName: string | number | null;
+    fieldType: FieldType;
+}
 
 @Component({
     selector: 'app-element-action',
@@ -51,6 +56,8 @@ export class AppActionComponent implements OnInit {
     readonly inputParams = signal<string[]>([]);
     readonly inputHeaders = signal<string[]>([]);
     readonly outputFields = signal<string[]>([]);
+    readonly sources = signal<ActionSource[]>([]);
+    readonly activeSourceIndex = signal(0);
 
     private readonly selectedUuidState = signal<string | null>(null);
     private readonly selectedApiState = signal<ApiItem | null>(null);
@@ -60,6 +67,7 @@ export class AppActionComponent implements OnInit {
     private readonly searchLoading = signal(false);
     private readonly apiLoading = signal(false);
     private readonly apiSelection$ = new Subject<string | null>();
+    private sourcesInitialized = false;
 
     readonly loading = computed(() => this.searchLoading() || this.apiLoading());
 
@@ -69,11 +77,25 @@ export class AppActionComponent implements OnInit {
     ) {}
 
     get selectedUuid(): string | null {
-        return this.selectedUuidState();
+        return this.sourcesInitialized
+            ? this.serializeSources('uuid') || null
+            : this.selectedUuidState();
     }
 
     set selectedUuid(value: string | null) {
-        this.selectedUuidState.set(value);
+        if (!this.sourcesInitialized) {
+            this.selectedUuidState.set(value);
+            return;
+        }
+        this.updateActiveSource({uuid: value});
+    }
+
+    get activeSelectedUuid(): string | null {
+        return this.activeSource()?.uuid || null;
+    }
+
+    set activeSelectedUuid(value: string | null) {
+        this.updateActiveSource({uuid: value});
     }
 
     get selectedApi(): ApiItem | null {
@@ -81,19 +103,39 @@ export class AppActionComponent implements OnInit {
     }
 
     get selectedFieldName(): string | number | null {
-        return this.selectedFieldNameState();
+        return this.sourcesInitialized
+            ? (this.serializeSources('fieldName') || null)
+            : this.selectedFieldNameState();
     }
 
     set selectedFieldName(value: string | number | null) {
-        this.selectedFieldNameState.set(value);
+        if (!this.sourcesInitialized) {
+            this.selectedFieldNameState.set(value);
+            return;
+        }
+        this.updateActiveSource({fieldName: value});
     }
 
-    get selectedFieldType(): FieldType {
-        return this.selectedFieldTypeState();
+    get selectedFieldType(): FieldType | string {
+        return this.sourcesInitialized
+            ? (this.serializeSources('fieldType') as FieldType || null)
+            : this.selectedFieldTypeState();
     }
 
     set selectedFieldType(value: FieldType) {
-        this.selectedFieldTypeState.set(value);
+        if (!this.sourcesInitialized) {
+            this.selectedFieldTypeState.set(value);
+            return;
+        }
+        this.updateActiveSource({fieldType: value});
+    }
+
+    get activeSelectedFieldName(): string | number | null {
+        return this.activeSource()?.fieldName ?? null;
+    }
+
+    get activeSelectedFieldType(): FieldType {
+        return this.activeSource()?.fieldType ?? null;
     }
 
     get queryParameterName(): string {
@@ -105,10 +147,11 @@ export class AppActionComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.initializeSources();
         this.initSearch();
         this.initApiSelection();
 
-        if (this.selectedUuid) {
+        if (this.activeSelectedUuid) {
             this.onApiSelected();
         }
     }
@@ -122,11 +165,11 @@ export class AppActionComponent implements OnInit {
     }
 
     onApiSelected(): void {
-        this.apiSelection$.next(this.selectedUuid);
+        this.apiSelection$.next(this.activeSelectedUuid);
     }
 
     onSearchCleared(): void {
-        this.selectedUuid = '';
+        this.activeSelectedUuid = null;
         this.selectedApiState.set(null);
         this.selectedFieldName = null;
         this.selectedFieldType = null;
@@ -142,7 +185,7 @@ export class AppActionComponent implements OnInit {
     }
 
     selectField(fieldName: string | number, fieldType: FieldType): void {
-        if (this.selectedFieldName === fieldName && this.selectedFieldType === fieldType) {
+        if (this.activeSelectedFieldName === fieldName && this.activeSelectedFieldType === fieldType) {
             this.selectedFieldName = null;
             this.selectedFieldType = null;
             return;
@@ -151,6 +194,34 @@ export class AppActionComponent implements OnInit {
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
         this.queryParameterName = '';
+    }
+
+    addSource(): void {
+        this.sources.update(sources => [...sources, {uuid: null, fieldName: null, fieldType: null}]);
+        this.switchSource(this.sources().length - 1);
+    }
+
+    removeSource(index: number): void {
+        if (this.sources().length === 1) {
+            this.onSearchCleared();
+            return;
+        }
+        this.sources.update(sources => sources.filter((_, sourceIndex) => sourceIndex !== index));
+        this.switchSource(Math.min(this.activeSourceIndex(), this.sources().length - 1));
+    }
+
+    switchSource(index: number): void {
+        if (index < 0 || index >= this.sources().length) {
+            return;
+        }
+        this.activeSourceIndex.set(index);
+        this.selectedApiState.set(null);
+        this.clearApiOptions();
+        this.items.set([]);
+        this.apiSelection$.next(null);
+        if (this.activeSelectedUuid) {
+            this.apiSelection$.next(this.activeSelectedUuid);
+        }
     }
 
     private initSearch(): void {
@@ -174,6 +245,48 @@ export class AppActionComponent implements OnInit {
             }),
             takeUntilDestroyed(this.destroyRef)
         ).subscribe(items => this.items.set(items));
+    }
+
+    private initializeSources(): void {
+        const uuids = this.splitValue(this.selectedUuidState());
+        const fieldNames = this.splitValue(this.selectedFieldNameState());
+        const fieldTypes = this.splitValue(this.selectedFieldTypeState());
+        const sourceCount = Math.max(uuids.length, fieldNames.length, fieldTypes.length, 1);
+        const sources: ActionSource[] = Array.from({length: sourceCount}, (_, index) => ({
+            uuid: uuids[index] || null,
+            fieldName: fieldNames[index] === undefined || fieldNames[index] === ''
+                ? null
+                : this.parseFieldName(fieldNames[index], fieldTypes[index]),
+            fieldType: (fieldTypes[index] as FieldType) || null
+        }));
+        this.sources.set(sources);
+        this.sourcesInitialized = true;
+    }
+
+    private activeSource(): ActionSource | null {
+        return this.sources()[this.activeSourceIndex()] || null;
+    }
+
+    private updateActiveSource(changes: Partial<ActionSource>): void {
+        const index = this.activeSourceIndex();
+        this.sources.update(sources => sources.map((source, sourceIndex) => sourceIndex === index
+            ? {...source, ...changes}
+            : source));
+    }
+
+    private serializeSources(key: keyof ActionSource): string {
+        return this.sources()
+            .filter(source => source.uuid && source.fieldName !== null && source.fieldType !== null)
+            .map(source => String(source[key] ?? ''))
+            .join(',');
+    }
+
+    private splitValue(value: string | number | null): string[] {
+        return value === null || value === undefined || value === '' ? [] : String(value).split(',');
+    }
+
+    private parseFieldName(value: string, fieldType?: string): string | number {
+        return fieldType === 'url' && /^\d+$/.test(value) ? Number(value) : value;
     }
 
     private initApiSelection(): void {

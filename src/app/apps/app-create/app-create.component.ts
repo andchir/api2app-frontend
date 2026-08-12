@@ -259,9 +259,11 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
                     this.apiUuidsList.input.push(element.options.inputApiUuid);
                 }
-                if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
-                    this.apiUuidsList.output.push(element.options.outputApiUuid);
-                }
+                this.getOutputMappings(element).forEach(({apiUuid}) => {
+                    if (!this.apiUuidsList.output.includes(apiUuid)) {
+                        this.apiUuidsList.output.push(apiUuid);
+                    }
+                });
             });
         });
         this.addEmptyBlockByGrid();
@@ -938,9 +940,7 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
                             element.options.inputApiFieldName = this.modalService.content.selectedFieldName;
                             element.options.inputApiFieldType = this.modalService.content.selectedFieldType;
                         } else {
-                            element.options.outputApiUuid = this.modalService.content.selectedFieldName !== null
-                                ? this.modalService.content.selectedApi?.uuid
-                                : null;
+                            element.options.outputApiUuid = this.modalService.content.selectedUuid;
                             element.options.outputApiFieldName = this.modalService.content.selectedFieldName;
                             element.options.outputApiFieldType = this.modalService.content.selectedFieldType;
                             element.options.queryParameterName = this.modalService.content.queryParameterName;
