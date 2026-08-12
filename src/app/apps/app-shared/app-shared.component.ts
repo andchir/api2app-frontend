@@ -289,14 +289,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
-                        if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
-                            return;
-                        }
+                        // if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
+                        //     return;
+                        // }
                         const buttonElement = this.appElements.buttons[uuid]
-                        && this.appElements.buttons[uuid].length > 0
-                        && !this.appElements.buttons[uuid][0].hidden
-                            ? this.appElements.buttons[uuid][0]
-                            : null;
+                            && this.appElements.buttons[uuid].length > 0
+                            && !this.appElements.buttons[uuid][0].hidden
+                                ? this.appElements.buttons[uuid][0]
+                                : null;
                         const ignoreButton = buttonElement && buttonElement.allowAutoSubmit;
                         if (!buttonElement || ignoreButton) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
@@ -1112,7 +1112,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.errors[targetApiUuid] = errors;
         }
         // console.log('getIsValid', errors, 'total:', elements.length, 'hidden:', hiddenCount);
-        if (hiddenCount && hiddenCount === elements.length) {
+        if (hiddenCount && hiddenCount === elements.length && actionType === 'input') {
             return false;
         }
         return Object.keys(errors).length === 0;
@@ -1878,8 +1878,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldName) {
             return;
         }
-        let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
-        if (!value) {
+        const fieldValue = typeof valuesObj[fieldName] !== 'undefined' ? valuesObj[fieldName] : '';
+        let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
+        if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.detectChanges();
             return;
