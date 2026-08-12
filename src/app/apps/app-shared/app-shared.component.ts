@@ -1569,6 +1569,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.applyParsedApiResponseToApp(apiItem, {}, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             return;
         }
+        console.log(currentElement);
+        // Clear element value and hide
+        if (['button'].includes(currentElement.type) && currentElement.hiddenByDefault) {
+            currentElement.value = null;
+            this.elementHiddenStateUpdate(currentElement);
+        }
+
         const responseContentType = response.headers.has('Content-type')
             ? response.headers.get('Content-type')
             : apiItem.responseContentType;
@@ -1944,7 +1951,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 if (element.isClearForm) {
                     this.clearAllValues();
-                } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
+                } else if (element.options?.inputApiUuid) {
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
                     } else {

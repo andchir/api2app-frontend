@@ -325,10 +325,10 @@ export class AppActionComponent implements OnInit {
     private setApiOptions(api: ApiItem): void {
         this.clearApiOptions();
 
-        if (this.elementType === 'button' && this.actionType === 'input') {
-            this.inputFields.set(['submit']);
-            return;
-        }
+        // if (this.elementType === 'button' && this.actionType === 'input') {
+        //     this.inputFields.set(['submit']);
+        //     return;
+        // }
 
         if (this.actionType === 'input') {
             this.setInputOptions(api);
@@ -375,6 +375,10 @@ export class AppActionComponent implements OnInit {
         }
 
         this.inputFields.set(['value', ...inputFields]);
+        if (this.elementType === 'button') {
+            this.inputFields.set([...inputFields, 'submit']);
+        }
+
         this.inputParams.set(this.getArrayValues(api, 'queryParams'));
         this.inputHeaders.set(this.getArrayValues(api, 'headers'));
     }
