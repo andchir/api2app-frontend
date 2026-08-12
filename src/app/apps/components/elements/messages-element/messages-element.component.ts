@@ -140,6 +140,12 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
         this.cdr.markForCheck();
     }
 
+    clearChat(): void {
+        this.messagesService.clearHistory(this.elementId);
+        this.messages = this.messagesService.getHistory(this.elementId);
+        this.cdr.markForCheck();
+    }
+
     private scrollToBottom(): void {
         const el = this.messagesContainer?.nativeElement;
         if (el) {
