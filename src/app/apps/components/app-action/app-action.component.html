@@ -7,8 +7,12 @@
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">
                         <i class="bi bi-lightning-charge-fill me-1"></i>
-                        <span *ngIf="actionType === 'output'" i18n>Output Action</span>
-                        <span *ngIf="actionType === 'input'" i18n>Input Action</span>
+                        @if (actionType === 'output') {
+                            <span i18n>Output Action</span>
+                        }
+                        @if (actionType === 'input') {
+                            <span i18n>Input Action</span>
+                        }
                     </h3>
                 </div>
                 <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -20,15 +24,14 @@
                 </button>
             </div>
             <div class="p-4 md:p-5">
-
                 <div class="mb-4">
                     <ng-select class="ng-select-custom"
-                               [items]="items$ | async"
+                               [items]="items()"
                                [clearable]="true"
                                [hideSelected]="false"
                                [typeahead]="searchInput$"
                                [minTermLength]="2"
-                               [loading]="loading"
+                               [loading]="loading()"
                                bindLabel="name"
                                bindValue="uuid"
                                placeholder="Enter the name of the API to search"
@@ -42,168 +45,189 @@
                     </ng-select>
                 </div>
 
-                <div class="relative bg-white p-3 rounded border mb-4 border-gray-200"
-                     [ngClass]="{'!border-green-400 shadow-md': selectedUuid && selectedFieldName, 'shadow opacity-50': !selectedUuid || !selectedFieldName}"
-                     *ngIf="selectedApi; else templateEmptyApi">
-                    <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
-                        {{ selectedApi.name }}
+                @if (selectedApi; as api) {
+                    <div class="relative bg-white p-3 rounded border mb-4 border-gray-200"
+                         [ngClass]="{'!border-green-400 shadow-md': selectedUuid && selectedFieldName, 'shadow opacity-50': !selectedUuid || !selectedFieldName}">
+                        <div class="mb-3 w-full whitespace-nowrap overflow-hidden text-ellipsis">
+                            {{ api.name }}
+                        </div>
+                        <div class="mb-3 text-xs w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-700">
+                            {{ api.requestUrl }}
+                        </div>
+                        <div class="absolute right-2 -top-2 flex">
+                            @if (api.shared) {
+                                <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md">
+                                    <span class="flex w-2 h-2 me-1 rounded-full"
+                                          [ngClass]="{'bg-green-400': !api.hidden, 'bg-gray-400': api.hidden}"></span>
+                                    <span [ngClass]="{'text-green-700': !api.hidden, 'text-gray-600': api.hidden}"
+                                          i18n="@@SharedItem">Shared</span>
+                                </span>
+                            }
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400 shadow-md ms-2">
+                                {{ api.requestMethod }}
+                            </span>
+                        </div>
                     </div>
-                    <div class="mb-3 text-xs w-full whitespace-nowrap overflow-hidden text-ellipsis text-gray-700">
-                        {{ selectedApi.requestUrl }}
+                } @else if (loading()) {
+                    <div class="py-5 text-center">
+                        <div role="status">
+                            <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                            </svg>
+                            <span class="sr-only" i18n>Loading...</span>
+                        </div>
                     </div>
-                    <div class="absolute right-2 -top-2 flex">
-                        <span class="flex items-center bg-green-100 text-xs font-medium px-2.5 py-0.5 rounded border border-green-400 shadow-md"
-                              *ngIf="selectedApi.shared">
-                            <span class="flex w-2 h-2 me-1 rounded-full"
-                                  [ngClass]="{'bg-green-400': !selectedApi.hidden, 'bg-gray-400': selectedApi.hidden}"></span>
-                            <span [ngClass]="{'text-green-700': !selectedApi.hidden, 'text-gray-600': selectedApi.hidden}"
-                                  i18n="@@SharedItem">Shared</span>
-                        </span>
-                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded border border-blue-400 shadow-md ms-2">
-                            {{ selectedApi.requestMethod }}
-                        </span>
+                } @else {
+                    <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50" role="alert">
+                        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+                        </svg>
+                        <span class="sr-only" i18n>Info</span>
+                        <div i18n>Please select an API.</div>
                     </div>
-                </div>
+                }
 
-                <div class="bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow mb-4" *ngIf="urlParts.length > 0">
-                    <span class="inline-block">{{ isFullUrl(selectedApi?.requestUrl) ? urlParts[0] : '' }}</span>
-                    <ng-container *ngFor="let str of urlParts.slice(1); let index=index">
-                        <span class="inline-block mx-2">/</span>
-                        <button type="button" class="inline-block px-1"
-                                [ngClass]="{
-                                'bg-blue-500 text-white rounded': selectedFieldName === index && selectedFieldType === 'url',
-                                'text-blue-500 hover:text-blue-700 border-b border-b-blue-500 border-dashed': selectedFieldName !== index || selectedFieldType !== 'url'
-                                }"
-                                (click)="selectField(index, 'url')">
-                                {{ str }}
-                        </button>
-                    </ng-container>
-                </div>
+                @if (urlParts().length > 0) {
+                    <div class="bg-white p-3 rounded rounded-[1rem] border border-gray-200 shadow mb-4">
+                        <span class="inline-block">{{ isFullUrl(selectedApi?.requestUrl) ? urlParts()[0] : '' }}</span>
+                        @for (part of urlParts().slice(1); track $index; let index = $index) {
+                            <span class="inline-block mx-2">/</span>
+                            <button type="button" class="inline-block px-1"
+                                    [ngClass]="{
+                                    'bg-blue-500 text-white rounded': selectedFieldName === index && selectedFieldType === 'url',
+                                    'text-blue-500 hover:text-blue-700 border-b border-b-blue-500 border-dashed': selectedFieldName !== index || selectedFieldType !== 'url'
+                                    }"
+                                    (click)="selectField(index, 'url')">
+                                {{ part }}
+                            </button>
+                        }
+                    </div>
+                }
 
                 <div class="max-h-80 overflow-y-auto">
-
                     <div class="grid grid-cols-2 gap-4">
-                        <div *ngIf="inputFields.length > 0">
-                            <h3 class="mb-2" i18n>API Input</h3>
-                            <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg mb-3">
-                                <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
-                                        [ngClass]="{
-                                        'rounded-t-lg': i === 0,
-                                        'rounded-b-lg': i === inputFields.length - 1,
-                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
-                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
-                                        }"
-                                        *ngFor="let fieldName of inputFields; let i = index"
-                                        (click)="selectField(fieldName, 'input')">
-                                            <span *ngIf="['submit', 'value'].includes(fieldName); else templateDefaultText">
-                                                <span *ngIf="fieldName === 'submit'" i18n>Submit</span>
-                                                <span *ngIf="fieldName === 'value'" i18n>Value</span>
-                                            </span>
-                                    <ng-template #templateDefaultText><span class="capitalize">{{ fieldName }}</span></ng-template>
-                                </button>
+                        @if (inputFields().length > 0) {
+                            <div>
+                                <h3 class="mb-2" i18n>API Input</h3>
+                                <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg mb-3">
+                                    @for (fieldName of inputFields(); track $index; let i = $index) {
+                                        <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
+                                                [ngClass]="{
+                                                'rounded-t-lg': i === 0,
+                                                'rounded-b-lg': i === inputFields().length - 1,
+                                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'input',
+                                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'input'
+                                                }"
+                                                (click)="selectField(fieldName, 'input')">
+                                            @if (fieldName === 'submit') {
+                                                <span i18n>Submit</span>
+                                            } @else if (fieldName === 'value') {
+                                                <span i18n>Value</span>
+                                            } @else {
+                                                <span class="capitalize">{{ fieldName }}</span>
+                                            }
+                                        </button>
+                                    }
+                                </div>
                             </div>
-                        </div>
-                        <div *ngIf="inputParams.length > 0">
-                            <h3 class="mb-2" i18n>Query parameters</h3>
-                            <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-                                <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
-                                        [ngClass]="{
-                                        'rounded-t-lg': i === 0,
-                                        'rounded-b-lg': i === inputParams.length - 1,
-                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'params',
-                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'params'
-                                        }"
-                                        *ngFor="let fieldName of inputParams; let i = index"
-                                        (click)="selectField(fieldName, 'params')">
-                                    <span class="capitalize">{{ fieldName }}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div *ngIf="inputHeaders.length > 0">
-                            <h3 class="mb-2" i18n>Headers</h3>
-                            <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-                                <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
-                                        [ngClass]="{
-                                        'rounded-t-lg': i === 0,
-                                        'rounded-b-lg': i === inputHeaders.length - 1,
-                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'headers',
-                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'headers'
-                                        }"
-                                        *ngFor="let fieldName of inputHeaders; let i = index"
-                                        (click)="selectField(fieldName, 'headers')">
-                                    <span class="capitalize">{{ fieldName }}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div *ngIf="outputFields.length > 0">
-                            <h3 class="mb-2" i18n>API Output</h3>
-                            <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-                                <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
-                                        [ngClass]="{
-                                        'rounded-t-lg': i === 0,
-                                        'rounded-b-lg': i === outputFields.length - 1,
-                                        'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
-                                        'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
-                                        }"
-                                        *ngFor="let fieldName of outputFields; let i = index"
-                                        (click)="selectField(fieldName, 'output')">
-                                    <span class="capitalize">{{ fieldName }}</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div *ngIf="actionType === 'output'">
-                            <div class="p-1 mb-3">
-                                <label for="action-query-parameter" class="block mb-2 text-sm font-medium text-gray-900" i18n>Query string parameter</label>
-                                <input type="text" id="action-query-parameter"
-                                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                       [(ngModel)]="queryParameterName">
-                            </div>
-                        </div>
-                    </div>
+                        }
 
+                        @if (inputParams().length > 0) {
+                            <div>
+                                <h3 class="mb-2" i18n>Query parameters</h3>
+                                <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                                    @for (fieldName of inputParams(); track $index; let i = $index) {
+                                        <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
+                                                [ngClass]="{
+                                                'rounded-t-lg': i === 0,
+                                                'rounded-b-lg': i === inputParams().length - 1,
+                                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'params',
+                                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'params'
+                                                }"
+                                                (click)="selectField(fieldName, 'params')">
+                                            <span class="capitalize">{{ fieldName }}</span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        @if (inputHeaders().length > 0) {
+                            <div>
+                                <h3 class="mb-2" i18n>Headers</h3>
+                                <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                                    @for (fieldName of inputHeaders(); track $index; let i = $index) {
+                                        <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
+                                                [ngClass]="{
+                                                'rounded-t-lg': i === 0,
+                                                'rounded-b-lg': i === inputHeaders().length - 1,
+                                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'headers',
+                                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'headers'
+                                                }"
+                                                (click)="selectField(fieldName, 'headers')">
+                                            <span class="capitalize">{{ fieldName }}</span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        @if (outputFields().length > 0) {
+                            <div>
+                                <h3 class="mb-2" i18n>API Output</h3>
+                                <div class="w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                                    @for (fieldName of outputFields(); track $index; let i = $index) {
+                                        <button type="button" class="w-full px-4 py-2 font-medium text-left border-b border-gray-200 cursor-pointer focus:outline-none text-ellipsis overflow-x-hidden"
+                                                [ngClass]="{
+                                                'rounded-t-lg': i === 0,
+                                                'rounded-b-lg': i === outputFields().length - 1,
+                                                'text-white bg-blue-700 hover:text-white hover:bg-blue-700': selectedFieldName === fieldName && selectedFieldType === 'output',
+                                                'hover:bg-gray-100 hover:text-blue-700': selectedFieldName !== fieldName || selectedFieldType !== 'output'
+                                                }"
+                                                (click)="selectField(fieldName, 'output')">
+                                            <span class="capitalize">{{ fieldName }}</span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        @if (actionType === 'output') {
+                            <div>
+                                <div class="p-1 mb-3">
+                                    <label for="action-query-parameter" class="block mb-2 text-sm font-medium text-gray-900" i18n>Query string parameter</label>
+                                    <input type="text" id="action-query-parameter"
+                                           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                                           [(ngModel)]="queryParameterName">
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
 
-                <div class="pt-4" *ngIf="note">
-                    <div class="flex gap-3 items-center px-4 py-1 text-sm leading-5 text-gray-800 border border-gray-300 rounded-lg bg-gray-50" role="alert">
-                        <div>
-                            <i class="bi bi-info-circle"></i>
-                        </div>
-                        <div>
-                            {{ note }}
+                @if (note) {
+                    <div class="pt-4">
+                        <div class="flex gap-3 items-center px-4 py-1 text-sm leading-5 text-gray-800 border border-gray-300 rounded-lg bg-gray-50" role="alert">
+                            <div>
+                                <i class="bi bi-info-circle"></i>
+                            </div>
+                            <div>{{ note }}</div>
                         </div>
                     </div>
-                </div>
-
+                }
             </div>
+
             <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b">
                 <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-9 py-2.5 text-center"
-                    (click)="submit()">
+                        (click)="submit()">
                     <span i18n>Save</span>
                 </button>
                 <button type="button" class="ms-3 text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900"
-                    (click)="closeModal()">
+                        (click)="closeModal()">
                     <span i18n>Cancel</span>
                 </button>
             </div>
         </div>
     </div>
 </div>
-
-<ng-template #templateEmptyApi>
-    <div class="flex items-center p-4 mb-4 text-sm text-blue-800 border border-blue-300 rounded-lg bg-blue-50" role="alert" *ngIf="!loading">
-        <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
-        <span class="sr-only" i18n>Info</span>
-        <div i18n>Please select an API.</div>
-    </div>
-    <div class="py-5 text-center" *ngIf="loading">
-        <div role="status">
-            <svg aria-hidden="true" class="inline w-8 h-8 text-gray-200 animate-spin fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-            </svg>
-            <span class="sr-only" i18n>Loading...</span>
-        </div>
-    </div>
-</ng-template>

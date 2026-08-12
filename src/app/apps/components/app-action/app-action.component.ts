@@ -1,31 +1,34 @@
 import {
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
+    DestroyRef,
     EventEmitter,
-    OnDestroy,
     OnInit,
-    Output
+    Output,
+    computed,
+    signal
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
-    Observable,
+    EMPTY,
     Subject,
     catchError,
-    concat,
-    debounceTime,
     distinctUntilChanged,
+    finalize,
     map,
     of,
-    takeUntil,
-    tap
+    switchMap,
+    tap,
+    timer
 } from 'rxjs';
-import { filter, switchMap, take } from 'rxjs/operators';
 
 import { ApiItem } from '../../../apis/models/api-item.interface';
 import { ApiService } from '../../../services/api.service';
-import { ApplicationService } from '../../../services/application.service';
 import { AppBlockElementType } from '../../models/app-block.interface';
+
+type ActionType = 'input' | 'output';
+type FieldType = 'input' | 'output' | 'params' | 'headers' | 'url' | number | null;
 
 @Component({
     selector: 'app-element-action',
@@ -33,36 +36,78 @@ import { AppBlockElementType } from '../../models/app-block.interface';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: false
 })
-export class AppActionComponent implements OnInit, OnDestroy {
+export class AppActionComponent implements OnInit {
 
-    @Output() close: EventEmitter<string> = new EventEmitter<string>();
-    selectedUuid: string | null = null;
+    @Output() readonly close = new EventEmitter<string>();
+
     elementType: AppBlockElementType;
-    selectedApi: ApiItem;
-    selectedFieldName: string | number | null = null;
-    selectedFieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | number | null = null;
-    actionType: 'input'|'output';
-    queryParameterName: string = '';
+    actionType: ActionType;
     note: string;
-    loading = false;
-    submitted = false;
-    urlParts: string[] = [];
-    inputFields: string[] = [];
-    inputParams: string[] = [];
-    inputHeaders: string[] = [];
-    outputFields: string[] = [];
-    items$: Observable<ApiItem[]>;
-    searchInput$ = new Subject<string>();
-    destroyed$: Subject<void> = new Subject();
+
+    readonly searchInput$ = new Subject<string>();
+    readonly items = signal<ApiItem[]>([]);
+    readonly urlParts = signal<string[]>([]);
+    readonly inputFields = signal<string[]>([]);
+    readonly inputParams = signal<string[]>([]);
+    readonly inputHeaders = signal<string[]>([]);
+    readonly outputFields = signal<string[]>([]);
+
+    private readonly selectedUuidState = signal<string | null>(null);
+    private readonly selectedApiState = signal<ApiItem | null>(null);
+    private readonly selectedFieldNameState = signal<string | number | null>(null);
+    private readonly selectedFieldTypeState = signal<FieldType>(null);
+    private readonly queryParameterNameState = signal('');
+    private readonly searchLoading = signal(false);
+    private readonly apiLoading = signal(false);
+    private readonly apiSelection$ = new Subject<string | null>();
+
+    readonly loading = computed(() => this.searchLoading() || this.apiLoading());
 
     constructor(
-        protected cdr: ChangeDetectorRef,
-        protected dataService: ApiService,
-        protected applicationService: ApplicationService
+        private readonly destroyRef: DestroyRef,
+        private readonly dataService: ApiService
     ) {}
 
+    get selectedUuid(): string | null {
+        return this.selectedUuidState();
+    }
+
+    set selectedUuid(value: string | null) {
+        this.selectedUuidState.set(value);
+    }
+
+    get selectedApi(): ApiItem | null {
+        return this.selectedApiState();
+    }
+
+    get selectedFieldName(): string | number | null {
+        return this.selectedFieldNameState();
+    }
+
+    set selectedFieldName(value: string | number | null) {
+        this.selectedFieldNameState.set(value);
+    }
+
+    get selectedFieldType(): FieldType {
+        return this.selectedFieldTypeState();
+    }
+
+    set selectedFieldType(value: FieldType) {
+        this.selectedFieldTypeState.set(value);
+    }
+
+    get queryParameterName(): string {
+        return this.queryParameterNameState();
+    }
+
+    set queryParameterName(value: string) {
+        this.queryParameterNameState.set(value);
+    }
+
     ngOnInit(): void {
-        this.loadItems();
+        this.initSearch();
+        this.initApiSelection();
+
         if (this.selectedUuid) {
             this.onApiSelected();
         }
@@ -76,162 +121,174 @@ export class AppActionComponent implements OnInit, OnDestroy {
         this.close.emit('close');
     }
 
-    private loadItems() {
-        this.items$ = concat(
-            of([]),
-            this.searchInput$.pipe(
-                takeUntil(this.destroyed$),
-                distinctUntilChanged(),
-                filter(input => !!input),
-                debounceTime(700),
-                tap(() => this.loading = true),
-                switchMap(term => this.dataService.searchItems(term).pipe(
-                    map(res => res.results),
-                    catchError(() => of([])),
-                    tap(() => {
-                        this.loading = false;
-                        this.cdr.detectChanges();
-                    })
-                ))
-            )
-        );
+    onApiSelected(): void {
+        this.apiSelection$.next(this.selectedUuid);
     }
 
-    onApiSelected(): void {
-        if (!this.selectedUuid) {
-            this.selectedFieldName = null;
-            this.selectedFieldType = null;
-            this.cdr.detectChanges();
-            return;
-        }
-        this.inputFields = [];
-        this.outputFields = [];
-        this.loading = true;
-        this.cdr.detectChanges();
-        this.dataService.getItemByUuid(this.selectedUuid)
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe({
-                next: (res) => {
-                    this.selectedApi = res;
-                    this.items$
-                        .pipe(take(1))
-                        .subscribe({
-                            next: (items) => {
-                                if (items.length === 0) {
-                                    this.items$ = of([res]);
-                                }
-                            }
-                        });
-                    this.loading = false;
-                    this.cdr.detectChanges();
-                    this.getApiOptions();
-                },
-                error: (err) => {
-                    console.log(err);
-                    this.loading = false;
-                }
-            });
+    onSearchCleared(): void {
+        this.selectedUuid = '';
+        this.selectedApiState.set(null);
+        this.selectedFieldName = null;
+        this.selectedFieldType = null;
+        this.clearApiOptions();
+
+        // Empty values cancel active search and API detail requests via switchMap.
+        this.searchInput$.next('');
+        this.apiSelection$.next(null);
     }
 
     isFullUrl(url: string): boolean {
         return ApiService.isFullUrl(url);
     }
 
-    getApiOptions(): void {
-        this.inputFields = [];
-        if (!this.selectedApi || ['button'].includes(this.elementType) && this.actionType === 'input') {
-            this.inputFields.push('submit');
-            this.cdr.detectChanges();
-            return;
-        }
-        this.urlParts = [];
-        if (this.actionType === 'input') {
-            if (this.selectedApi.requestUrl) {
-                const tmp = this.selectedApi.requestUrl.split('/');
-                if (this.isFullUrl(this.selectedApi.requestUrl)) {
-                    this.urlParts.push(`${tmp[0]}//${tmp[2]}`);
-                    tmp.splice(0, 3);
-                }
-                this.urlParts = [...this.urlParts, ...tmp];
-            }
-
-            // Input fields
-            if (this.selectedApi.bodyDataSource === 'fields') {
-                this.inputFields = this.getArrayValues('bodyFields');
-                this.inputAddJsonFields();
-            }
-
-            // Add fields from RAW JSON field
-            const rawFields = this.dataService.getRawDataFields(this.selectedApi);
-            let isRawData = (this.selectedApi.bodyDataSource === 'raw' && this.selectedApi.bodyContent && this.selectedApi.requestContentType === 'json') || rawFields.length > 0;
-            if (isRawData) {
-                const bodyContent = typeof this.selectedApi.bodyContent === 'string' ? JSON.parse(this.selectedApi.bodyContent) : {};
-                this.inputFields = [...this.inputFields, ...ApiService.getPropertiesRecursively(bodyContent).outputKeys];
-            }
-            this.inputFields.unshift('value');
-
-            // Input params
-            this.inputParams = this.getArrayValues('queryParams');
-
-            // Input headers
-            this.inputHeaders = this.getArrayValues('headers');
-        }
-
-        if (this.actionType === 'output') {
-            // Output fields
-            if (this.selectedApi.responseContentType === 'json' && this.selectedApi.responseBody) {
-                const responseBody = typeof this.selectedApi.responseBody === 'string' ? JSON.parse(this.selectedApi.responseBody) : {};
-                this.outputFields = ApiService.getPropertiesRecursively(responseBody).outputKeys;
-            }
-            this.outputFields.unshift('value');
-        }
-        this.cdr.detectChanges();
-    }
-
-    selectField(fieldName: string|number, fieldType: 'input' | 'output' | 'params' | 'headers' | 'url' | null): void{
+    selectField(fieldName: string | number, fieldType: FieldType): void {
         if (this.selectedFieldName === fieldName && this.selectedFieldType === fieldType) {
             this.selectedFieldName = null;
             this.selectedFieldType = null;
-            this.cdr.detectChanges();
             return;
         }
+
         this.selectedFieldName = fieldName;
         this.selectedFieldType = fieldType;
         this.queryParameterName = '';
-        this.cdr.detectChanges();
     }
 
-    inputAddJsonFields(): void {
-        this.selectedApi['bodyFields'].forEach((item) => {
-            if (ApiService.isJson(item.value)) {
-                const valueObj = JSON.parse(item.value as string);
-                Object.keys(valueObj).forEach((key) => {
-                    this.inputFields.push(`${item.name}.${key}`);
-                });
+    private initSearch(): void {
+        this.searchInput$.pipe(
+            distinctUntilChanged(),
+            switchMap(input => {
+                const term = input?.trim();
+                if (!term) {
+                    this.searchLoading.set(false);
+                    return of([] as ApiItem[]);
+                }
+
+                return timer(700).pipe(
+                    tap(() => this.searchLoading.set(true)),
+                    switchMap(() => this.dataService.searchItems(term).pipe(
+                        map(response => response.results),
+                        catchError(() => of([] as ApiItem[]))
+                    )),
+                    finalize(() => this.searchLoading.set(false))
+                );
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(items => this.items.set(items));
+    }
+
+    private initApiSelection(): void {
+        this.apiSelection$.pipe(
+            distinctUntilChanged(),
+            switchMap(uuid => {
+                if (!uuid) {
+                    this.apiLoading.set(false);
+                    return EMPTY;
+                }
+
+                this.selectedApiState.set(null);
+                this.inputFields.set([]);
+                this.outputFields.set([]);
+                this.apiLoading.set(true);
+
+                return this.dataService.getItemByUuid(uuid).pipe(
+                    catchError(error => {
+                        console.error(error);
+                        this.onSearchCleared();
+                        return EMPTY;
+                    }),
+                    finalize(() => this.apiLoading.set(false))
+                );
+            }),
+            takeUntilDestroyed(this.destroyRef)
+        ).subscribe(api => {
+            this.selectedApiState.set(api);
+            if (this.items().length === 0) {
+                this.items.set([api]);
             }
+            this.setApiOptions(api);
         });
     }
 
-    getArrayValues(inputKey: string, targetKey: string = 'name'): string[] {
-        if (!this.selectedApi[inputKey]) {
-            return [];
+    private setApiOptions(api: ApiItem): void {
+        this.clearApiOptions();
+
+        if (this.elementType === 'button' && this.actionType === 'input') {
+            this.inputFields.set(['submit']);
+            return;
         }
-        const output = this.selectedApi[inputKey].map((item) => {
-            return !item.hidden ? item[targetKey] : '';
-        });
-        return output.filter((name) => {
-            return name;
+
+        if (this.actionType === 'input') {
+            this.setInputOptions(api);
+            return;
+        }
+
+        const outputFields = api.responseContentType === 'json' && api.responseBody
+            ? ApiService.getPropertiesRecursively(
+                typeof api.responseBody === 'string' ? JSON.parse(api.responseBody) : {}
+            ).outputKeys
+            : [];
+        this.outputFields.set(['value', ...outputFields]);
+    }
+
+    private setInputOptions(api: ApiItem): void {
+        if (api.requestUrl) {
+            const parts = api.requestUrl.split('/');
+            const urlParts: string[] = [];
+            if (this.isFullUrl(api.requestUrl)) {
+                urlParts.push(`${parts[0]}//${parts[2]}`);
+                parts.splice(0, 3);
+            }
+            this.urlParts.set([...urlParts, ...parts]);
+        }
+
+        let inputFields = api.bodyDataSource === 'fields'
+            ? this.getArrayValues(api, 'bodyFields')
+            : [];
+
+        if (api.bodyDataSource === 'fields') {
+            inputFields = [...inputFields, ...this.getJsonInputFields(api)];
+        }
+
+        const rawFields = this.dataService.getRawDataFields(api);
+        const hasRawData = api.bodyDataSource === 'raw'
+            && api.bodyContent
+            && api.requestContentType === 'json';
+        if (hasRawData || rawFields.length > 0) {
+            const bodyContent = typeof api.bodyContent === 'string' ? JSON.parse(api.bodyContent) : {};
+            inputFields = [
+                ...inputFields,
+                ...ApiService.getPropertiesRecursively(bodyContent).outputKeys
+            ];
+        }
+
+        this.inputFields.set(['value', ...inputFields]);
+        this.inputParams.set(this.getArrayValues(api, 'queryParams'));
+        this.inputHeaders.set(this.getArrayValues(api, 'headers'));
+    }
+
+    private getJsonInputFields(api: ApiItem): string[] {
+        return (api['bodyFields'] || []).flatMap(item => {
+            if (!ApiService.isJson(item.value)) {
+                return [];
+            }
+
+            return Object.keys(JSON.parse(item.value as string))
+                .map(key => `${item.name}.${key}`);
         });
     }
 
-    onSearchCleared(): void {
-        this.selectedUuid = '';
-        this.selectedApi = null;
-        this.loadItems();
+    private getArrayValues(api: ApiItem, inputKey: string, targetKey = 'name'): string[] {
+        return (api[inputKey] || [])
+            .filter(item => !item.hidden)
+            .map(item => item[targetKey])
+            .filter(Boolean);
     }
 
-    ngOnDestroy(): void {
-        this.destroyed$.next();
-        this.destroyed$.complete();
+    private clearApiOptions(): void {
+        this.urlParts.set([]);
+        this.inputFields.set([]);
+        this.inputParams.set([]);
+        this.inputHeaders.set([]);
+        this.outputFields.set([]);
     }
 }
