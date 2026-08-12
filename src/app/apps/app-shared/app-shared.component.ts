@@ -1569,7 +1569,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.applyParsedApiResponseToApp(apiItem, {}, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             return;
         }
-        console.log(currentElement);
         // Clear element value and hide
         if (['button'].includes(currentElement.type) && currentElement.hiddenByDefault) {
             currentElement.value = null;
