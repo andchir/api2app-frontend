@@ -77,7 +77,8 @@ export class TableElementComponent implements ControlValueAccessor {
                     row[key] = '';
                     Object.keys(value).forEach(function(k) {
                         row[key] += k + ": ";
-                        row[key] += value[k] + "\n";
+                        const stringValue = typeof value[k] === 'object' ? JSON.stringify(value[k]) : String(value[k] || '');
+                        row[key] += stringValue + "\n";
                     });
                 }
             }
