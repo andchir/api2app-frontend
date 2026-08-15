@@ -7,4 +7,5 @@ export interface VkAppOptions {
     adEnabled?: boolean;
     adAvailableInterstitial?: boolean;
     appLaunchParamsJson?: string;
+    platform?: string;
 }

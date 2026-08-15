@@ -4,9 +4,13 @@ import { BASE_URL } from '../../environments/environment';
 import { environment } from '../../environments/environment';
 
 import {catchError, Observable} from 'rxjs';
-import * as moment from 'moment';
+import moment from 'moment';
 
-import { ApplicationItem } from '../apps/models/application-item.interface';
+import {
+    ApplicationItem,
+    ApplicationShareData,
+    ApplicationShareRequestParams
+} from '../apps/models/application-item.interface';
 import { DataService } from './data.service.abstract';
 import {
     AppBlock,
@@ -59,6 +63,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
             'vk_app_launch_params': vkAppOptions?.appLaunchParamsJson
         };
         return this.httpClient.post<{success: boolean, balance?: number}>(url, data, this.httpOptions)
+            .pipe(
+                catchError(this.handleError)
+            );
+    }
+
+    createShareAppData(params: ApplicationShareRequestParams): Observable<ApplicationShareData> {
+        const url = `${this.requestUrl}/${params.appUuid}/create_share_link`
+        return this.httpClient.post<ApplicationShareData>(url, params, this.httpOptions)
             .pipe(
                 catchError(this.handleError)
             );
@@ -167,11 +179,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!element.value && !element.valueArr && !element.valueObj) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
+        const fieldValue = element.valueOutput || element.value || null;
+        const fieldValueArr = element.valueArr || null;
         switch (element.type) {
             case 'input-tags':
-                return Array.isArray(element?.value) ? element?.value : [];
+                return Array.isArray(fieldValue) ? fieldValue : [];
             case 'input-date':
-                const value = String(element?.value);
+                const value = String(fieldValue);
                 const dateRangeValues = value.split(/\s+-\s+/);
                 if (dateRangeValues.length === 2 && dateRangeValues.every((dateValue) => dateValue.trim())) {
                     return value;
@@ -180,51 +194,94 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 const date = moment(value);
                 return date.format(dateFormat);
             case 'audio':
-                if (element.value && element.value['changingThisBreaksApplicationSecurity']) {
-                    const value = element.value['changingThisBreaksApplicationSecurity'];
+                if (fieldValue && fieldValue['changingThisBreaksApplicationSecurity']) {
+                    const value = fieldValue['changingThisBreaksApplicationSecurity'];
                     if (value.includes('data:audio')) {
                         return ApplicationService.dataURItoFile(value);
                     }
                     return String(value);
                 }
-                return String(element.value);
+                return String(fieldValue);
             case 'input-file':
             case 'image':
-                if (Array.isArray(element.value) && (element.value as File[]).length === 0) {
-                    return null;
+                if (Array.isArray(fieldValue)) {
+                    return !element.multiple && (fieldValue as File[]).length > 0
+                        ? fieldValue[0]
+                        : fieldValue;
                 }
-                return element.multiple || !Array.isArray(element.value) ? element.value : element.value[0];
+                return fieldValue instanceof File ? fieldValue : null;
             case 'input-number':
             case 'input-slider':
-                return typeof element.value === 'string'
-                    ? parseFloat(String(element.value).replace(',', '.'))
-                    : element.value as number;
+                return typeof fieldValue === 'string'
+                    ? parseFloat(String(fieldValue).replace(',', '.'))
+                    : fieldValue as number;
             case 'messages':
                 const OUTGOING_PREFIX = '\u200B__out__';
-                const raw = String(element.value);
+                const raw = String(fieldValue);
                 return raw.startsWith(OUTGOING_PREFIX) ? raw.slice(OUTGOING_PREFIX.length) : raw;
             case 'table':
-                return element.valueArr;
+                return fieldValueArr;
         }
-        return element.value ? String(element.value) : null;
+        return fieldValue ? String(fieldValue) : null;
     }
 
-    static localStoreValueClear(element: AppBlockElement): void {
+    private static parseLocalStorageData(value: string | null): Record<string, any> | null {
+        if (value === null) {
+            return null;
+        }
+        try {
+            const data = JSON.parse(value);
+            return data && typeof data === 'object' && !Array.isArray(data) ? data : {};
+        } catch (error) {
+            console.log(error);
+            return null;
+        }
+    }
+
+    private static getLocalStorageData(dataKey: string): Promise<Record<string, any>> {
+        const cachedData = ApplicationService.parseLocalStorageData(window.localStorage.getItem(dataKey));
+        if (cachedData !== null) {
+            return Promise.resolve(cachedData);
+        }
+        if (typeof vkBridge === 'undefined' || !window['isVKApp']) {
+            return Promise.resolve({});
+        }
+        return vkBridge.send('VKWebAppStorageGet', {keys: [dataKey]})
+            .then((data) => {
+                const dataStr = data.keys?.[0]?.value;
+                const dataObj = ApplicationService.parseLocalStorageData(dataStr || null) || {};
+                window.localStorage.setItem(dataKey, JSON.stringify(dataObj));
+                return dataObj;
+            })
+            .catch((error) => {
+                console.log(error);
+                return {};
+            });
+    }
+
+    static localStoreValueClear(appUuid: string, element: AppBlockElement): void {
         const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
         if (!apiUuid) {
             return;
         }
+        const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-        delete obj[key];
-        if (Object.keys(obj).length === 0) {
-            window.localStorage.removeItem(apiUuid);
-        } else {
-            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
-        }
+        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            delete dataObj[key];
+            const dataStr = JSON.stringify(dataObj);
+            if (Object.keys(dataObj).length === 0) {
+                window.localStorage.removeItem(dataKey);
+            } else {
+                window.localStorage.setItem(dataKey, dataStr);
+            }
+            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
+                    .catch((error) => console.log(error));
+            }
+        });
     }
 
-    static localStoreValue(element: AppBlockElement): void {
+    static localStoreValue(appUuid: string, element: AppBlockElement): void {
         if (!element['storeValue']) {
             return;
         }
@@ -233,23 +290,35 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!apiUuid) {
             return;
         }
+        const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     vkBridge.send('VKWebAppStorageSet', {key: `${apiUuid}-${key}`, value: value || ''})
-        //         .then((data) => {
-        //             // console.log('VKWebAppStorageSet', data);
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //         });
-        // } else {
-            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-            obj[key] = value;
-            window.localStorage.setItem(apiUuid, JSON.stringify(obj));
-        // }
+        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            dataObj[key] = value;
+            const dataStr = JSON.stringify(dataObj);
+            window.localStorage.setItem(dataKey, dataStr);
+            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
+                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
+                    .catch((error) => console.log(error));
+            }
+        });
     }
 
-    static applyLocalStoredValue(element: AppBlockElement): Promise<void> {
+    static getLocalStorageValue(appUuid: string, element: AppBlockElement): Promise<any> {
+        if (!element['storeValue']) {
+            return Promise.resolve(null);
+        }
+        const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
+        if (!apiUuid) {
+            return Promise.resolve(null);
+        }
+        const dataKey = `${appUuid}-${apiUuid}`;
+        const key = `${element.type}-${element.name}`;
+        return ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+            return Object.prototype.hasOwnProperty.call(dataObj, key) ? dataObj[key] : undefined;
+        });
+    }
+
+    static applyLocalStoredValue(appUuid: string, element: AppBlockElement): Promise<void> {
         if (!element['storeValue']) {
             return Promise.resolve();
         }
@@ -257,24 +326,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!apiUuid) {
             return Promise.resolve();
         }
-        const key = `${element.type}-${element.name}`;
-        // if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-        //     return vkBridge.send('VKWebAppStorageGet', {keys: [key]})
-        //         .then((data) => {
-        //             if (data.keys && data.keys.length > 0) {
-        //                 element.value = data.keys[0].value;
-        //             }
-        //         })
-        //         .catch((error) => {
-        //             console.log(error);
-        //         });
-        // } else {
-            const obj = JSON.parse(window.localStorage.getItem(apiUuid) || '{}');
-            if (obj[key]) {
-                element.value = obj[key];
-            }
-            return Promise.resolve();
-        // }
+        return ApplicationService.getLocalStorageValue(appUuid, element)
+            .then((value) => {
+                if (typeof value !== 'undefined') {
+                    element.value = value;
+                }
+            });
     }
 
     static dataURItoFile(dataURI: string): File {
@@ -319,7 +376,15 @@ export class ApplicationService extends DataService<ApplicationItem> {
         return value;
     }
 
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true): string {
+    static createInputStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
+        // Use the prefix and suffix only when the value is finally used
+        const usePrefixSuffix = !['input-text', 'input-textarea', 'input-switch', 'input-select'].includes(element.type);
+        return ApplicationService.createStringValue(element, value, skipTags, true, usePrefixSuffix);
+    }
+
+    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true, usePrefixSuffix: boolean = true): string {
+        const prefixText = usePrefixSuffix ? (element.prefixText || '') : '';
+        const suffixText = usePrefixSuffix ? (element.suffixText || '') : '';
         if (typeof value === 'object' && Array.isArray(value)) {
             value = value.map(item => {
                 if (typeof item === 'object' && item !== null) {
@@ -332,55 +397,63 @@ export class ApplicationService extends DataService<ApplicationItem> {
         } else if (typeof value === 'number') {
             value = String(value);
         }
-        if (element.prefixText && element.prefixText.match(/https?:\/\//) && element.prefixText.endsWith('=')) {
-            value = (element.prefixText || '') + encodeURIComponent(value);
-        } else if (element.prefixText && (!/[{}]/.test(element.prefixText) || !skipTags)) {
-            value = (element.prefixText || '') + value;
+        if (prefixText && prefixText.match(/https?:\/\//) && prefixText.endsWith('=')) {
+            value = prefixText + encodeURIComponent(value);
+        } else if (prefixText && (!/[{}]/.test(prefixText) || !skipTags)) {
+            value = prefixText + value;
         }
-        if (element.suffixText && (!/[{}]/.test(element.suffixText) || !skipTags)) {
-            value += (element.suffixText || '');
+        if (suffixText && (!/[{}]/.test(suffixText) || !skipTags)) {
+            value += suffixText;
         }
-        if (trim) {
+        if (trim && value) {
             return value.trim();
         }
         return value;
     }
 
-    static async downloadFile(url: string): Promise<boolean> {
-        const filesExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'mp4', 'webm', 'mp3', 'wav', 'pdf', 'doc', 'docx'];
-        const fileExtension = ApplicationService.getFileExtension(url);
-        const isFileUrl = filesExtensions.includes(fileExtension);
-
-        if (url.startsWith('data:')) {
-            ApplicationService.downloadDataURI(url);
-            return true;
-        }
-
-        if (!isFileUrl) {
-            console.log('Not an image.', url, fileExtension);
-            window.open(url, '_blank').focus();
-            return false;
-        }
+    static async downloadFile(source: string | Blob, filename: string = ''): Promise<boolean> {
+        /*if (typeof source === 'string'
+            && /^https?:\/\//.test(source)
+            && typeof vkBridge !== 'undefined'
+            && window['isVKApp']
+        ) {
+            try {
+                const vkFilename = filename || ApplicationService.getDownloadFilename(source, new Blob());
+                const result = await vkBridge.send('VKWebAppDownloadFile', {
+                    url: source,
+                    filename: vkFilename
+                });
+                if (result?.result) {
+                    return true;
+                }
+            } catch (error) {
+                console.warn('VK file download failed, falling back to browser download:', error);
+            }
+        }*/
 
         try {
-            const response = await fetch(url, {
-                mode: 'cors',
-                cache: 'no-cache'
-            });
-
-            if (!response.ok) {
-                throw new Error(`Loading error: ${response.status}`);
+            let blob: Blob;
+            if (source instanceof Blob) {
+                blob = source;
+            } else if (source.startsWith('data:')) {
+                blob = ApplicationService.dataUriToBlob(source);
+            } else {
+                const response = await fetch(source, {
+                    mode: 'cors',
+                    cache: 'no-cache'
+                });
+                if (!response.ok) {
+                    throw new Error(`Loading error: ${response.status}`);
+                }
+                blob = await response.blob();
+                filename = filename || ApplicationService.getResponseFilename(response);
             }
 
-            const blob = await response.blob();
+            filename = filename || ApplicationService.getDownloadFilename(source, blob);
             const blobUrl = window.URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = blobUrl;
-
-            let filename = url.split('/').pop();
-            filename = decodeURIComponent(filename.split('?')[0]);
-
-            link.download = String(filename);
+            link.download = filename;
             link.style.display = 'none';
             document.body.appendChild(link);
             link.click();
@@ -388,41 +461,47 @@ export class ApplicationService extends DataService<ApplicationItem> {
             setTimeout(() => {
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(blobUrl);
-            }, 100);
+            }, 60_000);
 
             return true;
         } catch (error) {
             console.log(error);
-            window.open(url, '_blank').focus();
+            if (typeof source === 'string' && !source.startsWith('data:')) {
+                window.open(source, '_blank')?.focus();
+            }
             return false;
         }
     }
 
-    static downloadDataURI(dataURI: string, filename: string = 'file'): void {
-        const byteString = atob(dataURI.split(',')[1]); // Декодируем base64
-        const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]; // Получаем MIME-тип
-
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+    private static getResponseFilename(response: Response): string {
+        const disposition = response.headers.get('content-disposition') || '';
+        const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+        const regularMatch = disposition.match(/filename="?([^";]+)"?/i);
+        const value = utf8Match?.[1] || regularMatch?.[1] || '';
+        try {
+            return decodeURIComponent(value);
+        } catch {
+            return value;
         }
+    }
 
-        const blob = new Blob([ab], { type: mimeString });
+    private static getDownloadFilename(source: string | Blob, blob: Blob): string {
+        if (typeof source === 'string' && !source.startsWith('data:')) {
+            const value = source.split('/').pop()?.split('?')[0].split('#')[0] || '';
+            if (value) {
+                try {
+                    return decodeURIComponent(value);
+                } catch {
+                    return value;
+                }
+            }
+        }
+        const extension = blob.type.split(';')[0].split('/')[1] || 'bin';
+        return `file.${extension}`;
+    }
 
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-
-        document.body.appendChild(link);
-        link.click();
-
-        setTimeout(() => {
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        }, 100);
+    static downloadDataURI(dataURI: string, filename: string = 'file'): void {
+        void ApplicationService.downloadFile(dataURI, filename);
     }
 
     static getFileExtension(url: string): string {
@@ -716,5 +795,25 @@ export class ApplicationService extends DataService<ApplicationItem> {
             }
         }
         return result;
+    }
+
+    isButtonAutoStartIgnore(outputElements: AppBlockElement[], inputElements: AppBlockElement[] = []): boolean {
+        if (outputElements.length === 1 && ['table'].includes(outputElements[0].type)) {
+            return true;
+        }
+        const requiredInputElements = inputElements.filter(element => {
+            return element.required && !element.hidden;
+        });
+        if (requiredInputElements.length === 0) {
+            return true;
+        }
+        return false;
+    }
+
+    isElementRequired(element: AppBlockElement): boolean {
+        if (!element.required) {
+            return false;
+        }
+        return !element.hidden && element.required;
     }
 }

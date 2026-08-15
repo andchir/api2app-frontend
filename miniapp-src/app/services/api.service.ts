@@ -39,7 +39,7 @@ export class ApiService extends DataService<ApiItem> {
             shared: false,
             hidden: false,
             requestMethod: 'GET',
-            requestUrl: 'https://httpbin.org/json',
+            requestUrl: 'https://httpbin.api2app.org/json',
             requestContentType: 'json',
             basicAuth: false,
             sendAsFormData: false,
@@ -147,11 +147,38 @@ export class ApiService extends DataService<ApiItem> {
         });
     }
 
-    static getApiRequestUrl(apiItem: ApiItem, isApiTesting = false): string {
+    static getApiRequestUrl(apiItem: ApiItem, isApiTesting = false, useQueryParams = false): string {
+        let requestUrl: string;
         if (apiItem.sender === 'server') {
-            return isApiTesting ? `${BASE_URL}api/v1/proxy` : `${BASE_URL}api/v1/inference`;
+            requestUrl = isApiTesting ? `${BASE_URL}api/v1/proxy` : `${BASE_URL}api/v1/inference`;
+        } else {
+            requestUrl = apiItem.requestUrl.trim();
         }
-        return apiItem.requestUrl;
+
+        if (!useQueryParams) {
+            return requestUrl;
+        }
+
+        const queryParams = new URLSearchParams();
+        (apiItem.queryParams || []).forEach((item) => {
+            if (!item.name || item.hidden || item.value === null || item.value === undefined || item.value === '') {
+                return;
+            }
+            queryParams.append(item.name, String(item.value));
+        });
+
+        const queryString = queryParams.toString();
+        if (!queryString) {
+            return requestUrl;
+        }
+
+        const hashIndex = requestUrl.indexOf('#');
+        const hash = hashIndex === -1 ? '' : requestUrl.slice(hashIndex);
+        const urlWithoutHash = hashIndex === -1 ? requestUrl : requestUrl.slice(0, hashIndex);
+        const separator = urlWithoutHash.includes('?')
+            ? (urlWithoutHash.endsWith('?') || urlWithoutHash.endsWith('&') ? '' : '&')
+            : '?';
+        return `${urlWithoutHash}${separator}${queryString}${hash}`;
     }
 
     static getApiRequestMethod(apiItem: ApiItem): string {
@@ -179,7 +206,7 @@ export class ApiService extends DataService<ApiItem> {
         if (!url) {
             return false;
         }
-        return /https?:\/\//.test(url);
+        return /https?:\/\//.test(url) || /wss?:\/\//.test(url);
     }
 
     getContentTypeFromHeaders(headers: RequestDataField[]): string {
@@ -312,7 +339,11 @@ export class ApiService extends DataService<ApiItem> {
                 }
             }
             apiItem.bodyFields.forEach((item) => {
-                if (!item.name || item.name === 'opt_vk_data' || item.hidden || (typeof item.value === 'string' && !item.value && !item.files)) {
+                if (!item.name
+                    || item.name === 'opt_vk_data'
+                    || item.hidden
+                    || (typeof item.value === 'string' && !item.value && !item.files && !item.forceSendEmpty)
+                ) {
                     return;
                 }
                 let value = typeof item.value === 'string'

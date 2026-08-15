@@ -261,7 +261,8 @@
                         "allowedCommonJsDependencies": [
                             "apexcharts",
                             "ace-builds",
-                            "moment"
+                            "moment",
+                            "dragula"
                         ],
                         "localize": true,
                         "i18nMissingTranslation": "error",

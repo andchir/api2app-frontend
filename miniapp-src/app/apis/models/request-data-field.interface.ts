@@ -1,8 +1,11 @@
+import {SafeResourceUrl} from "@angular/platform-browser";
+
 export interface RequestDataField {
     name: string;
-    value: string|string[]|number|boolean|File|File[]|null;
+    value: string|any[]|number|boolean|File|File[]|null;
     hidden?: boolean;
     private?: boolean;
     isFile?: boolean;
     files?: File[];
+    forceSendEmpty?: boolean;
 }

@@ -1,12 +1,13 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { ChartComponent } from 'ng-apexcharts';
 import { PaginationInstance } from 'ngx-pagination';
 
 import { AppBlockElement, AppBlockElementType } from '../../models/app-block.interface';
-import { MessagesElementComponent } from '../elements/messages-element.component';
+import { MessagesElementComponent } from '../elements/messages-element/messages-element.component';
+import { ElementIframeComponent } from '../elements/element-iframe/element-iframe.component';
 import { ChartOptions } from '../../models/chart-options.interface';
 
 @Component({
@@ -34,6 +35,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() selectAction: EventEmitter<'input'|'output'> = new EventEmitter<'input'|'output'>();
     @Output() elementClick: EventEmitter<void> = new EventEmitter<void>();
     @Output() elementValueChange: EventEmitter<any> = new EventEmitter<any>();
+    @Output() shareAppLinkUpdate: EventEmitter<void> = new EventEmitter<void>();
     @Output() itemSelected: EventEmitter<number> = new EventEmitter<number>();
     @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
     @Output() progressUpdate: EventEmitter<string> = new EventEmitter<string>();
@@ -46,6 +48,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
     @Output() refreshIframeContent: EventEmitter<HTMLIFrameElement> = new EventEmitter<HTMLIFrameElement>();
 
     @ViewChild(MessagesElementComponent) messagesEl?: MessagesElementComponent;
+    @ViewChild(ElementIframeComponent) iframeComponent?: ElementIframeComponent;
     @ViewChild('chartLine') chartLine?: ChartComponent;
 
     chartOptions: ChartOptions;
@@ -56,8 +59,15 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         private elementRef: ElementRef
     ) {}
 
+    triggerIframeRefresh(): void {
+        this.iframeComponent?.refreshContentAction();
+    }
+
     ngOnInit(): void {
         this.createChartOptions();
+        if (this.isChartElement()) {
+            this.chartOptionsUpdate();
+        }
         if (!this.editorMode) {
             this.updateStateByOptions();
         }
@@ -68,7 +78,11 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
     ngOnChanges(changes: SimpleChanges) {
         // console.log('ngOnChanges', this.options.type, changes);
-        if (this.isChartElement() && changes['valueObj']) {
+        const typeChange = changes['type'];
+        if (typeChange && !typeChange.firstChange) {
+            this.updateStateByTypeChange();
+        }
+        if (this.isChartElement() && changes['valueObj'] && (!typeChange || typeChange.firstChange)) {
             if (this.chartOptions) {
                 this.chartOptionsUpdate();
                 this.renderChartLine();
@@ -82,11 +96,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
 
             if (wasHidden && isVisible) {
                 this.renderChartLine();
-            }
-        }
-        if (this.options.type === 'input-pagination' && changes['type']) {
-            if (this.options.type === 'input-pagination' && !this.options.valueObj) {
-                this.updatePagesOptions();
             }
         }
         if (changes['editorMode'] && !changes['editorMode'].currentValue) {
@@ -162,10 +171,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             return;
         }
         if (this.options.type === 'input-chart-pie') {
-            this.chartOptions.series = this.valueObj.yAxisData.map((value) => {
-                const numberValue = Number(value || 0);
-                return Number(numberValue.toFixed(2));
-            });
+            this.chartOptions.series = this.valueObj.yAxisData.map((value) => this.normalizeChartValue(value));
             this.chartOptions.labels = this.valueObj.xAxisData.map((value) => String(value || ''));
             this.chartOptions.chart.type = 'donut';
             return;
@@ -173,9 +179,7 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         this.chartOptions.series = [
             {
                 name: this.options?.itemTitle || 'Item',
-                data: this.valueObj?.yAxisData.map((value) => {
-                    return Number((value || 0).toFixed(2));
-                })
+                data: this.valueObj?.yAxisData.map((value) => this.normalizeChartValue(value))
             }
         ];
         this.chartOptions.xaxis = {
@@ -225,8 +229,32 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }
     }
 
+    private updateStateByTypeChange(): void {
+        if (this.isChartElement()) {
+            this.createChartOptions();
+            this.chartOptionsUpdate();
+            this.renderChartLine();
+            return;
+        }
+
+        if (this.options.type === 'input-pagination') {
+            if (!this.options.valueObj) {
+                this.updatePagesOptions();
+            }
+            return;
+        }
+
+        if (!this.editorMode) {
+            this.updateStateByOptions();
+        }
+    }
+
     onClick(): void {
         this.elementClick.emit();
+    }
+
+    onShareAppLink(): void {
+        this.shareAppLinkUpdate.emit();
     }
 
     onFieldValueChanged(): void {
@@ -351,35 +379,6 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
         }, 100);
     }
 
-    download(url: any, filename = '', preventClick: boolean = false, event?: MouseEvent): void {
-        if (event && preventClick) {
-            event.preventDefault();
-            return;
-        }
-        if (typeof url === 'object' && url.changingThisBreaksApplicationSecurity) {
-            url = url.changingThisBreaksApplicationSecurity;
-        }
-        if (typeof url === 'string' && (url.match(/^https?:\/\//) || url.includes('blob:') )) {
-            return;
-        }
-        if (event) {
-            event.preventDefault();
-        }
-        if (!filename) {
-            const matches = url.match(/data:image\/([^;]+)/);
-            filename = (new Date().valueOf()) + '.' + matches[1];
-        }
-        fetch(url)
-            .then(response => response.blob())
-            .then(blob => {
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = filename;
-                link.click();
-            })
-            .catch(console.error);
-    }
-
     onProgressUpdate(options: any): void {
         const taskIdField = options.taskIdFieldName || 'uuid';
         const taskId = options?.valueObj ? options?.valueObj[taskIdField] : '';
@@ -428,5 +427,13 @@ export class AppBlockElementComponent implements OnInit, OnChanges {
             return 0;
         }
         return Math.min(5, Math.max(0, Math.round(numericValue)));
+    }
+
+    private normalizeChartValue(value: unknown): number {
+        const numericValue = Number(value);
+        if (!Number.isFinite(numericValue)) {
+            return 0;
+        }
+        return Number(numericValue.toFixed(2));
     }
 }

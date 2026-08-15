@@ -21,6 +21,7 @@ export interface ApplicationItem {
     maintenance?: boolean;
     vkAppId?: string;
     vkSecretKey?: string;
+    vkServiceKey?: string;
     vkToken?: string;
     tgBotToken?: string;
     tgForwardToUserId?: number;
@@ -31,4 +32,17 @@ export interface ApplicationItem {
     adultsOnly?: boolean;
     pricePerUse?: number;
     user_id?: number;
+    viewCount?: number;
+}
+
+export interface ApplicationShareRequestParams {
+    appUuid: string;
+    queryParamName: string;
+    queryParamValue: string;
+    isVkApp: boolean;
+}
+
+export interface ApplicationShareData {
+    link: string;
+    qrCode: string;
 }

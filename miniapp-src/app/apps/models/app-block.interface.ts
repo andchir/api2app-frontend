@@ -3,8 +3,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text'|'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
     |'audio'|'video'|'input-chart-line'|'input-chart-pie'|'input-slider'|'input-color'|'input-pagination'|'status'|'progress'|'table'
-    |'input-select-image'|'user-subscription'|'user-payment'|'crop-image'|'image-comparison'|'iframe'|'messages'
-    |'input-rating';
+    |'input-select-image'|'user-subscription'|'image-comparison'|'iframe'|'messages' |'input-rating';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[] | SafeResourceUrl | File[];
@@ -20,74 +19,90 @@ export interface AppBlockElementOptions {
     queryParameterName?: string;
 }
 
-export interface AppBlockElement {
+export interface AppBlockElementBase {
     type: AppBlockElementType;
     name?: string;
     label?: string;
     placeholder?: string;
     orderIndex?: number;
+    blockIndex?: number;
+    options?: AppBlockElementOptions;
+}
+
+export interface AppBlockElementValue {
     choices?: string[];
-    color?: string;
     min?: number;
     max?: number;
-    prefixText?: string;
-    suffixText?: string;
     format?: string;
-    enabled?: boolean;
-    required?: boolean;
-    readOnly?: boolean;
-    clearable?: boolean;
-    multiple?: boolean;
+    value?: string | number | boolean | string[] | File | File[] | SafeResourceUrl | null;
+    valueArr?: string[] | {label: string, value: string}[] | File[] | null;
+    valueObj?: any | null;
+    valueOutput?: string;
+    keys?: string[];
+    headers?: string[];
+    rows?: number;
+    note?: string;
+    noteOutput?: string;
+}
+
+export interface AppBlockElementDataMapping {
     fieldNameAxisX?: string;
     fieldNameAxisY?: string;
     fieldNameCategory?: string;
     fieldNameValue?: string;
     isXAxisDate?: boolean;
-    selectDefaultFirst?: boolean;
-    useDefault?: boolean;
     perPage?: number,
     statusCompleted?: string;
     statusError?: string;
     itemFieldNameForTitle?: string;
     itemFieldNameForValue?: string;
-    options?: AppBlockElementOptions;
-    value?: string | number | boolean | string[] | File | File[] | SafeResourceUrl | null;
-    valueArr?: string[] | {label: string, value: string}[] | File[] | null;
-    valueObj?: any | null;
-    markdown?: boolean;
-    editable?: boolean,
-    icon?: string;
-    useAsOffset?: boolean;
-    isHTML?: boolean;
     itemFieldName?: string;
     itemThumbnailFieldName?: string;
-    blockIndex?: number;
-    hidden?: boolean;
-    hiddenByField?: string;
-    hiddenByDefault?: boolean;
+    loadValueInto?: string;
+    valueFrom?: string;
+    linkedField?: string;
+}
+
+export interface AppBlockElementPresentation {
+    color?: string;
+    prefixText?: string;
+    suffixText?: string;
+    markdown?: boolean;
+    icon?: string;
+    isHTML?: boolean;
     showOnlyInVK?: boolean;
     statusCompletedText?: string;
     statusCompletedTextForVK?: string;
     confirmationText?: string,
-    keys?: string[];
-    headers?: string[];
+    fontSize?: string;
+    autoHeight?: boolean;
+}
+
+export interface AppBlockElementBehavior {
+    enabled?: boolean;
+    required?: boolean;
+    readOnly?: boolean;
+    clearable?: boolean;
+    multiple?: boolean;
+    selectDefaultFirst?: boolean;
+    useDefault?: boolean;
+    editable?: boolean,
+    useAsOffset?: boolean;
+    hidden?: boolean;
+    hiddenByField?: string;
+    hiddenByDefault?: boolean;
     subscriptionId?: string;
-    rows?: number;
-    loadValueInto?: string;
-    note?: string;
-    noteOutput?: string;
     storeValue?: boolean;
     useCropper?: boolean;
     isClearForm?: boolean;
     isDownloadMode?: boolean;
     isStickyPosition?: boolean;
-    fontSize?: string;
-    valueFrom?: string;
-    autoHeight?: boolean;
     isBooleanValue?: boolean;
-    linkedField?: string;
     allowAutoSubmit?: boolean;
 }
+
+export interface AppBlockElement extends AppBlockElementBase, AppBlockElementValue,
+    AppBlockElementDataMapping, AppBlockElementPresentation, AppBlockElementBehavior {}
 
 export interface AppBlockOptions {
     gridColumnSpan?: number;

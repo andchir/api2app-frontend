@@ -298,6 +298,12 @@ export class ElementOptions {
                     value: options?.linkedField || ''
                 });
                 output.push({
+                    name: 'value',
+                    label: $localize `Default Value`,
+                    type: 'input-text',
+                    value: options?.value
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -329,13 +335,13 @@ export class ElementOptions {
                 });
                 break;
             case 'input-text':
-                // output.push({
-                //     name: 'max',
-                //     label: $localize `Maximum text length`,
-                //     type: 'input-number',
-                //     rows: 6,
-                //     value: options?.max || 0
-                // });
+                output.push({
+                    name: 'max',
+                    label: $localize `Maximum text length`,
+                    type: 'input-number',
+                    rows: 6,
+                    value: options?.max || 0
+                });
                 output.push({
                     name: 'label',
                     label: $localize `Label`,
@@ -422,6 +428,12 @@ export class ElementOptions {
                     label: $localize `Copy to clipboard`,
                     type: 'input-switch',
                     enabled: options?.copyToClipboardEnabled || false
+                });
+                output.push({
+                    name: 'shareAppLinkEnabled',
+                    label: $localize `Share link`,
+                    type: 'input-switch',
+                    enabled: options?.shareAppLinkEnabled || false
                 });
                 output.push({
                     name: 'storeValue',
@@ -1043,6 +1055,20 @@ export class ElementOptions {
                     type: 'input-switch',
                     enabled: options?.required || false
                 });
+                output.push({
+                    name: 'fullWidth',
+                    label: $localize `Full width`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.fullWidth || false
+                });
+                output.push({
+                    name: 'vkUseSendToFiles',
+                    label: $localize `VK: Use upload to My Files`,
+                    type: 'input-switch',
+                    value: true,
+                    enabled: options?.vkUseSendToFiles || false
+                });
                 break;
             case 'image-comparison':
                 output.push({
@@ -1436,6 +1462,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'linkedField',
+                    label: $localize `Linked element`,
+                    type: 'input-text',
+                    value: options?.linkedField || ''
+                });
+                output.push({
                     name: 'isBooleanValue',
                     label: $localize `Boolean Value (true/false)`,
                     type: 'input-switch',
@@ -1599,42 +1631,6 @@ export class ElementOptions {
                     enabled: options?.showOnlyInVK
                 });
                 break;
-            case 'user-payment':
-                output.push({
-                    name: 'icon',
-                    label: $localize `Icon`,
-                    type: 'input-text',
-                    placeholder: ($localize `Example`) + ': bi-info-circle',
-                    value: options?.icon || ''
-                });
-                output.push({
-                    name: 'info',
-                    type: 'text',
-                    markdown: true,
-                    color: 'Blue',
-                    icon: 'bi-box-arrow-up-right',
-                    value: '[Bootstrap Icons](https://icons.getbootstrap.com/)',
-                });
-                output.push({
-                    name: 'label',
-                    label: $localize `Label`,
-                    type: 'input-text',
-                    value: options?.label
-                });
-                output.push({
-                    name: 'showOnlyInVK',
-                    label: $localize `Show only in VK app`,
-                    type: 'input-switch',
-                    value: true,
-                    enabled: options?.showOnlyInVK
-                });
-                output.push({
-                    name: 'value',
-                    label: $localize `Default Value`,
-                    type: 'input-text',
-                    value: options?.value
-                });
-                break;
             case 'messages':
                 output.push({
                     name: 'label',
@@ -1792,7 +1788,8 @@ export class ElementOptions {
                     isClearForm: false,
                     isDownloadMode: false,
                     isStickyPosition: false,
-                    allowAutoSubmit: false
+                    allowAutoSubmit: false,
+                    value: ''
                 });
                 break;
             case 'input-text':
@@ -1812,6 +1809,7 @@ export class ElementOptions {
                     speechRecognitionEnabled: false,
                     speechSynthesisEnabled: false,
                     copyToClipboardEnabled: false,
+                    shareAppLinkEnabled: false,
                     storeValue: false,
                     value: ''
                 });
@@ -1998,6 +1996,7 @@ export class ElementOptions {
                     hiddenByField: '',
                     prefixText: '',
                     value: '',
+                    valueOutput: '',
                     hiddenByDefault: false,
                     useLink: true,
                     useCropper: false,
@@ -2015,7 +2014,10 @@ export class ElementOptions {
                     hiddenByField: '',
                     prefixText: '',
                     value: '',
+                    valueOutput: '',
                     hiddenByDefault: false,
+                    fullWidth: false,
+                    vkUseSendToFiles: false,
                     required: false
                 });
                 break;
@@ -2028,6 +2030,7 @@ export class ElementOptions {
                     hiddenByField: '',
                     prefixText: '',
                     value: '',
+                    valueOutput: '',
                     posterUrl: '',
                     hiddenByDefault: false,
                     useLink: true,
@@ -2106,6 +2109,7 @@ export class ElementOptions {
                     queueNumberFieldName: 'number',
                     operationDurationSeconds: 20,
                     hiddenByField: '',
+                    linkedField: '',
                     isBooleanValue: false,
                     valueObj: null,
                     value: null
@@ -2144,16 +2148,6 @@ export class ElementOptions {
                     name: 'user-subscription',
                     label: $localize `My subscription`,
                     subscriptionId: '',
-                    hiddenByField: '',
-                    showOnlyInVK: true,
-                    value: null
-                });
-                break;
-            case 'user-payment':
-                Object.assign(output, {
-                    icon: '',
-                    name: 'user-payment',
-                    label: $localize `Top up balance`,
                     hiddenByField: '',
                     showOnlyInVK: true,
                     value: null

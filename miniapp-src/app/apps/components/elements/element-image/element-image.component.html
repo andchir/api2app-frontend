@@ -1,5 +1,5 @@
-<div class="relative block w-full text-center min-h-[50px]"
-     [ngClass]="{'max-w-[600px] mx-auto': !fullWidth}">
+<div class="relative block w-full text-center"
+     [ngClass]="{'max-w-[600px] mx-auto': !fullWidth, 'min-h-[50px]': mediaUrl}">
     <ng-container *ngIf="!useCropper else cropperToolTemplate">
         <div class="min-h-[50px] text-center"
              [ngClass]="{
@@ -32,7 +32,7 @@
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"
-                       [poster]="poster || null"
+                       [poster]="poster || ''"
                        [src]="mediaUrl" controlsList="nodownload" controls *ngIf="type == 'video'"></video>
             </ng-template>
         </div>
@@ -58,12 +58,12 @@
             <div class="pt-2 text-sm text-red-600" *ngIf="vkFileUploadError">{{ vkFileUploadError }}</div>
         </div>
     </ng-container>
-    <div class="px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
-         *ngIf="!mediaOriginalUrl && editorMode && type == 'image'">
-        <i class="bi bi-image mr-2"></i>
+    <div class="flex gap-2 justify-center items-center px-4 py-3 bg-gray-100 rounded border border-slate-300 shadow-md"
+         *ngIf="!mediaOriginalUrl && editorMode && !mediaUrl && type == 'image'">
+        <i class="bi mr-2" [class.bi-crop]="useCropper" [class.bi-image]="!useCropper"></i>
         <span i18n>Image</span>
     </div>
-    <div class="px-4 py-10 bg-gray-100 rounded border border-slate-300 shadow-md text-center"
+    <div class="flex gap-2 justify-center items-center px-4 py-10 bg-gray-100 rounded border border-slate-300 shadow-md"
          *ngIf="!mediaOriginalUrl && editorMode && type == 'video'">
         <i class="bi bi-play-btn mr-2"></i>
         <span i18n>Video</span>

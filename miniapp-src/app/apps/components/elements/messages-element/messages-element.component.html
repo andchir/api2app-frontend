@@ -33,6 +33,14 @@
         </div>
 
         <div class="flex gap-2 p-2 border-t border-gray-200 bg-white" *ngIf="!editorMode">
+            <button type="button"
+                    class="text-gray-500 bg-gray-100 hover:bg-red-50 hover:text-red-500 focus:ring-4 focus:ring-red-100 rounded-full w-10 h-10 flex shrink-0 items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:text-gray-500"
+                    [disabled]="messages.length === 0"
+                    (click)="clearChat()"
+                    title="Clear chat"
+                    aria-label="Clear chat">
+                <i class="bi bi-trash3"></i>
+            </button>
             <input type="text"
                    class="flex-grow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 px-4 py-2"
                    [placeholder]="placeholder"
@@ -47,6 +55,9 @@
         </div>
 
         <div class="flex gap-2 p-3 text-center text-gray-400" *ngIf="editorMode">
+            <div class="w-10 h-10 bg-gray-100 rounded-full flex shrink-0 items-center justify-center text-gray-500">
+                <i class="bi bi-trash3"></i>
+            </div>
             <div class="flex-grow bg-gray-200 rounded-full px-4 py-2 text-sm text-left">
                 {{ placeholder }}
             </div>

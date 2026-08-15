@@ -17,8 +17,9 @@ import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import PhotoSwipe from 'photoswipe';
 import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm.js';
 import { firstValueFrom } from 'rxjs';
-import { VkBridgeService } from '../../../services/vk-bridge.service';
-import { VkAppOptions } from '../../models/vk-app-options.interface';
+import { VkBridgeService } from '../../../../services/vk-bridge.service';
+import { VkAppOptions } from '../../../models/vk-app-options.interface';
+import { ApplicationService } from '../../../../services/application.service';
 
 declare const vkBridge: any;
 
@@ -49,7 +50,6 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     @Input() poster: string | null;
     @Input() thumbnailFieldName: string | null;
     @Input() largeFieldName: string | null;
-    @Input() mediaOriginalUrl: string | null;
     @Input() fullWidth: boolean;
     @Input() borderShadow: boolean;
     @Input() roundedCorners: boolean;
@@ -91,9 +91,21 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     };
 
     private _cropperAspectRatioString: string = '';
+    private _value: SafeUrl | File | string = '';
+    private _mediaOriginalUrl: string = '';
 
     get cropperAspectRatioString(): string {
         return this._cropperAspectRatioString;
+    }
+
+    @Input()
+    set mediaOriginalUrl(val: string | File) {
+        this._mediaOriginalUrl = this.createStringValue(val);
+        this.cdr.detectChanges();
+    };
+
+    get mediaOriginalUrl(): string {
+        return this._mediaOriginalUrl;
     }
 
     @Input()
@@ -108,24 +120,20 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         }
     }
 
-    private _value: SafeUrl | File | string = '';
-
     get value(): SafeUrl | File | string {
         return this._value;
     }
 
     @Input()
     set value(val: SafeUrl | File | string) {
-        if ((!this.mediaOriginalUrl && val) || !this.useCropper) {
-            const newUrl = val instanceof File
-                ? URL.createObjectURL(val)
-                : (typeof val === 'string' ? val : '');
-            if (newUrl !== this.mediaOriginalUrl) {
-                this.resetImageState();
-            }
+        const newUrl = this.createStringValue(val);
+        if (newUrl !== this._value) {
+            this.resetImageState();
+        }
+        if (!this.mediaOriginalUrl) {
             this.mediaOriginalUrl = newUrl;
         }
-        this._value = val || '';
+        this._value = val instanceof File ? val : newUrl;
         this.onChange(this._value);
         this.cdr.detectChanges();
     }
@@ -183,6 +191,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     ngOnInit(): void {
+        if (this.editorMode) {
+            this.useCropper = false;
+        }
         if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
             this.isVkApp = true;
         }
@@ -216,6 +227,12 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.isImageLoading = true;
         this.vkFileUploaded = false;
         this.vkFileUploadError = '';
+    }
+
+    createStringValue(val: SafeUrl | File | string): string {
+        return val instanceof File
+            ? URL.createObjectURL(val)
+            : (typeof val === 'string' ? val : '');
     }
 
     createOriginalFileUrl(): string | null {
@@ -275,23 +292,7 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         const matches = downloadUrl.match(/data:image\/([^;]+)/);
         const filename = (new Date().valueOf()) + '.' + matches[1];
 
-        fetch(downloadUrl)
-            .then(response => response.blob())
-            .then(blob => {
-                const blobUrl = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = blobUrl;
-                link.download = filename;
-                link.style.display = 'none';
-                document.body.appendChild(link);
-                link.click();
-
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(blobUrl);
-                }, 100);
-            })
-            .catch(console.error);
+        void ApplicationService.downloadFile(downloadUrl, filename);
     }
 
     get showVkSendToFiles(): boolean {
@@ -381,7 +382,11 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         this.imageOutputWidth = event.width;
         this.imageOutputHeight = event.height;
         this.isCropped = this.imageWidth !== this.imageOutputWidth || this.imageHeight !== this.imageOutputHeight;
-        this.writeValue(event.objectUrl);
+        if (event.blob) {
+            this.writeValue(new File([event.blob], 'image.png', {type: event.blob.type}));
+        } else if (event.objectUrl) {
+            this.writeValue(event.objectUrl);
+        }
     }
 
     cropperReady(): void {

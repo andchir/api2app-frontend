@@ -13,5 +13,6 @@ export interface User {
         rkPassword2?: string;
         paymentStatus?: string;
         vatCode?: number;
-    }
+    };
+    url?: string;
 }

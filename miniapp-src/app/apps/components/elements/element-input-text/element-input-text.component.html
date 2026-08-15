@@ -1,0 +1,119 @@
+<div class="w-full max-w-[600px] mx-auto">
+    @if (label()) {
+        <label for="{{ name() }}-{{ parentIndex() }}-{{ index() }}"
+               class="block mb-2 text-sm font-medium text-gray-900">
+            {{ label() }}
+        </label>
+    }
+    <div class="relative">
+        @if (icon()) {
+            <div class="absolute h-full pl-3 left-0 top-0 flex items-center">
+                <i class="bi" [ngClass]="icon()"></i>
+            </div>
+        }
+        @if (hasControls()) {
+            <div class="absolute flex gap-1 justify-between px-2"
+                 [ngClass]="{
+                     'top-0 right-0 h-full pr-3 items-center': type() === 'input-text',
+                     'bottom-2 right-2': type() === 'input-textarea'
+                 }">
+                @if (shareAppLinkEnabled()) {
+                    <div>
+                        <button type="button" class="px-2 cursor-pointer text-xl"
+                                (click)="shareAppLink()"
+                                title="Share link"
+                                i18n-title>
+                            <i class="bi bi-share-fill"></i>
+                        </button>
+                    </div>
+                }
+                @if (copyToClipboardEnabled()) {
+                    <div>
+                        <button type="button" class="px-2 cursor-pointer text-xl"
+                                (click)="copyToClipboard()"
+                                title="Copy to clipboard"
+                                i18n-title>
+                            <i class="bi bi-copy"></i>
+                        </button>
+                    </div>
+                }
+                @if (speechSynthesisEnabled()) {
+                    <div>
+                        <button type="button" class="px-2 cursor-pointer text-xl"
+                                (click)="speechSynthesisPlayToggle()"
+                                title="Voice the text"
+                                i18n-title>
+                            <i class="bi bi-volume-up-fill"
+                               [ngClass]="{
+                                   'text-blue-700': speechSynthesisActive(),
+                                   'text-gray-700': !speechSynthesisActive()
+                               }"></i>
+                        </button>
+                    </div>
+                }
+                @if (speechRecognitionEnabled()) {
+                    <div>
+                        <button type="button" class="px-2 cursor-pointer text-xl"
+                                (click)="microphoneEnableToggle()"
+                                title="Voice typing"
+                                i18n-title>
+                            @if (microphoneActive()) {
+                                <i class="bi bi-mic-fill text-red-700"></i>
+                            } @else {
+                                <i class="bi bi-mic-mute-fill text-gray-700"></i>
+                            }
+                        </button>
+                    </div>
+                }
+                @if (maxLength() && type() === 'input-textarea') {
+                    <div class="inline-block leading-5 py-1 px-2 text-xs rounded bg-black text-white bg-opacity-50 pointer-events-none">
+                        {{ value().length }} / {{ maxLength() }}
+                    </div>
+                }
+            </div>
+        }
+
+        @switch (type()) {
+            @case ('input-text') {
+                <input type="text"
+                       id="{{ name() }}-{{ parentIndex() }}-{{ index() }}"
+                       class="bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 shadow-inner"
+                       [style.padding-right]="paddingRight()"
+                       [ngClass]="{
+                           'text-blue-600': storeValue() && !isChanged(),
+                           'text-gray-900': isChanged() || !storeValue(),
+                           'pl-9': icon()
+                       }"
+                       [placeholder]="placeholder() || ''"
+                       [ngModel]="value()"
+                       (ngModelChange)="setValue($event)"
+                       (keyup)="onKeyUp()"
+                       (paste)="onKeyUp()"
+                       (focus)="onFocus($event)"
+                       [readonly]="readOnly()"
+                       [attr.maxlength]="maxLength() || null"
+                       #inputControl>
+            }
+            @case ('input-textarea') {
+                <textarea id="{{ name() }}-{{ parentIndex() }}-{{ index() }}"
+                          [style.padding-bottom]="paddingBottom()"
+                          class="block min-h-[70px] p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 shadow-inner"
+                          [ngClass]="{
+                              'text-blue-600': storeValue() && !isChanged(),
+                              'text-gray-900': isChanged() || !storeValue()
+                          }"
+                          [placeholder]="placeholder() || ''"
+                          [rows]="rows()"
+                          [ngModel]="value()"
+                          (ngModelChange)="setValue($event)"
+                          (input)="onInputTextarea()"
+                          (keyup)="onKeyUp()"
+                          (paste)="onKeyUp()"
+                          (focus)="onFocus($event)"
+                          [readonly]="readOnly()"
+                          [attr.maxlength]="maxLength() || null"
+                          #inputControl></textarea>
+            }
+        }
+    </div>
+</div>

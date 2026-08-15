@@ -3,6 +3,10 @@
    ================================================================ */
 
 /* Header row is hidden: labels are shown inline as .tbl-label */
+.tbl-outer {
+    border-radius: 8px;
+}
+
 .tbl-head-row {
     display: none;
 }
@@ -87,7 +91,8 @@
 
     /* --- Cells --- */
     .tbl-outer:not(.tbl-vertical) .tbl-cell {
-        display: block;
+        display: flex;
+        flex-direction: column;
         flex: 1;
         min-width: 0;
         border-bottom: none;
@@ -106,6 +111,7 @@
 
     /* Value fills the full cell width */
     .tbl-outer:not(.tbl-vertical) .tbl-value {
+        flex: 1;
         width: 100%;
     }
 

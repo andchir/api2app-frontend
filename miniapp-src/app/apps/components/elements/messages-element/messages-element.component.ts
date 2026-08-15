@@ -15,8 +15,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { ChatMessage, MessagesService } from '../../../services/messages.service';
-import { SharedModule } from '../../../shared.module';
+import { ChatMessage, MessagesService } from '../../../../services/messages.service';
+import { SharedModule } from '../../../../shared.module';
 
 @Component({
     selector: 'app-messages-element',
@@ -136,6 +136,12 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
 
     undoLastOutgoing(): void {
         this.messagesService.removeLastOutgoing(this.elementId);
+        this.messages = this.messagesService.getHistory(this.elementId);
+        this.cdr.markForCheck();
+    }
+
+    clearChat(): void {
+        this.messagesService.clearHistory(this.elementId);
         this.messages = this.messagesService.getHistory(this.elementId);
         this.cdr.markForCheck();
     }

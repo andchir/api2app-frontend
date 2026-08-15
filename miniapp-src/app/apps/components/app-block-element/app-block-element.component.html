@@ -140,10 +140,12 @@
                 [speechRecognitionEnabled]="options?.speechRecognitionEnabled"
                 [speechSynthesisEnabled]="options?.speechSynthesisEnabled"
                 [copyToClipboardEnabled]="options?.copyToClipboardEnabled"
+                [shareAppLinkEnabled]="options?.shareAppLinkEnabled"
                 [parentIndex]="parentIndex"
                 [index]="index"
                 (message)="onMessage($event)"
                 (valueChange)="onFieldValueChanged()"
+                (shareAppLinkUpdate)="onShareAppLink()"
                 [(ngModel)]="options.value"></app-element-input-text>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
@@ -440,9 +442,14 @@
 
     <ng-container *ngSwitchCase="'audio'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
+            <div class="block w-full"
+                 [ngClass]="{'max-w-[600px] mx-auto': !options?.fullWidth}">
                 <app-audio-player
                     [editorMode]="editorMode"
+                    [name]="options?.name"
+                    [label]="options?.label"
+                    [fullWidth]="options?.fullWidth"
+                    [vkUseSendToFiles]="options?.vkUseSendToFiles"
                     [(ngModel)]="options.value"
                     (ngModelChange)="onFieldValueChanged()"></app-audio-player>
             </div>
@@ -484,7 +491,7 @@
                     [index]="index"
                     [name]="options?.name"
                     [poster]="options?.posterUrl"
-                    [mediaOriginalUrl]="options?.valueObj"
+                    [mediaOriginalUrl]="options.value"
                     [fullWidth]="options?.fullWidth"
                     [borderShadow]="options?.borderShadow"
                     [roundedCorners]="options?.roundedCorners"
@@ -493,7 +500,7 @@
                     [vkUseSendToFiles]="options?.vkUseSendToFiles"
                     [cropperAspectRatioString]="options?.cropperAspectRatioString"
                     [useLink]="options?.useLink"
-                    [(ngModel)]="options.value"
+                    [(ngModel)]="options.valueOutput"
                     (ngModelChange)="onFieldValueChanged()"></app-image-elem>
             </ng-template>
         </div>
@@ -653,8 +660,7 @@
                 [loadValueInto]="options.loadValueInto"
                 [itemFieldName]="options.itemFieldName"
                 [(ngModel)]="options.valueArr"
-                (valueChange)="onTableValueSelected($event)"
-                (ngModelChange)="onFieldValueChanged()"></app-table-element>
+                (valueChange)="onTableValueSelected($event)"></app-table-element>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
@@ -707,32 +713,6 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
-    <ng-container *ngSwitchCase="'user-payment'">
-        <div class="rounded-[0.7rem]"
-             [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-            <div class="block w-full max-w-[600px] mx-auto">
-                <div class="flex items-center text-gray-400 border border-gray-300 rounded-[1rem] p-1 shadow-md">
-                    <div class="px-3">
-                        <i class="bi bi-wallet2 text-xl"></i>
-                    </div>
-                    <div class="flex-grow">
-                        <button type="button"
-                            class="w-full flex gap-3 px-3 py-2 bg-indigo-500 hover:bg-indigo-600 text-sm text-white border rounded rounded-[0.7rem] justify-center cursor-pointer"
-                            (click)="onClick()">
-                            <span>
-                                <i class="bi" [ngClass]="options?.icon"></i>
-                            </span>
-                            <span>
-                                {{ options?.label }}
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
-    </ng-container>
-
     <ng-container *ngSwitchCase="'iframe'">
         <div class="rounded-[0.7rem]"
              [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
@@ -769,13 +749,6 @@
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
     </ng-container>
 
-    <ng-container *ngSwitchCase="'image-crop'">
-        <div class="rounded-[0.7rem]"
-             [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
-
-        </div>
-        <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
-    </ng-container>
 </ng-container>
 
 <ng-template #templateButtonOptions>

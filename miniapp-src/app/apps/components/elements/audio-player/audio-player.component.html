@@ -1,4 +1,5 @@
-<div class="audio-player-container w-full" [ngClass]="{'pointer-events-none': editorMode}">
+<div class="audio-player-container w-full"
+     [ngClass]="{'pointer-events-none': editorMode, 'max-w-[600px] mx-auto': !fullWidth}">
     <!-- Label -->
     <label class="block mb-2 text-sm font-medium text-gray-900" *ngIf="label">
         {{ label }}
@@ -56,6 +57,27 @@
                         (click)="downloadAudio()">
                     <i class="bi bi-download"></i>
                 </button>
+            </div>
+            <div class="pt-3 text-center" *ngIf="showVkSendToFiles">
+                <button type="button"
+                        class="px-4 py-1 text-sm inline-flex items-center justify-center shadow-md transition-colors rounded-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:ring-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        [disabled]="vkFileUploading"
+                        *ngIf="!vkFileUploaded; else vkFileUploadedTemplate"
+                        (click)="vkSendToFiles($event)">
+                    <i class="bi bi-cloud-arrow-up mr-2" aria-hidden="true"></i>
+                    <span *ngIf="!vkFileUploading">Загрузить в «ВК Файлы»</span>
+                    <span *ngIf="vkFileUploading">Загрузка...</span>
+                </button>
+                <ng-template #vkFileUploadedTemplate>
+                    <a class="inline-flex items-center justify-center text-blue-500 hover:text-blue-700 underline px-4 py-2 text-sm font-medium"
+                       href="https://vk.com/docs"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        <i class="bi bi-folder2-open mr-2" aria-hidden="true"></i>
+                        <span>Перейти в «ВК Файлы»</span>
+                    </a>
+                </ng-template>
+                <div class="pt-2 text-sm text-red-600" *ngIf="vkFileUploadError">{{ vkFileUploadError }}</div>
             </div>
 
             <!-- Time Display -->

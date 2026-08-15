@@ -2,6 +2,7 @@ import {
     ChangeDetectionStrategy,
     ChangeDetectorRef,
     Component,
+    ElementRef,
     HostListener,
     Input,
     OnDestroy,
@@ -12,13 +13,13 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { DomSanitizer } from '@angular/platform-browser';
 
-import { firstValueFrom, Subject, Subscription, filter, map, race, take, takeUntil, iif } from 'rxjs';
-import * as moment from 'moment';
+import { firstValueFrom, Subject, Subscription, filter, finalize, map, race, take, takeUntil, iif } from 'rxjs';
+import moment from 'moment';
 moment.locale('ru');
 import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
-import { AppErrors, ApplicationItem } from '../models/application-item.interface';
+import { AppErrors, ApplicationItem, ApplicationShareData } from '../models/application-item.interface';
 import { AppBlock, AppBlockElement } from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
@@ -31,6 +32,7 @@ import { AppAdultValidationComponent } from '../components/app-adult-validation/
 import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 import { MapFieldsByBlock } from '../models/element-options';
+import { pauseActiveAudioPlayer } from '../components/elements/audio-player/active-audio-player';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -45,6 +47,7 @@ declare const vkBridge: any;
 export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     @ViewChild('dynamic', { read: ViewContainerRef }) protected viewRef: ViewContainerRef;
+    @ViewChild('tabContent') private tabContent?: ElementRef<HTMLElement>;
     @ViewChildren(AppBlockElementComponent) protected blockElements: QueryList<AppBlockElementComponent>;
 
     @Input('itemUuid') itemUuid: string;
@@ -59,14 +62,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     isOwner: boolean = false;
     progressUpdating: boolean = false;
     loading: boolean = false;
+    loadingShareLink: boolean = false;
+    shareLinkModalActive: boolean = false;
+    shareLinkData: ApplicationShareData|null = null;
+    shareLinkError: string = '';
+    shareLinkCopied: boolean = false;
     submitted: boolean = false;
     previewMode: boolean = true;
     maintenanceModalActive: boolean = false;
     windowScrolled: boolean = false;
+    scrollButtonsHidden: boolean = false;
+    private scrolledUpAfterButtonsHidden: boolean = false;
+    private lastScrollPosition: number = 0;
     timerAutoStart: any;
     appsAutoStarted: string[] = [];
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
+    userBalanceUpdating: boolean = false;
     fieldsHiddenByDefault: string[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
@@ -81,6 +93,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
     private wsAppSubmitSubscription?: Subscription;
+    private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
+    private visibilityChangeHandler?: () => void;
 
     // VK mini-app data
     // https://dev.vk.com/ru/bridge/VKWebAppGetLaunchParams
@@ -130,10 +144,27 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     onWindowScroll() {
         const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
         this.windowScrolled = currentScroll > 100;
+
+        if (this.scrollButtonsHidden) {
+            if (currentScroll < this.lastScrollPosition) {
+                this.scrolledUpAfterButtonsHidden = true;
+            } else if (currentScroll > this.lastScrollPosition && this.scrolledUpAfterButtonsHidden) {
+                this.scrollButtonsHidden = false;
+                this.scrolledUpAfterButtonsHidden = false;
+            }
+        }
+
+        this.lastScrollPosition = currentScroll;
     }
 
     scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    hideScrollButtons(): void {
+        this.scrollButtonsHidden = true;
+        this.scrolledUpAfterButtonsHidden = false;
+        this.lastScrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
     }
 
     getData(): void {
@@ -154,7 +185,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
                     } else {
-                        this.createAppOptions();
+                        this.appInit();
                     }
                     this.subscriptionsElementsSync();
                     this.cdr.detectChanges();
@@ -167,11 +198,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
-    createAppOptions(): void {
-        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+    appInit(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
             this.isVkApp = true;
-            this.vkAppInit();
+            this.vkAppInit().then(() => this.createAppOptions());
+        } else {
+            this.createAppOptions();
         }
+    }
+
+    createAppOptions(): void {
         this.checkExistenceTab();
 
         if (this.data.adultsOnly && (
@@ -210,23 +246,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.appElements.input[element.options.inputApiUuid].push(element);
                     }
                 }
-                if (element.options?.outputApiUuid) {
-                    if (!this.appElements.output[element.options.outputApiUuid]) {
-                        this.appElements.output[element.options.outputApiUuid] = [];
+                this.getOutputMappings(element).forEach(({apiUuid}) => {
+                    if (!this.appElements.output[apiUuid]) {
+                        this.appElements.output[apiUuid] = [];
                     }
-                    this.appElements.output[element.options.outputApiUuid].push(element);
-                }
+                    this.appElements.output[apiUuid].push(element);
+                });
                 if (element.options?.inputApiUuid && !this.apiUuidsList.input.includes(element.options.inputApiUuid)) {
                     this.apiUuidsList.input.push(element.options.inputApiUuid);
                 }
-                if (element.options?.outputApiUuid && !this.apiUuidsList.output.includes(element.options.outputApiUuid)) {
-                    this.apiUuidsList.output.push(element.options.outputApiUuid);
-                }
+                this.getOutputMappings(element).forEach(({apiUuid}) => {
+                    if (!this.apiUuidsList.output.includes(apiUuid)) {
+                        this.apiUuidsList.output.push(apiUuid);
+                    }
+                });
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
                 this.elementHiddenStateUpdate(element, block);
-                promises.push(ApplicationService.applyLocalStoredValue(element));
+                promises.push(ApplicationService.applyLocalStoredValue(this.data.uuid, element));
             });
         });
 
@@ -236,12 +274,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
-                        if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
-                            return;
-                        }
-                        if (!this.appElements.buttons[uuid]
-                            || this.appElements.buttons[uuid].length === 0
-                            || this.appElements.buttons[uuid][0].hidden) {
+                        // if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
+                        //     return;
+                        // }
+                        const buttonElement = this.appElements.buttons[uuid]
+                            && this.appElements.buttons[uuid].length > 0
+                            && !this.appElements.buttons[uuid][0].hidden
+                                ? this.appElements.buttons[uuid][0]
+                                : null;
+                        const ignoreButton = buttonElement && buttonElement.allowAutoSubmit;
+                        if (!buttonElement || ignoreButton) {
                             this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
                         }
                     });
@@ -260,6 +302,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         // Get user balance
         if (this.data.paymentEnabled) {
             this.updateUserBalance();
+        }
+
+        if (!this.visibilityChangeHandler) {
+            this.visibilityChangeHandler = () => {
+                if (document.hidden) {
+                    pauseActiveAudioPlayer();
+                }
+            };
+            document.addEventListener('visibilitychange', this.visibilityChangeHandler);
         }
     }
 
@@ -298,7 +349,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         element.value = value;
-        this.onElementValueChanged(element, false, true);
+        this.onElementValueChanged(element, true, false, 'browserQueryString');
     }
 
     private getQueryParamFromLocationHash(paramName: string): string | null {
@@ -334,7 +385,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             element.hidden = true;
             return;
         }
-        element.hidden = false;
+        if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
+            && (!element.value && (!['status'].includes(element.type) || element.value === null))
+            && !element.hiddenByField
+            && !element.valueObj
+            && !element.valueArr
+            && this.previewMode) {
+                element.hidden = true;
+                return;
+        }
+        let isHidden = false;
         if (element.hiddenByField && this.previewMode) {
             if (!block) {
                 block = this.findBlock(element);
@@ -349,24 +409,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? targetElement.value
                     : '';
                 if (hiddenByField.length > 1) {
-                    element.hidden = isOpposite
-                        ? targetValue === hiddenByField[1]
-                        : targetValue !== hiddenByField[1];
+                    if (['input-switch'].includes(targetElement.type) && !targetValue) {
+                        isHidden = isOpposite ? targetElement.enabled : !targetElement.enabled;
+                    } else {
+                        isHidden = isOpposite
+                            ? targetValue === hiddenByField[1]
+                            : targetValue !== hiddenByField[1];
+                    }
                 } else if (['input-switch'].includes(targetElement.type)) {
-                    element.hidden = !targetElement.enabled;
+                    isHidden = !targetElement.enabled;
                 } else if (['image', 'video', 'audio'].includes(targetElement.type)) {
-                    element.hidden = !targetValue;
+                    isHidden = !targetValue;
                 }
             }
         }
-        if ((this.fieldsHiddenByDefault.includes(element.type) || element.hiddenByDefault)
-            && (!element.value && (!['status'].includes(element.type) || element.value === null))
-            && !element.valueObj
-            && !element.valueArr
-            && !element.hidden
-            && this.previewMode) {
-                element.hidden = true;
-            }
+        element.hidden = isHidden;
         // console.log('elementHiddenStateUpdate', element.type, element.value, element.hidden);
     }
 
@@ -377,7 +434,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const queryParams: Params = {
             tab: tabIndex + 1
         };
-        this.router.navigate(
+        void this.router.navigate(
             [],
             {
                 relativeTo: this.route,
@@ -385,14 +442,23 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 queryParamsHandling: 'merge',
                 preserveFragment: true
             }
-        );
+        ).then((navigated) => {
+            if (navigated && window.matchMedia('(max-width: 767px)').matches) {
+                requestAnimationFrame(() => {
+                    this.tabContent?.nativeElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
+        });
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
-        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, false, true);
+        this.appSubmit(this.data.uuid, apiUuid, actionType, currentElement, true);
     }
 
     getApiList(actionType: 'input'|'output' = 'output'): Promise<any> {
@@ -414,19 +480,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appSubmit(appUuid: string, apiUuid: string, actionType: 'input' | 'output', currentElement: AppBlockElement,
-              showMessages = true, isAutoStart = false, confirmed: boolean = false): void {
+              isAutoStart = false, confirmed: boolean = false, updateUserBalanceAfterResponse: boolean = true): void {
         if (!apiUuid || !this.previewMode) {
             return;
         }
-        this.message = '';
         this.loading = true;
         this.submitted = true;
         this.cdr.detectChanges();
+        const showMessages = !isAutoStart;
 
         if (this.apiItems[actionType].length === 0 && this.apiUuidsList[actionType].length > 0) {
             this.getApiList(actionType).then((items) => {
                 this.apiItems[actionType] = items;
-                this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart);
+                this.appSubmit(appUuid, apiUuid, actionType, currentElement, isAutoStart, confirmed,
+                    updateUserBalanceAfterResponse);
             });
             return;
         }
@@ -440,12 +507,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         if (this.isVkApp && input_file && this.vkAppOptions.userId && !this.vkAppOptions.userFileUploadUrl) {
             this.vkGetFileUploadUrl(() => {
-                this.appSubmit(appUuid, apiUuid, 'input', currentElement, showMessages, isAutoStart);
+                this.appSubmit(appUuid, apiUuid, 'input', currentElement, isAutoStart);
             });
             return;
         }*/
 
         if (!this.getIsValid(apiUuid, actionType, elements, showMessages, currentElement.blockIndex)) {
+            // console.log('VALID - false', apiUuid, actionType, currentElement, elements, 'isAutoStart:', isAutoStart, 'showMessages:', showMessages);
             if (currentElement?.type === 'messages') {
                 this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
             }
@@ -469,7 +537,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .subscribe({
                     next: (reason) => {
                         if (reason === 'confirmed') {
-                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, showMessages, isAutoStart, true);
+                            this.appSubmit(appUuid, apiUuid, actionType, currentElement, isAutoStart, true,
+                                updateUserBalanceAfterResponse);
                         }
                     }
                 });
@@ -500,12 +569,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
-            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages);
+            this.appSubmitWebSocketRequest(appUuid, apiUuid, apiItem, currentApi, currentElement, blocks, showMessages,
+                isAutoStart, updateUserBalanceAfterResponse);
             return;
         }
 
         if (currentApi.useLocalStorage) {
-            this.handleLocalStorageSubmit(currentApi, apiItem, currentElement, blocks, showMessages, isAutoStart, appUuid, apiUuid);
+            this.handleLocalStorageSubmit(currentApi, apiItem, currentElement, blocks, showMessages, isAutoStart,
+                appUuid, apiUuid, updateUserBalanceAfterResponse);
             return;
         }
 
@@ -526,7 +597,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     element.value += element.suffixText;
                 }
             });
-            this.afterResponseCreated(blocks);
+            this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
         };
 
@@ -541,7 +612,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                             console.log(`ERROR: ${event.message}, STATUS: ${event.status}, STATUS TEXT: ${event.statusText}`);
                             this.message = this.localizeServerMessages(event.message);
                             this.messageType = 'error';
-                            this.afterResponseCreated(blocks);
+                            this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
                         } else {
                             const content = (res as MessageEvent).data;
                             if (content !== '[DONE]') {
@@ -549,7 +620,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                     this.stateLoadingUpdate(blocks, false, false);
                                 }
                                 const dataObj = JSON.parse(content);
-                                this.createAppChunkResponse(dataObj, outputElements, chunkIndex);
+                                this.createAppChunkResponse(dataObj, outputElements, apiUuid, chunkIndex);
                                 chunkIndex++;
                             } else {
                                 finalizeSseResponse();
@@ -564,7 +635,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         this.submitted = false;
 
                         this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0 && !this.progressUpdating);
-                        this.createAppResponse(currentApi, res, currentElement);
+                        this.createAppResponse(currentApi, res, currentElement, isAutoStart, updateUserBalanceAfterResponse);
 
                         this.progressUpdating = false;
                     }
@@ -609,7 +680,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         showMessages: boolean,
         isAutoStart: boolean,
         appUuid: string,
-        apiUuid: string
+        apiUuid: string,
+        updateUserBalanceAfterResponse: boolean = true
     ): void {
         const requestMethod = ApiService.getApiRequestMethod(apiItem);
         let responseData: any;
@@ -630,7 +702,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (responseData) {
             this.stateLoadingUpdate(blocks, false, showMessages && this.appsAutoStarted.length === 0);
-            this.applyParsedApiResponseToApp(currentApi, responseData, currentElement);
+            this.applyParsedApiResponseToApp(currentApi, responseData, currentElement, isAutoStart, updateUserBalanceAfterResponse);
         } else {
             this.stateLoadingUpdate(blocks, false, false);
         }
@@ -725,11 +797,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         currentApi: ApiItem,
         currentElement: AppBlockElement,
         blocks: AppBlock[],
-        showMessages: boolean
+        showMessages: boolean,
+        isAutoStart: boolean = false,
+        updateUserBalanceAfterResponse: boolean = true
     ): void {
         this.loading = false;
         this.submitted = false;
-        const url = (apiItem.requestUrl || '').trim();
+        const url = ApiService.getApiRequestUrl(apiItem, false, true);
         const method = (apiItem.requestMethod || 'GET').toUpperCase();
 
         if (!this.wsAppSubmitSubscription) {
@@ -783,7 +857,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.message = $localize `New message received.`;
                 this.cdr.detectChanges();
             }
-            this.applyParsedApiResponseToApp(currentApi, data as any, currentElement);
+            this.applyParsedApiResponseToApp(currentApi, data as any, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             this.cdr.detectChanges();
         };
 
@@ -945,7 +1019,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const sourceElement = this.getValueSourceElement(element);
         const value = ApplicationService.getElementValue(sourceElement);
         if (storeValue && sourceElement) {
-            ApplicationService.localStoreValue(sourceElement);
+            ApplicationService.localStoreValue(this.data.uuid, sourceElement);
         }
         return value;
     }
@@ -997,7 +1071,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 mapFieldsByBlock.set(element.blockIndex, []);
             }
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
-            if (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) {
+            const isRequired = this.dataService.isElementRequired(element);
+            if (element.hidden && !isRequired) {
                 hiddenCount++;
             } else {
                 mapFieldsByBlock.get(element.blockIndex).push({
@@ -1005,7 +1080,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     fieldName
                 });
             }
-            if (apiUuid !== targetApiUuid || (element.hidden && !this.fieldsHiddenByDefault.includes(element.type)) || !element.required) {
+            if (apiUuid !== targetApiUuid || !isRequired) {
                 return;
             }
             if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
@@ -1021,8 +1096,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', this.errors[targetApiUuid], elements.length, hiddenCount);
-        if (hiddenCount && hiddenCount === elements.length) {
+        // console.log('getIsValid', errors, 'total:', elements.length, 'hidden:', hiddenCount);
+        if (hiddenCount && hiddenCount === elements.length && actionType === 'input') {
             return false;
         }
         return Object.keys(errors).length === 0;
@@ -1088,7 +1163,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentApiUuid = apiUuid;
         const blocks = this.data.blocks.filter((item) => {
             const elements = item.elements.filter((el) => {
-                return el?.options?.outputApiUuid == apiUuid;
+                return this.hasOutputApi(el, apiUuid);
             });
             return elements.length > 0;
         });
@@ -1096,7 +1171,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             block.elements.filter((el) => {
                 return el.type === 'status';
             }).forEach((element) => {
-                if (element?.options?.outputApiUuid !== currentApiUuid) {
+                if (!this.hasOutputApi(element, currentApiUuid)) {
                     element.value = null;
                     if (updateHiddenValue) {
                         this.elementHiddenStateUpdate(element);
@@ -1159,7 +1234,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.elementHiddenStateUpdate(element);
         }
         if (clearStored) {
-            ApplicationService.localStoreValueClear(element);
+            ApplicationService.localStoreValueClear(this.data.uuid, element);
         }
     }
 
@@ -1168,7 +1243,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         const findElement = (key: string, actType: 'input'|'output' = 'input') => {
             const matchedElements = currentElements.filter((elem) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === key
                     && fieldType === actType;
@@ -1176,7 +1251,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return matchedElements.find((elem) => elem.blockIndex === blockIndex && !elem.hidden) || matchedElements[0];
         };
 
-        // Body data
+        // Body data from form fields
         if (apiItem.requestContentType === 'json' && apiItem.bodyFields) {
             if (!apiItem.bodyFields) {
                 apiItem.bodyFields = [];
@@ -1196,6 +1271,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     Object.keys(valueObj).forEach((key) => {
                         element = findElement(`${bodyField.name}.${key}`, 'input')
                         if (!element) {
+                            return;
+                        }
+                        if (element.hidden) {
+                            delete valueObj[key];
                             return;
                         }
                         if (element.type === 'input-switch') {
@@ -1222,7 +1301,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     return;
                 }
 
+                if (element.hidden) {
+                    bodyField.value = '';
+                    bodyField.hidden = true;
+                    return;
+                }
+
                 bodyField.value = this.getElementValueFromSource(element, true);
+                if (bodyField.value instanceof File
+                    || (Array.isArray(bodyField.value) && bodyField.value.some(value => value instanceof File))) {
+                    bodyField.isFile = true;
+                }
 
                 /*if ((element.type === 'input-file' || element.value instanceof File) && this.isVkApp && this.vkAppOptions.userFileUploadUrl) {
                     isVKFileUploadingMode = true;
@@ -1251,9 +1340,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
             apiItem.bodyFields = bodyFields;
         }
-        const rawFields = this.apiService.getRawDataFields(apiItem);
 
         // Raw value
+        const rawFields = this.apiService.getRawDataFields(apiItem);
         if (apiItem.bodyDataSource === 'raw' || rawFields.length > 0) {
             const element = findElement('value', actionType);
             if (element) {
@@ -1282,6 +1371,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                         return;
                     }
 
+                    if (element.hidden) {
+                        delete outputData[key];
+                        return;
+                    }
+
                     const value = this.getElementValueFromSource(element, true);
 
                     const enabled = element.type !== 'input-switch' || element?.enabled;
@@ -1299,8 +1393,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             } else {
                 const outputData = {};
                 currentElements.forEach((elem) => {
-                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType);
+                    const {apiUuid, fieldName, fieldType} = this.getElementOptions(elem, actionType, apiItem.uuid);
                     if (apiUuid !== apiItem.uuid || fieldType !== 'input') {
+                        return;
+                    }
+
+                    if (elem.hidden) {
                         return;
                     }
 
@@ -1310,10 +1408,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     if ((value && !enabled) || (['button'].includes(elem.type) && !value)) {
                         return;
                     }
-                    if (typeof value === 'string') {
+                    if (value && typeof value === 'string') {
                         outputData[fieldName] = ApplicationService.createStringValue(elem, value);
                     } else {
-                        outputData[fieldName] = value;
+                        outputData[fieldName] = ['input-switch'].includes(elem.type) ? (value || enabled) : value;
                     }
                 });
                 apiItem.bodyContentFlatten = JSON.stringify(outputData);
@@ -1329,7 +1427,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         queryParams.forEach((param) => {
             const element = currentElements.find((element) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === param.name
                     && fieldType === 'params';
@@ -1354,7 +1452,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
         headers.forEach((header) => {
             const element = currentElements.find((element) => {
-                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType);
+                const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, actionType, apiItem.uuid);
                 return apiUuid === apiItem.uuid
                     && fieldName === header.name
                     && fieldType === 'headers';
@@ -1378,7 +1476,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         elements.forEach((el) => {
             const value = el.valueFrom ? this.getElementValueFromSource(el, true) : el.value;
             if (!el.valueFrom) {
-                ApplicationService.localStoreValue(el);
+                ApplicationService.localStoreValue(this.data.uuid, el);
             }
 
             if (value && el.options?.inputApiFieldName != null) {
@@ -1390,7 +1488,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
                 apiItem.urlPartIndex += (apiItem.urlPartIndex ? ',' : '') + urlPartIndex;
                 apiItem.urlPartValue += (apiItem.urlPartValue ? ',' : '') + String(value);
-                ApplicationService.localStoreValue(el);
+                ApplicationService.localStoreValue(this.data.uuid, el);
                 this.apiRequestUrlUpdate(apiItem, Number(urlPartIndex), String(value));
             }
         });
@@ -1417,38 +1515,66 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         apiItem.requestUrl = urlParts.join('/');
     }
 
-    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output'): {apiUuid: string, fieldName: string|number, fieldType: string} {
+    getElementOptions(element: AppBlockElement, actionType: 'input'|'output' = 'output', targetApiUuid?: string): {apiUuid: string, fieldName: string|number, fieldType: string} {
         return actionType === 'input'
             ? {
                 apiUuid: element.options?.inputApiUuid,
                 fieldName: element.options?.inputApiFieldName,
                 fieldType: element.options?.inputApiFieldType
             }
-            : {
-                apiUuid: element.options?.outputApiUuid,
-                fieldName: element.options?.outputApiFieldName,
-                fieldType: element.options?.outputApiFieldType
-            };
+            : (this.getOutputMappings(element).find(mapping => mapping.apiUuid === targetApiUuid)
+                || this.getOutputMappings(element)[0]
+                || {apiUuid: null, fieldName: null, fieldType: null});
     }
 
-    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement): void {
+    protected getOutputMappings(element: AppBlockElement): {apiUuid: string, fieldName: string|number, fieldType: string}[] {
+        const apiUuids = this.splitOptionValue(element.options?.outputApiUuid);
+        const fieldNames = this.splitOptionValue(element.options?.outputApiFieldName);
+        const fieldTypes = this.splitOptionValue(element.options?.outputApiFieldType);
+        return apiUuids.map((apiUuid, index) => ({
+            apiUuid,
+            fieldName: fieldTypes[index] === 'url' && /^\d+$/.test(fieldNames[index] || '')
+                ? Number(fieldNames[index])
+                : fieldNames[index],
+            fieldType: fieldTypes[index]
+        })).filter(mapping => !!mapping.apiUuid && mapping.fieldName !== undefined && !!mapping.fieldType);
+    }
+
+    private splitOptionValue(value: string | number): string[] {
+        return value === null || value === undefined || value === '' ? [] : String(value).split(',');
+    }
+
+    private hasOutputApi(element: AppBlockElement, apiUuid: string): boolean {
+        return this.getOutputMappings(element).some(mapping => mapping.apiUuid === apiUuid);
+    }
+
+    createAppResponse(apiItem: ApiItem, response: HttpResponse<any>, currentElement: AppBlockElement,
+                      isAutoStart: boolean = false, updateUserBalanceAfterResponse: boolean = true): void {
         if (!response.body) {
+            this.applyParsedApiResponseToApp(apiItem, {}, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             return;
         }
+        // Clear element value and hide
+        if (['button'].includes(currentElement.type) && currentElement.hiddenByDefault) {
+            currentElement.value = null;
+            this.elementHiddenStateUpdate(currentElement);
+        }
+
         const responseContentType = response.headers.has('Content-type')
             ? response.headers.get('Content-type')
             : apiItem.responseContentType;
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
-                this.applyParsedApiResponseToApp(apiItem, data, currentElement);
+                this.applyParsedApiResponseToApp(apiItem, data, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             })
             .catch((err) => {
                 console.log(err);
             });
     }
 
-    private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement): void {
+    private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
+                                        isAutoStart: boolean = false, updateUserBalanceAfterResponse: boolean = true): void {
         const currentApiUuid = apiItem.uuid;
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
@@ -1463,11 +1589,11 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         elements.forEach((element, index) => {
             if (['input-chart-line', 'input-chart-pie'].includes(element.type)) {
-                this.chartElementValueApply(element, data);
+                this.chartElementValueApply(element, data, currentApiUuid);
             } else if (element.type === 'input-pagination') {
-                this.paginationValueApply(element, valuesObj, data);
+                this.paginationValueApply(element, valuesObj, data, currentApiUuid);
             } else {
-                this.blockElementValueApply(element, valuesObj, data);
+                this.blockElementValueApply(element, valuesObj, data, isAutoStart, currentApiUuid);
             }
             this.elementHiddenStateUpdate(element);
         });
@@ -1480,24 +1606,19 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         // Autostart a linked element
-        if (currentElement.linkedField) {
-            const linkedField = this.findBlockElementByName(currentElement.linkedField);
-            if (linkedField && linkedField.options.inputApiUuid) {
-                this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, false, true);
-            } else if (linkedField && linkedField.options.outputApiUuid) {
-                this.appSubmit(this.data.uuid,linkedField.options.outputApiUuid, 'output', linkedField, false, true);
-            }
+        if (currentElement.linkedField && !['progress'].includes(currentElement.type)) {
+            this.processLinkedElement(currentElement, true);
         }
 
-        this.afterResponseCreated(blocks);
+        this.afterResponseCreated(blocks, updateUserBalanceAfterResponse);
     }
 
-    createAppChunkResponse(data: any, elements: AppBlockElement[], chunkIndex: number = 0): void {
+    createAppChunkResponse(data: any, elements: AppBlockElement[], apiUuid: string, chunkIndex: number = 0): void {
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
 
         elements.forEach((element, index) => {
-            const fieldName = element.options?.outputApiFieldName;
+            const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
             if (!fieldName) {
                 return;
             }
@@ -1514,8 +1635,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    afterResponseCreated(blocks: AppBlock[]): void {
-        if (this.data.paymentEnabled) {
+    afterResponseCreated(blocks: AppBlock[], updateUserBalanceAfterResponse: boolean = true): void {
+        if (updateUserBalanceAfterResponse && this.data.paymentEnabled) {
             this.updateUserBalance();
         }
         this.cdr.detectChanges();
@@ -1535,13 +1656,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
                 const allElements = this.getAllElements();
                 const elements = allElements.filter((element) => {
-                    return element.options?.outputApiUuid === apiItem.uuid && element.options?.outputApiFieldType === 'output';
+                    const options = this.getElementOptions(element, 'output', apiItem.uuid);
+                    return options.apiUuid === apiItem.uuid && options.fieldType === 'output';
                 });
                 const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
                 const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
                 elements.forEach((element) => {
                     if (['input-textarea', 'text'].includes(element.type)) {
-                        this.blockElementValueApply(element, valuesObj, data);
+                        this.blockElementValueApply(element, valuesObj, data, false, apiItem.uuid);
                     }
                 });
                 this.message = this.localizeServerMessages(errorMessage);
@@ -1551,6 +1673,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .catch((err) => {
                 console.log(err);
             });
+    }
+
+    private processLinkedElement(currentElement: AppBlockElement, updateUserBalanceAfterResponse: boolean = true): void {
+        if (!currentElement.linkedField) {
+            return;
+        }
+        const linkedField = this.findBlockElementByName(currentElement.linkedField);
+        if (linkedField && linkedField.options.inputApiUuid) {
+            this.appSubmit(this.data.uuid, linkedField.options.inputApiUuid, 'input', linkedField, true,
+                false, updateUserBalanceAfterResponse);
+        } else if (linkedField && this.getOutputMappings(linkedField).length > 0) {
+            this.appSubmit(this.data.uuid, this.getOutputMappings(linkedField)[0].apiUuid, 'output', linkedField, true,
+                false, updateUserBalanceAfterResponse);
+        }
     }
 
     private getErrorMessageFromObject(error: any): string {
@@ -1643,8 +1779,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         return errorMessage;
     }
 
-    chartElementValueApply(element: AppBlockElement, data: any): void {
-        const dataKey = element.options?.outputApiFieldName;
+    chartElementValueApply(element: AppBlockElement, data: any, apiUuid?: string): void {
+        const dataKey = this.getElementOptions(element, 'output', apiUuid).fieldName;
         if (!data) {
             return;
         }
@@ -1693,8 +1829,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         element.valueObj = {xAxisData, yAxisData, data: outData};
     }
 
-    paginationValueApply(element: AppBlockElement, data: any, rawData: any): void {
-        const dataKey = String(element.options?.outputApiFieldName || '');
+    paginationValueApply(element: AppBlockElement, data: any, rawData: any, apiUuid?: string): void {
+        const dataKey = String(this.getElementOptions(element, 'output', apiUuid).fieldName || '');
         const endlessMode = dataKey.toLowerCase().includes('current') || dataKey.toLowerCase().includes('page');
         const value = parseInt(element.value as string);
         const currentPage = element.useAsOffset
@@ -1722,13 +1858,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
-    blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any): void {
-        if (!element.options?.outputApiFieldName) {
+    blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any, isAutoStart: boolean = false, apiUuid?: string): void {
+        const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
+        if (!fieldName) {
             return;
         }
-        const fieldName = element.options?.outputApiFieldName;
-        let value = fieldName === 'value' && !valuesObj[fieldName] ? rawData : (valuesObj[fieldName] || '');
-        if (!value) {
+        const fieldValue = typeof valuesObj[fieldName] !== 'undefined' ? valuesObj[fieldName] : '';
+        let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
+        if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.detectChanges();
             return;
@@ -1739,8 +1876,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = ApplicationService.createStringValue(element, value);
-            this.onElementValueChanged(element);
+            element.value = ApplicationService.createInputStringValue(element, value);
+            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
             this.cdr.detectChanges();
             return;
         }
@@ -1750,10 +1887,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (Array.isArray(value)) {
             const isStringArray = value.every((item) => typeof item === 'string');
             let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
-            if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
-                // Filter array values
-                valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
-            }
+            // if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
+            //     // Filter array values
+            //     valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
+            // }
             element.valueArr = valueArr;
             if (element.valueArr.length > 0 && element.selectDefaultFirst) {// !['image', 'audio'].includes(element.type)) {
                 element.value = element?.itemFieldNameForValue
@@ -1761,7 +1898,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     : element.valueArr[0];
             }
             if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createStringValue(element, value, true);
+                element.value = ApplicationService.createInputStringValue(element, value, true);
             }
         } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
             element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
@@ -1772,15 +1909,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 element.value = element.prefixText + (element.suffixText || '');
             } else if (typeof value === 'string' || element.prefixText || element.suffixText
                 || ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createStringValue(element, value, true);
+                element.value = ApplicationService.createInputStringValue(element, value, true);
             } else {
                 element.value = value;
             }
         }
         element.valueObj = value && typeof value === 'object' && !Array.isArray(value) ? value : null;
-        ApplicationService.localStoreValue(element);
+        ApplicationService.localStoreValue(this.data.uuid, element);
         if ((element.value || element.valueArr || element.valueObj) && !['button'].includes(element.type)) {
-            this.onElementValueChanged(element);
+            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
         }
     }
 
@@ -1790,14 +1927,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         switch (element.type) {
             case 'button':
-                let fieldValue = element.value;
+                let fieldValue = ApplicationService.createStringValue(element, element.value);
                 if (element.valueFrom) {
                     const sourceElement = this.getValueSourceElement(element);
-                    fieldValue = sourceElement?.value || sourceElement?.valueObj || '';
+                    if (sourceElement) {
+                        fieldValue = ApplicationService.createStringValue(sourceElement, sourceElement.value);
+                    }
                 }
                 if (element.isClearForm) {
                     this.clearAllValues();
-                } else if (element.options?.inputApiUuid && element.options?.inputApiFieldName === 'submit') {
+                } else if (element.options?.inputApiUuid) {
                     if (this.data.maintenance) {
                         this.maintenanceModalToggle();
                     } else {
@@ -1831,60 +1970,26 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     }
                 }
                 break;
-            case 'user-payment':
-                if (this.isVkApp) {
-                    this.vkBridgeService.showOrderBox(parseInt(String(element.value)))
-                        .then((data: any) => {
-                            if (data?.success) {
-                                this.message = $localize `The purchase was successful.`;
-                                this.messageType = 'success';
-                                this.cdr.detectChanges();
-                            }
-                        });
-                }
-                break;
         }
     }
 
-    downloadFile(element: AppBlockElement, fileUrl: string, useNativeOnly: boolean = false): void {
+    downloadFile(element: AppBlockElement, fileUrl: string): void {
         const block = this.findBlock(element);
         if (block) {
             block.loading = true;
             this.cdr.detectChanges();
         }
-        if (this.isVkApp && !useNativeOnly && fileUrl.match(/https?:\/\//)) {
-            const filename = fileUrl.split('/').pop();
-            vkBridge.send('VKWebAppDownloadFile', {
-                    url: fileUrl,
-                    filename
-                })
-                .then((data) => {
-                    if (data.result) {
-                        if (block) {
-                            block.loading = false;
-                            this.cdr.detectChanges();
-                        }
-                    }
-                    else {
-                        this.downloadFile(element, fileUrl, true);
-                    }
-                })
-                .catch( (error) => {
-                    console.log("Error: " + error.error_type, error.error_data);
-                    this.downloadFile(element, fileUrl, true);
-                });
-        } else {
-            ApplicationService.downloadFile(fileUrl)
-                .then(() => {
-                    if (block) {
-                        block.loading = false;
-                        this.cdr.detectChanges();
-                    }
-                });
-        }
+        ApplicationService.downloadFile(fileUrl)
+            .finally(() => {
+                if (block) {
+                    block.loading = false;
+                    this.cdr.detectChanges();
+                }
+            });
     }
 
-    onElementValueChanged(element: AppBlockElement, showMessages = true, isAutoStart = false): void {
+    onElementValueChanged(element: AppBlockElement, isAutoStart = false, updateUserBalanceAfterResponse: boolean = false,
+                          source: 'loadValueInto'|'valueFrom'|'afterRequest'|'browserQueryString'|'default' = 'default'): void {
         if (!this.previewMode
             || this.data.maintenance
             // || (!element.value && !['input-switch', 'input-select'].includes(element.type))
@@ -1892,9 +1997,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
 
+        const useLoadValueInto = element.loadValueInto && source === 'default';
         const block = this.findBlock(element);
 
-        if (element.loadValueInto && element.value) {
+        if (useLoadValueInto && element.value) {
             const allElements = this.getAllElements();
             const targetFieldNames = element.loadValueInto.split(',')
                 .map((fieldName) => fieldName.trim())
@@ -1908,17 +2014,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 .filter((elem) => !!elem);
             targetElements.forEach((targetElement) => {
                 this.loadValueToElement(targetElement, element.value);
+                // if (['input-hidden'].includes(targetElement.type)) {
+                    this.onElementValueChanged(targetElement, isAutoStart, updateUserBalanceAfterResponse, 'loadValueInto');
+                // }
             });
-            if (targetElements.length > 0) {
-                setTimeout(() => {
-                    this.clearElementValue(element, true);
-                    if (element.type === 'input-select') {
-                        element.value = null;
-                    }
-                    this.cdr.detectChanges();
-                }, 100);
-                this.cdr.markForCheck();
-            }
             return;
         }
 
@@ -1926,10 +2025,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const combinedFields = this.findCombinedFields(block, element.name);
         if (combinedFields.length > 0) {
             combinedFields.forEach(combinedField => {
-                combinedField.value = `fromField:${element.name}`;
-                this.elementHiddenStateUpdate(combinedField);
+                if (combinedField.hidden) {
+                    combinedField.value = `fromField-${element.name}`;
+                    this.elementHiddenStateUpdate(combinedField);
+                }
                 if (['input-hidden'].includes(combinedField.type)) {
-                    this.onElementValueChanged(combinedField);
+                    this.onElementValueChanged(combinedField, isAutoStart, updateUserBalanceAfterResponse, 'valueFrom');
+                } else if (['iframe'].includes(combinedField.type) && source === 'browserQueryString') {
+                    this.blockElements
+                        ?.find(blockElement => blockElement.options === combinedField)
+                        ?.triggerIframeRefresh();
                 }
             });
         }
@@ -1946,6 +2051,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
             }
         }
+
         const inputApiUuid = element.options?.inputApiUuid;
         if (inputApiUuid) {
             const buttonElement = this.findButtonElement(inputApiUuid);
@@ -1960,8 +2066,77 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 buttonElement.allowAutoSubmit = false;
             }
             this.removeAutoStart(inputApiUuid);
-            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, showMessages, isAutoStart);
+            this.appSubmit(this.data.uuid, inputApiUuid, 'input', element, isAutoStart, true, updateUserBalanceAfterResponse);
         }
+    }
+
+    onShareAppLink(element: AppBlockElement): void {
+        if (this.loadingShareLink) {
+            return;
+        }
+        const queryParamName = element.options.queryParameterName;
+        const queryParamValue = String(element.value ?? '');
+        if (!queryParamName || !queryParamValue) {
+            return;
+        }
+        const appUuid = this.data.uuid;
+        const isVkApp = this.isVkApp;
+
+        this.shareLinkModalActive = true;
+        this.shareLinkData = null;
+        this.shareLinkError = '';
+        this.shareLinkCopied = false;
+        this.loadingShareLink = true;
+        this.disablePageScroll();
+        this.cdr.markForCheck();
+
+        this.dataService.createShareAppData({appUuid, queryParamName, queryParamValue, isVkApp})
+            .pipe(
+                takeUntil(this.destroyed$)
+            )
+            .subscribe({
+                next: (res) => {
+                    this.shareLinkData = res;
+                    this.loadingShareLink = false;
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    this.shareLinkError = err?.detail || err?.message || $localize `Failed to create the share link.`;
+                    this.loadingShareLink = false;
+                    this.cdr.markForCheck();
+                }
+            });
+    }
+
+    closeShareLinkModal(): void {
+        this.shareLinkModalActive = false;
+        this.restorePageScroll();
+        this.cdr.markForCheck();
+    }
+
+    copyShareLink(): void {
+        const link = this.shareLinkData?.link;
+        if (!link) {
+            return;
+        }
+
+        const copyPromise = this.isVkApp && typeof vkBridge !== 'undefined'
+            ? vkBridge.send('VKWebAppCopyText', {text: link}).then((data): void => {
+                if (!data?.result) {
+                    throw new Error('VK clipboard request failed.');
+                }
+            })
+            : navigator.clipboard?.writeText(link) || Promise.reject();
+
+        copyPromise
+            .then(() => {
+                this.shareLinkCopied = true;
+                this.cdr.markForCheck();
+            })
+            .catch(() => {
+                this.shareLinkError = $localize `Sorry, copying to clipboard is not allowed.`;
+                this.cdr.markForCheck();
+            });
     }
 
     loadValueToElement(targetElement: AppBlockElement, newValue: any): void {
@@ -2001,16 +2176,16 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     onProgressUpdate(currentElement: AppBlockElement): void {
         this.progressUpdating = true;
-        const apiUuid = currentElement.options?.outputApiUuid;
+        const apiUuid = this.getOutputMappings(currentElement)[0]?.apiUuid;
         if (!apiUuid) {
             return;
         }
-        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement);
+        this.appSubmit(this.data.uuid, apiUuid, 'input', currentElement, false, false, false);
     }
 
     onProgressCompleted(currentElement: AppBlockElement): void {
         this.progressUpdating = false;
-        const apiUuid = currentElement.options?.outputApiUuid;
+        const apiUuid = this.getOutputMappings(currentElement)[0]?.apiUuid;
         if (!apiUuid) {
             return;
         }
@@ -2023,9 +2198,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 elem.value = null;
                 elem.valueObj = null;
                 elem.valueArr = null;
-                ApplicationService.localStoreValue(elem);
+                ApplicationService.localStoreValue(this.data.uuid, elem);
             }
         });
+        if (currentElement.linkedField) {
+            this.processLinkedElement(currentElement, true);
+        }
         this.cdr.markForCheck();
     }
 
@@ -2039,7 +2217,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let htmlContent = '';
         if (element.valueFrom) {
             const sourceElement = this.getValueSourceElement(element);
-            htmlContent = String(sourceElement.value);
+            htmlContent = ApplicationService.createStringValue(
+                sourceElement,
+                String(ApplicationService.getElementValue(sourceElement) ?? '')
+            );
+
+            if (/^https?:\/\/\S+$/i.test(htmlContent)) {
+                iframeEl.removeAttribute('srcdoc');
+                iframeEl.src = htmlContent;
+                setTimeout(() => {
+                    block.loading = false;
+                    this.cdr.detectChanges();
+                }, 1000);
+                return;
+            }
 
             if (!htmlContent.includes('<body')) {
                 this.message = $localize `Incorrect HTML code.`;
@@ -2101,8 +2292,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         this.cdr.markForCheck();
     }
 
-    vkAppInit(): void {
-        this.vkBridgeService.getOptions()
+    vkAppInit(): Promise<void> {
+        this.vkBridgeService.onHideEventInit();
+        return this.vkBridgeService.getOptions()
             .then((options) => {
                 this.vkAppOptions = options;
                 if (this.data.advertising && (!this.vkAppOptions?.userSubscriptions
@@ -2170,7 +2362,58 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     }
 
+    private disablePageScroll(): void {
+        if (this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        this.pageOverflowBeforeScrollLock = {
+            body: document.body.style.overflow,
+            documentElement: document.documentElement.style.overflow
+        };
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+    }
+
+    private restorePageScroll(): void {
+        if (!this.pageOverflowBeforeScrollLock) {
+            return;
+        }
+        document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
+        document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
+        this.pageOverflowBeforeScrollLock = undefined;
+    }
+
     updateUserBalance(): void {
+        if (!this.isLoggedIn && !this.vkAppOptions?.appLaunchParamsJson) {
+            return;
+        }
+        if (!this.data.paymentEnabled || this.userBalanceUpdating) {
+            return;
+        }
+        this.userBalanceUpdating = true;
+        this.cdr.markForCheck();
+        iif (() => this.isVkApp,
+            this.dataService.userBalanceVkApp(this.data.uuid, this.vkAppOptions),
+            this.dataService.userBalance(this.data.uuid))
+            .pipe(
+                takeUntil(this.destroyed$),
+                finalize(() => {
+                    this.userBalanceUpdating = false;
+                    this.cdr.markForCheck();
+                })
+            )
+            .subscribe({
+                next: (res) => {
+                    this.userBalance = res?.balance || 0;
+                    this.cdr.markForCheck();
+                },
+                error: (err) => {
+                    // console.log(err);
+                }
+            });
+    }
+
+    navigateBack(event?: MouseEvent) {
 
     }
 
@@ -2183,8 +2426,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy(): void {
+        if (this.visibilityChangeHandler) {
+            document.removeEventListener('visibilitychange', this.visibilityChangeHandler);
+        }
         this.cancelAppSubmitWebSocketSubscription();
         this.websocketService.disconnect();
+        this.restorePageScroll();
         this.destroyed$.next();
         this.destroyed$.complete();
     }

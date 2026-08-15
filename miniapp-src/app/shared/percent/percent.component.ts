@@ -1,14 +1,11 @@
 import { Component, ElementRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-percent',
     templateUrl: 'percent.component.html',
     styleUrls: ['percent.component.css'],
-    imports: [
-        NgIf
-    ],
+    imports: [],
     providers: []
 })
 export class PercentComponent implements OnInit, OnDestroy, OnChanges {

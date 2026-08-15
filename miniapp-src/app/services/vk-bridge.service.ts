@@ -4,6 +4,7 @@ import { catchError, firstValueFrom, Observable, throwError } from 'rxjs';
 
 import { VkAppOptions } from '../apps/models/vk-app-options.interface';
 import { BASE_URL } from '../../environments/environment';
+import { pauseActiveAudioPlayer } from '../apps/components/elements/audio-player/active-audio-player';
 
 declare const vkBridge: any;
 
@@ -63,6 +64,7 @@ export class VkBridgeService {
                 if (data.vk_app_id) {
                     options.appId = data.vk_app_id;
                     options.userId = data.vk_user_id;
+                    options.platform = data.vk_platform;
                     options.appLaunchParamsJson = JSON.stringify(data);
                 }
                 return data;
@@ -127,7 +129,7 @@ export class VkBridgeService {
             // });
     }
 
-    async getFileUploadUrl(options: VkAppOptions): Promise<string> {
+    async getFileUploadUrl(options: VkAppOptions, type: 'doc'|'audio_message' = 'doc'): Promise<string> {
         return this.getUserToken(options)
             .then((userToken) => {
                 return userToken;
@@ -293,6 +295,14 @@ export class VkBridgeService {
             age--;
         }
         return age;
+    }
+
+    onHideEventInit(): void {
+        vkBridge.subscribe((e: any) => {
+            if (e.detail.type === 'VKWebAppViewHide') {
+                pauseActiveAudioPlayer();
+            }
+        });
     }
 
     handleError<T>(error: HttpErrorResponse): Observable<any> {

@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { NgxTippyModule } from 'ngx-tippy-wrapper';
 import { MarkdownModule, MarkedOptions, MARKED_OPTIONS, MarkedRenderer } from 'ngx-markdown';
 import { Tokens } from 'marked';
 
@@ -53,7 +54,8 @@ export function markedOptionsFactory(): MarkedOptions {
                 provide: MARKED_OPTIONS,
                 useFactory: markedOptionsFactory,
             },
-        })
+        }),
+        NgxTippyModule
     ],
     declarations: [
         AlertComponent,

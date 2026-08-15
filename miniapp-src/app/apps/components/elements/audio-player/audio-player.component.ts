@@ -9,6 +9,7 @@ import {
     Input,
     NgZone,
     OnDestroy,
+    OnInit,
     Output,
     ViewChild
 } from '@angular/core';
@@ -16,6 +17,16 @@ import { NgClass, NgIf } from '@angular/common';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 import WaveSurfer from 'wavesurfer.js';
+import { firstValueFrom } from 'rxjs';
+import { VkBridgeService } from '../../../../services/vk-bridge.service';
+import { ApplicationService } from '../../../../services/application.service';
+import { VkAppOptions } from '../../../models/vk-app-options.interface';
+import {
+    activateAudioPlayer,
+    clearActiveAudioPlayer
+} from './active-audio-player';
+
+declare const vkBridge: any;
 
 @Component({
     selector: 'app-audio-player',
@@ -28,10 +39,10 @@ import WaveSurfer from 'wavesurfer.js';
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => AudioPlayerComponent),
             multi: true
-        }],
+        }, VkBridgeService],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy {
+export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor, OnDestroy, OnInit {
 
     @ViewChild('waveformContainer', { static: false }) waveformContainer!: ElementRef<HTMLDivElement>;
 
@@ -44,15 +55,31 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     @Input() progressColor: string = '#36d9d9';
     @Input() cursorColor: string = '#36d9d9';
     @Input() height: number = 80;
+    @Input() fullWidth: boolean = false;
+    @Input() vkUseSendToFiles: boolean = false;
     @Output() valueChange: EventEmitter<string> = new EventEmitter<string>();
 
     wavesurfer: WaveSurfer | null = null;
+    isVkApp: boolean = false;
     isLoading: boolean = false;
     isPlaying: boolean = false;
     currentTime: string = '0:00';
     duration: string = '0:00';
     hasError: boolean = false;
     errorMessage: string = '';
+    vkFileUploading: boolean = false;
+    vkFileUploaded: boolean = false;
+    vkFileUploadError: string = '';
+    vkAppOptions: VkAppOptions = {
+        appId: 0,
+        userId: 0,
+        userToken: '',
+        userFileUploadUrl: '',
+        userSubscriptions: [],
+        adEnabled: true,
+        adAvailableInterstitial: false,
+        appLaunchParamsJson: ''
+    };
 
     MIME_TO_EXTENSION: Record<string, string> = {
         'audio/wav': 'wav',
@@ -75,8 +102,15 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
 
     constructor(
         private cdr: ChangeDetectorRef,
-        private ngZone: NgZone
+        private ngZone: NgZone,
+        private vkBridgeService: VkBridgeService
     ) {}
+
+    ngOnInit(): void {
+        if (typeof vkBridge !== 'undefined' && window['isVKApp'] && !this.isVkApp) {
+            this.isVkApp = true;
+        }
+    }
 
     ngAfterViewInit(): void {
         this.syncWavesurferWithValue();
@@ -88,6 +122,8 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
             return;
         }
         this._value = normalized;
+        this.vkFileUploaded = false;
+        this.vkFileUploadError = '';
         this.syncWavesurferWithValue();
         this.runInZoneAndMarkForCheck();
     }
@@ -250,16 +286,19 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         });
 
         this.wavesurfer.on('play', () => {
+            activateAudioPlayer(this);
             this.isPlaying = true;
             this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('pause', () => {
+            this.clearActivePlayer();
             this.isPlaying = false;
             this.runInZoneAndMarkForCheck();
         });
 
         this.wavesurfer.on('finish', () => {
+            this.clearActivePlayer();
             this.isPlaying = false;
             this.runInZoneAndMarkForCheck();
         });
@@ -322,54 +361,90 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         this.wavesurfer.playPause();
     }
 
-    downloadAudio(): void {
-        if (!this.wavesurfer || this.isLoading || this.hasError) {
+    pause(): void {
+        this.wavesurfer?.pause();
+    }
+
+    private clearActivePlayer(): void {
+        clearActiveAudioPlayer(this);
+    }
+
+    async downloadAudio(): Promise<void> {
+        if (this.isLoading || this.hasError) {
             return;
         }
-        if (this.value instanceof Blob) {
-            this.downloadBlob(this.value);
-        } else {
-            this.downloadFromUrl(String(this.value));
-        }
-    }
-
-    downloadBlob(blob: Blob, filename: string = ''): void {
-        if (!filename) {
-            const mimeType = blob.type || null;
-            filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
-        }
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    downloadFromUrl(downloadUrl: string): void {
         this.isLoading = true;
         this.runInZoneAndMarkForCheck();
-        fetch(downloadUrl)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-                return response.blob();
-            })
-            .then(blob => {
-                const mimeType = blob.type || null;
-                const filename = this.generateFilename(mimeType || 'audio/unknown', this.label || 'audio');
-                this.downloadBlob(blob, filename);
-            })
-            .catch(err => {
-                console.error('Download failed:', err);
-            })
-            .finally(() => {
-                this.isLoading = false;
-                this.runInZoneAndMarkForCheck();
-            });
+        try {
+            const filename = this.getDownloadFilename();
+            await ApplicationService.downloadFile(this.value, filename);
+        } finally {
+            this.isLoading = false;
+            this.runInZoneAndMarkForCheck();
+        }
+    }
+
+    get showVkSendToFiles(): boolean {
+        return this.vkUseSendToFiles && this.isVkApp && !!this.value && !this.editorMode;
+    }
+
+    async vkSendToFiles(event?: MouseEvent): Promise<void> {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        if (!this.value || this.vkFileUploading) {
+            return;
+        }
+        this.vkFileUploading = true;
+        this.vkFileUploadError = '';
+        this.runInZoneAndMarkForCheck();
+
+        try {
+            await this.vkPrepareAppOptions();
+            const uploadUrl = this.vkAppOptions.userFileUploadUrl
+                || await this.vkBridgeService.getFileUploadUrl(this.vkAppOptions, 'audio_message');
+            if (!uploadUrl) {
+                throw new Error('Unable to obtain VK file upload URL.');
+            }
+
+            const uploadData = this.value instanceof Blob
+                ? await firstValueFrom(this.vkBridgeService.uploadUserFile(
+                    uploadUrl,
+                    new File([this.value], this.generateFilename(this.value.type || 'audio/unknown', this.label || this.name || 'audio'), {type: this.value.type})
+                ))
+                : await firstValueFrom(this.vkBridgeService.uploadUserFile(uploadUrl, undefined, String(this.value)));
+            if (!uploadData?.file) {
+                throw new Error('VK did not return uploaded file data.');
+            }
+
+            await this.vkBridgeService.saveFile(
+                this.name || this.label || 'audio',
+                window.document.documentElement.lang,
+                this.vkAppOptions,
+                uploadData.file
+            );
+            this.vkFileUploaded = true;
+        } catch (error) {
+            console.log(error);
+            this.vkFileUploadError = 'Не удалось загрузить файл в ВК.';
+        } finally {
+            this.vkFileUploading = false;
+            this.runInZoneAndMarkForCheck();
+        }
+    }
+
+    private async vkPrepareAppOptions(): Promise<void> {
+        if (this.vkAppOptions.appId && this.vkAppOptions.userId) {
+            return;
+        }
+        const data = await vkBridge.send('VKWebAppGetLaunchParams');
+        this.vkAppOptions.appId = data?.vk_app_id || 0;
+        this.vkAppOptions.userId = data?.vk_user_id || 0;
+        this.vkAppOptions.appLaunchParamsJson = JSON.stringify(data || {});
+        if (!this.vkAppOptions.appId || !this.vkAppOptions.userId) {
+            throw new Error('VK launch params are missing.');
+        }
     }
 
     generateFilename(
@@ -383,6 +458,44 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
         const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
 
         return `${safeFilename}_${timestamp}.${extension}`;
+    }
+
+    private getDownloadFilename(): string {
+        const safeLabel = this.label
+            .trim()
+            .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+            .replace(/[. ]+$/g, '');
+
+        if (!safeLabel) {
+            return '';
+        }
+
+        let extension = '';
+        if (this.value instanceof Blob) {
+            extension = this.value.type ? this.getExtensionFromMimeType(this.value.type) : '';
+        } else {
+            const dataMimeType = this.value.match(/^data:([^;,]+)/i)?.[1];
+            if (dataMimeType) {
+                extension = this.getExtensionFromMimeType(dataMimeType);
+            } else {
+                try {
+                    const urlExtension = new URL(this.value, window.location.href)
+                        .pathname
+                        .match(/\.([a-z0-9]+)$/i)?.[1]
+                        ?.toLocaleLowerCase();
+
+                    if (urlExtension && Object.values(this.MIME_TO_EXTENSION).includes(urlExtension)) {
+                        extension = urlExtension;
+                    }
+                } catch {
+                    // Use the label as-is if the audio format cannot be determined.
+                }
+            }
+        }
+
+        return extension && !safeLabel.toLocaleLowerCase().endsWith(`.${extension}`)
+            ? `${safeLabel}.${extension}`
+            : safeLabel;
     }
 
     getExtensionFromMimeType(mimeType: string): string {
@@ -416,6 +529,7 @@ export class AudioPlayerComponent implements AfterViewInit, ControlValueAccessor
     }
 
     ngOnDestroy(): void {
+        this.clearActivePlayer();
         this.destroyWavesurfer();
     }
 }

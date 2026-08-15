@@ -15,7 +15,7 @@ import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 import { Subject } from 'rxjs';
 
-import { PercentComponent } from '../../../shared/percent/percent.component';
+import { PercentComponent } from '../../../../shared/percent/percent.component';
 
 
 @Component({
