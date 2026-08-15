@@ -94,7 +94,7 @@ export abstract class DataService<T extends {id: number}> {
     }
 
     getItemByUuidShared(itemUuid: string, isPreview: boolean = false): Observable<T> {
-        const url = `${this.requestUrl}/${itemUuid}/shared`;
+        const url = `${this.requestUrl}${itemUuid}.json`;
         let params = new HttpParams();
         if (isPreview) {
             params = params.append('is_preview', '1');

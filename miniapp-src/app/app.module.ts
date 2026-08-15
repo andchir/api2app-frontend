@@ -24,6 +24,9 @@ import { AudioPlayerComponent } from './apps/components/elements/audio-player/au
 import { MessagesElementComponent } from './apps/components/elements/messages-element/messages-element.component';
 import { InputDateElementComponent } from './apps/components/elements/input-date-element/input-date-element.component';
 import { RatingElementComponent } from './apps/components/elements/rating-element/rating-element.component';
+import { ApplicationService } from './services/application.service';
+import { ApiService } from './services/api.service';
+import { ModalService } from './services/modal.service';
 
 import { CustomTitleStrategy } from './helpers/custom-title-strategy';
 import { SharedModule } from './shared.module';
@@ -58,7 +61,12 @@ import { SharedModule } from './shared.module';
         InputDateElementComponent,
         RatingElementComponent
     ],
-    providers: [{provide: TitleStrategy,  useClass: CustomTitleStrategy}],
+    providers: [
+        ApplicationService,
+        ApiService,
+        ModalService,
+        {provide: TitleStrategy, useClass: CustomTitleStrategy}
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {
