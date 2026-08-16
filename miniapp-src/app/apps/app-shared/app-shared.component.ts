@@ -2211,9 +2211,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!iframeEl) {
             return;
         }
-        block.loading = true;
-        this.cdr.detectChanges();
-
         let htmlContent = '';
         if (element.valueFrom) {
             const sourceElement = this.getValueSourceElement(element);
@@ -2225,17 +2222,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (/^https?:\/\/\S+$/i.test(htmlContent)) {
                 iframeEl.removeAttribute('srcdoc');
                 iframeEl.src = htmlContent;
-                setTimeout(() => {
-                    block.loading = false;
-                    this.cdr.detectChanges();
-                }, 1000);
                 return;
             }
 
             if (!htmlContent.includes('<body')) {
                 this.message = $localize `Incorrect HTML code.`;
                 this.messageType = 'error';
-                block.loading = false;
                 this.cdr.detectChanges();
                 return;
             }
@@ -2251,11 +2243,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         } catch (error) {
             console.log(error);
         }
-
-        setTimeout(() => {
-            block.loading = false;
-            this.cdr.detectChanges();
-        }, 1000);
     }
 
     maintenanceModalToggle(): void {
