@@ -59,6 +59,7 @@ export class ElementIframeComponent implements OnDestroy {
         this.sanitizer.bypassSecurityTrustResourceUrl(this.pageUrl() || 'about:blank')
     );
     readonly iframeWidth = signal(100);
+    readonly isLoading = signal(false);
     readonly isResizing = signal(false);
     readonly isFullScreenMode = signal(false);
     private readonly isMobileScreen = signal(
@@ -192,10 +193,14 @@ export class ElementIframeComponent implements OnDestroy {
 
     refreshContentAction(): void {
         const iframe = this.iframeEl()?.nativeElement;
-        if (this.editorMode() || !iframe) {
+        if (this.isLoading() || this.editorMode() || !iframe) {
             return;
         }
         this.refreshContent.emit(iframe);
+        this.isLoading.set(true);
+        setTimeout(() => {
+            this.isLoading.set(false);
+        }, 1000);
     }
 
     fullScreenToggle(): void {
