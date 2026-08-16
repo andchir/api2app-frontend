@@ -46,7 +46,11 @@
                 <button type="button"
                         class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100"
                         (click)="fullScreenToggle()">
-                    <i class="bi bi-arrows-fullscreen mr-2"></i>
+                    @if (isFullScreenMode()) {
+                        <i class="bi bi-fullscreen-exit mr-2"></i>
+                    } @else {
+                        <i class="bi bi-arrows-fullscreen mr-2"></i>
+                    }
                     <span i18n>Full Screen</span>
                 </button>
             }
