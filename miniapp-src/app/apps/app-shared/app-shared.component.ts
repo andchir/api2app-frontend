@@ -1026,7 +1026,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     private hasValueFromValue(element: AppBlockElement): boolean {
         const sourceElement = this.getValueSourceElement(element);
-        return !!sourceElement?.value;
+        return !!ApplicationService.getElementValue(sourceElement);
     }
 
     findButtonElement(targetApiUuid: string, blockIndex?: number): AppBlockElement {
@@ -1072,6 +1072,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             const isRequired = this.dataService.isElementRequired(element);
+            const fieldValue = ApplicationService.getElementValue(element);
             if (element.hidden && !isRequired) {
                 hiddenCount++;
             } else {
@@ -1083,7 +1084,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (apiUuid !== targetApiUuid || !isRequired) {
                 return;
             }
-            if (!element.value || (Array.isArray(element.value) && element.value.length === 0)) {
+            if (!fieldValue || (Array.isArray(fieldValue) && fieldValue.length === 0)) {
                 if (element.valueFrom && this.hasValueFromValue(element)) {
                     return;
                 }

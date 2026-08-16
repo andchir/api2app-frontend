@@ -179,7 +179,10 @@ export class ApplicationService extends DataService<ApplicationItem> {
         if (!element.value && !element.valueArr && !element.valueObj) {
             return ApplicationService.getFieldDefaultValue(element.type);
         }
-        const fieldValue = element.valueOutput || element.value || null;
+        let fieldValue = element.valueOutput || element.value || null;
+        if (typeof fieldValue === 'string') {
+            fieldValue = fieldValue.trim();
+        }
         const fieldValueArr = element.valueArr || null;
         switch (element.type) {
             case 'input-tags':
