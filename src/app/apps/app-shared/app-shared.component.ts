@@ -235,6 +235,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!this.data) {
             return;
         }
+        const queryParamsElements = [];
         const promises = [];
         this.data.blocks.forEach((block, blockIndex) => {
             if (typeof block.tabIndex === 'undefined') {
@@ -278,6 +279,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.type === 'input-select') {
                     element.value = element.value || null;
                 }
+                if (element.options.queryParameterName) {
+                    queryParamsElements.push(element);
+                }
                 this.elementHiddenStateUpdate(element, block);
                 promises.push(ApplicationService.applyLocalStoredValue(this.data.uuid, element));
             });
@@ -306,10 +310,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 });
 
                 // Get values from query string
-                Object.keys(this.appElements.input).forEach((uuid) => {
-                    this.appElements.input[uuid].forEach(element => {
-                        this.fillDataFromQueryString(element);
-                    });
+                queryParamsElements.forEach((element) => {
+                    this.fillDataFromQueryString(element);
                 });
             });
         }
