@@ -40,7 +40,7 @@
 }
 
 /* pagination */
-.app-pagination .ngx-pagination { display: flex; justify-content: center; }
+.app-pagination .ngx-pagination { display: flex; justify-content: center; margin: 0; }
 .app-pagination .ngx-pagination li,
 .app-pagination .ngx-pagination li > a {
     border-radius: 6px;
