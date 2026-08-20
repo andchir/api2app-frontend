@@ -1597,11 +1597,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
                                         isAutoStart: boolean = false, updateUserBalanceAfterResponse: boolean = true): void {
         const currentApiUuid = apiItem.uuid;
-        const isDeleteRequest = apiItem.requestMethod.toLowerCase() === 'delete';
-
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
         this.clearBlocksValues(blocks);
+
+        // Delete after delete request
+        const isDeleteRequest = apiItem.requestMethod.toLowerCase() === 'delete';
         if (isDeleteRequest) {
             const blocksCurrent = this.findBlocksByElements([currentElement]);
             this.clearBlocksValues(blocksCurrent, true);
