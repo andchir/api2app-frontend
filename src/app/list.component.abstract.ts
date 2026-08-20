@@ -93,6 +93,7 @@ export abstract class ListAbstractComponent<T extends {id: number}> implements O
         if (!this.selectedId) {
             return;
         }
+        this.loading = true;
         this.dataService.patch(this.selectedId, {shared, hidden: true})
             .pipe(takeUntil(this.destroyed$))
             .subscribe({

@@ -45,6 +45,9 @@ export class ShareItemComponent {
     }
 
     switchTab(tab: 'link'|'iframe'): void {
+        if (this.loading()) {
+            return;
+        }
         this.activeTab.set(tab);
         this.message.set('');
     }
