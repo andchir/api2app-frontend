@@ -578,11 +578,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         // Clear output blocks
         const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
         const blocksOutput = this.findBlocksByElements(elementsOutput);
-        blocksOutput.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
+        this.clearBlocksValues(blocksOutput);
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
@@ -1224,6 +1220,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             });
     }
 
+    clearBlocksValues(blocks: AppBlock[], clearBlock = false): void {
+        blocks.forEach((block) => {
+            if (block.options?.autoClear || clearBlock) {
+                this.clearElementsValues(block);
+            }
+        });
+        this.cdr.markForCheck();
+    }
+
     clearElementsValues(block: AppBlock, updateHiddenValue = true, clearStored = false): void {
         block.elements.forEach((element) => {
             this.clearElementValue(element, updateHiddenValue, clearStored);
@@ -1241,9 +1246,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (['input-file'].includes(element.type)) {
             element.value = [];
-        } else if (['input-text', 'input-textarea', 'input-radio', 'image', 'video', 'audio', 'button',
-                'status', 'input-hidden', 'input-rating', 'input-date'].includes(element.type)
-            && (!element['storeValue'] || clearStored)) {
+        } else if (!element['storeValue'] || clearStored) {
             element.value = null;
             element.valueArr = null;
             element.valueObj = null;
@@ -1594,13 +1597,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     private applyParsedApiResponseToApp(apiItem: ApiItem, data: any, currentElement: AppBlockElement,
                                         isAutoStart: boolean = false, updateUserBalanceAfterResponse: boolean = true): void {
         const currentApiUuid = apiItem.uuid;
+        const isDeleteRequest = apiItem.requestMethod.toLowerCase() === 'delete';
+
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
-        blocks.forEach((block) => {
-            if (block.options?.autoClear) {
-                this.clearElementsValues(block);
-            }
-        });
+        this.clearBlocksValues(blocks);
+        if (isDeleteRequest) {
+            const blocksCurrent = this.findBlocksByElements([currentElement]);
+            this.clearBlocksValues(blocksCurrent, true);
+        }
 
         const valuesData = ApiService.getPropertiesRecursively(data, '', [], []);
         const valuesObj = ApiService.getPropertiesKeyValueObject(valuesData.outputKeys, valuesData.values);
