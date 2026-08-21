@@ -2325,10 +2325,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const initialData = {
             appUuid: this.data.uuid
         };
+        this.disablePageScroll();
         this.modalService.showDynamicComponent(this.viewRef, AppAdultValidationComponent, initialData)
             .pipe(take(1))
             .subscribe({
                 next: (reason) => {
+                    this.restorePageScroll();
                     // console.log(reason);
                 }
             });
