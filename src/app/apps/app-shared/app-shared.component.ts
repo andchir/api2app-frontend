@@ -97,7 +97,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
     private wsAppSubmitSubscription?: Subscription;
-    private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
+    private pageScrollLockState?: {x: number, y: number, overflow: string};
     private visibilityChangeHandler?: () => void;
 
     // VK mini-app data
@@ -2413,24 +2413,25 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     private disablePageScroll(): void {
-        if (this.pageOverflowBeforeScrollLock) {
+        if (this.pageScrollLockState) {
             return;
         }
-        this.pageOverflowBeforeScrollLock = {
-            body: document.body.style.overflow,
-            documentElement: document.documentElement.style.overflow
+        this.pageScrollLockState = {
+            x: window.scrollX,
+            y: window.scrollY,
+            overflow: document.documentElement.style.overflow
         };
-        document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
     }
 
     private restorePageScroll(): void {
-        if (!this.pageOverflowBeforeScrollLock) {
+        const state = this.pageScrollLockState;
+        if (!state) {
             return;
         }
-        document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
-        document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
-        this.pageOverflowBeforeScrollLock = undefined;
+        document.documentElement.style.overflow = state.overflow;
+        this.pageScrollLockState = undefined;
+        window.scrollTo(state.x, state.y);
     }
 
     updateUserBalance(): void {
