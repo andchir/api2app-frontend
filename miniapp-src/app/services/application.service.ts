@@ -25,6 +25,9 @@ declare const vkBridge: any;
 @Injectable()
 export class ApplicationService extends DataService<ApplicationItem> {
 
+    private static localStorageUpdateQueues = new Map<string, Promise<void>>();
+    private static vkStorageUpdateQueues = new Map<string, Promise<void>>();
+
     constructor(
         @Inject(LOCALE_ID) public locale: string,
         httpClient: HttpClient
@@ -262,6 +265,57 @@ export class ApplicationService extends DataService<ApplicationItem> {
             });
     }
 
+    private static updateLocalStorageData(
+        dataKey: string,
+        update: (data: Record<string, any>) => void
+    ): void {
+        const previousUpdate = ApplicationService.localStorageUpdateQueues.get(dataKey) || Promise.resolve();
+        const currentUpdate = previousUpdate
+            .catch(() => undefined)
+            .then(async () => {
+                const dataObj = await ApplicationService.getLocalStorageData(dataKey);
+                update(dataObj);
+
+                const dataStr = JSON.stringify(dataObj);
+                if (Object.keys(dataObj).length === 0) {
+                    window.localStorage.removeItem(dataKey);
+                } else {
+                    window.localStorage.setItem(dataKey, dataStr);
+                }
+
+                ApplicationService.updateVkStorageData(dataKey, dataStr);
+            });
+
+        ApplicationService.localStorageUpdateQueues.set(dataKey, currentUpdate);
+        currentUpdate
+            .catch((error) => console.log(error))
+            .finally(() => {
+                if (ApplicationService.localStorageUpdateQueues.get(dataKey) === currentUpdate) {
+                    ApplicationService.localStorageUpdateQueues.delete(dataKey);
+                }
+            });
+    }
+
+    private static updateVkStorageData(dataKey: string, dataStr: string): void {
+        if (typeof vkBridge === 'undefined' || !window['isVKApp']) {
+            return;
+        }
+
+        const previousUpdate = ApplicationService.vkStorageUpdateQueues.get(dataKey) || Promise.resolve();
+        const currentUpdate = previousUpdate
+            .catch(() => undefined)
+            .then(() => vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr}));
+
+        ApplicationService.vkStorageUpdateQueues.set(dataKey, currentUpdate);
+        currentUpdate
+            .catch((error) => console.log(error))
+            .finally(() => {
+                if (ApplicationService.vkStorageUpdateQueues.get(dataKey) === currentUpdate) {
+                    ApplicationService.vkStorageUpdateQueues.delete(dataKey);
+                }
+            });
+    }
+
     static localStoreValueClear(appUuid: string, element: AppBlockElement): void {
         const apiUuid = element.options?.inputApiUuid || element.options?.outputApiUuid;
         if (!apiUuid) {
@@ -269,18 +323,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+        ApplicationService.updateLocalStorageData(dataKey, (dataObj) => {
             delete dataObj[key];
-            const dataStr = JSON.stringify(dataObj);
-            if (Object.keys(dataObj).length === 0) {
-                window.localStorage.removeItem(dataKey);
-            } else {
-                window.localStorage.setItem(dataKey, dataStr);
-            }
-            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
-                    .catch((error) => console.log(error));
-            }
         });
     }
 
@@ -295,14 +339,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         const dataKey = `${appUuid}-${apiUuid}`;
         const key = `${element.type}-${element.name}`;
-        ApplicationService.getLocalStorageData(dataKey).then((dataObj) => {
+        ApplicationService.updateLocalStorageData(dataKey, (dataObj) => {
             dataObj[key] = value;
-            const dataStr = JSON.stringify(dataObj);
-            window.localStorage.setItem(dataKey, dataStr);
-            if (typeof vkBridge !== 'undefined' && window['isVKApp']) {
-                vkBridge.send('VKWebAppStorageSet', {key: dataKey, value: dataStr})
-                    .catch((error) => console.log(error));
-            }
         });
     }
 
