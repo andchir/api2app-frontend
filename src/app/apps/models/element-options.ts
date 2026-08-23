@@ -637,6 +637,12 @@ export class ElementOptions {
                     type: 'input-text',
                     value: options?.hiddenByField || ''
                 });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
+                });
                 break;
             case 'input-hidden':
                 output.push({
@@ -801,6 +807,12 @@ export class ElementOptions {
                     label: $localize `Use first value as default`,
                     type: 'input-switch',
                     enabled: options?.selectDefaultFirst || false
+                });
+                output.push({
+                    name: 'storeValue',
+                    label: $localize `Store field value`,
+                    type: 'input-switch',
+                    enabled: options?.storeValue || false
                 });
                 output.push({
                     name: 'required',
@@ -1864,7 +1876,8 @@ export class ElementOptions {
                     min: 0,
                     max: 100,
                     step: 1,
-                    value: 0
+                    value: 0,
+                    storeValue: false
                 });
                 break;
             case 'input-hidden':
@@ -1876,7 +1889,7 @@ export class ElementOptions {
                     suffixText: '',
                     hiddenByField: '',
                     required: true,
-                    storeValue: true,
+                    storeValue: false,
                     valueFrom: '',
                     value: ''
                 });
@@ -1908,6 +1921,7 @@ export class ElementOptions {
                     addTag: false,
                     selectDefaultFirst: true,
                     hiddenByDefault: false,
+                    storeValue: false,
                     value: 'Value1',
                     valueArr: null
                 });
