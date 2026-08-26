@@ -108,7 +108,8 @@ export class ElementOptions {
                     label: $localize `Value keys`,
                     type: 'input-tags',
                     value: options?.keys || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'value',
@@ -782,7 +783,8 @@ export class ElementOptions {
                     label: $localize `Choices`,
                     type: 'input-tags',
                     value: options?.choices || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'placeholder',
@@ -883,11 +885,26 @@ export class ElementOptions {
                     value: options?.validationMessage || ''
                 });
                 output.push({
+                    name: 'choices',
+                    label: $localize `Initial values`,
+                    type: 'input-tags',
+                    value: options?.choices || [],
+                    choices: [],
+                    allowAdd: true
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-tags',
                     value: options?.value || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
+                });
+                output.push({
+                    name: 'allowAdd',
+                    label: $localize `Allow adding`,
+                    type: 'input-switch',
+                    enabled: options?.allowAdd || false
                 });
                 output.push({
                     name: 'required',
@@ -908,7 +925,8 @@ export class ElementOptions {
                     label: $localize `Choices`,
                     type: 'input-tags',
                     value: options?.choices || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'value',
@@ -953,7 +971,8 @@ export class ElementOptions {
                     label: $localize `Occupied dates`,
                     type: 'input-tags',
                     value: options?.busyDates || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'busyDatesFieldName',
@@ -1540,14 +1559,16 @@ export class ElementOptions {
                     label: $localize `Columns headers`,
                     type: 'input-tags',
                     value: options?.headers || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'keys',
                     label: $localize `Columns values keys`,
                     type: 'input-tags',
                     value: options?.keys || [],
-                    choices: []
+                    choices: [],
+                    allowAdd: true
                 });
                 output.push({
                     name: 'loadValueInto',
@@ -1959,7 +1980,7 @@ export class ElementOptions {
                     placeholder: $localize `Please Select`,
                     itemFieldNameForTitle: 'name',
                     itemFieldNameForValue: 'value',
-                    choices: ['Value1', 'Value2', 'Value3'],
+                    choices: [],
                     loadValueInto: '',
                     hiddenByField: '',
                     validationMessage: '',
@@ -1970,7 +1991,7 @@ export class ElementOptions {
                     selectDefaultFirst: true,
                     hiddenByDefault: false,
                     storeValue: false,
-                    value: 'Value1',
+                    value: '',
                     valueArr: null
                 });
                 break;
@@ -1984,8 +2005,10 @@ export class ElementOptions {
                     validationMessage: '',
                     required: true,
                     hiddenByDefault: false,
+                    allowAdd: true,
                     choices: [],
-                    value: ['Value1', 'Value2', 'Value3']
+                    value: [],
+                    valueArr: []
                 });
                 break;
             case 'input-radio':
@@ -1994,10 +2017,10 @@ export class ElementOptions {
                     label: $localize `Example Radio Buttons`,
                     hiddenByField: '',
                     validationMessage: '',
-                    value: 'Value1',
+                    value: '',
                     required: true,
                     storeValue: false,
-                    choices: ['Value1', 'Value2', 'Value3']
+                    choices: []
                 });
                 break;
             case 'input-date':

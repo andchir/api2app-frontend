@@ -44,6 +44,7 @@ export interface AppBlockElementValue {
     rows?: number;
     note?: string;
     noteOutput?: string;
+    allowAdd?: boolean;
 }
 
 export interface AppBlockElementDataMapping {
