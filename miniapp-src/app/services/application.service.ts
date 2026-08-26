@@ -857,4 +857,13 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
         return !element.hidden && element.required;
     }
+
+    createValidationErrorMessage(element: AppBlockElement): string {
+        if ((element.validationMessage || '').trim()) {
+            return element.validationMessage;
+        }
+        return element.label
+            ? element.label.replace(':', '') + ' - ' + ($localize `required`)
+            : $localize `This field is required.`;
+    }
 }

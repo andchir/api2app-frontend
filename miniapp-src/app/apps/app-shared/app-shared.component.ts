@@ -93,7 +93,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     tabIndex: number = 0;
     destroyed$: Subject<void> = new Subject();
     private wsAppSubmitSubscription?: Subscription;
-    private pageOverflowBeforeScrollLock?: {body: string, documentElement: string};
+    private pageScrollLockState?: {x: number, y: number, overflow: string};
     private visibilityChangeHandler?: () => void;
 
     // VK mini-app data
@@ -1086,9 +1086,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.valueFrom && this.hasValueFromValue(element)) {
                     return;
                 }
-                errors[element.name] = element.label
-                    ? element.label.replace(':', '') + ' - ' + ($localize `required`)
-                    : $localize `This field is required.`;
+                errors[element.name] = this.dataService.createValidationErrorMessage(element);
             }
         });
         errors = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
@@ -2358,28 +2356,65 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     startPayment(): void {
+        if (!this.isLoggedIn && !this.isVkApp) {
+            this.authService.navigateAuthPage('login');
+            return;
+        }
+        const initialData = {
+            appUuid: this.data.uuid,
+            isVkApp: this.isVkApp,
+            vkAppOptions: this.vkAppOptions
+        };
+        const modalClosed$ = this.modalService.showDynamicComponent(
+            this.viewRef,
+            ModalTopUpBalanceComponent,
+            initialData
+        );
+        this.disablePageScroll();
+        modalClosed$
+            .pipe(
+                take(1),
+                takeUntil(this.destroyed$),
+                finalize(() => this.restorePageScroll())
+            )
+            .subscribe({
+                next: (reason) => {
+                    // console.log(reason);
+                    if (reason === 'confirmed') {
 
+                    } else if (reason === 'promo_code_success') {
+                        this.updateUserBalance();
+                        this.message = $localize `Congratulations! Promo code accepted.`;
+                        this.messageType = 'success';
+                    } else if (reason === 'vk_pay_success') {
+                        this.updateUserBalance();
+                        this.message = $localize `Payment successful. Your balance will be updated shortly.`;
+                        this.messageType = 'success';
+                    }
+                }
+            });
     }
 
     private disablePageScroll(): void {
-        if (this.pageOverflowBeforeScrollLock) {
+        if (this.pageScrollLockState) {
             return;
         }
-        this.pageOverflowBeforeScrollLock = {
-            body: document.body.style.overflow,
-            documentElement: document.documentElement.style.overflow
+        this.pageScrollLockState = {
+            x: window.scrollX,
+            y: window.scrollY,
+            overflow: document.documentElement.style.overflow
         };
-        document.body.style.overflow = 'hidden';
         document.documentElement.style.overflow = 'hidden';
     }
 
     private restorePageScroll(): void {
-        if (!this.pageOverflowBeforeScrollLock) {
+        const state = this.pageScrollLockState;
+        if (!state) {
             return;
         }
-        document.body.style.overflow = this.pageOverflowBeforeScrollLock.body;
-        document.documentElement.style.overflow = this.pageOverflowBeforeScrollLock.documentElement;
-        this.pageOverflowBeforeScrollLock = undefined;
+        document.documentElement.style.overflow = state.overflow;
+        this.pageScrollLockState = undefined;
+        window.scrollTo(state.x, state.y);
     }
 
     updateUserBalance(): void {
