@@ -33,6 +33,7 @@ import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 import { MapFieldsByBlock } from '../models/element-options';
 import { pauseActiveAudioPlayer } from '../components/elements/audio-player/active-audio-player';
+import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -2357,7 +2358,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     startPayment(): void {
         if (!this.isLoggedIn && !this.isVkApp) {
-            this.authService.navigateAuthPage('login');
             return;
         }
         const initialData = {
