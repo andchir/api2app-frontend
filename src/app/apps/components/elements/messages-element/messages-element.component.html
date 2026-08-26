@@ -38,7 +38,9 @@
                     [disabled]="messages.length === 0"
                     (click)="clearChat()"
                     title="Clear chat"
-                    aria-label="Clear chat">
+                    i18n-title="@@ClearChat"
+                    aria-label="Clear chat"
+                    i18n-aria-label="@@ClearChat">
                 <i class="bi bi-trash3"></i>
             </button>
             <input type="text"
