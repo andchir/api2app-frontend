@@ -388,6 +388,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -487,6 +493,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-textarea',
@@ -567,6 +579,12 @@ export class ElementOptions {
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
                 });
                 output.push({
                     name: 'value',
@@ -682,6 +700,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
+                });
+                output.push({
                     name: 'storeValue',
                     label: $localize `Store field value`,
                     type: 'input-switch',
@@ -779,6 +803,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
+                });
+                output.push({
                     name: 'value',
                     label: $localize `Default Value`,
                     type: 'input-text',
@@ -845,6 +875,12 @@ export class ElementOptions {
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
                 });
                 output.push({
                     name: 'value',
@@ -1022,6 +1058,12 @@ export class ElementOptions {
                     label: $localize `Hide by field`,
                     type: 'input-text',
                     value: options?.hiddenByField || ''
+                });
+                output.push({
+                    name: 'validationMessage',
+                    label: $localize `Validation message`,
+                    type: 'input-text',
+                    value: options?.validationMessage || ''
                 });
                 output.push({
                     name: 'multiple',
@@ -1815,6 +1857,7 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     hiddenByField: '',
+                    validationMessage: '',
                     readOnly: false,
                     required: true,
                     hiddenByDefault: false,
@@ -1836,6 +1879,7 @@ export class ElementOptions {
                     max: 0,
                     prefixText: '',
                     suffixText: '',
+                    validationMessage: '',
                     readOnly: false,
                     required: true,
                     hiddenByDefault: false,
@@ -1854,6 +1898,7 @@ export class ElementOptions {
                     label: $localize `Number`,
                     type: 'input-number',
                     hiddenByField: '',
+                    validationMessage: '',
                     min: 0,
                     max: 10,
                     value: 1
@@ -1863,6 +1908,7 @@ export class ElementOptions {
                 Object.assign(output, {
                     name: 'rating',
                     hiddenByField: '',
+                    validationMessage: '',
                     required: true,
                     value: 0
                 });
@@ -1888,6 +1934,7 @@ export class ElementOptions {
                     prefixText: '',
                     suffixText: '',
                     hiddenByField: '',
+                    validationMessage: '',
                     required: true,
                     storeValue: false,
                     valueFrom: '',
@@ -1915,6 +1962,7 @@ export class ElementOptions {
                     choices: ['Value1', 'Value2', 'Value3'],
                     loadValueInto: '',
                     hiddenByField: '',
+                    validationMessage: '',
                     required: true,
                     clearable: true,
                     searchable: true,
@@ -1933,6 +1981,7 @@ export class ElementOptions {
                     type: 'input-select',
                     placeholder: $localize `Please Add Tags`,
                     hiddenByField: '',
+                    validationMessage: '',
                     required: true,
                     hiddenByDefault: false,
                     choices: [],
@@ -1944,6 +1993,7 @@ export class ElementOptions {
                     name: 'radio',
                     label: $localize `Example Radio Buttons`,
                     hiddenByField: '',
+                    validationMessage: '',
                     value: 'Value1',
                     required: true,
                     storeValue: false,
@@ -1960,6 +2010,7 @@ export class ElementOptions {
                     includeTime: true,
                     busyDates: [],
                     busyDatesFieldName: '',
+                    validationMessage: '',
                     compactView: false,
                     rangeMode: false,
                     useDefault: false,
@@ -1987,6 +2038,7 @@ export class ElementOptions {
                     placeholder: $localize `Upload File`,
                     loadValueInto: '',
                     hiddenByField: '',
+                    validationMessage: '',
                     required: true,
                     value: []
                 });

@@ -24,6 +24,7 @@ export interface AppBlockElementBase {
     name?: string;
     label?: string;
     placeholder?: string;
+    validationMessage?: string;
     orderIndex?: number;
     blockIndex?: number;
     options?: AppBlockElementOptions;

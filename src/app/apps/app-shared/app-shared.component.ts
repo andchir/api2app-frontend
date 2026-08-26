@@ -1101,9 +1101,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 if (element.valueFrom && this.hasValueFromValue(element)) {
                     return;
                 }
-                errors[element.name] = element.label
-                    ? element.label.replace(':', '') + ' - ' + ($localize `required`)
-                    : $localize `This field is required.`;
+                errors[element.name] = this.dataService.createValidationErrorMessage(element);
             }
         });
         errors = this.filterFieldsErrors(errors, mapFieldsByBlock, blockIndex);
