@@ -1301,13 +1301,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            const targetElement = this.getValueSourceElement(element);
-                            valueObj[key] = element.valueFrom && targetElement
-                                ? targetElement.value
-                                : element.value;
-                        }
-                        if (typeof valueObj[key] === 'string') {
-                            valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
+                            valueObj[key] = this.getElementValueFromSource(element, true);
                         }
                     });
                     bodyField.value = JSON.stringify(valueObj);

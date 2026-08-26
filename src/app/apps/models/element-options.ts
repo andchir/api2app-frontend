@@ -907,6 +907,12 @@ export class ElementOptions {
                     enabled: options?.allowAdd || false
                 });
                 output.push({
+                    name: 'valueAsString',
+                    label: $localize `Value as string`,
+                    type: 'input-switch',
+                    enabled: options?.valueAsString || false
+                });
+                output.push({
                     name: 'required',
                     label: $localize `Required`,
                     type: 'input-switch',
@@ -2006,6 +2012,7 @@ export class ElementOptions {
                     required: true,
                     hiddenByDefault: false,
                     allowAdd: true,
+                    valueAsString: false,
                     choices: [],
                     value: [],
                     valueArr: []

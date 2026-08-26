@@ -266,22 +266,15 @@
                        *ngIf="options?.label">
                     {{ options?.label }}
                 </label>
-                <ng-select class="ng-select-custom"
-                           [items]="options.choices"
-                           [placeholder]="options.placeholder"
-                           [clearable]="false"
-                           [addTag]="options.allowAdd"
-                           [multiple]="true"
-                           [selectOnTab]="true"
-                           [closeOnSelect]="true"
-                           notFoundText="No items found"
-                           i18n-notFoundText
-                           addTagText="Add item"
-                           i18n-addTagText
-                           labelForId="{{ options?.name }}-{{ parentIndex }}-{{ index }}"
-                           (change)="onFieldValueChanged()"
-                           [(ngModel)]="options.value">
-                </ng-select>
+                <app-input-tags-element
+                    [choices]="options.choices"
+                    [placeholder]="options.placeholder"
+                    [allowAdd]="options.allowAdd"
+                    [valueAsString]="options.valueAsString"
+                    [labelForId]="options?.name + '-' + parentIndex + '-' + index"
+                    [(ngModel)]="options.value"
+                    (ngModelChange)="onFieldValueChanged()">
+                </app-input-tags-element>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
