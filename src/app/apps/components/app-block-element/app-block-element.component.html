@@ -270,9 +270,10 @@
                            [items]="options.choices"
                            [placeholder]="options.placeholder"
                            [clearable]="false"
-                           [addTag]="true"
+                           [addTag]="options.allowAdd"
                            [multiple]="true"
                            [selectOnTab]="true"
+                           [closeOnSelect]="true"
                            notFoundText="No items found"
                            i18n-notFoundText
                            addTagText="Add item"
