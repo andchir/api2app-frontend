@@ -1,16 +1,15 @@
 import {
     AfterViewChecked,
     ChangeDetectionStrategy,
-    ChangeDetectorRef,
     Component,
+    computed,
     ElementRef,
-    EventEmitter,
     forwardRef,
-    Input,
-    OnDestroy,
+    input,
     OnInit,
-    Output,
-    ViewChild
+    output,
+    signal,
+    viewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -33,21 +32,24 @@ import { SharedModule } from '../../../../shared.module';
         }],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChecked, ControlValueAccessor {
+export class MessagesElementComponent implements OnInit, AfterViewChecked, ControlValueAccessor {
 
-    @ViewChild('messagesContainer') messagesContainer: ElementRef<HTMLDivElement>;
+    readonly messagesContainer = viewChild<ElementRef<HTMLDivElement>>('messagesContainer');
 
-    @Input() editorMode = false;
-    @Input() name: string;
-    @Input() label: string;
-    @Input() placeholder: string;
-    @Input() parentIndex: number;
-    @Input() index: number;
-    @Input() maxHeight: number = 400;
-    @Output() message: EventEmitter<string[]> = new EventEmitter<string[]>();
+    readonly editorMode = input(false);
+    readonly name = input('');
+    readonly label = input('');
+    readonly placeholder = input('');
+    readonly parentIndex = input<number>();
+    readonly index = input<number>();
+    readonly maxHeight = input(400);
+    readonly message = output<string[]>();
 
-    inputText = '';
-    messages: ChatMessage[] = [];
+    readonly inputText = signal('');
+    readonly messages = signal<ChatMessage[]>([]);
+    readonly elementId = computed(() =>
+        `messages-${this.name()}-${this.parentIndex()}-${this.index()}`
+    );
 
     private static readonly OUTGOING_PREFIX = '\u200B__out__';
     private needsScroll = false;
@@ -74,17 +76,10 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
         [/\(n\)/gi, '👎'],
     ];
 
-    constructor(
-        private messagesService: MessagesService,
-        private cdr: ChangeDetectorRef
-    ) {}
-
-    get elementId(): string {
-        return `messages-${this.name || ''}-${this.parentIndex}-${this.index}`;
-    }
+    constructor(private readonly messagesService: MessagesService) {}
 
     ngOnInit(): void {
-        this.messages = this.messagesService.getHistory(this.elementId);
+        this.refreshMessages();
         this.initialized = true;
     }
 
@@ -98,10 +93,9 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
         }
         const text = raw.trim();
         if (text) {
-            this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'incoming');
-            this.messages = this.messagesService.getHistory(this.elementId);
+            this.messagesService.addMessage(this.elementId(), this.replaceEmojis(text), 'incoming');
+            this.refreshMessages();
             this.needsScroll = true;
-            this.cdr.markForCheck();
         }
     }
 
@@ -121,38 +115,39 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
     }
 
     sendMessage(): void {
-        const text = (this.inputText || '').trim();
+        const text = this.inputText().trim();
         if (!text) {
             return;
         }
-        this.messagesService.addMessage(this.elementId, this.replaceEmojis(text), 'outgoing');
-        this.messages = this.messagesService.getHistory(this.elementId);
-        this.inputText = '';
+        this.messagesService.addMessage(this.elementId(), this.replaceEmojis(text), 'outgoing');
+        this.refreshMessages();
+        this.inputText.set('');
         this.needsScroll = true;
         this.onChange(MessagesElementComponent.OUTGOING_PREFIX + text);
         this.onTouched();
-        this.cdr.markForCheck();
     }
 
     undoLastOutgoing(): void {
-        this.messagesService.removeLastOutgoing(this.elementId);
-        this.messages = this.messagesService.getHistory(this.elementId);
-        this.cdr.markForCheck();
+        this.messagesService.removeLastOutgoing(this.elementId());
+        this.refreshMessages();
     }
 
     clearChat(): void {
-        this.messagesService.clearHistory(this.elementId);
-        this.messages = this.messagesService.getHistory(this.elementId);
-        this.cdr.markForCheck();
+        this.messagesService.clearHistory(this.elementId());
+        this.refreshMessages();
     }
 
     private scrollToBottom(): void {
-        const el = this.messagesContainer?.nativeElement;
+        const el = this.messagesContainer()?.nativeElement;
         if (el) {
             setTimeout(() => {
                 el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
             }, 50);
         }
+    }
+
+    private refreshMessages(): void {
+        this.messages.set([...this.messagesService.getHistory(this.elementId())]);
     }
 
     private replaceEmojis(text: string): string {
@@ -162,6 +157,4 @@ export class MessagesElementComponent implements OnInit, OnDestroy, AfterViewChe
         }
         return result;
     }
-
-    ngOnDestroy(): void {}
 }
