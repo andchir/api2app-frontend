@@ -85,9 +85,9 @@ export class MyProfileComponent implements OnInit {
     });
 
     formVkPay = this.formBuilder.nonNullable.group({
-        merchantId: ['', [Validators.required, Validators.pattern(/^[1-9]\d*$/)]],
-        merchantKey: ['', [Validators.required]],
-        notificationPublicKey: ['', [Validators.required]]
+        merchantId: ['', [Validators.pattern(/^[1-9]\d*$/)]],
+        merchantKey: [''],
+        notificationPublicKey: ['']
     });
 
     constructor(

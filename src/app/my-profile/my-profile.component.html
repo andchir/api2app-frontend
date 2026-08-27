@@ -52,7 +52,7 @@
 
                         @switch (action()) {
                             @case ('update_profile') {
-                        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                        <form [formGroup]="form" (ngSubmit)="onSubmit()" autocomplete="off">
 
                             <h4 class="mb-4 text-blue-600 xl:hidden" i18n>My Profile</h4>
 
@@ -76,6 +76,7 @@
                                        placeholder="Enter your email"
                                        i18n-placeholder
                                        formControlName="email"
+                                       autocomplete="off"
                                        required email>
                                 @if (form.controls.email.touched && form.controls.email.invalid) {
                                     <div class="pt-2 text-red-700 text-sm">
@@ -95,6 +96,7 @@
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your first name"
                                        i18n-placeholder
+                                       autocomplete="off"
                                        formControlName="firstName">
                             </div>
 
@@ -104,6 +106,7 @@
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your last name"
                                        i18n-placeholder
+                                       autocomplete="off"
                                        formControlName="lastName">
                             </div>
 
@@ -124,7 +127,7 @@
 
                             }
                             @case ('change_password') {
-                        <form [formGroup]="formChangePassword" (ngSubmit)="onSubmitPassword()">
+                        <form [formGroup]="formChangePassword" (ngSubmit)="onSubmitPassword()" autocomplete="off">
 
                             <h4 class="mb-4 text-blue-600 xl:hidden" i18n>Change password</h4>
 
@@ -134,7 +137,7 @@
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your password"
                                        i18n-placeholder
-                                       formControlName="currentPassword" required>
+                                       formControlName="currentPassword" autocomplete="new-password" required>
                                 @if ((formChangePassword.controls.currentPassword.touched && formChangePassword.controls.currentPassword.invalid) || errors()['current_password']) {
                                     <div class="pt-2 text-red-700 text-sm">
                                         @if (formChangePassword.controls.currentPassword.hasError('required')) {
@@ -153,7 +156,7 @@
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Enter your password"
                                        i18n-placeholder
-                                       formControlName="password" required>
+                                       formControlName="password" autocomplete="new-password" required>
                                 @if (formChangePassword.controls.password.touched && formChangePassword.controls.password.invalid) {
                                     <div class="pt-2 text-red-700 text-sm">
                                         @if (formChangePassword.controls.password.hasError('required')) {
@@ -181,7 +184,7 @@
                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                        placeholder="Confirm the password"
                                        i18n-placeholder
-                                       formControlName="confirmPassword" required>
+                                       formControlName="confirmPassword" autocomplete="new-password" required>
                                 @if (formChangePassword.controls.confirmPassword.touched && formChangePassword.controls.confirmPassword.invalid) {
                                     <div class="pt-2 text-red-700 text-sm">
                                         @if (formChangePassword.controls.confirmPassword.hasError('required')) {
@@ -236,7 +239,7 @@
                                 @switch (paymentSystem()) {
                                     @case ('robokassa') {
 
-                                        <form [formGroup]="formPayments" (ngSubmit)="onSubmitPayments()">
+                                        <form [formGroup]="formPayments" (ngSubmit)="onSubmitPayments()" autocomplete="off">
 
                                             <div class="relative">
                                                 <div [ngClass]="{'opacity-30 pointer-events-none': paymentStatus() !== 'allowed'}">
@@ -268,7 +271,7 @@
                                                             </label>
                                                             <input type="text" id="settings-shop-id"
                                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                                   formControlName="rkLogin" required>
+                                                                   formControlName="rkLogin" autocomplete="off" required>
                                                         </div>
                                                     </div>
 
@@ -281,6 +284,7 @@
                                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                                    placeholder="Enter your password"
                                                                    formControlName="rkPassword1"
+                                                                   autocomplete="new-password"
                                                                    required i18n-placeholder>
                                                             <button type="button"
                                                                     class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -303,6 +307,7 @@
                                                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                                                                    placeholder="Enter your password"
                                                                    formControlName="rkPassword2"
+                                                                   autocomplete="new-password"
                                                                    required i18n-placeholder>
                                                             <button type="button"
                                                                     class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -360,7 +365,7 @@
                                     }
                                     @case ('vk_pay') {
 
-                                        <form [formGroup]="formVkPay" (ngSubmit)="onSubmitVkPay()">
+                                        <form [formGroup]="formVkPay" (ngSubmit)="onSubmitVkPay()" autocomplete="off">
                                             <div class="mb-2">
                                                 <a class="text-lg text-blue-700 underline transition hover:text-blue-800/75"
                                                    [href]="vkPayUrl"
@@ -382,12 +387,9 @@
                                                     </label>
                                                     <input type="text" id="vk-pay-merchant-id"
                                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                                                           formControlName="merchantId" inputmode="numeric" required>
+                                                           formControlName="merchantId" inputmode="numeric" autocomplete="off">
                                                     @if (formVkPay.controls.merchantId.touched && formVkPay.controls.merchantId.invalid) {
                                                         <div class="pt-2 text-red-700 text-sm">
-                                                            @if (formVkPay.controls.merchantId.hasError('required')) {
-                                                                <div i18n>Merchant ID is required.</div>
-                                                            }
                                                             @if (formVkPay.controls.merchantId.hasError('pattern')) {
                                                                 <div i18n>Merchant ID must be a positive integer.</div>
                                                             }
@@ -406,7 +408,7 @@
                                                         <input [type]="vkPayMerchantKeyShow() ? 'text' : 'password'"
                                                                id="vk-pay-merchant-key"
                                                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-11"
-                                                               formControlName="merchantKey" autocomplete="off" required>
+                                                               formControlName="merchantKey" autocomplete="new-password">
                                                         <button type="button"
                                                                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700 focus:outline-none"
                                                                 (click)="vkPayMerchantKeyShow.set(!vkPayMerchantKeyShow())">
@@ -417,9 +419,6 @@
                                                             }
                                                         </button>
                                                     </div>
-                                                    @if (formVkPay.controls.merchantKey.touched && formVkPay.controls.merchantKey.hasError('required')) {
-                                                        <div class="pt-2 text-red-700 text-sm" i18n>Merchant private key is required.</div>
-                                                    }
                                                     @if (errors()['merchant_key']; as merchantKeyError) {
                                                         <div class="pt-2 text-red-700 text-sm">{{ merchantKeyError }}</div>
                                                     }
@@ -431,10 +430,7 @@
                                                     </label>
                                                     <textarea id="vk-pay-notification-public-key" rows="6"
                                                               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 font-mono"
-                                                              formControlName="notificationPublicKey" required></textarea>
-                                                    @if (formVkPay.controls.notificationPublicKey.touched && formVkPay.controls.notificationPublicKey.hasError('required')) {
-                                                        <div class="pt-2 text-red-700 text-sm" i18n>Notification public key is required.</div>
-                                                    }
+                                                              formControlName="notificationPublicKey" autocomplete="off"></textarea>
                                                     @if (errors()['notification_public_key']; as publicKeyError) {
                                                         <div class="pt-2 text-red-700 text-sm">{{ publicKeyError }}</div>
                                                     }
