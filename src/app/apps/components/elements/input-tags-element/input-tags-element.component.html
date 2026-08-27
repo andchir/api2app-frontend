@@ -1,17 +1,18 @@
 <ng-select class="ng-select-custom"
-           [items]="choices"
-           [placeholder]="placeholder"
-           [clearable]="false"
-           [addTag]="allowAdd"
+           [items]="choices()"
+           [placeholder]="placeholder()"
+           [clearable]="clearable()"
+           [searchable]="searchable()"
+           [addTag]="allowAdd()"
            [multiple]="true"
            [selectOnTab]="true"
            [closeOnSelect]="true"
-           [disabled]="disabled"
+           [disabled]="disabled()"
            notFoundText="No items found"
            i18n-notFoundText
            addTagText="Add item"
            i18n-addTagText
-           [labelForId]="labelForId"
-           [ngModel]="tags"
+           [labelForId]="labelForId()"
+           [ngModel]="tags()"
            (ngModelChange)="tagsChanged($event)">
 </ng-select>

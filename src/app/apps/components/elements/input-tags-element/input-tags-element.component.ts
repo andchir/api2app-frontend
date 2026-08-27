@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, input, signal } from '@angular/core';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 
@@ -17,24 +17,23 @@ import { ApplicationService } from '../../../../services/application.service';
 })
 export class InputTagsElementComponent implements ControlValueAccessor {
 
-    @Input() choices: string[] = [];
-    @Input() placeholder = '';
-    @Input() allowAdd = false;
-    @Input() valueAsString = false;
-    @Input() labelForId = '';
+    readonly choices = input<string[]>([]);
+    readonly placeholder = input('');
+    readonly allowAdd = input(false);
+    readonly valueAsString = input(false);
+    readonly labelForId = input('');
+    readonly clearable = input(true);
+    readonly searchable = input(true);
 
-    tags: string[] = [];
-    disabled = false;
-
-    constructor(private cdr: ChangeDetectorRef) {}
+    readonly tags = signal<string[]>([]);
+    readonly disabled = signal(false);
 
     onChange(_: string[] | string): void {}
 
     onTouched(): void {}
 
     writeValue(value: string[] | string | null): void {
-        this.tags = ApplicationService.parseTagsValue(value);
-        this.cdr.markForCheck();
+        this.tags.set(ApplicationService.parseTagsValue(value));
     }
 
     registerOnChange(fn: (value: string[] | string) => void): void {
@@ -46,13 +45,13 @@ export class InputTagsElementComponent implements ControlValueAccessor {
     }
 
     setDisabledState(isDisabled: boolean): void {
-        this.disabled = isDisabled;
-        this.cdr.markForCheck();
+        this.disabled.set(isDisabled);
     }
 
     tagsChanged(tags: string[] | null): void {
-        this.tags = ApplicationService.parseTagsValue(tags);
-        this.onChange(this.valueAsString ? this.tags.join(',') : this.tags);
+        const value = ApplicationService.parseTagsValue(tags);
+        this.tags.set(value);
+        this.onChange(this.valueAsString() ? value.join(',') : value);
         this.onTouched();
     }
 }
