@@ -1048,7 +1048,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
                 return !currentButton;
             }) : [];
-        if (includeCurrent) {
+        if (includeCurrent && !elements.includes(currentElement)) {
             elements.push(currentElement);
         }
         return elements;
@@ -1065,7 +1065,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let errors = {};
         let hiddenCount = 0;
         const mapFieldsByBlock: MapFieldsByBlock = new Map();
-        elements.forEach((element) => {
+        const inputElements = elements.filter(item => {
+            return !!item.options?.inputApiFieldType;
+        });
+        inputElements.forEach((element) => {
             if (!mapFieldsByBlock.get(element.blockIndex)) {
                 mapFieldsByBlock.set(element.blockIndex, []);
             }
@@ -1094,8 +1097,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', errors, 'total:', elements.length, 'hidden:', hiddenCount);
-        if (hiddenCount && hiddenCount === elements.length && actionType === 'input') {
+        // console.log('getIsValid', inputElements, errors, 'total:', inputElements.length, 'hidden:', hiddenCount);
+        if (hiddenCount && hiddenCount === inputElements.length && actionType === 'input') {
             return false;
         }
         return Object.keys(errors).length === 0;
@@ -1287,13 +1290,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                                 valueObj[key] = element.value || true;
                             }
                         } else {
-                            const targetElement = this.getValueSourceElement(element);
-                            valueObj[key] = element.valueFrom && targetElement
-                                ? targetElement.value
-                                : element.value;
-                        }
-                        if (typeof valueObj[key] === 'string') {
-                            valueObj[key] = ApplicationService.createStringValue(element, valueObj[key]);
+                            valueObj[key] = this.getElementValueFromSource(element, true);
                         }
                     });
                     bodyField.value = JSON.stringify(valueObj);
@@ -1583,7 +1580,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentApiUuid = apiItem.uuid;
         const elements = this.appElements.output[currentApiUuid] || [];
         const blocks = this.findBlocksByElements(elements);
-        this.clearBlocksValues(blocks);
+        if (!isAutoStart) {
+            this.clearBlocksValues(blocks);
+        }
 
         // Delete after delete request
         const isDeleteRequest = apiItem.requestMethod.toLowerCase() === 'delete';
@@ -1875,18 +1874,18 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
             return;
         }
         if (element.type === 'messages') {
             element.value = typeof value === 'string' ? value : JSON.stringify(value);
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
             return;
         }
         if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
             element.value = ApplicationService.createInputStringValue(element, value);
             this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
-            this.cdr.detectChanges();
+            this.cdr.markForCheck();
             return;
         }
         if (ApiService.isJson(value)) {
@@ -1927,6 +1926,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if ((element.value || element.valueArr || element.valueObj) && !['button'].includes(element.type)) {
             this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
         }
+        this.cdr.markForCheck();
     }
 
     onElementClick(element: AppBlockElement): void {

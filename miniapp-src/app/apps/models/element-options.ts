@@ -901,10 +901,28 @@ export class ElementOptions {
                     allowAdd: true
                 });
                 output.push({
+                    name: 'clearable',
+                    label: $localize `Clearable`,
+                    type: 'input-switch',
+                    enabled: options?.clearable || false
+                });
+                output.push({
+                    name: 'searchable',
+                    label: $localize `Searchable`,
+                    type: 'input-switch',
+                    enabled: options?.searchable || false
+                });
+                output.push({
                     name: 'allowAdd',
                     label: $localize `Allow adding`,
                     type: 'input-switch',
                     enabled: options?.allowAdd || false
+                });
+                output.push({
+                    name: 'valueAsString',
+                    label: $localize `Value as string`,
+                    type: 'input-switch',
+                    enabled: options?.valueAsString || false
                 });
                 output.push({
                     name: 'required',
@@ -2004,8 +2022,11 @@ export class ElementOptions {
                     hiddenByField: '',
                     validationMessage: '',
                     required: true,
+                    clearable: true,
+                    searchable: true,
                     hiddenByDefault: false,
                     allowAdd: true,
+                    valueAsString: false,
                     choices: [],
                     value: [],
                     valueArr: []
