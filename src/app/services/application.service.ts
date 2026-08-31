@@ -891,7 +891,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return element.validationMessage;
         }
         return element.label
-            ? element.label.replace(':', '') + ' - ' + ($localize `required`)
+            ? element.label
+                .replace(':', '')
+                .replace('*', '').trim() + ' - ' + ($localize `required`)
             : $localize `This field is required.`;
     }
 }
