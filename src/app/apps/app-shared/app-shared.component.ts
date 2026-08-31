@@ -1062,7 +1062,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 const currentButton = this.findButtonElement(targetApiUuid, element.blockIndex);
                 return !currentButton;
             }) : [];
-        if (includeCurrent) {
+        if (includeCurrent && !elements.includes(currentElement)) {
             elements.push(currentElement);
         }
         return elements;
@@ -1079,7 +1079,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         let errors = {};
         let hiddenCount = 0;
         const mapFieldsByBlock: MapFieldsByBlock = new Map();
-        elements.forEach((element) => {
+        const inputElements = elements.filter(item => {
+            return !!item.options?.inputApiFieldType;
+        });
+        inputElements.forEach((element) => {
             if (!mapFieldsByBlock.get(element.blockIndex)) {
                 mapFieldsByBlock.set(element.blockIndex, []);
             }
@@ -1108,8 +1111,8 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', errors, 'total:', elements.length, 'hidden:', hiddenCount);
-        if (hiddenCount && hiddenCount === elements.length && actionType === 'input') {
+        // console.log('getIsValid', inputElements, errors, 'total:', inputElements.length, 'hidden:', hiddenCount);
+        if (hiddenCount && hiddenCount === inputElements.length && actionType === 'input') {
             return false;
         }
         return Object.keys(errors).length === 0;

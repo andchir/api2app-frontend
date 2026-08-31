@@ -877,6 +877,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     isElementRequired(element: AppBlockElement): boolean {
+        if (['input-chart-line'].includes(element.type)) {
+            return true;
+        }
         if (!element.required) {
             return false;
         }
