@@ -1324,6 +1324,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
 
                 bodyField.value = this.getElementValueFromSource(element, true);
+                if (['input-switch'].includes(element.type) && !bodyField.value) {
+                    bodyField.value = '';
+                    bodyField.hidden = true;
+                    return;
+                }
+
                 if (bodyField.value instanceof File
                     || (Array.isArray(bodyField.value) && bodyField.value.some(value => value instanceof File))) {
                     bodyField.isFile = true;
