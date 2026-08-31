@@ -24,6 +24,7 @@ import { AudioPlayerComponent } from './apps/components/elements/audio-player/au
 import { MessagesElementComponent } from './apps/components/elements/messages-element/messages-element.component';
 import { InputDateElementComponent } from './apps/components/elements/input-date-element/input-date-element.component';
 import { RatingElementComponent } from './apps/components/elements/rating-element/rating-element.component';
+import { InputTagsElementComponent } from './apps/components/elements/input-tags-element/input-tags-element.component';
 import { ApplicationService } from './services/application.service';
 import { ApiService } from './services/api.service';
 import { ModalService } from './services/modal.service';
@@ -59,7 +60,8 @@ import { SharedModule } from './shared.module';
         AudioPlayerComponent,
         MessagesElementComponent,
         InputDateElementComponent,
-        RatingElementComponent
+        RatingElementComponent,
+        InputTagsElementComponent
     ],
     providers: [
         ApplicationService,

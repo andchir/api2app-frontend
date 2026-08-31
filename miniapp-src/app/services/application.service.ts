@@ -189,7 +189,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
         const fieldValueArr = element.valueArr || null;
         switch (element.type) {
             case 'input-tags':
-                return Array.isArray(fieldValue) ? fieldValue : [];
+                const tags = ApplicationService.parseTagsValue(fieldValue as string | any[]);
+                return element.valueAsString ? tags.join(',') : tags;
             case 'input-date':
                 const value = String(fieldValue);
                 const dateRangeValues = value.split(/\s+-\s+/);
@@ -415,6 +416,30 @@ export class ApplicationService extends DataService<ApplicationItem> {
                 break;
         }
         return value;
+    }
+
+    static parseTagsValue(value: string[] | string | null | undefined): string[] {
+        if (Array.isArray(value)) {
+            return value
+                .map((item) => String(item).trim())
+                .filter((item) => !!item);
+        }
+        if (typeof value !== 'string' || !value.trim()) {
+            return [];
+        }
+        const trimmedValue = value.trim();
+        try {
+            const parsedValue = JSON.parse(trimmedValue);
+            if (Array.isArray(parsedValue)) {
+                return ApplicationService.parseTagsValue(parsedValue);
+            }
+        } catch {
+            // A plain comma-separated string is also a supported input format.
+        }
+        return trimmedValue
+            .split(',')
+            .map((item) => item.trim())
+            .filter((item) => !!item);
     }
 
     static createInputStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
@@ -852,6 +877,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     isElementRequired(element: AppBlockElement): boolean {
+        if (['input-chart-line'].includes(element.type)) {
+            return true;
+        }
         if (!element.required) {
             return false;
         }
@@ -863,7 +891,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
             return element.validationMessage;
         }
         return element.label
-            ? element.label.replace(':', '') + ' - ' + ($localize `required`)
+            ? element.label
+                .replace(':', '')
+                .replace('*', '').trim() + ' - ' + ($localize `required`)
             : $localize `This field is required.`;
     }
 }
