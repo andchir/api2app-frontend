@@ -29,11 +29,11 @@ import { VkAppOptions } from '../models/vk-app-options.interface';
 import { environment } from '../../../environments/environment';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
 import { AppAdultValidationComponent } from '../components/app-adult-validation/app-adult-validation.component';
+import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 import { WebsocketService } from '../../services/websocket.service';
 import { AppBlockElementComponent } from '../components/app-block-element/app-block-element.component';
 import { MapFieldsByBlock } from '../models/element-options';
 import { pauseActiveAudioPlayer } from '../components/elements/audio-player/active-audio-player';
-import { ModalTopUpBalanceComponent } from '../modal-topup-balance/modal-topup-balance.component';
 
 const APP_NAME = environment.appName;
 declare const vkBridge: any;
@@ -561,10 +561,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const apiItem = this.prepareApiItem(currentApi, 'input', elements, currentElement.blockIndex);
 
-        // Clear output blocks
-        const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
-        const blocksOutput = this.findBlocksByElements(elementsOutput);
-        this.clearBlocksValues(blocksOutput);
+        // Keep the current result visible while polling an existing task.
+        // Clearing it here hides progress and resets its task lifecycle before the response.
+        if (currentElement.type !== 'progress') {
+            const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
+            const blocksOutput = this.findBlocksByElements(elementsOutput);
+            this.clearBlocksValues(blocksOutput);
+        }
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
@@ -1310,6 +1313,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 }
 
                 bodyField.value = this.getElementValueFromSource(element, true);
+                if (['input-switch'].includes(element.type) && !bodyField.value) {
+                    bodyField.value = '';
+                    bodyField.hidden = true;
+                    return;
+                }
+
                 if (bodyField.value instanceof File
                     || (Array.isArray(bodyField.value) && bodyField.value.some(value => value instanceof File))) {
                     bodyField.isFile = true;
