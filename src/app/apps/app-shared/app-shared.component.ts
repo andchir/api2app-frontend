@@ -575,10 +575,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const apiItem = this.prepareApiItem(currentApi, 'input', elements, currentElement.blockIndex);
 
-        // Clear output blocks
-        const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
-        const blocksOutput = this.findBlocksByElements(elementsOutput);
-        this.clearBlocksValues(blocksOutput);
+        // Keep the current result visible while polling an existing task.
+        // Clearing it here hides progress and resets its task lifecycle before the response.
+        if (currentElement.type !== 'progress') {
+            const elementsOutput = this.findElements(apiUuid, 'output', currentElement);
+            const blocksOutput = this.findBlocksByElements(elementsOutput);
+            this.clearBlocksValues(blocksOutput);
+        }
 
         const requestUrl = (apiItem.requestUrl || '').trim();
         if (this.isWebSocketRequestUrl(requestUrl)) {
