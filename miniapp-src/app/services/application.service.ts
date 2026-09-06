@@ -120,6 +120,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
             value: options?.messageSuccess || ''
         });
         output.push({
+            name: 'messageValidation',
+            label: $localize `Validation message`,
+            type: 'input-textarea',
+            value: options?.messageValidation || ''
+        });
+        output.push({
             name: 'autoClear',
             label: $localize `Clear after sending`,
             type: 'input-switch',
@@ -153,6 +159,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             orderIndex: 0,
             gridColumnSpan: 1,
             messageSuccess: $localize `The form has been submitted successfully.`,
+            messageValidation: $localize `Please correct errors in filling out the form.`,
             autoClear: false,
             showLoading: true,
             isStickyPosition: false

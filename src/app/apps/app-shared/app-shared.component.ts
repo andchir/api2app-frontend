@@ -534,10 +534,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (currentElement?.type === 'messages') {
                 this.blockElements?.find(b => b.options?.name === currentElement.name)?.undoLastOutgoing();
             }
+            const blockMessageValidation = blocks.length > 0 && typeof blocks[0].options.messageValidation === 'string'
+                ? blocks[0].options.messageValidation
+                : $localize `Please correct errors in filling out the form.`;
             if (this.appsAutoStarted.includes(apiUuid)) {
                 this.removeAutoStart(apiUuid);
             } else if (showMessages) {
-                this.message = $localize `Please correct errors in filling out the form.`;
+                this.message = blockMessageValidation;
                 this.messageType = 'error';
             }
             this.cdr.detectChanges();
@@ -829,7 +832,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const sendMessage = () => {
             try {
                 this.websocketService.sendText(url, this.apiService.getWebSocketPostBodyText(appUuid, apiItem));
-                if (showMessages && blocks.length) {
+                if (showMessages && blocks.length && blocks[0].options.messageSuccess) {
                     this.messageType = 'success';
                     this.message = blocks[0].options.messageSuccess;
                     this.cdr.detectChanges();
@@ -1152,11 +1155,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     stateLoadingUpdate(blocks: AppBlock[], loading: boolean, showMessage = true, clearBlock = false): void {
         blocks.forEach((block) => {
-            if (!loading && showMessage) {
-                if (block.options?.messageSuccess) {
-                    this.message = block.options.messageSuccess;
-                    this.messageType = 'success';
-                }
+            if (!loading && showMessage && block.options?.messageSuccess) {
+                this.message = block.options.messageSuccess;
+                this.messageType = 'success';
             }
             if ((showMessage && block.options?.autoClear) || clearBlock) {
                 this.clearElementsValues(block);

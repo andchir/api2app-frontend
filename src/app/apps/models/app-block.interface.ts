@@ -114,6 +114,7 @@ export interface AppBlockOptions {
     autoClear?: boolean;
     showLoading?: boolean;
     messageSuccess?: string;
+    messageValidation?: string;
     isStickyPosition?: boolean;
     maxHeight?: number;
 }
