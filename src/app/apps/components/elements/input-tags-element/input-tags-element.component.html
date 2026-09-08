@@ -2,7 +2,7 @@
            [items]="choices()"
            [placeholder]="placeholder()"
            [clearable]="clearable()"
-           [searchable]="searchable()"
+           [searchable]="allowAdd() || searchable()"
            [addTag]="allowAdd()"
            [multiple]="true"
            [selectOnTab]="true"
