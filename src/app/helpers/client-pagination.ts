@@ -1,5 +1,5 @@
 import { PaginationInstance } from 'ngx-pagination';
-import { AppBlock, AppBlockElement } from './app-block.interface';
+import { AppBlock, AppBlockElement } from '../apps/models/app-block.interface';
 
 export function isClientPagination(element: AppBlockElement): boolean {
     return element?.type === 'input-pagination' && !element.options?.inputApiUuid?.trim();
