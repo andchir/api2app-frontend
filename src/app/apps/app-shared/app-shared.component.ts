@@ -1867,7 +1867,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentPage = element.useAsOffset
             ? (value ? (value / element.perPage) + 1 : 1)
             : value;
-        const totalItems = endlessMode ? 9999 : (data[dataKey] || 0);
+        const totalItems = typeof data[dataKey] !== 'undefined'
+            ? data[dataKey]
+            : rawData.length; // endlessMode ? 9999 : (data[dataKey] || 0);
         element.valueObj = {
             id: element.name,
             totalItems,
