@@ -472,6 +472,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
+        if (currentElement.hidden) {
+            return;
+        }
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
