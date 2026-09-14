@@ -1247,7 +1247,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const inputApiUuid = element.options?.inputApiUuid;
         const outputApiUuid = element.options?.outputApiUuid;
         // if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
-        if (!outputApiUuid) {
+        if (!outputApiUuid && !['input-file'].includes(element.type)) {
             if (updateHiddenValue) {
                 this.elementHiddenStateUpdate(element);
             }
