@@ -51,7 +51,7 @@ export class InputTagsElementComponent implements ControlValueAccessor {
     tagsChanged(tags: string[] | null): void {
         const value = ApplicationService.parseTagsValue(tags);
         this.tags.set(value);
-        this.onChange(this.valueAsString() ? value.join(',') : value);
+        this.onChange(this.valueAsString() ? value.join(', ') : value);
         this.onTouched();
     }
 }
