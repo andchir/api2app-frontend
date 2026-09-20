@@ -225,13 +225,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentUserId = currentUser ? parseInt(currentUser.url.split('/').pop()) : 0;
         this.isOwner = this.data.user_id === currentUserId;
 
-        if (this.data.adultsOnly && (
-                !window.localStorage.getItem(`${this.data.uuid}-appUserDob`)
-                || window.localStorage.getItem(`${this.data.uuid}-ageRestricted`)
-            )
-        ) {
-            this.adultAppRestrict();
-        }
+        ApplicationService.getUserData(this.data.uuid, 'ageRestricted')
+            .then((value) => {
+                if (value === null || value) {
+                    this.adultAppRestrict();
+                }
+            });
+
         if (!this.data) {
             return;
         }

@@ -383,6 +383,22 @@ export class ApplicationService extends DataService<ApplicationItem> {
             });
     }
 
+    static async getUserData(appUuid: string, valueKey: string = ''): Promise<Record<string, any> | any> {
+        const dataKey = `${appUuid}-userData`;
+        const dataObj = await ApplicationService.getLocalStorageData(dataKey);
+        if (valueKey) {
+            return typeof dataObj[valueKey] !== 'undefined' ? dataObj[valueKey] : null;
+        }
+        return dataObj;
+    }
+
+    static async setUserData(appUuid: string, record: Record<string, any>): Promise<void> {
+        const dataKey = `${appUuid}-userData`;
+        ApplicationService.updateLocalStorageData(dataKey, (dataObj) => {
+            Object.assign(dataObj, record);
+        });
+    }
+
     static dataURItoFile(dataURI: string): File {
         const blob = ApplicationService.dataUriToBlob(dataURI);
         const mimeType = blob.type;
