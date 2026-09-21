@@ -79,6 +79,7 @@ export interface AppBlockElementPresentation {
     confirmationText?: string,
     fontSize?: string;
     autoHeight?: boolean;
+    blurredImage?: boolean;
 }
 
 export interface AppBlockElementBehavior {

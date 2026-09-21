@@ -1750,6 +1750,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'blurredImage',
+                    label: $localize `Blurred image`,
+                    type: 'input-switch',
+                    enabled: options?.blurredImage || false
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -2270,6 +2276,7 @@ export class ElementOptions {
                     placeholder: '',
                     maxHeight: 400,
                     hiddenByField: '',
+                    blurredImage: false,
                     hiddenByDefault: false,
                     value: ''
                 });

@@ -20,6 +20,11 @@ import { SharedModule } from '../../../../shared.module';
 @Component({
     selector: 'app-messages-element',
     templateUrl: 'messages-element.component.html',
+    styles: [`
+        :host ::ng-deep .images-blurred img:not(.image-revealed) {
+            filter: blur(12px);
+        }
+    `],
     imports: [
         CommonModule,
         FormsModule,
@@ -37,6 +42,7 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     readonly messagesContainer = viewChild<ElementRef<HTMLDivElement>>('messagesContainer');
 
     readonly editorMode = input(false);
+    readonly blurredImage = input(false);
     readonly name = input('');
     readonly label = input('');
     readonly placeholder = input('');
@@ -135,6 +141,20 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     clearChat(): void {
         this.messagesService.clearHistory(this.elementId());
         this.refreshMessages();
+    }
+
+    revealImage(event: MouseEvent): void {
+        if (!this.blurredImage() || event.button !== 0 || !(event.target instanceof Element)) {
+            return;
+        }
+        const image = event.target.closest('img')
+            ?? event.target.closest('a')?.querySelector('img');
+        if (!image) {
+            return;
+        }
+        // Keep the link for middle clicks; primary clicks only reveal the image.
+        event.preventDefault();
+        image.classList.add('image-revealed');
     }
 
     private scrollToBottom(): void {
