@@ -33,6 +33,7 @@ export interface ApplicationItem {
     pricePerUse?: number;
     user_id?: number;
     viewCount?: number;
+    slug?: string;
 }
 
 export interface ApplicationShareRequestParams {

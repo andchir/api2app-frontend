@@ -1,4 +1,4 @@
-import {Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnDestroy, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { take } from 'rxjs/operators';
@@ -92,5 +92,10 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
 
                 }
             });
+    }
+
+    itemSlugSave(slugValue: string): void {
+        const itemId = this.selectedItem.id;
+        console.log('itemSlugSave', itemId, slugValue);
     }
 }

@@ -49,6 +49,7 @@ export function markedOptionsFactory(): MarkedOptions {
 @NgModule({
     imports: [
         CommonModule,
+        FormsModule,
         RouterModule,
         NgSelectModule,
         NgxPaginationModule,

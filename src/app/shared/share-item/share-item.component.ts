@@ -14,12 +14,14 @@ export class ShareItemComponent {
     readonly isHidden = model(false);
     readonly readOnly = input(false);
     readonly itemUuid = input('');
-    readonly language = input('en');
     readonly itemEmbedUuid = input('');
+    readonly itemSlugValue = model('');
+    readonly language = input('en');
     readonly shareUrl = input('/item/shared/');
-    readonly confirmed = output<boolean>();
     readonly activeTab = signal<'link'|'iframe'>('link');
     readonly message = signal('');
+    readonly confirmed = output<boolean>();
+    readonly slugSave = output<string>();
 
     get baseUrl(): string {
         return `${window.location.protocol}//${window.location.host}`;
@@ -76,5 +78,9 @@ export class ShareItemComponent {
         textarea.select();
         navigator.clipboard.writeText(textarea.value);
         this.message.set($localize `:@@ShareItemIframeCodeCopied:The iframe code has been successfully copied to the clipboard.`);
+    }
+
+    saveSlugValue(): void {
+        this.slugSave.emit(this.itemSlugValue() || '');
     }
 }

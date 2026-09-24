@@ -51,31 +51,52 @@
                 <div class="relative">
 
                     @if (isShared()) {
-                    <div class="p-3 border border-gray-300 bg-gray-100 rounded-md">
-                        <label class="text-gray-500 text-sm" for="sharedUrlField" i18n>Public URL</label>
-                        <div class="flex" [ngClass]="{'opacity-50': loading()}">
-                            <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm px-2.5 py-1.5"
-                                   id="sharedUrlField"
-                                   placeholder="Share URL"
-                                   i18n-placeholder
-                                   [value]="publicUrl"
-                                   readonly #sharedUrlField>
-                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0"
-                                    ngxTippy="Open"
-                                    [tippyProps]="{placement: 'bottom'}"
-                                    i18n-ngxTippy
-                                    (click)="openUrl(sharedUrlField)">
-                                <i class="bi bi-box-arrow-up-right text-lg"></i>
-                            </button>
-                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0 rounded-e-lg"
-                                    ngxTippy="Copy To Clipboard"
-                                    [tippyProps]="{placement: 'bottom'}"
-                                    i18n-ngxTippy
-                                    (click)="copyUrl(sharedUrlField)">
-                                <i class="bi bi-clipboard text-lg"></i>
-                            </button>
+                        <div class="p-3 border border-gray-300 bg-gray-100 rounded-md">
+                            @if (!readOnly()) {
+                                <div class="flex gap-2 items-center border-b border-gray-300 pb-3 mb-2">
+                                    <div>
+                                        <label class="text-gray-500 text-sm" for="itemSlugField">Имя приложения</label>
+                                    </div>
+                                    <div class="grow">
+                                        <div class="flex">
+                                            <input type="text" class="block w-full p-2 text-gray-900 border border-gray-300 bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 rounded-none rounded-s-lg"
+                                                   id="itemSlugField"
+                                                   [(ngModel)]="itemSlugValue">
+                                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1 border-s-0 rounded-e-lg"
+                                                    ngxTippy="Save"
+                                                    [tippyProps]="{placement: 'bottom'}"
+                                                    i18n-ngxTippy
+                                                    (click)="saveSlugValue()">
+                                                <i class="bi bi-check-lg text-lg"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            <label class="text-gray-500 text-sm" for="sharedUrlField" i18n>Public URL</label>
+                            <div class="flex" [ngClass]="{'opacity-50': loading()}">
+                                <input type="text" class="rounded-none rounded-s-lg bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block flex-1 min-w-0 w-full text-sm px-2.5 py-1.5"
+                                       id="sharedUrlField"
+                                       placeholder="Share URL"
+                                       i18n-placeholder
+                                       [value]="publicUrl"
+                                       readonly #sharedUrlField>
+                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0"
+                                        ngxTippy="Open"
+                                        [tippyProps]="{placement: 'bottom'}"
+                                        i18n-ngxTippy
+                                        (click)="openUrl(sharedUrlField)">
+                                    <i class="bi bi-box-arrow-up-right text-lg"></i>
+                                </button>
+                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1.5 border-s-0 rounded-e-lg"
+                                        ngxTippy="Copy To Clipboard"
+                                        [tippyProps]="{placement: 'bottom'}"
+                                        i18n-ngxTippy
+                                        (click)="copyUrl(sharedUrlField)">
+                                    <i class="bi bi-clipboard text-lg"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
                     }
 
                     @if (isShared() && itemEmbedUuid()) {
