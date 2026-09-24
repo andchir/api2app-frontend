@@ -36,6 +36,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         this.requestUrl = `${BASE_URL}${this.locale}/api/v1/applications`;
     }
 
+    saveSlug(itemId: number, slug: string | null): Observable<{slug: string | null}> {
+        return this.httpClient.post<{slug: string | null}>(
+            `${this.requestUrl}/${itemId}/slug`, {slug}, this.httpOptions
+        ).pipe(catchError(this.handleError));
+    }
+
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
         const url = `${BASE_URL}${this.locale}/api/v1/application_import_from_json`;
         return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)

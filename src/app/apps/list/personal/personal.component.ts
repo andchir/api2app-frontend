@@ -19,6 +19,8 @@ import { ApplicationImportComponent } from '../../app-import/app-import.componen
 })
 export class ApplicationsListPersonalComponent extends ListAbstractComponent<ApplicationItem> implements OnInit, OnDestroy {
 
+    slugError = '';
+
     @ViewChild('dynamic', { read: ViewContainerRef })
     private viewRef: ViewContainerRef;
 
@@ -27,7 +29,7 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
         route: ActivatedRoute,
         router: Router,
         authService: AuthService,
-        dataService: ApplicationService,
+        protected override dataService: ApplicationService,
         private modalService: ModalService
     ) {
         super(locale, route, router, authService, dataService);
@@ -95,7 +97,33 @@ export class ApplicationsListPersonalComponent extends ListAbstractComponent<App
     }
 
     itemSlugSave(slugValue: string): void {
+        if (!this.selectedItem || this.loading) {
+            return;
+        }
+        this.loading = true;
+        this.slugError = '';
         const itemId = this.selectedItem.id;
-        console.log('itemSlugSave', itemId, slugValue);
+        this.dataService.saveSlug(itemId, slugValue.trim() || null)
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe({
+                next: ({slug}) => {
+                    const item = this.items.find(item => item.id === itemId);
+                    if (item) {
+                        item.slug = slug;
+                    }
+                    if (this.selectedItem?.id === itemId) {
+                        this.selectedItem.slug = slug;
+                    }
+                    this.loading = false;
+                },
+                error: (err) => {
+                    this.loading = false;
+                    if (this.selectedItem?.id === itemId) {
+                        this.slugError = Array.isArray(err?.slug)
+                            ? err.slug.join(' ')
+                            : err?.detail || $localize `Failed to save the application name.`;
+                    }
+                }
+            });
     }
 }

@@ -53,24 +53,31 @@
                     @if (isShared()) {
                         <div class="p-3 border border-gray-300 bg-gray-100 rounded-md">
                             @if (!readOnly()) {
-                                <div class="flex gap-2 items-center border-b border-gray-300 pb-3 mb-2">
-                                    <div>
-                                        <label class="text-gray-500 text-sm" for="itemSlugField">Имя приложения</label>
-                                    </div>
-                                    <div class="grow">
-                                        <div class="flex">
-                                            <input type="text" class="block w-full p-2 text-gray-900 border border-gray-300 bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 rounded-none rounded-s-lg"
-                                                   id="itemSlugField"
-                                                   [(ngModel)]="itemSlugValue">
-                                            <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1 border-s-0 rounded-e-lg"
-                                                    ngxTippy="Save"
-                                                    [tippyProps]="{placement: 'bottom'}"
-                                                    i18n-ngxTippy
-                                                    (click)="saveSlugValue()">
-                                                <i class="bi bi-check-lg text-lg"></i>
-                                            </button>
+                                <div class="border-b border-gray-300 pb-3 mb-2">
+                                    <div class="flex gap-2 items-center">
+                                        <div>
+                                            <label class="text-gray-500 text-sm" for="itemSlugField" i18n>Application name</label>
+                                        </div>
+                                        <div class="grow">
+                                            <div class="flex">
+                                                <input type="text" class="block w-full p-2 text-gray-900 border border-gray-300 bg-gray-50 text-xs focus:ring-blue-500 focus:border-blue-500 rounded-none rounded-s-lg"
+                                                       id="itemSlugField"
+                                                       [disabled]="loading()"
+                                                       [(ngModel)]="slugDraft">
+                                                <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium text-sm px-3 py-1 border-s-0 rounded-e-lg"
+                                                        ngxTippy="Save"
+                                                        [tippyProps]="{placement: 'bottom'}"
+                                                        i18n-ngxTippy
+                                                        [disabled]="loading()"
+                                                        (click)="saveSlugValue()">
+                                                    <i class="bi bi-check-lg text-lg"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    @if (slugError()) {
+                                        <div class="pt-2 text-left text-sm text-red-600" role="alert">{{ slugError() }}</div>
+                                    }
                                 </div>
                             }
                             <label class="text-gray-500 text-sm" for="sharedUrlField" i18n>Public URL</label>

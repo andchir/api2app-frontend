@@ -1,4 +1,4 @@
-import {Component, input, model, output, signal} from '@angular/core';
+import {Component, input, linkedSignal, model, output, signal} from '@angular/core';
 
 @Component({
     selector: 'app-share-item',
@@ -15,7 +15,13 @@ export class ShareItemComponent {
     readonly readOnly = input(false);
     readonly itemUuid = input('');
     readonly itemEmbedUuid = input('');
-    readonly itemSlugValue = model('');
+    readonly itemSlugValue = input('');
+    readonly slugError = input('');
+    readonly slugDraft = linkedSignal(() => {
+        this.isActive();
+        this.itemUuid();
+        return this.itemSlugValue() || '';
+    });
     readonly language = input('en');
     readonly shareUrl = input('/item/shared/');
     readonly activeTab = signal<'link'|'iframe'>('link');
@@ -81,6 +87,8 @@ export class ShareItemComponent {
     }
 
     saveSlugValue(): void {
-        this.slugSave.emit(this.itemSlugValue() || '');
+        if (!this.loading()) {
+            this.slugSave.emit(this.slugDraft());
+        }
     }
 }

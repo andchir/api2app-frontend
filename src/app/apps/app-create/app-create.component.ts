@@ -615,8 +615,8 @@ export class ApplicationCreateComponent extends ApplicationSharedComponent imple
         }
         const baseUrl = `${window.location.protocol}//${window.location.host}`;
         const url = environment.production && this.data.language
-            ? `${baseUrl}/${this.data.language}/apps/shared/${this.data.uuid}`
-            : `${baseUrl}/apps/shared/${this.data.uuid}`;
+            ? `${baseUrl}/${this.data.language}/apps/shared/${this.data.slug || this.data.uuid}`
+            : `${baseUrl}/apps/shared/${this.data.slug || this.data.uuid}`;
         window.open(url, '_blank').focus();
     }
 

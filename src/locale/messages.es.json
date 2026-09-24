@@ -1,6 +1,7 @@
 {
     "locale": "es",
     "translations": {
+        "1115742700141823004": "No se pudo guardar el nombre de la aplicación.",
         "9155608366859514313": "Fuente",
         "4195395623329708230": "La configuración de VK Pay se ha creado correctamente.",
         "8858652066129215363": "La configuración de VK Pay se ha actualizado correctamente.",

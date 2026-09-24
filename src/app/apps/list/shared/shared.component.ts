@@ -63,7 +63,7 @@ export class ApplicationsListSharedComponent extends ListAbstractComponent<Appli
     }
 
     viewItem(item: ApplicationItem): void {
-        this.router.navigate(['/apps/shared/', item.uuid]);
+        this.router.navigate(['/apps/shared/', item.slug || item.uuid]);
     }
 
     viewSharedUrl(item: ApplicationItem): void {
