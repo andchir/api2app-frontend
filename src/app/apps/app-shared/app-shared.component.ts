@@ -876,11 +876,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             if (firstInbound) {
                 firstInbound = false;
-            } else {
+            }
+            /*else {
                 this.messageType = 'success';
                 this.message = $localize `New message received.`;
                 this.cdr.detectChanges();
-            }
+            }*/
             this.applyParsedApiResponseToApp(currentApi, data as any, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             this.cdr.detectChanges();
         };
