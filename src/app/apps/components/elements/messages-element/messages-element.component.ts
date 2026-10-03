@@ -53,6 +53,7 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
 
     readonly inputText = signal('');
     readonly messages = signal<ChatMessage[]>([]);
+    readonly isClearChatConfirmActive = signal(false);
     readonly elementId = computed(() =>
         `messages-${this.name()}-${this.parentIndex()}-${this.index()}`
     );
@@ -139,6 +140,10 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     }
 
     clearChat(): void {
+        this.isClearChatConfirmActive.set(true);
+    }
+
+    confirmClearChat(): void {
         this.messagesService.clearHistory(this.elementId());
         this.refreshMessages();
     }

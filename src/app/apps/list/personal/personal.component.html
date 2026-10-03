@@ -103,6 +103,7 @@
 <app-share-item modalTitle="Share Application"
                 i18n-modalTitle
                 [loading]="loading"
+                [displaySlugField]="true"
                 [isHidden]="selectedItem.hidden"
                 [(isActive)]="isShareActive"
                 (isActiveChange)="slugError = ''"

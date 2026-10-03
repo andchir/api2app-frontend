@@ -13,6 +13,7 @@ export class ShareItemComponent {
     readonly isShared = model(false);
     readonly isHidden = model(false);
     readonly readOnly = input(false);
+    readonly displaySlugField = input(false);
     readonly itemUuid = input('');
     readonly itemEmbedUuid = input('');
     readonly itemSlugValue = input('');

@@ -86,3 +86,11 @@
 
     </div>
 </div>
+
+<app-confirm
+    [isActive]="isClearChatConfirmActive()"
+    (isActiveChange)="isClearChatConfirmActive.set($event)"
+    message="Are you sure you want to clear the chat?"
+    i18n-message="@@ClearChatConfirmation"
+    (confirmed)="confirmClearChat()">
+</app-confirm>

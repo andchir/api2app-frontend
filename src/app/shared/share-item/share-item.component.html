@@ -52,7 +52,7 @@
 
                     @if (isShared()) {
                         <div class="p-3 border border-gray-300 bg-gray-100 rounded-md">
-                            @if (!readOnly()) {
+                            @if (!readOnly() && displaySlugField()) {
                                 <div class="border-b border-gray-300 pb-3 mb-2">
                                     <div class="flex gap-2 items-center">
                                         <div>
