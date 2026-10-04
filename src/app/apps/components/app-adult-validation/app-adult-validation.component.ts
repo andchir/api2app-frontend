@@ -57,8 +57,22 @@ export class AppAdultValidationComponent implements OnInit, OnDestroy {
         } else if (target === 'year') {
             this.userDobYear = number;
         }
+        this.updateCalendarDays();
         if (dropdownEl) {
             dropdownEl.classList.add('hidden');
+        }
+    }
+
+    private updateCalendarDays(): void {
+        // Until a year is selected, February can include leap day.
+        const year = this.userDobYear ? Number(this.userDobYear) : 2000;
+        const daysInMonth = this.userDobMonth
+            ? new Date(year, Number(this.userDobMonth), 0).getDate()
+            : 31;
+
+        this.calendarDays = this.createPaddedNumberArray(1, daysInMonth);
+        if (this.userDobDay && !this.calendarDays.includes(this.userDobDay)) {
+            this.userDobDay = '';
         }
     }
 
