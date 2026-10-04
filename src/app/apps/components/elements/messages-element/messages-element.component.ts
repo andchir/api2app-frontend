@@ -59,6 +59,7 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     );
 
     private static readonly OUTGOING_PREFIX = '\u200B__out__';
+    private static readonly MAX_MESSAGE_LENGTH = 1000;
     private needsScroll = false;
     private initialized = false;
     private onChange: (value: any) => void = () => {};
@@ -121,8 +122,23 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
         }
     }
 
+    updateInputText(text: string, inputElement: HTMLInputElement): void {
+        const limitedText = this.limitMessageLength(text);
+        this.inputText.set(limitedText);
+        // Update the field even when truncation leaves the signal unchanged.
+        inputElement.value = limitedText;
+    }
+
+    private limitMessageLength(text: string): string {
+        const characters = Array.from(text);
+        const limit = MessagesElementComponent.MAX_MESSAGE_LENGTH;
+        return characters.length > limit
+            ? characters.slice(0, limit - 3).join('') + '...'
+            : text;
+    }
+
     sendMessage(): void {
-        const text = this.inputText().trim();
+        const text = this.limitMessageLength(this.inputText().trim());
         if (!text) {
             return;
         }
