@@ -589,6 +589,8 @@
         "ShareItemIframeTab": "Obtenir le code iframe",
         "ShareItemIframeCode": "Code iframe",
         "ShareItemCopyIframeCode": "Copier le code iframe",
-        "ShareItemIframeCodeCopied": "Le code iframe a été copié dans le presse-papiers."
+        "ShareItemIframeCodeCopied": "Le code iframe a été copié dans le presse-papiers.",
+        "FormatResponseJson": "Formater le JSON",
+        "FormatResponseJsonError": "Impossible de formater le JSON. Vérifiez sa syntaxe."
     }
 }

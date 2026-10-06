@@ -589,6 +589,8 @@
         "ShareItemIframeTab": "Iframe-Code abrufen",
         "ShareItemIframeCode": "Iframe-Code",
         "ShareItemCopyIframeCode": "Iframe-Code kopieren",
-        "ShareItemIframeCodeCopied": "Der Iframe-Code wurde erfolgreich in die Zwischenablage kopiert."
+        "ShareItemIframeCodeCopied": "Der Iframe-Code wurde erfolgreich in die Zwischenablage kopiert.",
+        "FormatResponseJson": "JSON formatieren",
+        "FormatResponseJsonError": "JSON konnte nicht formatiert werden. Prüfen Sie die Syntax."
     }
 }

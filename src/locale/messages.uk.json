@@ -589,6 +589,8 @@
         "ShareItemIframeTab": "Отримати код iframe",
         "ShareItemIframeCode": "Код iframe",
         "ShareItemCopyIframeCode": "Скопіювати код iframe",
-        "ShareItemIframeCodeCopied": "Код iframe успішно скопійовано до буфера обміну."
+        "ShareItemIframeCodeCopied": "Код iframe успішно скопійовано до буфера обміну.",
+        "FormatResponseJson": "Форматувати JSON",
+        "FormatResponseJsonError": "Не вдалося відформатувати JSON. Перевірте його синтаксис."
     }
 }

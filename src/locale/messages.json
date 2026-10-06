@@ -589,6 +589,8 @@
         "ShareItemIframeTab": "Get iframe code",
         "ShareItemIframeCode": "Iframe code",
         "ShareItemCopyIframeCode": "Copy iframe code",
-        "ShareItemIframeCodeCopied": "The iframe code has been successfully copied to the clipboard."
+        "ShareItemIframeCodeCopied": "The iframe code has been successfully copied to the clipboard.",
+        "FormatResponseJson": "Format JSON",
+        "FormatResponseJsonError": "Cannot format JSON. Check its syntax."
     }
 }

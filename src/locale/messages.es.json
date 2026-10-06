@@ -589,6 +589,8 @@
         "ShareItemIframeTab": "Obtener código iframe",
         "ShareItemIframeCode": "Código iframe",
         "ShareItemCopyIframeCode": "Copiar código iframe",
-        "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles."
+        "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles.",
+        "FormatResponseJson": "Formatear JSON",
+        "FormatResponseJsonError": "No se pudo formatear el JSON. Comprueba su sintaxis."
     }
 }

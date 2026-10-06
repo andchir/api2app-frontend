@@ -138,6 +138,28 @@ export class ApiItemComponent implements OnInit, AfterViewInit, OnChanges, OnDes
         });
     }
 
+    formatResponseJson(): void {
+        if (!this.aceEditor || this.loading || this.apiItem.responseContentType !== 'json') {
+            return;
+        }
+
+        const source = this.aceEditor.getValue().trim();
+        if (!source) {
+            return;
+        }
+
+        let formatted: string;
+        try {
+            formatted = JSON.stringify(JSON.parse(source), null, 4);
+        } catch {
+            this.emitItemMessage($localize `:@@FormatResponseJsonError:Cannot format JSON. Check its syntax.`, 'error');
+            return;
+        }
+
+        const session = this.aceEditor.session;
+        session.replace(new ace.Range(0, 0, session.getLength(), 0), formatted);
+    }
+
     findDataEmptyIndex(optionName: 'headers'|'bodyFields'|'queryParams'): number {
         return this.apiItem[optionName].findLastIndex((item) => {
             return !item.name && !item.value;
