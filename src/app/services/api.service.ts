@@ -648,15 +648,17 @@ export class ApiService extends DataService<ApiItem> {
         return new Promise((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.onload = (fileLoadedEvent) => {
-                if (['[', '{'].includes(((fileLoadedEvent.target?.result || '') as string).substring(0, 1))) {
+                const responseText = (fileLoadedEvent.target?.result || '') as string;
+                const trimmedResponseText = responseText.trim();
+                if (['[', '{'].includes(trimmedResponseText.substring(0, 1))) {
                     try {
-                        const responseData = JSON.parse((fileLoadedEvent.target?.result || '[]') as string);
+                        const responseData = JSON.parse(trimmedResponseText);
                         resolve(responseData);
                     } catch (e) {
                         reject(e);
                     }
                 } else {
-                    resolve(fileLoadedEvent.target?.result || '');
+                    resolve(responseText);
                 }
             };
             if (contentType.includes('audio/')
