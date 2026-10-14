@@ -227,6 +227,9 @@ export class ApiService extends DataService<ApiItem> {
         const outData = {};
         const innerOptions = {};
         const innerData = {};
+        if (!data) {
+            return {outData, innerOptions, innerData};
+        }
         for (const key of Object.keys(data)) {
             if (key === '__inner') {
                 Object.assign(innerData, data[key]);
