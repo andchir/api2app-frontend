@@ -474,7 +474,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
-        if (currentElement.hidden) {
+        if (currentElement.hidden && !this.fieldsHiddenByDefault.includes(currentElement.type)) {
             return;
         }
         if (!this.appsAutoStarted.includes(apiUuid)) {
@@ -1923,7 +1923,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (!fieldName) {
             return;
         }
-
         const fieldValue = this.getBlockElementFieldValue(fieldName, valuesObj);
         let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
         if (value === null || (typeof value === 'string' && !value)) {
