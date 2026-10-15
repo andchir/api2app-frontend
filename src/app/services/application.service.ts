@@ -820,26 +820,30 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     getNodeTypes(flatObj: any): Record<string, 'array' | 'object'> {
         const types: Record<string, 'array' | 'object'> = {};
+        const children: Record<string, Set<string>> = {};
 
         for (const key in flatObj) {
             if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
 
             const segments = key.split('.');
-            // For every parent path (prefix) we check the next segment
+            // Collect each node's direct children before deciding whether it is an array.
             for (let i = 0; i < segments.length - 1; i++) {
                 const prefix = segments.slice(0, i + 1).join('.');
                 const nextSegment = segments[i + 1];
-                const isNextNumeric = /^\d+$/.test(nextSegment);
-
-                if (isNextNumeric) {
-                    // This prefix must be an array because it has a numeric child
-                    types[prefix] = 'array';
-                } else if (types[prefix] !== 'array') {
-                    // If not forced to be array, it's an object (default)
-                    types[prefix] = 'object';
-                }
+                children[prefix] ??= new Set<string>();
+                children[prefix].add(nextSegment);
             }
         }
+
+        for (const [prefix, childKeys] of Object.entries(children)) {
+            const indexes = [...childKeys];
+            const isArray = indexes.length > 0
+                && indexes.every((index) => /^(0|[1-9]\d*)$/.test(index))
+                && indexes.every((index) => Number(index) < indexes.length)
+                && new Set(indexes.map(Number)).size === indexes.length;
+            types[prefix] = isArray ? 'array' : 'object';
+        }
+
         return types;
     }
 
