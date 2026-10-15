@@ -1734,7 +1734,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (typeof error === 'string') {
             try {
-                return this.getErrorMessageFromObject(JSON.parse(error)) || error;
+                return this.getErrorMessageFromObject(JSON.parse(error));
             } catch (e) {
                 return error;
             }
@@ -1751,7 +1751,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         if (typeof error !== 'object') {
-            return String(error);
+            return '';
         }
 
         for (const key of ['detail', 'message', 'msg', 'error']) {
@@ -1772,6 +1772,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     localizeServerMessages(errorMessage: string): string {
+        if (errorMessage === 'Error.') {
+            errorMessage = $localize `Error.`;
+        }
         if (errorMessage === 'Daily usage limit exceeded.') {
             errorMessage = $localize `Daily usage limit exceeded.`;
         }
