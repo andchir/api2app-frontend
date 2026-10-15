@@ -1901,12 +1901,30 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    private getBlockElementFieldValue(fieldName: string|number, valuesObj: any): any {
+        const fieldNameString = String(fieldName);
+        if (!fieldNameString.includes('{ANY}')) {
+            return typeof valuesObj[fieldNameString] !== 'undefined' ? valuesObj[fieldNameString] : '';
+        }
+
+        const fieldNameParts = fieldNameString.split('.');
+        const matchingKey = Object.keys(valuesObj).find((key) => {
+            const keyParts = key.split('.');
+            return keyParts.length === fieldNameParts.length
+                && fieldNameParts.every((part, index) => part === '{ANY}' || part === keyParts[index]);
+        });
+        return matchingKey === undefined || typeof valuesObj[matchingKey] === 'undefined'
+            ? ''
+            : valuesObj[matchingKey];
+    }
+
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any, isAutoStart: boolean = false, apiUuid?: string): void {
         const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
         if (!fieldName) {
             return;
         }
-        const fieldValue = typeof valuesObj[fieldName] !== 'undefined' ? valuesObj[fieldName] : '';
+
+        const fieldValue = this.getBlockElementFieldValue(fieldName, valuesObj);
         let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
