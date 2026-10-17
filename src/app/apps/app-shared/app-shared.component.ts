@@ -1593,9 +1593,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.elementHiddenStateUpdate(currentElement);
         }
 
-        const responseContentType = response.headers.has('Content-type')
-            ? response.headers.get('Content-type')
-            : apiItem.responseContentType;
+        // Angular HttpHeaders is case-insensitive, but the configured response
+        // type can be stale (for example, when an API starts returning an image
+        // from a POST request). Prefer the actual Blob MIME type when it is
+        // available so that binary responses are converted to a data URL.
+        const blobContentType = response.body instanceof Blob ? response.body.type : '';
+        const headerContentType = response.headers.get('Content-Type') || '';
+        const responseContentType = headerContentType || blobContentType || apiItem.responseContentType;
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
@@ -1925,6 +1929,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         const fieldValue = this.getBlockElementFieldValue(fieldName, valuesObj);
         let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
+
+        // A binary API response has no properties to put into valuesObj. The
+        // response is converted to a data URL in createAppResponse, so use the
+        // complete response for media elements instead of requiring a `value`
+        // property in the output mapping.
+        if (['image', 'audio', 'video'].includes(element.type)
+            && typeof rawData === 'string'
+            && rawData.startsWith('data:')
+            && (!fieldValue || fieldName === 'value')) {
+            value = rawData;
+        }
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.markForCheck();

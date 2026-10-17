@@ -165,6 +165,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get mediaUrl(): string | SafeResourceUrl | null {
+        if (!this.useLink) {
+            return this.createOriginalFileUrl();
+        }
         const mediaUrl = this.createOriginalFileUrl();
         if (mediaUrl && typeof mediaUrl === 'string' && mediaUrl.indexOf('data:') > -1) {
             return '#download';
@@ -493,7 +496,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (event) {
             event.preventDefault();
         }
-        const mediaUrl = this.mediaUrl as string;
+        const mediaUrl = !this.useLink
+            ? String(this.mediaUrl)
+            : String(this.createOriginalFileUrl());
         const posterUrl = this.posterUrl;
 
         if (this.type === 'image' || posterUrl) {
