@@ -20,7 +20,7 @@ import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem, ApplicationShareData } from '../models/application-item.interface';
-import { AppBlock, AppBlockElement } from '../models/app-block.interface';
+import {AppBlock, AppBlockElement, AppBlockElementType} from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
@@ -83,7 +83,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
     userBalanceUpdating: boolean = false;
-    fieldsHiddenByDefault: string[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
+
+    readonly fieldsHiddenByDefault: AppBlockElementType[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
+    readonly fieldsInputClearAlways: AppBlockElementType[] = ['input-file', 'image'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -295,17 +297,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
-                        // if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
-                        //     return;
-                        // }
+                        const currentElement = this.appElements.output[uuid].length > 0
+                            ? this.appElements.output[uuid][0]
+                            : null;
+                        if (!currentElement
+                            || (!this.fieldsHiddenByDefault.includes(currentElement.type) && currentElement.hidden)) {
+                            return;
+                        }
                         const buttonElement = this.appElements.buttons[uuid]
                             && this.appElements.buttons[uuid].length > 0
-                            && !this.appElements.buttons[uuid][0].hidden
+                            // && !this.appElements.buttons[uuid][0].hidden
                                 ? this.appElements.buttons[uuid][0]
                                 : null;
                         const ignoreButton = buttonElement && buttonElement.allowAutoSubmit;
                         if (!buttonElement || ignoreButton) {
-                            this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
+                            this.appAutoStart(uuid, 'output', currentElement);
                         }
                     });
                     this.cdr.detectChanges();
