@@ -86,6 +86,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
     readonly fieldsHiddenByDefault: AppBlockElementType[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
     readonly fieldsInputClearAlways: AppBlockElementType[] = ['input-file', 'image'];
+    readonly fieldsBooleanOrNumber: AppBlockElementType[] = ['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'];
+    readonly fieldsMedia: AppBlockElementType[] = ['image', 'audio', 'video'];
+    readonly fieldsUsePrefixSuffixOnInput: AppBlockElementType[] = ['text-header', 'text', 'image', 'audio', 'video', 'iframe'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -1177,7 +1180,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             else if (!loading) {
                 // Clean only the important elements
                 block.elements.forEach((element) => {
-                    if (['input-file'].includes(element.type)) {
+                    if (this.fieldsInputClearAlways.includes(element.type)) {
                         this.clearElementValue(element, true, false);
                     }
                 });
@@ -1940,11 +1943,17 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         // response is converted to a data URL in createAppResponse, so use the
         // complete response for media elements instead of requiring a `value`
         // property in the output mapping.
-        if (['image', 'audio', 'video'].includes(element.type)
+        if (this.fieldsMedia.includes(element.type)
             && typeof rawData === 'string'
             && rawData.startsWith('data:')
             && (!fieldValue || fieldName === 'value')) {
             value = rawData;
+            if (typeof value === 'string') {
+                element.value = ApplicationService.createStringValue(element, value, false, true, true);
+                this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
+                this.cdr.markForCheck();
+                return;
+            }
         }
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
@@ -1953,12 +1962,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (element.type === 'messages') {
             element.value = typeof value === 'string' ? value : JSON.stringify(value);
-            this.cdr.markForCheck();
-            return;
-        }
-        if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = ApplicationService.createInputStringValue(element, value);
-            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
             this.cdr.markForCheck();
             return;
         }
@@ -1978,19 +1981,20 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
             }
-            if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createInputStringValue(element, value, true);
-            }
-        } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
+            // if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
+            //     element.value = ApplicationService.createInputStringValue(element, value, true);
+            // }
+        } else if (this.fieldsBooleanOrNumber.includes(element.type)) {
             element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
         } else if (['table'].includes(element.type) && typeof value === 'object') {
             element.valueArr = [value];
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else if (typeof value === 'string' || element.prefixText || element.suffixText
-                || ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createInputStringValue(element, value, true);
+            } else if (typeof value === 'string') {
+                const usePrefixSuffix = this.fieldsUsePrefixSuffixOnInput.includes(element.type);
+                // element.value = ApplicationService.createInputStringValue(element, value, true, usePrefixSuffix);
+                element.value = ApplicationService.createStringValue(element, value, false, true, usePrefixSuffix);
             } else {
                 element.value = value;
             }

@@ -471,13 +471,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             .filter((item) => !!item);
     }
 
-    static createInputStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
-        // Use the prefix and suffix only when the value is finally used
-        const usePrefixSuffix = !['input-text', 'input-textarea', 'input-switch', 'input-select'].includes(element.type);
-        return ApplicationService.createStringValue(element, value, skipTags, true, usePrefixSuffix);
-    }
-
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true, usePrefixSuffix: boolean = true): string {
+    static createStringValue(element: AppBlockElement, value: any, skipTags = false, trim = true, usePrefixSuffix = true): string {
         const prefixText = usePrefixSuffix ? (element.prefixText || '') : '';
         const suffixText = usePrefixSuffix ? (element.suffixText || '') : '';
         if (typeof value === 'object' && Array.isArray(value)) {
