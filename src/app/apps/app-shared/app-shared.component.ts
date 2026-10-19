@@ -1175,7 +1175,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.messageType = 'success';
             }
             if ((showMessage && block.options?.autoClear) || clearBlock) {
-                this.clearElementsValues(block);
+                this.clearElementsValues(block, true, clearBlock);
             }
             else if (!loading) {
                 // Clean only the important elements
