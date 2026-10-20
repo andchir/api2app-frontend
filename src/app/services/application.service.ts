@@ -501,7 +501,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static async downloadFile(source: string | Blob, filename: string = ''): Promise<boolean> {
-        /*if (typeof source === 'string'
+        if (typeof source === 'string'
             && /^https?:\/\//.test(source)
             && typeof vkBridge !== 'undefined'
             && window['isVKApp']
@@ -518,7 +518,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             } catch (error) {
                 console.warn('VK file download failed, falling back to browser download:', error);
             }
-        }*/
+        }
 
         try {
             let blob: Blob;
