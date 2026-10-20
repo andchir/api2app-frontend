@@ -507,7 +507,23 @@ export class ApplicationService extends DataService<ApplicationItem> {
             && window['isVKApp']
         ) {
             try {
-                const vkFilename = filename || ApplicationService.getDownloadFilename(source, new Blob());
+                let vkFilename = filename;
+                if (!vkFilename) {
+                    try {
+                        const response = await fetch(source, {
+                            method: 'HEAD',
+                            mode: 'cors',
+                            cache: 'no-cache'
+                        });
+                        const responseFilename = ApplicationService.getResponseFilename(response);
+                        vkFilename = (responseFilename && ApplicationService.getFileExtension(responseFilename)
+                            ? responseFilename
+                            : '') || ApplicationService.getFilenameFromMimeType(response.headers.get('content-type'));
+                    } catch {
+                        // Some asset endpoints do not support CORS or HEAD.
+                    }
+                }
+                vkFilename = vkFilename || ApplicationService.getDownloadFilename(source, new Blob());
                 const result = await vkBridge.send('VKWebAppDownloadFile', {
                     url: source,
                     filename: vkFilename
@@ -574,19 +590,58 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
     }
 
+    private static getFilenameFromMimeType(contentType: string | null): string {
+        const mimeType = contentType?.split(';')[0].trim().toLowerCase() || '';
+        const extensionByMimeType: Record<string, string> = {
+            'image/jpeg': 'jpg',
+            'image/svg+xml': 'svg',
+            'image/webp': 'webp',
+            'audio/mpeg': 'mp3',
+            'video/mp4': 'mp4',
+            'application/pdf': 'pdf',
+            'application/zip': 'zip'
+        };
+        const extension = extensionByMimeType[mimeType] || mimeType.split('/')[1];
+        return extension ? `file.${extension}` : '';
+    }
+
     private static getDownloadFilename(source: string | Blob, blob: Blob): string {
         if (typeof source === 'string' && !source.startsWith('data:')) {
-            const value = source.split('/').pop()?.split('?')[0].split('#')[0] || '';
+            const urlParts = source.split(/[?#]/)[0].split('/');
+            const value = urlParts.pop() || '';
             if (value) {
                 try {
-                    return decodeURIComponent(value);
+                    const decodedValue = decodeURIComponent(value);
+                    if (decodedValue.includes('.')) {
+                        return decodedValue;
+                    }
                 } catch {
-                    return value;
+                    if (value.includes('.')) {
+                        return value;
+                    }
+                }
+            }
+
+            // Asset URLs may end with `/content`, while the original filename
+            // is stored in the base64url-encoded asset token in the previous
+            // path segment (for example, `{ "f": "image.jpg" }`).
+            const assetToken = urlParts.pop();
+            const tokenPayload = assetToken?.split('.')[0];
+            if (tokenPayload) {
+                try {
+                    const base64 = tokenPayload.replace(/-/g, '+').replace(/_/g, '/');
+                    const paddedBase64 = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+                    const bytes = Uint8Array.from(atob(paddedBase64), character => character.charCodeAt(0));
+                    const payload = JSON.parse(new TextDecoder().decode(bytes));
+                    if (typeof payload?.f === 'string' && payload.f) {
+                        return payload.f;
+                    }
+                } catch {
+                    // Fall back to the MIME type when the token is not decodable.
                 }
             }
         }
-        const extension = blob.type.split(';')[0].split('/')[1] || 'bin';
-        return `file.${extension}`;
+        return ApplicationService.getFilenameFromMimeType(blob.type) || 'file.bin';
     }
 
     static downloadDataURI(dataURI: string, filename: string = 'file'): void {
