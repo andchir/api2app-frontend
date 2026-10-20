@@ -29,6 +29,28 @@ describe('ProgressElementComponent polling', () => {
 
     afterEach(() => fixture.destroy());
 
+    it('scrolls into view once when polling starts, but not on subsequent responses', fakeAsync(() => {
+        const scroll = spyOn(fixture.nativeElement, 'scrollIntoView');
+        update({ uuid: 'a', status: 'processing' });
+        expect(scroll).not.toHaveBeenCalled();
+        tick(16);
+        expect(scroll).toHaveBeenCalledOnceWith({ behavior: 'smooth', block: 'start' });
+        update({ uuid: 'a', status: 'processing', timestamp: 1 });
+        tick(10000);
+        expect(scroll).toHaveBeenCalledTimes(1);
+        update({ uuid: 'b', status: 'processing' });
+        tick(16);
+        expect(scroll).toHaveBeenCalledTimes(2);
+    }));
+
+    it('does not scroll after polling stops before the next frame', fakeAsync(() => {
+        const scroll = spyOn(fixture.nativeElement, 'scrollIntoView');
+        update({ uuid: 'a' });
+        update({ uuid: 'a', status: 'completed' });
+        tick(16);
+        expect(scroll).not.toHaveBeenCalled();
+    }));
+
     it('keeps a ten-second polling interval despite frequent responses', fakeAsync(() => {
         const poll = spyOn(component.progressUpdate, 'emit');
         update({ uuid: 'a', status: 'processing' });

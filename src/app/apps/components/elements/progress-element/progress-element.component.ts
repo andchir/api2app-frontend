@@ -4,6 +4,7 @@ import {
     computed,
     DestroyRef,
     effect,
+    ElementRef,
     forwardRef,
     inject,
     input,
@@ -85,6 +86,8 @@ export class ProgressElementComponent implements ControlValueAccessor {
     private processStartedAt: Date | null = null;
     private readonly delay = 10000;
     private timer: ReturnType<typeof setTimeout> | null = null;
+    private scrollFrame: number | null = null;
+    private readonly host = inject(ElementRef<HTMLElement>);
     private destroyed = false;
     private active = false;
     private finished = false;
@@ -183,6 +186,13 @@ export class ProgressElementComponent implements ControlValueAccessor {
             this.active = true;
             this.nextPollAt = Date.now() + this.delay;
             this.scheduleTick();
+            // Wait for the progress element to be rendered before bringing it into view.
+            this.scrollFrame = requestAnimationFrame(() => {
+                this.scrollFrame = null;
+                if (this.active && !this.destroyed) {
+                    this.host.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
         }
     }
 
@@ -238,6 +248,10 @@ export class ProgressElementComponent implements ControlValueAccessor {
         this.active = false;
         clearTimeout(this.timer);
         this.timer = null;
+        if (this.scrollFrame !== null) {
+            cancelAnimationFrame(this.scrollFrame);
+            this.scrollFrame = null;
+        }
     }
 
     private readStartTime(): Date | null {
