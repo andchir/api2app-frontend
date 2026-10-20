@@ -363,6 +363,13 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     onImageError(event?: Event): void {
+        const image = event?.target as HTMLImageElement | null;
+        console.error('[ElementImage] Failed to load image', event, {
+            src: image?.getAttribute('src') || image?.src || this.previewImageUrl || this.mediaUrl,
+            currentSrc: image?.currentSrc,
+            type: this.type,
+            name: this.name
+        });
         if (event?.target
             && (!(event.target as HTMLImageElement).src
             || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
