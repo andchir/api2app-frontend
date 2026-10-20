@@ -899,11 +899,31 @@ export class ApplicationService extends DataService<ApplicationItem> {
     unFlattenObject(flatObj: any): any {
         const nodeTypes = this.getNodeTypes(flatObj);
         const result: any = {};
+        const hasFlatKey = (key: string): boolean => {
+            return Object.prototype.hasOwnProperty.call(flatObj, key);
+        };
 
         for (const key in flatObj) {
             if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
 
-            const segments = key.split('.');
+            const keyParts = key.split('.');
+            const segments: string[] = [];
+            let path = '';
+
+            // A flattened object can contain both "foo" and "foo.bar" as
+            // separate keys. In that case "foo.bar" is a literal key, not a
+            // child of foo (foo may contain a primitive value).
+            for (let i = 0; i < keyParts.length; i++) {
+                path = path ? `${path}.${keyParts[i]}` : keyParts[i];
+
+                if (i < keyParts.length - 1 && hasFlatKey(path)) {
+                    segments.push(keyParts.slice(i).join('.'));
+                    break;
+                }
+
+                segments.push(keyParts[i]);
+            }
+
             let current = result;
 
             for (let i = 0; i < segments.length; i++) {
