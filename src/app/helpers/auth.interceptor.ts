@@ -115,6 +115,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
     private removeTokenHeader(request: HttpRequest<any>) {
         this.tokenStorageService.signOut();
+        setTimeout(() => {
+            this.authService.userSubject.next(null);
+        }, 1);
         return request.clone({
             headers: request.headers.delete(TOKEN_HEADER_KEY)
         });

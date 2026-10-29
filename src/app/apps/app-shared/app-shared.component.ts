@@ -136,6 +136,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.data.blocks = [];
         this.isLoggedIn = !!this.tokenStorageService.getToken();
+        this.authService.userSubject
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe((user) => {
+                const userId = user ? parseInt(user.url.split('/').pop()) : 0;
+                this.isOwner = !!user && this.data.user_id === userId;
+                this.isLoggedIn = !!user;
+                this.cdr.markForCheck();
+            });
         if (!this.itemUuid) {
             this.itemUuid = this.route.snapshot.paramMap.get('uuid');
         }
