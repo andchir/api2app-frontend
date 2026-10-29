@@ -83,7 +83,9 @@ export class AuthInterceptor implements HttpInterceptor {
                 catchError((err) => {
                     this.isRefreshing = false;
 
-                    if (!inferenceUrls.includes(request.url)) {
+                    if (inferenceUrls.includes(request.url)) {
+                        return next.handle(this.removeTokenHeader(request));
+                    } else {
                         this.tokenStorageService.signOut();
                         setTimeout(() => {
                             this.authService.navigateAuthPage('login');
@@ -108,6 +110,13 @@ export class AuthInterceptor implements HttpInterceptor {
     private addTokenHeader(request: HttpRequest<any>, token: string) {
         return request.clone({
             headers: request.headers.set(TOKEN_HEADER_KEY, `Bearer ${token}`)
+        });
+    }
+
+    private removeTokenHeader(request: HttpRequest<any>) {
+        this.tokenStorageService.signOut();
+        return request.clone({
+            headers: request.headers.delete(TOKEN_HEADER_KEY)
         });
     }
 }
