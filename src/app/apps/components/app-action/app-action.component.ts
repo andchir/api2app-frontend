@@ -168,6 +168,13 @@ export class AppActionComponent implements OnInit {
         this.apiSelection$.next(this.activeSelectedUuid);
     }
 
+    editApiItem() {
+        if (!this.selectedApi) {
+            return;
+        }
+        window.open(`/apis/edit/${this.selectedApi.id}`, '_blank').focus();
+    }
+
     onSearchCleared(): void {
         this.activeSelectedUuid = null;
         this.selectedApiState.set(null);
