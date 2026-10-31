@@ -1681,7 +1681,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!fieldName) {
                 return;
             }
-            let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
+            let value = fieldName === 'value' && !valuesObj[fieldName]
+                ? data
+                : (valuesObj[fieldName] || '');
             if (typeof value === 'object') {
                 value = JSON.stringify(value, null, 4);
             }
@@ -1963,6 +1965,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
         }
+        console.log(value);
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.markForCheck();
@@ -1978,7 +1981,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         if (Array.isArray(value)) {
             const isStringArray = value.every((item) => typeof item === 'string');
-            let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
+            let valueArr = isStringArray
+                ? [...value]
+                : this.dataService.flattenObjInArray(value, true);
             // if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
             //     // Filter array values
             //     valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
@@ -1989,9 +1994,10 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
             }
-            // if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-            //     element.value = ApplicationService.createInputStringValue(element, value, true);
-            // }
+            if (isStringArray && ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
+                const usePrefixSuffix = this.fieldsUsePrefixSuffixOnInput.includes(element.type);
+                element.value = ApplicationService.createStringValue(element, value, false, true, usePrefixSuffix);
+            }
         } else if (this.fieldsBooleanOrNumber.includes(element.type)) {
             element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
         } else if (['table'].includes(element.type) && typeof value === 'object') {
