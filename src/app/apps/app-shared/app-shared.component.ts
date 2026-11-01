@@ -1965,7 +1965,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 return;
             }
         }
-        console.log(value);
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.markForCheck();
