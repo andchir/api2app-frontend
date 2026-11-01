@@ -228,6 +228,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     return !element.multiple && (fieldValue as File[]).length > 0
                         ? fieldValue[0]
                         : fieldValue;
+                } else if (element.useCropper) {
+                    fieldValue = element.valueOutput;
                 }
                 return fieldValue instanceof File ? fieldValue : null;
             case 'input-number':

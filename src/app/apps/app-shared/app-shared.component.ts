@@ -2027,13 +2027,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         switch (element.type) {
             case 'button':
-                let fieldValue = ApplicationService.createStringValue(element, element.value);
-                if (element.valueFrom) {
-                    const sourceElement = this.getValueSourceElement(element);
-                    if (sourceElement) {
-                        fieldValue = ApplicationService.createStringValue(sourceElement, sourceElement.value);
-                    }
-                }
                 if (element.isClearForm) {
                     this.clearAllValues();
                 } else if (element.options?.inputApiUuid) {
@@ -2042,12 +2035,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     } else {
                         this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                     }
-                } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
-                    if (element.isDownloadMode) {
-                        this.downloadFile(element, String(fieldValue));
-                    } else {
-                        window.open(String(fieldValue), '_blank').focus();
+                // } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
+                } else {
+                    let sourceElement = element;
+                    if (element.valueFrom) {
+                        sourceElement = this.getValueSourceElement(element);
                     }
+                    let fieldValue = ApplicationService.getElementValue(sourceElement);
+                    if (element.isDownloadMode) {
+                        if (typeof fieldValue === 'string') {
+                            fieldValue = ApplicationService.createStringValue(sourceElement, fieldValue);
+                            this.downloadFile(element, fieldValue);
+                            return;
+                        } else if (fieldValue instanceof File) {
+                            this.downloadFile(element, '', fieldValue);
+                            return;
+                        }
+                    }
+                    window.open(String(fieldValue), '_blank').focus();
                 }
                 break;
             case 'user-subscription':
@@ -2073,13 +2078,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    downloadFile(element: AppBlockElement, fileUrl: string): void {
+    downloadFile(element: AppBlockElement, fileUrl: string = '', file: File = null): void {
         const block = this.findBlock(element);
         if (block) {
             block.loading = true;
             this.cdr.detectChanges();
         }
-        ApplicationService.downloadFile(fileUrl)
+        ApplicationService.downloadFile(file || fileUrl, file?.name || '')
             .finally(() => {
                 if (block) {
                     block.loading = false;
