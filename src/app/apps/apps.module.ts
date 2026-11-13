@@ -15,6 +15,7 @@ import { ApplicationCreateComponent } from './app-create/app-create.component';
 import { AppBlockElementComponent } from './components/app-block-element/app-block-element.component';
 import { ApplicationSharedComponent } from './app-shared/app-shared.component';
 import { ApplicationEmbeddedComponent } from './app-shared/app-embedded.component';
+import { AutoScrollOnValueDirective } from '../shared/directives/auto-scroll-on-value.directive';
 import { AppActionComponent } from './components/app-action/app-action.component';
 
 import { ApplicationService } from '../services/application.service';
@@ -43,6 +44,7 @@ import { InputTagsElementComponent } from './components/elements/input-tags-elem
         ApplicationCreateComponent,
         ApplicationSharedComponent,
         ApplicationEmbeddedComponent,
+        AutoScrollOnValueDirective,
         AppBlockElementComponent,
         AppActionComponent,
         ApplicationImportComponent,

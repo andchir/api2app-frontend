@@ -28,6 +28,12 @@ export class ElementOptions {
                 min: 0,
                 max: 100,
                 value: options?.orderIndex || 0
+            },
+            {
+                name: 'autoScrollOnValue',
+                label: $localize `Auto-scroll on value update`,
+                type: 'input-switch',
+                enabled: options?.autoScrollOnValue || false
             }
         ] as AppBlockElement[];
         switch (type) {

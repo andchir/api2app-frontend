@@ -104,6 +104,7 @@ export interface AppBlockElementBehavior {
     isStickyPosition?: boolean;
     isBooleanValue?: boolean;
     allowAutoSubmit?: boolean;
+    autoScrollOnValue?: boolean;
 }
 
 export interface AppBlockElement extends AppBlockElementBase, AppBlockElementValue,
