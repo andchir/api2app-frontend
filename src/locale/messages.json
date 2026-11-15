@@ -592,6 +592,7 @@
         "ShareItemCopyIframeCode": "Copy iframe code",
         "ShareItemIframeCodeCopied": "The iframe code has been successfully copied to the clipboard.",
         "FormatResponseJson": "Format JSON",
-        "FormatResponseJsonError": "Cannot format JSON. Check its syntax."
+        "FormatResponseJsonError": "Cannot format JSON. Check its syntax.",
+        "3489830874046434256": "Do not clear value"
     }
 }

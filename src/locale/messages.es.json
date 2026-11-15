@@ -592,6 +592,7 @@
         "ShareItemCopyIframeCode": "Copiar código iframe",
         "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles.",
         "FormatResponseJson": "Formatear JSON",
-        "FormatResponseJsonError": "No se pudo formatear el JSON. Comprueba su sintaxis."
+        "FormatResponseJsonError": "No se pudo formatear el JSON. Comprueba su sintaxis.",
+        "3489830874046434256": "No borrar el valor"
     }
 }

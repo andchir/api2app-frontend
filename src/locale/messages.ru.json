@@ -595,6 +595,7 @@
         "ShareItemCopyIframeCode": "Скопировать код iframe",
         "ShareItemIframeCodeCopied": "Код iframe успешно скопирован в буфер обмена.",
         "FormatResponseJson": "Форматировать JSON",
-        "FormatResponseJsonError": "Не удалось отформатировать JSON. Проверьте его синтаксис."
+        "FormatResponseJsonError": "Не удалось отформатировать JSON. Проверьте его синтаксис.",
+        "3489830874046434256": "Не очищать значение"
     }
 }

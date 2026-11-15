@@ -98,6 +98,7 @@ export interface AppBlockElementBehavior {
     hiddenByDefault?: boolean;
     subscriptionId?: string;
     storeValue?: boolean;
+    noClearValue?: boolean;
     useCropper?: boolean;
     isClearForm?: boolean;
     isDownloadMode?: boolean;

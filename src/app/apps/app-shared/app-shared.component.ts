@@ -1264,6 +1264,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     clearElementValue(element: AppBlockElement, updateHiddenValue = true, clearStored = false): void {
+        if (element.noClearValue) {
+            return;
+        }
         const inputApiUuid = element.options?.inputApiUuid;
         const outputApiUuid = element.options?.outputApiUuid;
         // if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
