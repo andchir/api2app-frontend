@@ -1096,6 +1096,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             const isRequired = this.dataService.isElementRequired(element);
             const fieldValue = ApplicationService.getElementValue(element);
+            // console.log(element.name, fieldValue);
             if (element.hidden && !isRequired) {
                 hiddenCount++;
             } else {
