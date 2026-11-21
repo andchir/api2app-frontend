@@ -16,7 +16,7 @@ import {
 import {filter, switchMap, take} from 'rxjs/operators';
 import {NgxTippyModule} from 'ngx-tippy-wrapper';
 
-import {SharedModule} from '../../../../../miniapp-src/app/shared.module';
+import {SharedModule} from '../../../shared.module';
 import {ApiItem} from '../../../apis/models/api-item.interface';
 import {ApiService} from '../../../services/api.service';
 import {ApplicationItem} from '../../models/application-item.interface';

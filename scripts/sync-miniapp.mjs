@@ -286,6 +286,29 @@ function walk(dir, base = dir) {
     return out.sort();
 }
 
+// The main app must never import from miniapp-src — otherwise `ng build
+// api2app-frontend` compiles miniapp files as its own (duplicate selectors,
+// template errors leaking between the two apps).
+function findCrossImports() {
+    const hits = [];
+    const scan = (dir) => {
+        for (const entry of readdirSync(dir)) {
+            const full = join(dir, entry);
+            if (statSync(full).isDirectory()) {
+                scan(full);
+            } else if (full.endsWith('.ts') || full.endsWith('.html')) {
+                const text = readFileSync(full, 'utf8');
+                const re = /from\s+['"][^'"]*miniapp-src[^'"]*['"]/g;
+                if (re.test(text)) {
+                    hits.push(relative(ROOT, full));
+                }
+            }
+        }
+    };
+    scan(SRC_ROOT);
+    return hits;
+}
+
 function applyTransforms(relPath, content) {
     const rules = TRANSFORMS[relPath] || [];
     const applied = [];
@@ -323,6 +346,13 @@ function main() {
     }
     for (const file of LOCALE_FILES) {
         syncSet.set(`locale/${file}`, true);
+    }
+
+    const crossImports = findCrossImports();
+    if (crossImports.length) {
+        console.error('ERROR: src imports from miniapp-src — the main app would compile miniapp files:');
+        crossImports.forEach((f) => console.error(`  ${f}`));
+        process.exit(2);
     }
 
     const results = { created: [], updated: [], unchanged: 0, errors: [] };
