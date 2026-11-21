@@ -229,9 +229,9 @@ export class ApplicationService extends DataService<ApplicationItem> {
                         ? fieldValue[0]
                         : fieldValue;
                 } else if (element.useCropper) {
-                    fieldValue = element.valueOutput;
+                    fieldValue = element.valueOutput || element.value;
                 }
-                return fieldValue instanceof File ? fieldValue : null;
+                return fieldValue instanceof File ? fieldValue : String(fieldValue);
             case 'input-number':
             case 'input-slider':
                 return typeof fieldValue === 'string'

@@ -1118,6 +1118,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             const {apiUuid, fieldName, fieldType} = this.getElementOptions(element, 'input');
             const isRequired = this.dataService.isElementRequired(element);
             const fieldValue = ApplicationService.getElementValue(element);
+            console.log(element.name, fieldValue);
             if (element.hidden && !isRequired) {
                 hiddenCount++;
             } else {
@@ -1140,7 +1141,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         if (createErrorMessages) {
             this.errors[targetApiUuid] = errors;
         }
-        // console.log('getIsValid', inputElements, errors, 'total:', inputElements.length, 'hidden:', hiddenCount);
+        console.log('getIsValid', inputElements, errors, 'total:', inputElements.length, 'hidden:', hiddenCount);
         if (hiddenCount && hiddenCount === inputElements.length && actionType === 'input') {
             return false;
         }
