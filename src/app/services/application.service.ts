@@ -981,11 +981,14 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     isElementRequired(element: AppBlockElement): boolean {
-        if (['input-chart-line', 'input-chart-pie', 'image', 'video', 'audio', 'table'].includes(element.type)) {
+        if (['input-chart-line', 'input-chart-pie', 'table'].includes(element.type)) {
             return true;
         }
         if (!element.required) {
             return false;
+        }
+        if (['image', 'video', 'audio'].includes(element.type) && element.hidden && element.required) {
+            return true;
         }
         return !element.hidden && element.required;
     }
