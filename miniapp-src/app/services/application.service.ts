@@ -36,6 +36,12 @@ export class ApplicationService extends DataService<ApplicationItem> {
         this.requestUrl = `assets/app_`;
     }
 
+    saveSlug(itemId: number, slug: string | null): Observable<{slug: string | null}> {
+        return this.httpClient.post<{slug: string | null}>(
+            `${this.requestUrl}/${itemId}/slug`, {slug}, this.httpOptions
+        ).pipe(catchError(this.handleError));
+    }
+
     importItem(inputString: string, inputLink: string = ''): Observable<{success: boolean}> {
         const url = `${BASE_URL}${this.locale}/api/v1/application_import_from_json`;
         return this.httpClient.post<{success: boolean}>(url, {inputString, inputLink}, this.httpOptions)
@@ -222,6 +228,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     return !element.multiple && (fieldValue as File[]).length > 0
                         ? fieldValue[0]
                         : fieldValue;
+                } else if (element.useCropper) {
+                    fieldValue = element.valueOutput;
                 }
                 return fieldValue instanceof File ? fieldValue : null;
             case 'input-number':
@@ -383,6 +391,22 @@ export class ApplicationService extends DataService<ApplicationItem> {
             });
     }
 
+    static async getUserData(appUuid: string, valueKey: string = ''): Promise<Record<string, any> | any> {
+        const dataKey = `${appUuid}-userData`;
+        const dataObj = await ApplicationService.getLocalStorageData(dataKey);
+        if (valueKey) {
+            return typeof dataObj[valueKey] !== 'undefined' ? dataObj[valueKey] : null;
+        }
+        return dataObj;
+    }
+
+    static async setUserData(appUuid: string, record: Record<string, any>): Promise<void> {
+        const dataKey = `${appUuid}-userData`;
+        ApplicationService.updateLocalStorageData(dataKey, (dataObj) => {
+            Object.assign(dataObj, record);
+        });
+    }
+
     static dataURItoFile(dataURI: string): File {
         const blob = ApplicationService.dataUriToBlob(dataURI);
         const mimeType = blob.type;
@@ -449,13 +473,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             .filter((item) => !!item);
     }
 
-    static createInputStringValue(element: AppBlockElement, value: any, skipTags: boolean = false): string {
-        // Use the prefix and suffix only when the value is finally used
-        const usePrefixSuffix = !['input-text', 'input-textarea', 'input-switch', 'input-select'].includes(element.type);
-        return ApplicationService.createStringValue(element, value, skipTags, true, usePrefixSuffix);
-    }
-
-    static createStringValue(element: AppBlockElement, value: any, skipTags: boolean = false, trim: boolean = true, usePrefixSuffix: boolean = true): string {
+    static createStringValue(element: AppBlockElement, value: any, skipTags = false, trim = true, usePrefixSuffix = true): string {
         const prefixText = usePrefixSuffix ? (element.prefixText || '') : '';
         const suffixText = usePrefixSuffix ? (element.suffixText || '') : '';
         if (typeof value === 'object' && Array.isArray(value)) {
@@ -485,13 +503,29 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     static async downloadFile(source: string | Blob, filename: string = ''): Promise<boolean> {
-        /*if (typeof source === 'string'
+        if (typeof source === 'string'
             && /^https?:\/\//.test(source)
             && typeof vkBridge !== 'undefined'
             && window['isVKApp']
         ) {
             try {
-                const vkFilename = filename || ApplicationService.getDownloadFilename(source, new Blob());
+                let vkFilename = filename;
+                if (!vkFilename) {
+                    try {
+                        const response = await fetch(source, {
+                            method: 'HEAD',
+                            mode: 'cors',
+                            cache: 'no-cache'
+                        });
+                        const responseFilename = ApplicationService.getResponseFilename(response);
+                        vkFilename = (responseFilename && ApplicationService.getFileExtension(responseFilename)
+                            ? responseFilename
+                            : '') || ApplicationService.getFilenameFromMimeType(response.headers.get('content-type'));
+                    } catch {
+                        // Some asset endpoints do not support CORS or HEAD.
+                    }
+                }
+                vkFilename = vkFilename || ApplicationService.getDownloadFilename(source, new Blob());
                 const result = await vkBridge.send('VKWebAppDownloadFile', {
                     url: source,
                     filename: vkFilename
@@ -502,7 +536,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
             } catch (error) {
                 console.warn('VK file download failed, falling back to browser download:', error);
             }
-        }*/
+        }
 
         try {
             let blob: Blob;
@@ -558,19 +592,58 @@ export class ApplicationService extends DataService<ApplicationItem> {
         }
     }
 
+    private static getFilenameFromMimeType(contentType: string | null): string {
+        const mimeType = contentType?.split(';')[0].trim().toLowerCase() || '';
+        const extensionByMimeType: Record<string, string> = {
+            'image/jpeg': 'jpg',
+            'image/svg+xml': 'svg',
+            'image/webp': 'webp',
+            'audio/mpeg': 'mp3',
+            'video/mp4': 'mp4',
+            'application/pdf': 'pdf',
+            'application/zip': 'zip'
+        };
+        const extension = extensionByMimeType[mimeType] || mimeType.split('/')[1];
+        return extension ? `file.${extension}` : '';
+    }
+
     private static getDownloadFilename(source: string | Blob, blob: Blob): string {
         if (typeof source === 'string' && !source.startsWith('data:')) {
-            const value = source.split('/').pop()?.split('?')[0].split('#')[0] || '';
+            const urlParts = source.split(/[?#]/)[0].split('/');
+            const value = urlParts.pop() || '';
             if (value) {
                 try {
-                    return decodeURIComponent(value);
+                    const decodedValue = decodeURIComponent(value);
+                    if (decodedValue.includes('.')) {
+                        return decodedValue;
+                    }
                 } catch {
-                    return value;
+                    if (value.includes('.')) {
+                        return value;
+                    }
+                }
+            }
+
+            // Asset URLs may end with `/content`, while the original filename
+            // is stored in the base64url-encoded asset token in the previous
+            // path segment (for example, `{ "f": "image.jpg" }`).
+            const assetToken = urlParts.pop();
+            const tokenPayload = assetToken?.split('.')[0];
+            if (tokenPayload) {
+                try {
+                    const base64 = tokenPayload.replace(/-/g, '+').replace(/_/g, '/');
+                    const paddedBase64 = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+                    const bytes = Uint8Array.from(atob(paddedBase64), character => character.charCodeAt(0));
+                    const payload = JSON.parse(new TextDecoder().decode(bytes));
+                    if (typeof payload?.f === 'string' && payload.f) {
+                        return payload.f;
+                    }
+                } catch {
+                    // Fall back to the MIME type when the token is not decodable.
                 }
             }
         }
-        const extension = blob.type.split(';')[0].split('/')[1] || 'bin';
-        return `file.${extension}`;
+        return ApplicationService.getFilenameFromMimeType(blob.type) || 'file.bin';
     }
 
     static downloadDataURI(dataURI: string, filename: string = 'file'): void {
@@ -798,37 +871,61 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     getNodeTypes(flatObj: any): Record<string, 'array' | 'object'> {
         const types: Record<string, 'array' | 'object'> = {};
+        const children: Record<string, Set<string>> = {};
 
         for (const key in flatObj) {
             if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
 
             const segments = key.split('.');
-            // For every parent path (prefix) we check the next segment
+            // Collect each node's direct children before deciding whether it is an array.
             for (let i = 0; i < segments.length - 1; i++) {
                 const prefix = segments.slice(0, i + 1).join('.');
                 const nextSegment = segments[i + 1];
-                const isNextNumeric = /^\d+$/.test(nextSegment);
-
-                if (isNextNumeric) {
-                    // This prefix must be an array because it has a numeric child
-                    types[prefix] = 'array';
-                } else if (types[prefix] !== 'array') {
-                    // If not forced to be array, it's an object (default)
-                    types[prefix] = 'object';
-                }
+                children[prefix] ??= new Set<string>();
+                children[prefix].add(nextSegment);
             }
         }
+
+        for (const [prefix, childKeys] of Object.entries(children)) {
+            const indexes = [...childKeys];
+            const isArray = indexes.length > 0
+                && indexes.every((index) => /^(0|[1-9]\d*)$/.test(index))
+                && indexes.every((index) => Number(index) < indexes.length)
+                && new Set(indexes.map(Number)).size === indexes.length;
+            types[prefix] = isArray ? 'array' : 'object';
+        }
+
         return types;
     }
 
     unFlattenObject(flatObj: any): any {
         const nodeTypes = this.getNodeTypes(flatObj);
         const result: any = {};
+        const hasFlatKey = (key: string): boolean => {
+            return Object.prototype.hasOwnProperty.call(flatObj, key);
+        };
 
         for (const key in flatObj) {
             if (!Object.prototype.hasOwnProperty.call(flatObj, key)) continue;
 
-            const segments = key.split('.');
+            const keyParts = key.split('.');
+            const segments: string[] = [];
+            let path = '';
+
+            // A flattened object can contain both "foo" and "foo.bar" as
+            // separate keys. In that case "foo.bar" is a literal key, not a
+            // child of foo (foo may contain a primitive value).
+            for (let i = 0; i < keyParts.length; i++) {
+                path = path ? `${path}.${keyParts[i]}` : keyParts[i];
+
+                if (i < keyParts.length - 1 && hasFlatKey(path)) {
+                    segments.push(keyParts.slice(i).join('.'));
+                    break;
+                }
+
+                segments.push(keyParts[i]);
+            }
+
             let current = result;
 
             for (let i = 0; i < segments.length; i++) {
@@ -884,7 +981,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
     }
 
     isElementRequired(element: AppBlockElement): boolean {
-        if (['input-chart-line'].includes(element.type)) {
+        if (['input-chart-line', 'input-chart-pie', 'image', 'video', 'audio', 'table'].includes(element.type)) {
             return true;
         }
         if (!element.required) {

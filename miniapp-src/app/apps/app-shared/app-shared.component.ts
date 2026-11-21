@@ -20,7 +20,7 @@ import { SseErrorEvent } from 'ngx-sse-client';
 
 import { ApplicationService } from '../../services/application.service';
 import { AppErrors, ApplicationItem, ApplicationShareData } from '../models/application-item.interface';
-import { AppBlock, AppBlockElement } from '../models/app-block.interface';
+import {AppBlock, AppBlockElement, AppBlockElementType} from '../models/app-block.interface';
 import { ApiService } from '../../services/api.service';
 import { ApiItem } from '../../apis/models/api-item.interface';
 import { ModalService } from '../../services/modal.service';
@@ -80,7 +80,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     appsAutoStartPending: string[] = [];
     userBalance: number = 0;
     userBalanceUpdating: boolean = false;
-    fieldsHiddenByDefault: string[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
+
+    readonly fieldsHiddenByDefault: AppBlockElementType[] = ['text', 'text-header', 'progress', 'input-select-image', 'image', 'video', 'audio'];
+    readonly fieldsInputClearAlways: AppBlockElementType[] = ['input-file', 'image'];
+    readonly fieldsBooleanOrNumber: AppBlockElementType[] = ['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'];
+    readonly fieldsMedia: AppBlockElementType[] = ['image', 'audio', 'video'];
+    readonly fieldsUsePrefixSuffixOnInput: AppBlockElementType[] = ['text-header', 'text', 'image', 'audio', 'video', 'iframe'];
 
     apiItems: {input: ApiItem[], output: ApiItem[]} = {input: [], output: []};
     apiUuidsList: {input: string[], output: string[]} = {input: [], output: []};
@@ -211,13 +216,15 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     createAppOptions(): void {
         this.checkExistenceTab();
 
-        if (this.data.adultsOnly && (
-                !window.localStorage.getItem(`${this.data.uuid}-appUserDob`)
-                || window.localStorage.getItem(`${this.data.uuid}-ageRestricted`)
-            )
-        ) {
-            this.adultAppRestrict();
+        if (this.data.adultsOnly) {
+            ApplicationService.getUserData(this.data.uuid, 'ageRestricted')
+                .then((value) => {
+                    if (value === null || value) {
+                        this.adultAppRestrict();
+                    }
+                });
         }
+
         if (!this.data) {
             return;
         }
@@ -279,17 +286,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.getApiList('output').then((items) => {
                     this.apiItems['output'] = items;
                     Object.keys(this.appElements.output).forEach((uuid) => {
-                        // if (this.appElements.output[uuid].length > 0 && this.appElements.output[uuid][0].hidden) {
-                        //     return;
-                        // }
+                        const currentElement = this.appElements.output[uuid].length > 0
+                            ? this.appElements.output[uuid][0]
+                            : null;
+                        if (!currentElement
+                            || (!this.fieldsHiddenByDefault.includes(currentElement.type) && currentElement.hidden)) {
+                            return;
+                        }
                         const buttonElement = this.appElements.buttons[uuid]
                             && this.appElements.buttons[uuid].length > 0
-                            && !this.appElements.buttons[uuid][0].hidden
+                            // && !this.appElements.buttons[uuid][0].hidden
                                 ? this.appElements.buttons[uuid][0]
                                 : null;
                         const ignoreButton = buttonElement && buttonElement.allowAutoSubmit;
                         if (!buttonElement || ignoreButton) {
-                            this.appAutoStart(uuid, 'output', this.appElements.output[uuid][0]);
+                            this.appAutoStart(uuid, 'output', currentElement);
                         }
                     });
                     this.cdr.detectChanges();
@@ -458,6 +469,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     appAutoStart(apiUuid: string, actionType: 'input'|'output' = 'output', currentElement: AppBlockElement): void {
+        if (currentElement.hidden && !this.fieldsHiddenByDefault.includes(currentElement.type)) {
+            return;
+        }
         if (!this.appsAutoStarted.includes(apiUuid)) {
             this.appsAutoStarted.push(apiUuid);
         }
@@ -857,11 +871,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             }
             if (firstInbound) {
                 firstInbound = false;
-            } else {
+            }
+            /*else {
                 this.messageType = 'success';
                 this.message = $localize `New message received.`;
                 this.cdr.detectChanges();
-            }
+            }*/
             this.applyParsedApiResponseToApp(currentApi, data as any, currentElement, isAutoStart, updateUserBalanceAfterResponse);
             this.cdr.detectChanges();
         };
@@ -1146,12 +1161,12 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                 this.messageType = 'success';
             }
             if ((showMessage && block.options?.autoClear) || clearBlock) {
-                this.clearElementsValues(block);
+                this.clearElementsValues(block, true, clearBlock);
             }
             else if (!loading) {
                 // Clean only the important elements
                 block.elements.forEach((element) => {
-                    if (['input-file'].includes(element.type)) {
+                    if (this.fieldsInputClearAlways.includes(element.type)) {
                         this.clearElementValue(element, true, false);
                     }
                 });
@@ -1227,9 +1242,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     clearElementValue(element: AppBlockElement, updateHiddenValue = true, clearStored = false): void {
+        if (element.noClearValue) {
+            return;
+        }
         const inputApiUuid = element.options?.inputApiUuid;
         const outputApiUuid = element.options?.outputApiUuid;
-        if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
+        // if (!inputApiUuid && !outputApiUuid && !element.loadValueInto) {
+        if (!outputApiUuid && !['input-file'].includes(element.type)) {
             if (updateHiddenValue) {
                 this.elementHiddenStateUpdate(element);
             }
@@ -1572,9 +1591,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.elementHiddenStateUpdate(currentElement);
         }
 
-        const responseContentType = response.headers.has('Content-type')
-            ? response.headers.get('Content-type')
-            : apiItem.responseContentType;
+        // Angular HttpHeaders is case-insensitive, but the configured response
+        // type can be stale (for example, when an API starts returning an image
+        // from a POST request). Prefer the actual Blob MIME type when it is
+        // available so that binary responses are converted to a data URL.
+        const blobContentType = response.body instanceof Blob ? response.body.type : '';
+        const headerContentType = response.headers.get('Content-Type') || '';
+        const responseContentType = headerContentType || blobContentType || apiItem.responseContentType;
 
         this.apiService.getDataFromBlob(response.body, responseContentType)
             .then((data) => {
@@ -1639,7 +1662,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             if (!fieldName) {
                 return;
             }
-            let value = fieldName === 'value' && !valuesObj[fieldName] ? data : (valuesObj[fieldName] || '');
+            let value = fieldName === 'value' && !valuesObj[fieldName]
+                ? data
+                : (valuesObj[fieldName] || '');
             if (typeof value === 'object') {
                 value = JSON.stringify(value, null, 4);
             }
@@ -1713,7 +1738,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
 
         if (typeof error === 'string') {
             try {
-                return this.getErrorMessageFromObject(JSON.parse(error)) || error;
+                return this.getErrorMessageFromObject(JSON.parse(error));
             } catch (e) {
                 return error;
             }
@@ -1730,7 +1755,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
 
         if (typeof error !== 'object') {
-            return String(error);
+            return '';
         }
 
         for (const key of ['detail', 'message', 'msg', 'error']) {
@@ -1751,6 +1776,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
     }
 
     localizeServerMessages(errorMessage: string): string {
+        if (errorMessage === 'Error.') {
+            errorMessage = $localize `Error.`;
+        }
         if (errorMessage === 'Daily usage limit exceeded.') {
             errorMessage = $localize `Daily usage limit exceeded.`;
         }
@@ -1853,7 +1881,9 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         const currentPage = element.useAsOffset
             ? (value ? (value / element.perPage) + 1 : 1)
             : value;
-        const totalItems = endlessMode ? 9999 : (data[dataKey] || 0);
+        const totalItems = typeof data[dataKey] !== 'undefined'
+            ? data[dataKey]
+            : rawData.length; // endlessMode ? 9999 : (data[dataKey] || 0);
         element.valueObj = {
             id: element.name,
             totalItems,
@@ -1875,13 +1905,47 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         });
     }
 
+    private getBlockElementFieldValue(fieldName: string|number, valuesObj: any): any {
+        const fieldNameString = String(fieldName);
+        if (!fieldNameString.includes('{ANY}')) {
+            return typeof valuesObj[fieldNameString] !== 'undefined' ? valuesObj[fieldNameString] : '';
+        }
+
+        const fieldNameParts = fieldNameString.split('.');
+        const matchingKey = Object.keys(valuesObj).find((key) => {
+            const keyParts = key.split('.');
+            return keyParts.length === fieldNameParts.length
+                && fieldNameParts.every((part, index) => part === '{ANY}' || part === keyParts[index]);
+        });
+        return matchingKey === undefined || typeof valuesObj[matchingKey] === 'undefined'
+            ? ''
+            : valuesObj[matchingKey];
+    }
+
     blockElementValueApply(element: AppBlockElement, valuesObj: any, rawData: any, isAutoStart: boolean = false, apiUuid?: string): void {
         const fieldName = this.getElementOptions(element, 'output', apiUuid).fieldName;
         if (!fieldName) {
             return;
         }
-        const fieldValue = typeof valuesObj[fieldName] !== 'undefined' ? valuesObj[fieldName] : '';
+        const fieldValue = this.getBlockElementFieldValue(fieldName, valuesObj);
         let value = fieldName === 'value' && !fieldValue ? rawData : fieldValue;
+
+        // A binary API response has no properties to put into valuesObj. The
+        // response is converted to a data URL in createAppResponse, so use the
+        // complete response for media elements instead of requiring a `value`
+        // property in the output mapping.
+        if (this.fieldsMedia.includes(element.type)
+            && typeof rawData === 'string'
+            && rawData.startsWith('data:')
+            && (!fieldValue || fieldName === 'value')) {
+            value = rawData;
+            if (typeof value === 'string') {
+                element.value = ApplicationService.createStringValue(element, value, false, true, true);
+                this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
+                this.cdr.markForCheck();
+                return;
+            }
+        }
         if (value === null || (typeof value === 'string' && !value)) {
             element.value = element.isBooleanValue ? false : '';
             this.cdr.markForCheck();
@@ -1892,18 +1956,14 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             this.cdr.markForCheck();
             return;
         }
-        if (['image', 'audio', 'video'].includes(element.type) && typeof value === 'string') {
-            element.value = ApplicationService.createInputStringValue(element, value);
-            this.onElementValueChanged(element, isAutoStart, false, 'afterRequest');
-            this.cdr.markForCheck();
-            return;
-        }
         if (ApiService.isJson(value)) {
             value = JSON.parse(value);
         }
         if (Array.isArray(value)) {
             const isStringArray = value.every((item) => typeof item === 'string');
-            let valueArr = isStringArray ? [...value] : this.dataService.flattenObjInArray(value, true);
+            let valueArr = isStringArray
+                ? [...value]
+                : this.dataService.flattenObjInArray(value, true);
             // if (!isStringArray && element.itemFieldName && !element.itemFieldName.match(/^https?:\/\//)) {
             //     // Filter array values
             //     valueArr = this.dataService.filterArrayValues(valueArr, element.itemFieldName);
@@ -1914,19 +1974,21 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     ? element.valueArr[0][element?.itemFieldNameForValue]
                     : element.valueArr[0];
             }
-            if (['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createInputStringValue(element, value, true);
+            if (isStringArray && ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
+                const usePrefixSuffix = this.fieldsUsePrefixSuffixOnInput.includes(element.type);
+                element.value = ApplicationService.createStringValue(element, value, false, true, usePrefixSuffix);
             }
-        } else if (['input-switch', 'input-number', 'input-slider', 'status', 'input-rating'].includes(element.type)) {
+        } else if (this.fieldsBooleanOrNumber.includes(element.type)) {
             element.value = element.type === 'input-rating' ? this.normalizeRatingValue(value) : value;
         } else if (['table'].includes(element.type) && typeof value === 'object') {
             element.valueArr = [value];
         } else {
             if (typeof value === 'boolean' && element.prefixText) {
                 element.value = element.prefixText + (element.suffixText || '');
-            } else if (typeof value === 'string' || element.prefixText || element.suffixText
-                || ['input-text', 'input-textarea', 'input-hidden', 'text', 'text-header'].includes(element.type)) {
-                element.value = ApplicationService.createInputStringValue(element, value, true);
+            } else if (typeof value === 'string') {
+                const usePrefixSuffix = this.fieldsUsePrefixSuffixOnInput.includes(element.type);
+                // element.value = ApplicationService.createInputStringValue(element, value, true, usePrefixSuffix);
+                element.value = ApplicationService.createStringValue(element, value, false, true, usePrefixSuffix);
             } else {
                 element.value = value;
             }
@@ -1945,13 +2007,6 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
         switch (element.type) {
             case 'button':
-                let fieldValue = ApplicationService.createStringValue(element, element.value);
-                if (element.valueFrom) {
-                    const sourceElement = this.getValueSourceElement(element);
-                    if (sourceElement) {
-                        fieldValue = ApplicationService.createStringValue(sourceElement, sourceElement.value);
-                    }
-                }
                 if (element.isClearForm) {
                     this.clearAllValues();
                 } else if (element.options?.inputApiUuid) {
@@ -1960,12 +2015,24 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     } else {
                         this.appSubmit(this.data.uuid, element.options.inputApiUuid, 'input', element);
                     }
-                } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
-                    if (element.isDownloadMode) {
-                        this.downloadFile(element, String(fieldValue));
-                    } else {
-                        window.open(String(fieldValue), '_blank').focus();
+                // } else if (fieldValue && (String(fieldValue).match(/https?:\/\//) || String(fieldValue).startsWith('data:'))) {
+                } else {
+                    let sourceElement = element;
+                    if (element.valueFrom) {
+                        sourceElement = this.getValueSourceElement(element);
                     }
+                    let fieldValue = ApplicationService.getElementValue(sourceElement);
+                    if (element.isDownloadMode) {
+                        if (typeof fieldValue === 'string') {
+                            fieldValue = ApplicationService.createStringValue(sourceElement, fieldValue);
+                            this.downloadFile(element, fieldValue);
+                            return;
+                        } else if (fieldValue instanceof File) {
+                            this.downloadFile(element, '', fieldValue);
+                            return;
+                        }
+                    }
+                    window.open(String(fieldValue), '_blank').focus();
                 }
                 break;
             case 'user-subscription':
@@ -1991,13 +2058,13 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
         }
     }
 
-    downloadFile(element: AppBlockElement, fileUrl: string): void {
+    downloadFile(element: AppBlockElement, fileUrl: string = '', file: File = null): void {
         const block = this.findBlock(element);
         if (block) {
             block.loading = true;
             this.cdr.detectChanges();
         }
-        ApplicationService.downloadFile(fileUrl)
+        ApplicationService.downloadFile(file || fileUrl, file?.name || '')
             .finally(() => {
                 if (block) {
                     block.loading = false;

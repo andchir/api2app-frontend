@@ -29,6 +29,7 @@
                      [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow, 'opacity-50': isImageLoading}"
                      (load)="onImageLoaded()"
                      (error)="onImageError($event)"
+                     (click)="onClick($event)"
                      [src]="mediaUrl" alt="" *ngIf="type == 'image'">
                 <video class="w-full min-h-20 bg-black"
                        [ngClass]="{'rounded-lg': roundedCorners, 'border border-gray-300 shadow-gray-300 shadow-md': borderShadow}"

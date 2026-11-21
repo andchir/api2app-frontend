@@ -11,7 +11,10 @@
     "build:localize": "ng build --localize",
     "extract-i18n": "ng extract-i18n --format=json --output-path src/locale",
     "build": "ng build api2app-frontend --configuration=production",
-    "build:mini-app": "ng build miniapp --configuration=production"
+    "build:mini-app": "ng build miniapp --configuration=production",
+    "sync:miniapp": "node scripts/sync-miniapp.mjs",
+    "sync:miniapp:dry": "node scripts/sync-miniapp.mjs --dry-run",
+    "sync:miniapp:check": "node scripts/sync-miniapp.mjs --check"
   },
   "private": true,
   "dependencies": {

@@ -28,6 +28,18 @@ export class ElementOptions {
                 min: 0,
                 max: 100,
                 value: options?.orderIndex || 0
+            },
+            {
+                name: 'autoScrollOnValue',
+                label: $localize `Auto-scroll on value update`,
+                type: 'input-switch',
+                enabled: options?.autoScrollOnValue || false
+            },
+            {
+                name: 'noClearValue',
+                label: $localize `Do not clear value`,
+                type: 'input-switch',
+                enabled: options?.noClearValue || false
             }
         ] as AppBlockElement[];
         switch (type) {
@@ -1750,6 +1762,12 @@ export class ElementOptions {
                     value: options?.hiddenByField || ''
                 });
                 output.push({
+                    name: 'blurredImage',
+                    label: $localize `Blurred image`,
+                    type: 'input-switch',
+                    enabled: options?.blurredImage || false
+                });
+                output.push({
                     name: 'hiddenByDefault',
                     label: $localize `Hidden by default`,
                     type: 'input-switch',
@@ -1837,7 +1855,8 @@ export class ElementOptions {
                     value: $localize `Header Example Text`,
                     icon: '',
                     hiddenByField: '',
-                    alignCenter: false
+                    alignCenter: false,
+                    noClearValue: false
                 });
                 break;
             case 'text':
@@ -1862,7 +1881,8 @@ export class ElementOptions {
                     fullWidth: true,
                     border: false,
                     borderShadow: false,
-                    showOnlyInVK: false
+                    showOnlyInVK: false,
+                    noClearValue: false
                 });
                 break;
             case 'button':
@@ -1882,7 +1902,8 @@ export class ElementOptions {
                     isDownloadMode: false,
                     isStickyPosition: false,
                     allowAutoSubmit: false,
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'input-text':
@@ -1905,7 +1926,8 @@ export class ElementOptions {
                     copyToClipboardEnabled: false,
                     shareAppLinkEnabled: false,
                     storeValue: false,
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'input-textarea':
@@ -1928,7 +1950,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     storeValue: false,
                     autoHeight: true,
-                    value: null
+                    value: null,
+                    noClearValue: false
                 });
                 break;
             case 'input-number':
@@ -1940,7 +1963,8 @@ export class ElementOptions {
                     validationMessage: '',
                     min: 0,
                     max: 10,
-                    value: 1
+                    value: 1,
+                    noClearValue: false
                 });
                 break;
             case 'input-rating':
@@ -1949,7 +1973,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     validationMessage: '',
                     required: true,
-                    value: 0
+                    value: 0,
+                    noClearValue: false
                 });
                 break;
             case 'input-slider':
@@ -1962,7 +1987,8 @@ export class ElementOptions {
                     max: 100,
                     step: 1,
                     value: 0,
-                    storeValue: false
+                    storeValue: false,
+                    noClearValue: false
                 });
                 break;
             case 'input-hidden':
@@ -1977,7 +2003,8 @@ export class ElementOptions {
                     required: true,
                     storeValue: false,
                     valueFrom: '',
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'input-switch':
@@ -1987,7 +2014,8 @@ export class ElementOptions {
                     type: 'input-switch',
                     hiddenByField: '',
                     value: '1',
-                    enabled: true
+                    enabled: true,
+                    noClearValue: false
                 });
                 break;
             case 'input-select':
@@ -2010,7 +2038,8 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     storeValue: false,
                     value: '',
-                    valueArr: null
+                    valueArr: null,
+                    noClearValue: false
                 });
                 break;
             case 'input-tags':
@@ -2029,7 +2058,8 @@ export class ElementOptions {
                     valueAsString: false,
                     choices: [],
                     value: [],
-                    valueArr: []
+                    valueArr: [],
+                    noClearValue: false
                 });
                 break;
             case 'input-radio':
@@ -2041,7 +2071,8 @@ export class ElementOptions {
                     value: '',
                     required: true,
                     storeValue: false,
-                    choices: []
+                    choices: [],
+                    noClearValue: false
                 });
                 break;
             case 'input-date':
@@ -2061,7 +2092,8 @@ export class ElementOptions {
                     required: true,
                     value: '',
                     note: $localize `Please select the date field.`,
-                    noteOutput: $localize `Please select a field with an array of booked dates.`
+                    noteOutput: $localize `Please select a field with an array of booked dates.`,
+                    noClearValue: false
                 });
                 break;
             case 'input-color':
@@ -2070,7 +2102,8 @@ export class ElementOptions {
                     label: $localize `Color`,
                     type: 'input-color',
                     hiddenByField: '',
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'input-file':
@@ -2084,7 +2117,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     validationMessage: '',
                     required: true,
-                    value: []
+                    value: [],
+                    noClearValue: false
                 });
                 break;
             case 'image-comparison':
@@ -2094,7 +2128,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     valueFirst: '',
                     valueSecond: '',
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'image':
@@ -2114,7 +2149,8 @@ export class ElementOptions {
                     fullWidth: false,
                     borderShadow: false,
                     roundedCorners: false,
-                    required: false
+                    required: false,
+                    noClearValue: false
                 });
                 break;
             case 'audio':
@@ -2128,7 +2164,8 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     fullWidth: false,
                     vkUseSendToFiles: false,
-                    required: false
+                    required: false,
+                    noClearValue: false
                 });
                 break;
             case 'video':
@@ -2148,7 +2185,8 @@ export class ElementOptions {
                     fullWidth: false,
                     borderShadow: false,
                     roundedCorners: false,
-                    required: false
+                    required: false,
+                    noClearValue: false
                 });
                 break;
             case 'input-chart-line':
@@ -2162,7 +2200,8 @@ export class ElementOptions {
                     itemFieldName: 'id',
                     isXAxisDate: false,
                     format: 'MMM DD, HH:mm',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    noClearValue: false
                 });
                 break;
             case 'input-chart-pie':
@@ -2174,7 +2213,8 @@ export class ElementOptions {
                     fieldNameValue: 'value',
                     hiddenByField: '',
                     itemFieldName: 'id',
-                    hiddenByDefault: false
+                    hiddenByDefault: false,
+                    noClearValue: false
                 });
                 break;
             case 'input-pagination':
@@ -2186,7 +2226,8 @@ export class ElementOptions {
                     useAsOffset: false,
                     value: 1,
                     note: $localize `Please select the field with the page number.`,
-                    noteOutput: $localize `Please select a field to display the number of records.`
+                    noteOutput: $localize `Please select a field to display the number of records.`,
+                    noClearValue: false
                 });
                 break;
             case 'status':
@@ -2203,7 +2244,8 @@ export class ElementOptions {
                     statusErrorText: $localize `Error`,
                     isBooleanValue: false,
                     hiddenByDefault: false,
-                    value: null
+                    value: null,
+                    noClearValue: false
                 });
                 break;
             case 'progress':
@@ -2222,7 +2264,8 @@ export class ElementOptions {
                     linkedField: '',
                     isBooleanValue: false,
                     valueObj: null,
-                    value: null
+                    value: null,
+                    noClearValue: false
                 });
                 break;
             case 'table':
@@ -2237,7 +2280,8 @@ export class ElementOptions {
                     isHTML: false,
                     hiddenByDefault: false,
                     editable: false,
-                    vertical: false
+                    vertical: false,
+                    noClearValue: false
                 });
                 break;
             case 'input-select-image':
@@ -2249,7 +2293,8 @@ export class ElementOptions {
                     hiddenByField: '',
                     showTitle: true,
                     required: false,
-                    value: null
+                    value: null,
+                    noClearValue: false
                 });
                 break;
             case 'user-subscription':
@@ -2260,7 +2305,8 @@ export class ElementOptions {
                     subscriptionId: '',
                     hiddenByField: '',
                     showOnlyInVK: true,
-                    value: null
+                    value: null,
+                    noClearValue: false
                 });
                 break;
             case 'messages':
@@ -2270,8 +2316,10 @@ export class ElementOptions {
                     placeholder: '',
                     maxHeight: 400,
                     hiddenByField: '',
+                    blurredImage: false,
                     hiddenByDefault: false,
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
             case 'iframe':
@@ -2287,7 +2335,8 @@ export class ElementOptions {
                     hiddenByDefault: false,
                     htmlContent: '',
                     valueFrom: '',
-                    value: ''
+                    value: '',
+                    noClearValue: false
                 });
                 break;
         }

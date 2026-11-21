@@ -2,8 +2,9 @@ import { SafeResourceUrl } from '@angular/platform-browser';
 
 export type AppBlockElementType = null|'text-header'|'text'|'button'|'input-text'|'input-textarea'|'input-switch'
     |'input-select'|'input-radio'|'input-tags'|'input-number'|'input-hidden'|'input-date'|'input-file'|'image'
-    |'audio'|'video'|'input-chart-line'|'input-chart-pie'|'input-slider'|'input-color'|'input-pagination'|'status'|'progress'|'table'
-    |'input-select-image'|'user-subscription'|'image-comparison'|'iframe'|'messages' |'input-rating';
+    |'audio'|'video'|'input-chart-line'|'input-chart-pie'|'input-slider'|'input-color'|'input-pagination'|'status'
+    |'progress'|'table'|'input-select-image'|'user-subscription'|'image-comparison'|'iframe'|'messages'
+    |'input-rating';
 
 export interface AppOptions {
     [key: string]: string | number | boolean | string[] | SafeResourceUrl | File[];
@@ -79,6 +80,7 @@ export interface AppBlockElementPresentation {
     confirmationText?: string,
     fontSize?: string;
     autoHeight?: boolean;
+    blurredImage?: boolean;
 }
 
 export interface AppBlockElementBehavior {
@@ -96,12 +98,14 @@ export interface AppBlockElementBehavior {
     hiddenByDefault?: boolean;
     subscriptionId?: string;
     storeValue?: boolean;
+    noClearValue?: boolean;
     useCropper?: boolean;
     isClearForm?: boolean;
     isDownloadMode?: boolean;
     isStickyPosition?: boolean;
     isBooleanValue?: boolean;
     allowAutoSubmit?: boolean;
+    autoScrollOnValue?: boolean;
 }
 
 export interface AppBlockElement extends AppBlockElementBase, AppBlockElementValue,

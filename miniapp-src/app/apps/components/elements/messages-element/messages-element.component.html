@@ -25,7 +25,9 @@
                                  'bg-blue-500 text-white rounded-br-sm': msg.direction === 'outgoing',
                                  'bg-white border border-gray-200 text-gray-800 rounded-bl-sm shadow-sm': msg.direction === 'incoming'
                              }">
-                            <div [innerHTML]="msg.text | toHtml"></div>
+                            <div [innerHTML]="msg.text | toHtml"
+                                 [class.images-blurred]="blurredImage()"
+                                 (click)="revealImage($event)"></div>
                             <div class="text-[10px] mt-1"
                                  [ngClass]="{'text-blue-200': msg.direction === 'outgoing', 'text-gray-400': msg.direction === 'incoming'}">
                                 {{ msg.timestamp | date:'HH:mm' }}
@@ -39,28 +41,35 @@
 
         @if (!editorMode()) {
             <div class="flex gap-2 p-2 border-t border-gray-200 bg-white">
-                <button type="button"
-                        class="text-gray-500 bg-gray-100 hover:bg-red-50 hover:text-red-500 focus:ring-4 focus:ring-red-100 rounded-full w-10 h-10 flex shrink-0 items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:text-gray-500"
-                        [disabled]="messages().length === 0"
-                        (click)="clearChat()"
-                        title="Clear chat"
-                        i18n-title="@@ClearChat"
-                        aria-label="Clear chat"
-                        i18n-aria-label="@@ClearChat">
-                    <i class="bi bi-trash3"></i>
-                </button>
-                <input type="text"
-                       class="flex-grow bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 px-4 py-2"
-                       [placeholder]="placeholder()"
-                       [ngModel]="inputText()"
-                       (ngModelChange)="inputText.set($event)"
-                       (keyup.enter)="sendMessage()">
-                <button type="button"
-                        class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
-                        [ngClass]="{'opacity-50 cursor-not-allowed': !inputText().trim()}"
-                        (click)="sendMessage()">
-                    <i class="bi bi-send-fill"></i>
-                </button>
+                <div>
+                    <button type="button"
+                            class="text-gray-500 bg-gray-100 hover:bg-red-50 hover:text-red-500 focus:ring-4 focus:ring-red-100 rounded-full w-10 h-10 flex shrink-0 items-center justify-center transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-gray-100 disabled:hover:text-gray-500"
+                            [disabled]="messages().length === 0"
+                            (click)="clearChat()"
+                            title="Clear chat"
+                            i18n-title="@@ClearChat"
+                            aria-label="Clear chat"
+                            i18n-aria-label="@@ClearChat">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+                <div class="grow">
+                    <input type="text"
+                           #messageInput
+                           class="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-full focus:ring-blue-500 focus:border-blue-500 px-4 py-2"
+                           [placeholder]="placeholder()"
+                           [ngModel]="inputText()"
+                           (ngModelChange)="updateInputText($event, messageInput)"
+                           (keyup.enter)="sendMessage()">
+                </div>
+                <div>
+                    <button type="button"
+                            class="text-white bg-blue-500 hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 rounded-full w-10 h-10 flex items-center justify-center transition-colors"
+                            [ngClass]="{'opacity-50 cursor-not-allowed': !inputText().trim()}"
+                            (click)="sendMessage()">
+                        <i class="bi bi-send-fill"></i>
+                    </button>
+                </div>
             </div>
         } @else {
             <div class="flex gap-2 p-3 text-center text-gray-400">
@@ -78,3 +87,11 @@
 
     </div>
 </div>
+
+<app-confirm
+    [isActive]="isClearChatConfirmActive()"
+    (isActiveChange)="isClearChatConfirmActive.set($event)"
+    message="Are you sure you want to clear the chat?"
+    i18n-message="@@ClearChatConfirmation"
+    (confirmed)="confirmClearChat()">
+</app-confirm>

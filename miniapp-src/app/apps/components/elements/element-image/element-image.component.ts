@@ -165,6 +165,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     get mediaUrl(): string | SafeResourceUrl | null {
+        if (!this.useLink) {
+            return this.createOriginalFileUrl();
+        }
         const mediaUrl = this.createOriginalFileUrl();
         if (mediaUrl && typeof mediaUrl === 'string' && mediaUrl.indexOf('data:') > -1) {
             return '#download';
@@ -360,11 +363,17 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
     }
 
     onImageError(event?: Event): void {
-        if (event?.target
-            && (!(event.target as HTMLImageElement).src
-            || (event.target as HTMLImageElement).src === this.getSiteUrl())) {
+        const image = event?.target as HTMLImageElement | null;
+        const srcValue = image?.getAttribute('src') || image?.src || this.previewImageUrl || this.mediaUrl;
+        if (event?.target && (!srcValue || srcValue === this.getSiteUrl())) {
             return;
         }
+        console.log('[ElementImage] Failed to load image', event, {
+            src: srcValue,
+            currentSrc: image?.currentSrc,
+            type: this.type,
+            name: this.name
+        });
         this.isImageLoading = false;
         this.isError = true;
     }
@@ -493,7 +502,9 @@ export class ElementImageComponent implements OnInit, ControlValueAccessor, OnCh
         if (event) {
             event.preventDefault();
         }
-        const mediaUrl = this.mediaUrl as string;
+        const mediaUrl = !this.useLink
+            ? String(this.mediaUrl)
+            : String(this.createOriginalFileUrl());
         const posterUrl = this.posterUrl;
 
         if (this.type === 'image' || posterUrl) {

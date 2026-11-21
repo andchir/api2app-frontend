@@ -1,6 +1,7 @@
 {
     "locale": "de",
     "translations": {
+        "1115742700141823004": "Der Anwendungsname konnte nicht gespeichert werden.",
         "9155608366859514313": "Quelle",
         "4195395623329708230": "Die VK Pay-Einstellungen wurden erfolgreich erstellt.",
         "8858652066129215363": "Die VK Pay-Einstellungen wurden erfolgreich geändert.",
@@ -442,6 +443,7 @@
         "6095154778691266590": "Suffix für den resultierenden Wert",
         "6831320977219709363": "Sie können die Daten bearbeiten, indem Sie unnötige (geheime) Daten entfernen. Die Serverantwort wird entsprechend dieser Daten gefiltert.",
         "7754881083039709737": "Posologies de base",
+        "5738186645086154668": "Automatisches Scrollen bei Wertaktualisierung",
         "4381944803872489731": "Abgesagt",
         "9103250773067744487": "Seitenverhältnis beim Zuschneiden",
         "5834780181397311898": "Klon",
@@ -523,6 +525,7 @@
         "6452372740127749380": "Nachrichten",
         "7488391890629635569": "Noch keine Nachrichten",
         "ClearChat": "Chat leeren",
+        "ClearChatConfirmation": "Möchten Sie den Chat wirklich leeren?",
         "2498902103213431436": "Füge nach dem Element ein",
         "6886549570421278468": "Möchten Sie wirklich den Tab mit allen Feldern löschen?",
         "872691187703152069": "Lokalen Speicher verwenden",
@@ -582,10 +585,14 @@
         "1760083344176902188": "Link wird erstellt...",
         "7365517136074263312": "QR-Code",
         "4306169234658044987": "Link teilen",
+        "3235169417039004037": "Verschwommenes Bild",
         "ShareItemLinkTab": "Link teilen",
         "ShareItemIframeTab": "Iframe-Code abrufen",
         "ShareItemIframeCode": "Iframe-Code",
         "ShareItemCopyIframeCode": "Iframe-Code kopieren",
-        "ShareItemIframeCodeCopied": "Der Iframe-Code wurde erfolgreich in die Zwischenablage kopiert."
+        "ShareItemIframeCodeCopied": "Der Iframe-Code wurde erfolgreich in die Zwischenablage kopiert.",
+        "FormatResponseJson": "JSON formatieren",
+        "FormatResponseJsonError": "JSON konnte nicht formatiert werden. Prüfen Sie die Syntax.",
+        "3489830874046434256": "Wert nicht löschen"
     }
 }

@@ -7,7 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { UserBalanceService } from '../../services/user-balance.service';
 import { SharedModule } from '../../shared.module';
 import { VkAppOptions } from '../models/vk-app-options.interface';
-import { VkBridgeService } from "../../services/vk-bridge.service";
+import {VkBridgeService} from "../../services/vk-bridge.service";
 
 declare const vkBridge: any;
 

@@ -1,6 +1,7 @@
 {
     "locale": "en",
     "translations": {
+        "1115742700141823004": "Failed to save the application name.",
         "9155608366859514313": "Source",
         "4195395623329708230": "VK Pay settings have been successfully created.",
         "8858652066129215363": "VK Pay settings have been successfully changed.",
@@ -442,6 +443,7 @@
         "6095154778691266590": "Suffix for the resulting value",
         "6831320977219709363": "You can edit the data by removing unnecessary (secret) data. The server response will be filtered according to this data.",
         "7754881083039709737": "Sticky position",
+        "5738186645086154668": "Auto-scroll on value update",
         "4381944803872489731": "Canceled",
         "9103250773067744487": "Aspect ratio when cropping",
         "5834780181397311898": "Clone",
@@ -523,6 +525,7 @@
         "6452372740127749380": "Messages",
         "7488391890629635569": "No messages yet",
         "ClearChat": "Clear chat",
+        "ClearChatConfirmation": "Are you sure you want to clear the chat?",
         "2498902103213431436": "Add element after",
         "6886549570421278468": "Are you sure you want to delete the tab with all fields?",
         "872691187703152069": "Use local storage",
@@ -582,10 +585,14 @@
         "1760083344176902188": "Creating link...",
         "7365517136074263312": "QR code",
         "4306169234658044987": "Share link",
+        "3235169417039004037": "Blurred image",
         "ShareItemLinkTab": "Share via link",
         "ShareItemIframeTab": "Get iframe code",
         "ShareItemIframeCode": "Iframe code",
         "ShareItemCopyIframeCode": "Copy iframe code",
-        "ShareItemIframeCodeCopied": "The iframe code has been successfully copied to the clipboard."
+        "ShareItemIframeCodeCopied": "The iframe code has been successfully copied to the clipboard.",
+        "FormatResponseJson": "Format JSON",
+        "FormatResponseJsonError": "Cannot format JSON. Check its syntax.",
+        "3489830874046434256": "Do not clear value"
     }
 }

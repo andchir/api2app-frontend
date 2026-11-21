@@ -20,6 +20,11 @@ import { SharedModule } from '../../../../shared.module';
 @Component({
     selector: 'app-messages-element',
     templateUrl: 'messages-element.component.html',
+    styles: [`
+        :host ::ng-deep .images-blurred img:not(.image-revealed) {
+            filter: blur(12px);
+        }
+    `],
     imports: [
         CommonModule,
         FormsModule,
@@ -37,6 +42,7 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     readonly messagesContainer = viewChild<ElementRef<HTMLDivElement>>('messagesContainer');
 
     readonly editorMode = input(false);
+    readonly blurredImage = input(false);
     readonly name = input('');
     readonly label = input('');
     readonly placeholder = input('');
@@ -47,11 +53,13 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
 
     readonly inputText = signal('');
     readonly messages = signal<ChatMessage[]>([]);
+    readonly isClearChatConfirmActive = signal(false);
     readonly elementId = computed(() =>
         `messages-${this.name()}-${this.parentIndex()}-${this.index()}`
     );
 
     private static readonly OUTGOING_PREFIX = '\u200B__out__';
+    private static readonly MAX_MESSAGE_LENGTH = 1000;
     private needsScroll = false;
     private initialized = false;
     private onChange: (value: any) => void = () => {};
@@ -114,8 +122,23 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
         }
     }
 
+    updateInputText(text: string, inputElement: HTMLInputElement): void {
+        const limitedText = this.limitMessageLength(text);
+        this.inputText.set(limitedText);
+        // Update the field even when truncation leaves the signal unchanged.
+        inputElement.value = limitedText;
+    }
+
+    private limitMessageLength(text: string): string {
+        const characters = Array.from(text);
+        const limit = MessagesElementComponent.MAX_MESSAGE_LENGTH;
+        return characters.length > limit
+            ? characters.slice(0, limit - 3).join('') + '...'
+            : text;
+    }
+
     sendMessage(): void {
-        const text = this.inputText().trim();
+        const text = this.limitMessageLength(this.inputText().trim());
         if (!text) {
             return;
         }
@@ -133,8 +156,26 @@ export class MessagesElementComponent implements OnInit, AfterViewChecked, Contr
     }
 
     clearChat(): void {
+        this.isClearChatConfirmActive.set(true);
+    }
+
+    confirmClearChat(): void {
         this.messagesService.clearHistory(this.elementId());
         this.refreshMessages();
+    }
+
+    revealImage(event: MouseEvent): void {
+        if (!this.blurredImage() || event.button !== 0 || !(event.target instanceof Element)) {
+            return;
+        }
+        const image = event.target.closest('img')
+            ?? event.target.closest('a')?.querySelector('img');
+        if (!image) {
+            return;
+        }
+        // Keep the link for middle clicks; primary clicks only reveal the image.
+        event.preventDefault();
+        image.classList.add('image-revealed');
     }
 
     private scrollToBottom(): void {

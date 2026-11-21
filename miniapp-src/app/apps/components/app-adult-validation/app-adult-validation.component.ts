@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 
 import { NgForOf, NgIf } from '@angular/common';
 import { VkBridgeService } from '../../../services/vk-bridge.service';
+import { ApplicationService } from '../../../services/application.service';
 
 
 @Component({
@@ -56,8 +57,22 @@ export class AppAdultValidationComponent implements OnInit, OnDestroy {
         } else if (target === 'year') {
             this.userDobYear = number;
         }
+        this.updateCalendarDays();
         if (dropdownEl) {
             dropdownEl.classList.add('hidden');
+        }
+    }
+
+    private updateCalendarDays(): void {
+        // Until a year is selected, February can include leap day.
+        const year = this.userDobYear ? Number(this.userDobYear) : 2000;
+        const daysInMonth = this.userDobMonth
+            ? new Date(year, Number(this.userDobMonth), 0).getDate()
+            : 31;
+
+        this.calendarDays = this.createPaddedNumberArray(1, daysInMonth);
+        if (this.userDobDay && !this.calendarDays.includes(this.userDobDay)) {
+            this.userDobDay = '';
         }
     }
 
@@ -68,12 +83,12 @@ export class AppAdultValidationComponent implements OnInit, OnDestroy {
         this.adultsOnlyModalActive = false;
         const dateString = `${this.userDobYear}-${this.userDobMonth}-${this.userDobDay}`;
         const age = this.vkBridgeService.calculateFullAgeIso(dateString);
-        window.localStorage.setItem(`${this.appUuid}-appUserDob`, dateString);
+        const ageRestricted = age < 18;
+        ApplicationService.setUserData(this.appUuid, {ageRestricted, age, dob: dateString});
+
         if (age < 18) {
             this.adultsOnlyRestricted = true;
-            window.localStorage.setItem(`${this.appUuid}-ageRestricted`, '1');
         } else {
-            window.localStorage.removeItem(`${this.appUuid}-ageRestricted`);
             this.closeModal('confirmed');
         }
     }

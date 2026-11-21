@@ -1,6 +1,7 @@
 {
     "locale": "es",
     "translations": {
+        "1115742700141823004": "No se pudo guardar el nombre de la aplicación.",
         "9155608366859514313": "Fuente",
         "4195395623329708230": "La configuración de VK Pay se ha creado correctamente.",
         "8858652066129215363": "La configuración de VK Pay se ha actualizado correctamente.",
@@ -442,6 +443,7 @@
         "6095154778691266590": "Sufijo para el valor resultante",
         "6831320977219709363": "Puede editar los datos eliminando datos innecesarios (secretos). La respuesta del servidor se filtrará de acuerdo con estos datos.",
         "7754881083039709737": "Posición fija",
+        "5738186645086154668": "Desplazamiento automático al actualizar el valor",
         "4381944803872489731": "Cancelado",
         "9103250773067744487": "Relación de aspecto al recortar",
         "5834780181397311898": "Clon",
@@ -523,6 +525,7 @@
         "6452372740127749380": "Mensajes",
         "7488391890629635569": "Aún no hay mensajes",
         "ClearChat": "Borrar chat",
+        "ClearChatConfirmation": "¿Seguro que quieres borrar el chat?",
         "2498902103213431436": "Agregar elemento después",
         "6886549570421278468": "¿Estás seguro de que quieres eliminar la pestaña con todos los campos?",
         "872691187703152069": "Usar almacenamiento local",
@@ -582,10 +585,14 @@
         "1760083344176902188": "Creando enlace...",
         "7365517136074263312": "Código QR",
         "4306169234658044987": "Compartir enlace",
+        "3235169417039004037": "Imagen borrosa",
         "ShareItemLinkTab": "Compartir mediante enlace",
         "ShareItemIframeTab": "Obtener código iframe",
         "ShareItemIframeCode": "Código iframe",
         "ShareItemCopyIframeCode": "Copiar código iframe",
-        "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles."
+        "ShareItemIframeCodeCopied": "El código iframe se ha copiado correctamente al portapapeles.",
+        "FormatResponseJson": "Formatear JSON",
+        "FormatResponseJsonError": "No se pudo formatear el JSON. Comprueba su sintaxis.",
+        "3489830874046434256": "No borrar el valor"
     }
 }

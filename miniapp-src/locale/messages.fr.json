@@ -1,6 +1,7 @@
 {
     "locale": "fr",
     "translations": {
+        "1115742700141823004": "Impossible d’enregistrer le nom de l’application.",
         "9155608366859514313": "Source",
         "4195395623329708230": "Les paramètres VK Pay ont été créés avec succès.",
         "8858652066129215363": "Les paramètres VK Pay ont été modifiés avec succès.",
@@ -442,6 +443,7 @@
         "6095154778691266590": "Suffixe pour la valeur résultante",
         "6831320977219709363": "Vous pouvez modifier les données en supprimant les données inutiles (secrètes). La réponse du serveur sera filtrée en fonction de ces données.",
         "7754881083039709737": "Positionnement bloqué",
+        "5738186645086154668": "Défilement automatique lors de la mise à jour de la valeur",
         "4381944803872489731": "Annulé",
         "9103250773067744487": "Rapport hauteur/largeur lors du recadrage",
         "5834780181397311898": "Cloner",
@@ -523,6 +525,7 @@
         "6452372740127749380": "Messages",
         "7488391890629635569": "Pas encore de messages",
         "ClearChat": "Effacer le chat",
+        "ClearChatConfirmation": "Voulez-vous vraiment effacer le chat ?",
         "2498902103213431436": "Ajouter l'élément après",
         "6886549570421278468": "Êtes-vous sûr de vouloir supprimer l'onglet contenant tous les champs?",
         "872691187703152069": "Utiliser le stockage local",
@@ -582,10 +585,14 @@
         "1760083344176902188": "Création du lien...",
         "7365517136074263312": "Code QR",
         "4306169234658044987": "Partager le lien",
+        "3235169417039004037": "Image floue",
         "ShareItemLinkTab": "Partager via un lien",
         "ShareItemIframeTab": "Obtenir le code iframe",
         "ShareItemIframeCode": "Code iframe",
         "ShareItemCopyIframeCode": "Copier le code iframe",
-        "ShareItemIframeCodeCopied": "Le code iframe a été copié dans le presse-papiers."
+        "ShareItemIframeCodeCopied": "Le code iframe a été copié dans le presse-papiers.",
+        "FormatResponseJson": "Formater le JSON",
+        "FormatResponseJsonError": "Impossible de formater le JSON. Vérifiez sa syntaxe.",
+        "3489830874046434256": "Ne pas effacer la valeur"
     }
 }
