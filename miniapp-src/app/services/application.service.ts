@@ -232,6 +232,8 @@ export class ApplicationService extends DataService<ApplicationItem> {
                     fieldValue = element.valueOutput || element.value;
                 }
                 return fieldValue instanceof File ? fieldValue : String(fieldValue);
+            case 'input-switch':
+                return element.enabled ? String(fieldValue) : '';
             case 'input-number':
             case 'input-slider':
                 return typeof fieldValue === 'string'
