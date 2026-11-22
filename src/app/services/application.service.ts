@@ -395,7 +395,7 @@ export class ApplicationService extends DataService<ApplicationItem> {
 
     static async getUserData(appUuid: string, valueKey: string = ''): Promise<Record<string, any> | any> {
         const dataKey = `${appUuid}-userData`;
-        const dataObj = await ApplicationService.getLocalStorageData(dataKey);
+        const dataObj = await ApplicationService.getQueuedLocalStorageData(dataKey);
         if (valueKey) {
             return typeof dataObj[valueKey] !== 'undefined' ? dataObj[valueKey] : null;
         }
@@ -407,6 +407,75 @@ export class ApplicationService extends DataService<ApplicationItem> {
         ApplicationService.updateLocalStorageData(dataKey, (dataObj) => {
             Object.assign(dataObj, record);
         });
+    }
+
+    private static getQueuedLocalStorageData(dataKey: string): Promise<Record<string, any>> {
+        const pendingUpdate = ApplicationService.localStorageUpdateQueues.get(dataKey);
+        if (!pendingUpdate) {
+            return ApplicationService.getLocalStorageData(dataKey);
+        }
+        return pendingUpdate.then(
+            () => ApplicationService.getLocalStorageData(dataKey),
+            () => ApplicationService.getLocalStorageData(dataKey)
+        );
+    }
+
+    /**
+     * Replaces {USER_*} placeholders (e.g. {USER_AGE}) in the element default value
+     * with the stored user data. A numeric result is limited by the element min/max.
+     */
+    static applyUserDataValue(appUuid: string, element: AppBlockElement): Promise<void> {
+        if (typeof element.value !== 'string' || !element.value.includes('{USER_')) {
+            return Promise.resolve();
+        }
+        return ApplicationService.getUserData(appUuid)
+            .then((userData) => {
+                if (!userData) {
+                    return;
+                }
+                const valueStr = String(element.value);
+                const matches = valueStr.match(/\{USER_([A-Z0-9_]+)\}/g) || [];
+                if (matches.length === 1 && valueStr === matches[0]) {
+                    const dataKey = ApplicationService.userDataKeyByPlaceholder(matches[0]);
+                    if (typeof userData[dataKey] === 'undefined' || userData[dataKey] === null) {
+                        return;
+                    }
+                    let value: string | number = userData[dataKey];
+                    if (typeof value === 'number') {
+                        value = ApplicationService.limitNumberByElementMinMax(value, element);
+                    }
+                    element.value = value;
+                    return;
+                }
+                let value = valueStr;
+                for (const match of matches) {
+                    const dataKey = ApplicationService.userDataKeyByPlaceholder(match);
+                    if (typeof userData[dataKey] === 'undefined' || userData[dataKey] === null) {
+                        continue;
+                    }
+                    value = value.replace(match, String(userData[dataKey]));
+                }
+                element.value = value;
+            });
+    }
+
+    private static userDataKeyByPlaceholder(placeholder: string): string {
+        return placeholder
+            .replace(/^\{USER_|\}$/g, '')
+            .toLowerCase()
+            .replace(/_([a-z0-9])/g, (substring, char) => char.toUpperCase());
+    }
+
+    private static limitNumberByElementMinMax(value: number, element: AppBlockElement): number {
+        const min = typeof element.min === 'undefined' || element.min === null ? NaN : Number(element.min);
+        if (!isNaN(min) && value < min) {
+            return min;
+        }
+        const max = typeof element.max === 'undefined' || element.max === null ? NaN : Number(element.max);
+        if (!isNaN(max) && value > max) {
+            return max;
+        }
+        return value;
     }
 
     static dataURItoFile(dataURI: string): File {
