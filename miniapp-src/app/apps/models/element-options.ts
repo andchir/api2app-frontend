@@ -658,9 +658,8 @@ export class ElementOptions {
                 output.push({
                     name: 'value',
                     label: $localize `Default Value`,
-                    type: 'input-number',
-                    value: options?.value,
-                    min: 0
+                    type: 'input-text',
+                    value: options?.value
                 });
                 output.push({
                     name: 'hiddenByField',

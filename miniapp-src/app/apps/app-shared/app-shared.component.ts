@@ -276,6 +276,7 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
                     queryParamsElements.push(element);
                 }
                 this.elementHiddenStateUpdate(element, block);
+                promises.push(ApplicationService.applyUserDataValue(this.data.uuid, element));
                 promises.push(ApplicationService.applyLocalStoredValue(this.data.uuid, element));
             });
         });
@@ -2393,9 +2394,22 @@ export class ApplicationSharedComponent implements OnInit, OnDestroy {
             .subscribe({
                 next: (reason) => {
                     this.restorePageScroll();
+                    if (reason === 'confirmed') {
+                        this.applyUserDataValues();
+                    }
                     // console.log(reason);
                 }
             });
+    }
+
+    applyUserDataValues(): void {
+        const promises = [];
+        this.data.blocks.forEach((block) => {
+            block.elements.forEach((element) => {
+                promises.push(ApplicationService.applyUserDataValue(this.data.uuid, element));
+            });
+        });
+        Promise.all(promises).then(() => this.cdr.markForCheck());
     }
 
     vkGetFileUploadUrl(callbackFunc?: () => void): void {
