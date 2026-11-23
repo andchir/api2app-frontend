@@ -1,0 +1,21 @@
+<div>
+    <label for="{{ name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
+        {{ label }}
+    </label>
+    <div class="relative pb-5">
+        <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded absolute end-0 -top-6">
+            {{ value }}
+        </span>
+        <input id="{{ name }}-{{ parentIndex }}-{{ index }}" type="range"
+               [ngStyle]="{backgroundSize: progress + '%, 100%'}"
+               class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+               [min]="minValue"
+               [max]="maxValue"
+               [step]="stepValue"
+               [value]="value"
+               [disabled]="disabled"
+               (input)="onSliderChange($any($event.target).value)">
+        <span class="text-sm text-gray-500 absolute start-0 top-6">{{ minValue }}</span>
+        <span class="text-sm text-gray-500 absolute end-0 top-6">{{ maxValue }}</span>
+    </div>
+</div>

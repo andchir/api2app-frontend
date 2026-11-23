@@ -34,6 +34,7 @@ import { AudioPlayerComponent } from './components/elements/audio-player/audio-p
 import { MessagesElementComponent } from './components/elements/messages-element/messages-element.component';
 import { InputDateElementComponent } from './components/elements/input-date-element/input-date-element.component';
 import { RatingElementComponent } from './components/elements/rating-element/rating-element.component';
+import { InputSliderElementComponent } from './components/elements/input-slider-element/input-slider-element.component';
 import { InputTagsElementComponent } from './components/elements/input-tags-element/input-tags-element.component';
 
 @NgModule({
@@ -68,6 +69,7 @@ import { InputTagsElementComponent } from './components/elements/input-tags-elem
         MessagesElementComponent,
         InputDateElementComponent,
         RatingElementComponent,
+        InputSliderElementComponent,
         InputTagsElementComponent,
         NgxTippyModule
     ],

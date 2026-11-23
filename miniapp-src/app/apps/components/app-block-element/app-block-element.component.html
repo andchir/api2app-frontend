@@ -358,23 +358,16 @@
     <ng-container *ngSwitchCase="'input-slider'">
         <div [ngClass]="{'rounded ring-offset-2 ring-blue-400 group-hover/element:ring-1': editorMode}">
             <div class="w-full max-w-[600px] mx-auto">
-                <label for="{{ options?.name }}-{{ parentIndex }}-{{ index }}" class="block mb-2 text-sm font-medium text-gray-900">
-                    {{ options?.label }}
-                </label>
-                <div class="relative pb-5">
-                        <span class="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-0.5 rounded absolute end-0 -top-6">
-                            {{ options?.value }}
-                        </span>
-                    <input id="{{ options?.name }}-{{ parentIndex }}-{{ index }}" type="range"
-                           [ngStyle]="{backgroundSize: (options?.value - options?.min) / (options?.max - options?.min) * 100 + '%, 100%'}"
-                           class="w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                           [min]="options?.min"
-                           [max]="options?.max"
-                           [step]="options?.step"
-                           [(ngModel)]="options.value">
-                    <span class="text-sm text-gray-500 absolute start-0 top-6">{{ options?.min }}</span>
-                    <span class="text-sm text-gray-500 absolute end-0 top-6">{{ options?.max }}</span>
-                </div>
+                <app-input-slider-element
+                    [editorMode]="editorMode"
+                    [name]="options?.name"
+                    [label]="options?.label"
+                    [parentIndex]="parentIndex"
+                    [index]="index"
+                    [min]="options?.min"
+                    [max]="options?.max"
+                    [step]="options?.step"
+                    [(ngModel)]="options.value"></app-input-slider-element>
             </div>
         </div>
         <ng-container *ngTemplateOutlet="templateButtonOptions"></ng-container>
