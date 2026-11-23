@@ -5,6 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ApiItem } from '../models/api-item.interface';
+import { PricePerUseParam } from '../models/price-per-use-param.interface';
 import { ApiItemMessageEvent } from '../api-item/api-item.component';
 import { ApiService } from '../../services/api.service';
 import { ConfirmComponent } from '../../shared/confirm/confirm.component';
@@ -30,6 +31,8 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     isNotified: boolean = false;
     isSettingsActive: boolean = false;
+    isPriceParamsActive: boolean = false;
+    closePriceParamsOnSave: boolean = false;
     itemId: number = 0;
     data: ApiItem = ApiService.getDefault();
     destroyed$: Subject<void> = new Subject();
@@ -63,6 +66,9 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     }
                     if (!this.data.headers || this.data.headers.length === 0) {
                         this.data.headers = [{name: '', value: ''}];
+                    }
+                    if (!this.data.pricePerUseParams) {
+                        this.data.pricePerUseParams = [];
                     }
                     if (res.sender) {
                         this.senderValue = res.sender;
@@ -168,11 +174,16 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
                     this.submitted = false;
                     this.message = $localize `Saved successfully.`;
                     this.messageType = 'success';
+                    if (this.closePriceParamsOnSave) {
+                        this.closePriceParamsOnSave = false;
+                        this.isPriceParamsActive = false;
+                    }
                     if (isNewItem) {
                         this.navigateToEdit(this.data.id);
                     }
                 },
                 error: (err) => {
+                    this.closePriceParamsOnSave = false;
                     this.errors = err;
                     if (this.errors && typeof this.errors === 'object') {
                         let message = '';
@@ -219,6 +230,53 @@ export class ApiCreateComponent implements OnInit, OnDestroy {
 
     apiSettingsToggle(): void {
         this.isSettingsActive = !this.isSettingsActive;
+    }
+
+    get priceParamFieldNames(): string[] {
+        if (this.data.bodyDataSource === 'raw') {
+            if (!this.data.bodyContent || !ApiService.isJson(this.data.bodyContent)) {
+                return [];
+            }
+            try {
+                const bodyData = JSON.parse(this.data.bodyContent);
+                const {outputKeys, values} = ApiService.getPropertiesRecursively(bodyData);
+                return outputKeys.filter((key, index) => {
+                    return values[index] !== null && typeof values[index] !== 'object';
+                });
+            } catch (e) {
+                return [];
+            }
+        }
+        const names: string[] = [];
+        (this.data.bodyFields || []).forEach((field) => {
+            if (field.name && !field.hidden && !names.includes(field.name)) {
+                names.push(field.name);
+            }
+        });
+        return names;
+    }
+
+    priceParamsOpen(): void {
+        this.isSettingsActive = false;
+        this.isPriceParamsActive = true;
+    }
+
+    priceParamsClose(): void {
+        this.isPriceParamsActive = false;
+        this.closePriceParamsOnSave = false;
+    }
+
+    savePriceParams(): void {
+        this.closePriceParamsOnSave = true;
+        this.saveData();
+    }
+
+    addPriceParam(): void {
+        this.data.pricePerUseParams.push({name: '', value: '', multiplier: 1});
+    }
+
+    deletePriceParam(index: number): void {
+        this.data.pricePerUseParams.splice(index, 1);
     }
 
     ngOnDestroy(): void {

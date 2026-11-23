@@ -1,5 +1,6 @@
 import { RequestDataField } from './request-data-field.interface';
 import { NameValueStringObject } from './name-value-string-object.interface';
+import { PricePerUseParam } from './price-per-use-param.interface';
 import { User } from './user.interface';
 
 export interface ApiItem {
@@ -19,6 +20,7 @@ export interface ApiItem {
     dailyLimitForUniqueUsers: boolean;
     paidOnly: boolean;
     pricePerUse: number;
+    pricePerUseParams: PricePerUseParam[];
     stream: boolean;
 
     bodyFields: RequestDataField[];

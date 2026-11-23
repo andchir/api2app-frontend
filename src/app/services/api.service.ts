@@ -49,6 +49,7 @@ export class ApiService extends DataService<ApiItem> {
             paidOnly: false,
             stream: false,
             pricePerUse: 0,
+            pricePerUseParams: [],
             responseBody: '',
             responseHeaders: [],
             responseContentType: 'json',
